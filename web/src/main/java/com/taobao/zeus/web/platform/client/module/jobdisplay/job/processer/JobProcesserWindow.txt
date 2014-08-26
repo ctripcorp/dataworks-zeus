@@ -1,0 +1,107 @@
+package com.taobao.zeus.web.platform.client.module.jobdisplay.job.processer;
+
+import java.util.List;
+
+import com.taobao.zeus.web.gwt.client.model.GroupJobTreeModel;
+import com.taobao.zeus.web.gwt.client.model.JobModel;
+import com.taobao.zeus.web.gwt.client.model.ProcesserType;
+import com.taobao.zeus.web.gwt.client.model.ProcesserType.JobP;
+import com.taobao.zeus.web.gwt.client.mvc.widget.FormatUtil;
+import com.taobao.zeus.web.gwt.client.mvc.widget.GroupTree;
+
+public class JobProcesserWindow extends ProcesserWindow{
+
+	private JobP jobP=new JobP();
+	private ComboBox<GroupJobTreeModel> refJob;
+	private TextArea config;
+	private ListField<ProcesserType> field;
+	private JobModel jobModel;
+	private Button add=new Button("添加", new SelectionListener<ButtonEvent>() {
+		public void componentSelected(ButtonEvent ce) {
+			if(refJob.isValid() && config.isValid()){
+				jobP.setJobId(refJob.getValue().getId());
+				jobP.setKvConfig(FormatUtil.parseProperties(config.getValue()));
+				jobP.setJobName(refJob.getValue().getName());
+				field.getStore().add(jobP);
+				JobProcesserWindow.this.hide();
+			}
+		}
+	});
+	public JobProcesserWindow(){
+		setHeading("自定义Job配置");
+		setSize(700, 400);
+		setLayout(new FitLayout());
+		
+		refJob=new ComboBox<GroupJobTreeModel>();
+		refJob.setStore(new ListStore<GroupJobTreeModel>());
+		refJob.setDisplayField("name");
+		refJob.setAllowBlank(false);
+		refJob.setEditable(false);
+		refJob.setFieldLabel("自定义Job");
+		refJob.addListener(Events.OnClick, new Listener<FieldEvent>() {
+			@Override
+			public void handleEvent(FieldEvent be) {
+				final Window win = new Window();
+				win.setHeight(500);
+				win.setModal(true);
+				
+				final GroupTree t = new GroupTree(GroupTree.DIRECOTRY);
+				t.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+				win.add(t);
+				win.setScrollMode(Scroll.AUTO);
+				win.addButton(new Button("确定", new SelectionListener<ButtonEvent>() {
+					@Override
+					public void componentSelected(ButtonEvent ce) {
+						GroupJobTreeModel model=t.getSelectionModel().getSelectedItem();
+						if(model!=null){
+							if(model.isGroup()){
+								MessageBox.alert("警告", "不能选择组", null);
+								return;
+							}else{
+								String jobId=model.getId();
+								if(jobId.equals(jobModel.getId())){
+									MessageBox.alert("警告", "不得将自身加入处理单元中", null);
+									return ;
+								}
+								refJob.setValue(model);
+							}
+						}
+						win.hide();
+					}
+				}));
+				win.show();				
+			}
+		});
+		
+		config=new TextArea();
+		config.setFieldLabel("传入配置项");
+		config.setValidator(FormatUtil.propValidator);
+		config.setHeight(250);
+		
+		FormLayout layout=new FormLayout();
+		layout.setDefaultWidth(500);
+		FormPanel formPanel=new FormPanel();
+		formPanel.setLayout(layout);
+		formPanel.setHeaderVisible(false);
+		formPanel.add(refJob,new MarginData(3));
+		formPanel.add(config,new MarginData(3));
+		add(formPanel,new MarginData(5));
+		addButton(add);
+	}
+	@Override
+	public ProcesserType getProcesserType() {
+		return jobP;
+	}
+
+	@Override
+	public void use(ListField<ProcesserType> field, JobModel jobModel) {
+		this.field=field;
+		this.jobModel=jobModel;
+		refJob.clear();
+		config.clear();
+		if(!this.isVisible()){
+			show();
+		}
+	}
+
+}

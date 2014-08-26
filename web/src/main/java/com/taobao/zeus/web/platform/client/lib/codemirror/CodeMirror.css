@@ -1,0 +1,13 @@
+
+.CodeMirror {
+	border:1px solid #eee;
+	background-color:white;
+	height:100%;
+	font-family: MONACO !important;
+	line-height:1.3;
+	font-size:14px;
+}
+.CodeMirror-scroll {
+	height:100%;
+}
+.activeline {background: #e8f2ff !important;}

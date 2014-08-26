@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+    	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
+    default-autowire="byName">
+
+	<context:annotation-config />
+	
+	<bean id="environment" class="com.taobao.zeus.util.Environment" >
+		<constructor-arg index="0">
+			<value>${zeus.env}</value>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<value>${zeus.schedule.group}</value>
+		</constructor-arg>
+		<constructor-arg index="2">
+			<value>${zeus.localdata.dir}</value>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="clientWorker" class="com.taobao.zeus.socket.worker.ClientWorker" >
+	</bean>
+
+	<!-- gwt bean -->
+	<bean id="user.rpc" class="com.taobao.zeus.web.platform.server.rpc.UserServiceImpl" />
+	<bean id="tree.rpc" class="com.taobao.zeus.web.platform.server.rpc.TreeServiceImpl" />
+	<bean id="group.rpc" class="com.taobao.zeus.web.platform.server.rpc.GroupServiceImpl" />
+	<bean id="job.rpc" class="com.taobao.zeus.web.platform.server.rpc.FilterJobServiceImpl">
+		<property name="jobService">
+			<bean class="com.taobao.zeus.web.platform.server.rpc.JobServiceImpl" />
+		</property>
+	</bean>
+	<bean id="file.rpc" class="com.taobao.zeus.web.platform.server.rpc.FileManagerRpcImpl" />
+	<bean id="debug.rpc" class="com.taobao.zeus.web.platform.server.rpc.JobDebugRpcImpl" />
+	<bean id="profile.rpc" class="com.taobao.zeus.web.platform.server.rpc.ProfileManagerRpcImpl" />
+	<bean id="table.rpc" class="com.taobao.zeus.web.platform.server.rpc.TableManagerRpcImpl" />
+	<bean id="report.rpc" class="com.taobao.zeus.web.platform.server.rpc.ReportRpcImpl" />
+	
+	<!-- Manager -->
+	<bean id="profileManager" class="com.taobao.zeus.store.mysql.MysqlProfileManager" />
+	<bean id="debugHistoryManager" class="com.taobao.zeus.store.mysql.MysqlDebugHistoryManager" />
+	<bean id="fileManager" class="com.taobao.zeus.store.mysql.MysqlFileManager" />
+	<bean id="followManager" class="com.taobao.zeus.store.mysql.MysqlFollowManager" />
+	<bean id="userManager" class="com.taobao.zeus.store.mysql.MysqlUserManager" />
+	<bean id="jobHistoryManager" class="com.taobao.zeus.store.mysql.MysqlJobHistoryManager" />
+	<bean id="permissionManager" class="com.taobao.zeus.store.mysql.MysqlPermissionManager" />
+	<bean id="groupManager" class="com.taobao.zeus.store.mysql.MysqlGroupManager" />
+	<bean id="tableManager" class="com.taobao.zeus.store.CliTableManager" />
+	<bean id="reportManager" class="com.taobao.zeus.store.mysql.MysqlReportManager" />
+	<bean id="readOnlyGroupManager" class="com.taobao.zeus.store.mysql.ReadOnlyGroupManager" >
+		<property name="groupManager" ref="groupManager" />
+	</bean>
+	<bean id="permissionScheduleGroupManager" class="com.taobao.zeus.web.PermissionGroupManager" >
+		<property name="groupManager" ref="scheduleGroupManager"></property>
+	</bean>
+	<bean id="scheduleGroupManager" class="com.taobao.zeus.web.ScheduleGroupManager" >
+		<property name="groupManager" ref="groupManager"></property>
+	</bean>
+	
+	<bean id="jobValidate" class="com.taobao.zeus.store.mysql.tool.JobValidate"></bean>
+	
+	<bean id="distributeLocker" class="com.taobao.zeus.schedule.DistributeLocker" init-method="init" >
+		<constructor-arg>
+			<value>${zeus.connect.port}</value>
+		</constructor-arg>
+	</bean>
+</beans>

@@ -1,0 +1,15 @@
+/**
+ * Sencha GXT 3.0.0b - Sencha for GWT
+ * Copyright(c) 2007-2012, Sencha, Inc.
+ * licensing@sencha.com
+ *
+ * http://www.sencha.com/products/gxt/license/
+ */
+
+ 
+ .select{
+ 	background-color:#D0D0D0;
+ 	border-radius:4px 4px 4px 4px;
+ 	box-shadow:1px 1px 1px #999999 inset;
+ 	padding-top:3px;
+ }

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	
+
+    <appender name="START" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${zeus.loggingRoot}/jboss_stdout.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p %c{2}.%M - %m%n"/>
+        </layout>
+    </appender>
+    <appender name="PROJECT"
+              class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${zeus.loggingRoot}/zeus.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <param name="threshold" value="info"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%d %X{requestURIWithQueryString} %p %c:%m%n"/>
+        </layout>
+    </appender>
+    <appender name="FILTER"
+		class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="${zeus.loggingRoot}/zeus-filter.log" />
+		<param name="append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %-5p %c{2} - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="zookeeper" class="org.apache.log4j.DailyRollingFileAppender"><!-- org.apache.log4j.DailyRollingFileAppender -->
+		<param name="File" value="${zeus.loggingRoot}/zk.log" />
+		<param name="Append" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d [%-5p] %c %x - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="scheduleinfo" class="org.apache.log4j.DailyRollingFileAppender"><!-- org.apache.log4j.DailyRollingFileAppender -->
+		<param name="File" value="${zeus.loggingRoot}/schedule.log" />
+		<param name="Append" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d [%-5p] %c %x - %m%n" />
+		</layout>
+	</appender>
+	<appender name="socketinfo" class="org.apache.log4j.DailyRollingFileAppender"><!-- org.apache.log4j.DailyRollingFileAppender -->
+		<param name="File" value="${zeus.loggingRoot}/socket.log" />
+		<param name="Append" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d [%-5p] %c %x - %m%n" />
+		</layout>
+	</appender>
+	<appender name="debuginfo" class="org.apache.log4j.DailyRollingFileAppender"><!-- org.apache.log4j.DailyRollingFileAppender -->
+		<param name="File" value="${zeus.loggingRoot}/debug.log" />
+		<param name="Append" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d [%-5p] %c %x - %m%n" />
+		</layout>
+	</appender>
+	
+	<logger name="com.taobao.zeus.schedule.mvc.ScheduleInfoLog" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="scheduleinfo"/>
+	</logger>
+	<logger name="com.taobao.zeus.socket.SocketLog" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="socketinfo"/>
+	</logger>
+	<logger name="com.taobao.zeus.schedule.mvc.DebugInfoLog" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="debuginfo"/>
+	</logger>
+
+	<logger name="org.apache.zookeeper" additivity="false">
+		<appender-ref ref="zookeeper" />
+	</logger>
+	<logger name="com.alibaba.webx.filter" additivity="false">
+		<level value="WARN" />
+		<appender-ref ref="FILTER" />
+	</logger>
+	
+	<logger name="STDOUT" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="START"/>
+    </logger>
+    <logger name="STDERR" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="START"/>
+    </logger>
+
+    <root>
+        <level value="${zeus.loggingLevel}"/>
+        <appender-ref ref="PROJECT"/>
+    </root>
+</log4j:configuration>

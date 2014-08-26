@@ -1,0 +1,16 @@
+deploy/target
+deploy/.project
+client/target
+client/.classpath
+client/.project
+client/.settings
+schedule/target
+schedule/bin
+schedule/.classpath
+schedule/.project
+schedule/.settings
+web/bin
+web/target
+web/.classpath
+web/.project
+web/.settings

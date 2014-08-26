@@ -1,0 +1,37 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:p="urn:import:com.taobao.zeus.web.platform.client.widget">
+	<ui:style>
+		.zeus-platform {
+		}
+	</ui:style>
+	
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="abc">
+	    <ui:attributes top="2" right="2" bottom="2" left="2" />
+	</ui:with>
+	
+	
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData" field="barLayout" >
+		<ui:attributes margins="{abc}" size="80"></ui:attributes>
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.MarginData" field="screenLayout">
+		<ui:attributes margins="{abc}" ></ui:attributes>
+	</ui:with>
+	
+	
+	<container:Viewport styleName="{style.zeus-platform}" ui:field="viewport">
+		<container:BorderLayoutContainer ui:field="platformContainer" borders="true" >
+			<container:west layoutData="{barLayout}" >
+				<container:VBoxLayoutContainer borders="true" vBoxLayoutAlign="CENTER" ui:field="shortcutBar">
+				</container:VBoxLayoutContainer>
+			</container:west>
+			<container:center layoutData="{screenLayout}">
+				<container:CardLayoutContainer ui:field="screen" borders="true">
+				</container:CardLayoutContainer>
+			</container:center>
+		</container:BorderLayoutContainer>
+	</container:Viewport>
+</ui:UiBinder> 

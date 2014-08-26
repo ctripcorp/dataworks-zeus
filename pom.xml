@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.taobao.zeus</groupId>
+    <artifactId>zeus</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+    <modules>
+		<module>schedule</module>
+        <module>web</module>
+		<module>deploy</module>
+		<module>client</module>
+    </modules>
+    <name>Zeus</name>
+	<dependencies>
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<!-- ================================================= -->
+			<!-- 1.0.1B不可用，用1.1替代    -->
+			<!-- ================================================= -->
+			<dependency>
+				<groupId>javax.transaction</groupId>
+				<artifactId>jta</artifactId>
+				<version>1.1</version>
+			</dependency>			
+			<!-- ================================================= -->
+			<!-- 日志及相关依赖（用slf4j+logback代替jcl+log4j）    -->
+			<!-- ================================================= -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.6.0</version>
+			</dependency>
+			<!-- 将现有的jakarta commons logging的调用转换成slf4j的调用。-->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>1.6.0</version>
+			</dependency> 
+			<!-- Hack：确保commons-logging的jar包不被引入，否则将和jcl-over-slf4j冲突 
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>99.0-does-not-exist</version>
+			</dependency>
+			-->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.6.0</version>
+			</dependency>
+			<!-- ======================================== -->
+			<!-- 其它第三方依赖                             -->
+			<!-- ======================================== -->
+			
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>2.0</version>
+			</dependency>
+			<dependency>
+			  <groupId>asm</groupId>
+			  <artifactId>asm</artifactId>
+			  <version>3.3.1</version>
+			</dependency>
+			<dependency>
+			  <groupId>cglib</groupId>
+			  <artifactId>cglib</artifactId>
+			  <version>2.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring</artifactId>
+				<version>2.5.6</version>
+			</dependency>
+			<dependency>
+				<groupId>quartz</groupId>
+				<artifactId>quartz</artifactId>
+				<version>1.5.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.taobao.zeus</groupId>
+				<artifactId>zeus-client</artifactId>
+				<version>2.0.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>com.taobao.zeus</groupId>
+				<artifactId>zeus-schedule</artifactId>
+				<version>2.0.0-SNAPSHOT</version>
+			</dependency>
+			<!--
+			<dependency>
+				<groupId>com.taobao.zeus</groupId>
+				<artifactId>zeus-connect</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+			</dependency>
+			-->
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>2.9.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+    <build>
+        <plugins>
+        	<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.7.1</version>
+			</plugin>
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                   <additionalConfig>
+                      <file>
+                         <name>.settings/org.eclipse.core.resources.prefs</name>
+                         <content>
+                            <![CDATA[
+                                eclipse.preferences.version=1
+                                encoding/<project>=UTF-8
+                            ]]>
+                         </content>
+                      </file>
+					  
+                   </additionalConfig>
+				   <downloadSources>true</downloadSources>
+				   <downloadJavadocs>true</downloadJavadocs>
+                </configuration>
+             </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

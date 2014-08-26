@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://java.sun.com/xml/ns/j2ee  http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd
+    ">
+	<context-param>
+		<param-name>hdfsLibPath</param-name>
+		<param-value>${zeus.hdfsLibPath}</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext.xml,
+					classpath:broadcast-applicationContext.xml,
+					classpath:persistence.xml</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>jobtracker</param-name>
+		<param-value>${zeus.jobtracker}</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- need config a ssoFilter -->
+
+	<filter>
+		<filter-name>LoginFilter</filter-name>
+		<filter-class>com.taobao.zeus.web.LoginFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>LoginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>rpcFilter</filter-name>
+		<filter-class>com.taobao.zeus.web.RpcFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>rpcFilter</filter-name>
+		<url-pattern>*.rpc</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>upload</servlet-name>
+		<servlet-class>com.taobao.zeus.web.FileUploadServlet</servlet-class>
+		<load-on-startup>11</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>upload</servlet-name>
+		<url-pattern>/upload.do</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>partitionDownload</servlet-name>
+		<servlet-class>com.taobao.zeus.web.PartitionDownloadServlet</servlet-class>
+		<load-on-startup>11</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>partitionDownload</servlet-name>
+		<url-pattern>/partition_download.do</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>dump</servlet-name>
+		<servlet-class>com.taobao.zeus.web.ScheduleDump</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dump</servlet-name>
+		<url-pattern>/dump.do</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>yunti_jobdetail</servlet-name>
+		<servlet-class>com.taobao.zeus.web.YuntiJobDetailServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>yunti_jobdetail</servlet-name>
+		<url-pattern>/jobdetail.jsp</url-pattern>
+	</servlet-mapping>
+
+
+	<session-config>
+		<session-timeout>600</session-timeout>
+	</session-config>
+
+	<welcome-file-list>
+		<welcome-file>platform.html</welcome-file>
+	</welcome-file-list>
+
+	<error-page>
+		<error-code>400</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>401</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>405</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>407</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>408</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>414</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>415</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>501</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>503</error-code>
+		<location>/error.htm</location>
+	</error-page>
+
+</web-app>

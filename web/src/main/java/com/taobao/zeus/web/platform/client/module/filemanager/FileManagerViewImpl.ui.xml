@@ -1,0 +1,25 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="abc">
+	    <ui:attributes top="2" right="2" bottom="2" left="2" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer.AccordionLayoutAppearance"
+    field="accordionLayoutAppearance" />
+	
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData" field="barLayout" >
+		<ui:attributes margins="{abc}" size="80"></ui:attributes>
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.MarginData" field="screenLayout">
+		<ui:attributes margins="{abc}" ></ui:attributes>
+	</ui:with>
+	
+	<container:AccordionLayoutContainer >
+		<gxt:ContentPanel headingText="我的文档" ui:field="myDoc" appearance="{accordionLayoutAppearance}"></gxt:ContentPanel>
+		<gxt:ContentPanel headingText="公共文档" ui:field="commonDoc" appearance="{accordionLayoutAppearance}"></gxt:ContentPanel>
+	</container:AccordionLayoutContainer>
+	
+</ui:UiBinder> 

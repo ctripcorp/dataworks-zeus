@@ -1,0 +1,36 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client" xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:with
+		type="com.sencha.gxt.widget.core.client.ContentPanel.ContentPanelAppearance"
+		field="contentPanelAppearance" />
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="southMargins">
+		<ui:attributes top="1" right="1" bottom="1" left="1" />
+	</ui:with>
+	<ui:with
+		type="com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData"
+		field="southData">
+		<ui:attributes size="200" margins="{southMargins}"
+			collapsible="true" />
+	</ui:with>
+
+	<container:BorderLayoutContainer>
+		<container:center>
+			<gxt:ContentPanel headingText="表管理" collapsible="false"
+				bodyBorder="false" ui:field="commonTab">
+				<container:VerticalLayoutContainer
+					ui:field="commonTableContainer" borders="true">
+				</container:VerticalLayoutContainer>
+			</gxt:ContentPanel>
+		</container:center>
+		<container:south layoutData="{southData}">
+			<gxt:ContentPanel headingText="数据预览" height="200"
+				ui:field="dataPreviewPanel">
+				<g:HTML HTML="&lt;p&gt;请选择分区进行预览。&lt;/p&gt;"></g:HTML>
+			</gxt:ContentPanel>
+		</container:south>
+	</container:BorderLayoutContainer>
+
+</ui:UiBinder> 

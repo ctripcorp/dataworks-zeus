@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='zeus_platform'>
+  <inherits name='com.sencha.gxt.ui.GXT' />
+  <inherits name="org.moxieapps.gwt.highcharts.Highcharts"/>
+  <inherits name='com.google.gwt.place.Place' />
+  <replace-with class="com.taobao.zeus.web.platform.client.theme.shortcut.ShortcutCellDefaultAppearance">
+    <when-type-is class="com.taobao.zeus.web.platform.client.widget.ShortcutCell.ShortcutCellAppearance" />
+  </replace-with>
+
+  <entry-point class='com.taobao.zeus.web.platform.client.PlatformEntry'/>
+	
+  <source path='client'/>
+  <source path='shared'/>
+  
+  <!-- <set-property name="user.agent"  value="safari"/> -->
+<!--   <set-property name="gxt.user.agent" value="safari5"/> -->
+<!--   <set-property name="user.locale" value="zh"/> -->
+</module>

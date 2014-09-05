@@ -51,7 +51,7 @@ public class JobPersistence implements Serializable {
 	@Column(length=4096)
 	private String resources;
 	
-	@Column(length=4096)
+	@Column(length=16777215)
 	private String script;
 	
 	@Column(name = "gmt_create", nullable = false)

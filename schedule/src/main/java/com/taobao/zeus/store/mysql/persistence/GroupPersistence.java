@@ -20,7 +20,7 @@ public class GroupPersistence implements Serializable{
 	private String name;
 	@Column(nullable=false)
 	private String owner;
-	@Column
+	@Column(length=16777215)
 	private String descr;
 	/**
 	 * 0: 是目录
@@ -28,9 +28,9 @@ public class GroupPersistence implements Serializable{
 	 */
 	@Column(nullable=false)
 	private int directory;
-	@Column(length=4096)
+	@Column(length=16777215)
 	private String configs;
-	@Column(length=4096)
+	@Column(length=16777215)
 	private String resources;
 	@Column(name="gmt_create",nullable=false)
 	private Date gmtCreate=new Date();

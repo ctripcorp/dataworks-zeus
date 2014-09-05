@@ -26,6 +26,7 @@ public class FilePersistence  implements Serializable{
 	@Column(nullable=false)
 	private int type;
 	
+	@Column(length=16777215)
 	private String content;
 	@Column(name="gmt_create")
 	private Date gmtCreate=new Date();

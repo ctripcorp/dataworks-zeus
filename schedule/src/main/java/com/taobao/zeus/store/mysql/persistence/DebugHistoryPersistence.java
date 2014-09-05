@@ -26,7 +26,7 @@ public class DebugHistoryPersistence {
 	private Date gmtModified=new Date();
 	@Column
 	private String status;
-	@Column
+	@Column(length=16777215)
 	private String script;
 	@Column
 	private String runtype;

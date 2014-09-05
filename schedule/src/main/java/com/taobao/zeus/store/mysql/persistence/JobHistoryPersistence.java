@@ -18,7 +18,7 @@ public class JobHistoryPersistence {
 	private Date startTime;
 	@Column(name="end_time")
 	private Date endTime;
-	@Column(length=100000)
+	@Column(length=16777215)
 	private String log;
 	@Column(name="execute_host")
 	private String executeHost;

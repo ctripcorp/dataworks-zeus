@@ -14,6 +14,9 @@ public final class Protocol {
     ERROR(1, 1),
     ;
     
+    public static final int OK_VALUE = 0;
+    public static final int ERROR_VALUE = 1;
+    
     
     public final int getNumber() { return value; }
     
@@ -33,8 +36,8 @@ public final class Protocol {
         internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<Status>() {
             public Status findValueByNumber(int number) {
-              return Status.valueOf(number)
-    ;        }
+              return Status.valueOf(number);
+            }
           };
     
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
@@ -53,6 +56,7 @@ public final class Protocol {
     private static final Status[] VALUES = {
       OK, ERROR, 
     };
+    
     public static Status valueOf(
         com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
       if (desc.getType() != getDescriptor()) {
@@ -61,15 +65,13 @@ public final class Protocol {
       }
       return VALUES[desc.getIndex()];
     }
+    
     private final int index;
     private final int value;
+    
     private Status(int index, int value) {
       this.index = index;
       this.value = value;
-    }
-    
-    static {
-      com.taobao.zeus.socket.protocol.Protocol.getDescriptor();
     }
     
     // @@protoc_insertion_point(enum_scope:com.taobao.zeus.socket.protocol.Status)
@@ -81,6 +83,10 @@ public final class Protocol {
     ManualKind(1, 1),
     DebugKind(2, 2),
     ;
+    
+    public static final int ScheduleKind_VALUE = 0;
+    public static final int ManualKind_VALUE = 1;
+    public static final int DebugKind_VALUE = 2;
     
     
     public final int getNumber() { return value; }
@@ -102,8 +108,8 @@ public final class Protocol {
         internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<ExecuteKind>() {
             public ExecuteKind findValueByNumber(int number) {
-              return ExecuteKind.valueOf(number)
-    ;        }
+              return ExecuteKind.valueOf(number);
+            }
           };
     
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
@@ -122,6 +128,7 @@ public final class Protocol {
     private static final ExecuteKind[] VALUES = {
       ScheduleKind, ManualKind, DebugKind, 
     };
+    
     public static ExecuteKind valueOf(
         com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
       if (desc.getType() != getDescriptor()) {
@@ -130,15 +137,13 @@ public final class Protocol {
       }
       return VALUES[desc.getIndex()];
     }
+    
     private final int index;
     private final int value;
+    
     private ExecuteKind(int index, int value) {
       this.index = index;
       this.value = value;
-    }
-    
-    static {
-      com.taobao.zeus.socket.protocol.Protocol.getDescriptor();
     }
     
     // @@protoc_insertion_point(enum_scope:com.taobao.zeus.socket.protocol.ExecuteKind)
@@ -151,6 +156,11 @@ public final class Protocol {
     CancelJob(2, 3),
     ExecuteDebug(3, 4),
     ;
+    
+    public static final int UpdateJob_VALUE = 1;
+    public static final int ExecuteJob_VALUE = 2;
+    public static final int CancelJob_VALUE = 3;
+    public static final int ExecuteDebug_VALUE = 4;
     
     
     public final int getNumber() { return value; }
@@ -173,8 +183,8 @@ public final class Protocol {
         internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<WebOperate>() {
             public WebOperate findValueByNumber(int number) {
-              return WebOperate.valueOf(number)
-    ;        }
+              return WebOperate.valueOf(number);
+            }
           };
     
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
@@ -193,6 +203,7 @@ public final class Protocol {
     private static final WebOperate[] VALUES = {
       UpdateJob, ExecuteJob, CancelJob, ExecuteDebug, 
     };
+    
     public static WebOperate valueOf(
         com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
       if (desc.getType() != getDescriptor()) {
@@ -201,15 +212,13 @@ public final class Protocol {
       }
       return VALUES[desc.getIndex()];
     }
+    
     private final int index;
     private final int value;
+    
     private WebOperate(int index, int value) {
       this.index = index;
       this.value = value;
-    }
-    
-    static {
-      com.taobao.zeus.socket.protocol.Protocol.getDescriptor();
     }
     
     // @@protoc_insertion_point(enum_scope:com.taobao.zeus.socket.protocol.WebOperate)
@@ -223,6 +232,12 @@ public final class Protocol {
     Debug(3, 3),
     Manual(4, 4),
     ;
+    
+    public static final int HeartBeat_VALUE = 0;
+    public static final int Schedule_VALUE = 1;
+    public static final int Cancel_VALUE = 2;
+    public static final int Debug_VALUE = 3;
+    public static final int Manual_VALUE = 4;
     
     
     public final int getNumber() { return value; }
@@ -246,8 +261,8 @@ public final class Protocol {
         internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<Operate>() {
             public Operate findValueByNumber(int number) {
-              return Operate.valueOf(number)
-    ;        }
+              return Operate.valueOf(number);
+            }
           };
     
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
@@ -266,6 +281,7 @@ public final class Protocol {
     private static final Operate[] VALUES = {
       HeartBeat, Schedule, Cancel, Debug, Manual, 
     };
+    
     public static Operate valueOf(
         com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
       if (desc.getType() != getDescriptor()) {
@@ -274,25 +290,35 @@ public final class Protocol {
       }
       return VALUES[desc.getIndex()];
     }
+    
     private final int index;
     private final int value;
+    
     private Operate(int index, int value) {
       this.index = index;
       this.value = value;
     }
     
-    static {
-      com.taobao.zeus.socket.protocol.Protocol.getDescriptor();
-    }
-    
     // @@protoc_insertion_point(enum_scope:com.taobao.zeus.socket.protocol.Operate)
   }
   
+  public interface SocketMessageOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required .com.taobao.zeus.socket.protocol.SocketMessage.Kind kind = 1;
+    boolean hasKind();
+    com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind getKind();
+    
+    // optional bytes body = 2;
+    boolean hasBody();
+    com.google.protobuf.ByteString getBody();
+  }
   public static final class SocketMessage extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements SocketMessageOrBuilder {
     // Use SocketMessage.newBuilder() to construct.
-    private SocketMessage() {
-      initFields();
+    private SocketMessage(Builder builder) {
+      super(builder);
     }
     private SocketMessage(boolean noInit) {}
     
@@ -323,6 +349,11 @@ public final class Protocol {
       WEB_RESPONSE(3, 3),
       ;
       
+      public static final int REQUEST_VALUE = 0;
+      public static final int RESPONSE_VALUE = 1;
+      public static final int WEB_REUQEST_VALUE = 2;
+      public static final int WEB_RESPONSE_VALUE = 3;
+      
       
       public final int getNumber() { return value; }
       
@@ -344,8 +375,8 @@ public final class Protocol {
           internalValueMap =
             new com.google.protobuf.Internal.EnumLiteMap<Kind>() {
               public Kind findValueByNumber(int number) {
-                return Kind.valueOf(number)
-      ;        }
+                return Kind.valueOf(number);
+              }
             };
       
       public final com.google.protobuf.Descriptors.EnumValueDescriptor
@@ -364,6 +395,7 @@ public final class Protocol {
       private static final Kind[] VALUES = {
         REQUEST, RESPONSE, WEB_REUQEST, WEB_RESPONSE, 
       };
+      
       public static Kind valueOf(
           com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
         if (desc.getType() != getDescriptor()) {
@@ -372,50 +404,64 @@ public final class Protocol {
         }
         return VALUES[desc.getIndex()];
       }
+      
       private final int index;
       private final int value;
+      
       private Kind(int index, int value) {
         this.index = index;
         this.value = value;
       }
       
-      static {
-        com.taobao.zeus.socket.protocol.Protocol.getDescriptor();
-      }
-      
       // @@protoc_insertion_point(enum_scope:com.taobao.zeus.socket.protocol.SocketMessage.Kind)
     }
     
+    private int bitField0_;
     // required .com.taobao.zeus.socket.protocol.SocketMessage.Kind kind = 1;
     public static final int KIND_FIELD_NUMBER = 1;
-    private boolean hasKind;
     private com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind kind_;
-    public boolean hasKind() { return hasKind; }
-    public com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind getKind() { return kind_; }
+    public boolean hasKind() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind getKind() {
+      return kind_;
+    }
     
     // optional bytes body = 2;
     public static final int BODY_FIELD_NUMBER = 2;
-    private boolean hasBody;
-    private com.google.protobuf.ByteString body_ = com.google.protobuf.ByteString.EMPTY;
-    public boolean hasBody() { return hasBody; }
-    public com.google.protobuf.ByteString getBody() { return body_; }
+    private com.google.protobuf.ByteString body_;
+    public boolean hasBody() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public com.google.protobuf.ByteString getBody() {
+      return body_;
+    }
     
     private void initFields() {
       kind_ = com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind.REQUEST;
+      body_ = com.google.protobuf.ByteString.EMPTY;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasKind) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasKind()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasKind()) {
-        output.writeEnum(1, getKind().getNumber());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeEnum(1, kind_.getNumber());
       }
-      if (hasBody()) {
-        output.writeBytes(2, getBody());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, body_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -426,17 +472,22 @@ public final class Protocol {
       if (size != -1) return size;
     
       size = 0;
-      if (hasKind()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, getKind().getNumber());
+          .computeEnumSize(1, kind_.getNumber());
       }
-      if (hasBody()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getBody());
+          .computeBytesSize(2, body_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    @java.lang.Override
+    protected Object writeReplace() throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static com.taobao.zeus.socket.protocol.Protocol.SocketMessage parseFrom(
@@ -513,34 +564,53 @@ public final class Protocol {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.taobao.zeus.socket.protocol.Protocol.SocketMessage result;
-      
-      // Construct using com.taobao.zeus.socket.protocol.Protocol.SocketMessage.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.taobao.zeus.socket.protocol.Protocol.SocketMessage();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.taobao.zeus.socket.protocol.Protocol.SocketMessageOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_SocketMessage_descriptor;
       }
       
-      protected com.taobao.zeus.socket.protocol.Protocol.SocketMessage internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_SocketMessage_fieldAccessorTable;
+      }
+      
+      // Construct using com.taobao.zeus.socket.protocol.Protocol.SocketMessage.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.taobao.zeus.socket.protocol.Protocol.SocketMessage();
+        super.clear();
+        kind_ = com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind.REQUEST;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        body_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -552,33 +622,39 @@ public final class Protocol {
         return com.taobao.zeus.socket.protocol.Protocol.SocketMessage.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public com.taobao.zeus.socket.protocol.Protocol.SocketMessage build() {
-        if (result != null && !isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.SocketMessage result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private com.taobao.zeus.socket.protocol.Protocol.SocketMessage buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.SocketMessage result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public com.taobao.zeus.socket.protocol.Protocol.SocketMessage buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        com.taobao.zeus.socket.protocol.Protocol.SocketMessage result = new com.taobao.zeus.socket.protocol.Protocol.SocketMessage(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        com.taobao.zeus.socket.protocol.Protocol.SocketMessage returnMe = result;
-        result = null;
-        return returnMe;
+        result.kind_ = kind_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.body_ = body_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -602,6 +678,14 @@ public final class Protocol {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasKind()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -614,11 +698,13 @@ public final class Protocol {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
@@ -629,58 +715,67 @@ public final class Protocol {
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
               } else {
-                setKind(value);
+                bitField0_ |= 0x00000001;
+                kind_ = value;
               }
               break;
             }
             case 18: {
-              setBody(input.readBytes());
+              bitField0_ |= 0x00000002;
+              body_ = input.readBytes();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required .com.taobao.zeus.socket.protocol.SocketMessage.Kind kind = 1;
+      private com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind kind_ = com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind.REQUEST;
       public boolean hasKind() {
-        return result.hasKind();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind getKind() {
-        return result.getKind();
+        return kind_;
       }
       public Builder setKind(com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        result.hasKind = true;
-        result.kind_ = value;
+        bitField0_ |= 0x00000001;
+        kind_ = value;
+        onChanged();
         return this;
       }
       public Builder clearKind() {
-        result.hasKind = false;
-        result.kind_ = com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind.REQUEST;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        kind_ = com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind.REQUEST;
+        onChanged();
         return this;
       }
       
       // optional bytes body = 2;
+      private com.google.protobuf.ByteString body_ = com.google.protobuf.ByteString.EMPTY;
       public boolean hasBody() {
-        return result.hasBody();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public com.google.protobuf.ByteString getBody() {
-        return result.getBody();
+        return body_;
       }
       public Builder setBody(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasBody = true;
-        result.body_ = value;
+  bitField0_ |= 0x00000002;
+        body_ = value;
+        onChanged();
         return this;
       }
       public Builder clearBody() {
-        result.hasBody = false;
-        result.body_ = getDefaultInstance().getBody();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        body_ = getDefaultInstance().getBody();
+        onChanged();
         return this;
       }
       
@@ -689,18 +784,45 @@ public final class Protocol {
     
     static {
       defaultInstance = new SocketMessage(true);
-      com.taobao.zeus.socket.protocol.Protocol.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:com.taobao.zeus.socket.protocol.SocketMessage)
   }
   
+  public interface WebRequestOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required sint32 rid = 1;
+    boolean hasRid();
+    int getRid();
+    
+    // required .com.taobao.zeus.socket.protocol.WebOperate operate = 2;
+    boolean hasOperate();
+    com.taobao.zeus.socket.protocol.Protocol.WebOperate getOperate();
+    
+    // required .com.taobao.zeus.socket.protocol.ExecuteKind ek = 3;
+    boolean hasEk();
+    com.taobao.zeus.socket.protocol.Protocol.ExecuteKind getEk();
+    
+    // required string id = 4;
+    boolean hasId();
+    String getId();
+    
+    // optional string executor = 5;
+    boolean hasExecutor();
+    String getExecutor();
+    
+    // optional bytes body = 6;
+    boolean hasBody();
+    com.google.protobuf.ByteString getBody();
+  }
   public static final class WebRequest extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements WebRequestOrBuilder {
     // Use WebRequest.newBuilder() to construct.
-    private WebRequest() {
-      initFields();
+    private WebRequest(Builder builder) {
+      super(builder);
     }
     private WebRequest(boolean noInit) {}
     
@@ -729,6 +851,9 @@ public final class Protocol {
       MANUAL_RECOVER(1, 1),
       ;
       
+      public static final int MANUAL_VALUE = 0;
+      public static final int MANUAL_RECOVER_VALUE = 1;
+      
       
       public final int getNumber() { return value; }
       
@@ -748,8 +873,8 @@ public final class Protocol {
           internalValueMap =
             new com.google.protobuf.Internal.EnumLiteMap<Trigger>() {
               public Trigger findValueByNumber(int number) {
-                return Trigger.valueOf(number)
-      ;        }
+                return Trigger.valueOf(number);
+              }
             };
       
       public final com.google.protobuf.Descriptors.EnumValueDescriptor
@@ -768,6 +893,7 @@ public final class Protocol {
       private static final Trigger[] VALUES = {
         MANUAL, MANUAL_RECOVER, 
       };
+      
       public static Trigger valueOf(
           com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
         if (desc.getType() != getDescriptor()) {
@@ -776,94 +902,176 @@ public final class Protocol {
         }
         return VALUES[desc.getIndex()];
       }
+      
       private final int index;
       private final int value;
+      
       private Trigger(int index, int value) {
         this.index = index;
         this.value = value;
       }
       
-      static {
-        com.taobao.zeus.socket.protocol.Protocol.getDescriptor();
-      }
-      
       // @@protoc_insertion_point(enum_scope:com.taobao.zeus.socket.protocol.WebRequest.Trigger)
     }
     
+    private int bitField0_;
     // required sint32 rid = 1;
     public static final int RID_FIELD_NUMBER = 1;
-    private boolean hasRid;
-    private int rid_ = 0;
-    public boolean hasRid() { return hasRid; }
-    public int getRid() { return rid_; }
+    private int rid_;
+    public boolean hasRid() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public int getRid() {
+      return rid_;
+    }
     
     // required .com.taobao.zeus.socket.protocol.WebOperate operate = 2;
     public static final int OPERATE_FIELD_NUMBER = 2;
-    private boolean hasOperate;
     private com.taobao.zeus.socket.protocol.Protocol.WebOperate operate_;
-    public boolean hasOperate() { return hasOperate; }
-    public com.taobao.zeus.socket.protocol.Protocol.WebOperate getOperate() { return operate_; }
+    public boolean hasOperate() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public com.taobao.zeus.socket.protocol.Protocol.WebOperate getOperate() {
+      return operate_;
+    }
     
     // required .com.taobao.zeus.socket.protocol.ExecuteKind ek = 3;
     public static final int EK_FIELD_NUMBER = 3;
-    private boolean hasEk;
     private com.taobao.zeus.socket.protocol.Protocol.ExecuteKind ek_;
-    public boolean hasEk() { return hasEk; }
-    public com.taobao.zeus.socket.protocol.Protocol.ExecuteKind getEk() { return ek_; }
+    public boolean hasEk() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public com.taobao.zeus.socket.protocol.Protocol.ExecuteKind getEk() {
+      return ek_;
+    }
     
     // required string id = 4;
     public static final int ID_FIELD_NUMBER = 4;
-    private boolean hasId;
-    private java.lang.String id_ = "";
-    public boolean hasId() { return hasId; }
-    public java.lang.String getId() { return id_; }
+    private Object id_;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public String getId() {
+      Object ref = id_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          id_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getIdBytes() {
+      Object ref = id_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional string executor = 5;
     public static final int EXECUTOR_FIELD_NUMBER = 5;
-    private boolean hasExecutor;
-    private java.lang.String executor_ = "";
-    public boolean hasExecutor() { return hasExecutor; }
-    public java.lang.String getExecutor() { return executor_; }
+    private Object executor_;
+    public boolean hasExecutor() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public String getExecutor() {
+      Object ref = executor_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          executor_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getExecutorBytes() {
+      Object ref = executor_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        executor_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional bytes body = 6;
     public static final int BODY_FIELD_NUMBER = 6;
-    private boolean hasBody;
-    private com.google.protobuf.ByteString body_ = com.google.protobuf.ByteString.EMPTY;
-    public boolean hasBody() { return hasBody; }
-    public com.google.protobuf.ByteString getBody() { return body_; }
+    private com.google.protobuf.ByteString body_;
+    public boolean hasBody() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    public com.google.protobuf.ByteString getBody() {
+      return body_;
+    }
     
     private void initFields() {
+      rid_ = 0;
       operate_ = com.taobao.zeus.socket.protocol.Protocol.WebOperate.UpdateJob;
       ek_ = com.taobao.zeus.socket.protocol.Protocol.ExecuteKind.ScheduleKind;
+      id_ = "";
+      executor_ = "";
+      body_ = com.google.protobuf.ByteString.EMPTY;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasRid) return false;
-      if (!hasOperate) return false;
-      if (!hasEk) return false;
-      if (!hasId) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasRid()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasOperate()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasEk()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasRid()) {
-        output.writeSInt32(1, getRid());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeSInt32(1, rid_);
       }
-      if (hasOperate()) {
-        output.writeEnum(2, getOperate().getNumber());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeEnum(2, operate_.getNumber());
       }
-      if (hasEk()) {
-        output.writeEnum(3, getEk().getNumber());
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeEnum(3, ek_.getNumber());
       }
-      if (hasId()) {
-        output.writeString(4, getId());
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getIdBytes());
       }
-      if (hasExecutor()) {
-        output.writeString(5, getExecutor());
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(5, getExecutorBytes());
       }
-      if (hasBody()) {
-        output.writeBytes(6, getBody());
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBytes(6, body_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -874,33 +1082,38 @@ public final class Protocol {
       if (size != -1) return size;
     
       size = 0;
-      if (hasRid()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(1, getRid());
+          .computeSInt32Size(1, rid_);
       }
-      if (hasOperate()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(2, getOperate().getNumber());
+          .computeEnumSize(2, operate_.getNumber());
       }
-      if (hasEk()) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(3, getEk().getNumber());
+          .computeEnumSize(3, ek_.getNumber());
       }
-      if (hasId()) {
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(4, getId());
+          .computeBytesSize(4, getIdBytes());
       }
-      if (hasExecutor()) {
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(5, getExecutor());
+          .computeBytesSize(5, getExecutorBytes());
       }
-      if (hasBody()) {
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(6, getBody());
+          .computeBytesSize(6, body_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    @java.lang.Override
+    protected Object writeReplace() throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static com.taobao.zeus.socket.protocol.Protocol.WebRequest parseFrom(
@@ -977,34 +1190,61 @@ public final class Protocol {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.taobao.zeus.socket.protocol.Protocol.WebRequest result;
-      
-      // Construct using com.taobao.zeus.socket.protocol.Protocol.WebRequest.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.taobao.zeus.socket.protocol.Protocol.WebRequest();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.taobao.zeus.socket.protocol.Protocol.WebRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_WebRequest_descriptor;
       }
       
-      protected com.taobao.zeus.socket.protocol.Protocol.WebRequest internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_WebRequest_fieldAccessorTable;
+      }
+      
+      // Construct using com.taobao.zeus.socket.protocol.Protocol.WebRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.taobao.zeus.socket.protocol.Protocol.WebRequest();
+        super.clear();
+        rid_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        operate_ = com.taobao.zeus.socket.protocol.Protocol.WebOperate.UpdateJob;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        ek_ = com.taobao.zeus.socket.protocol.Protocol.ExecuteKind.ScheduleKind;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        id_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        executor_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
+        body_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -1016,33 +1256,55 @@ public final class Protocol {
         return com.taobao.zeus.socket.protocol.Protocol.WebRequest.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public com.taobao.zeus.socket.protocol.Protocol.WebRequest build() {
-        if (result != null && !isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.WebRequest result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private com.taobao.zeus.socket.protocol.Protocol.WebRequest buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.WebRequest result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public com.taobao.zeus.socket.protocol.Protocol.WebRequest buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        com.taobao.zeus.socket.protocol.Protocol.WebRequest result = new com.taobao.zeus.socket.protocol.Protocol.WebRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        com.taobao.zeus.socket.protocol.Protocol.WebRequest returnMe = result;
-        result = null;
-        return returnMe;
+        result.rid_ = rid_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.operate_ = operate_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.ek_ = ek_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.id_ = id_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.executor_ = executor_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.body_ = body_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -1078,6 +1340,26 @@ public final class Protocol {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasRid()) {
+          
+          return false;
+        }
+        if (!hasOperate()) {
+          
+          return false;
+        }
+        if (!hasEk()) {
+          
+          return false;
+        }
+        if (!hasId()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1090,17 +1372,20 @@ public final class Protocol {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 8: {
-              setRid(input.readSInt32());
+              bitField0_ |= 0x00000001;
+              rid_ = input.readSInt32();
               break;
             }
             case 16: {
@@ -1109,7 +1394,8 @@ public final class Protocol {
               if (value == null) {
                 unknownFields.mergeVarintField(2, rawValue);
               } else {
-                setOperate(value);
+                bitField0_ |= 0x00000002;
+                operate_ = value;
               }
               break;
             }
@@ -1119,147 +1405,194 @@ public final class Protocol {
               if (value == null) {
                 unknownFields.mergeVarintField(3, rawValue);
               } else {
-                setEk(value);
+                bitField0_ |= 0x00000004;
+                ek_ = value;
               }
               break;
             }
             case 34: {
-              setId(input.readString());
+              bitField0_ |= 0x00000008;
+              id_ = input.readBytes();
               break;
             }
             case 42: {
-              setExecutor(input.readString());
+              bitField0_ |= 0x00000010;
+              executor_ = input.readBytes();
               break;
             }
             case 50: {
-              setBody(input.readBytes());
+              bitField0_ |= 0x00000020;
+              body_ = input.readBytes();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required sint32 rid = 1;
+      private int rid_ ;
       public boolean hasRid() {
-        return result.hasRid();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public int getRid() {
-        return result.getRid();
+        return rid_;
       }
       public Builder setRid(int value) {
-        result.hasRid = true;
-        result.rid_ = value;
+        bitField0_ |= 0x00000001;
+        rid_ = value;
+        onChanged();
         return this;
       }
       public Builder clearRid() {
-        result.hasRid = false;
-        result.rid_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        rid_ = 0;
+        onChanged();
         return this;
       }
       
       // required .com.taobao.zeus.socket.protocol.WebOperate operate = 2;
+      private com.taobao.zeus.socket.protocol.Protocol.WebOperate operate_ = com.taobao.zeus.socket.protocol.Protocol.WebOperate.UpdateJob;
       public boolean hasOperate() {
-        return result.hasOperate();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public com.taobao.zeus.socket.protocol.Protocol.WebOperate getOperate() {
-        return result.getOperate();
+        return operate_;
       }
       public Builder setOperate(com.taobao.zeus.socket.protocol.Protocol.WebOperate value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        result.hasOperate = true;
-        result.operate_ = value;
+        bitField0_ |= 0x00000002;
+        operate_ = value;
+        onChanged();
         return this;
       }
       public Builder clearOperate() {
-        result.hasOperate = false;
-        result.operate_ = com.taobao.zeus.socket.protocol.Protocol.WebOperate.UpdateJob;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        operate_ = com.taobao.zeus.socket.protocol.Protocol.WebOperate.UpdateJob;
+        onChanged();
         return this;
       }
       
       // required .com.taobao.zeus.socket.protocol.ExecuteKind ek = 3;
+      private com.taobao.zeus.socket.protocol.Protocol.ExecuteKind ek_ = com.taobao.zeus.socket.protocol.Protocol.ExecuteKind.ScheduleKind;
       public boolean hasEk() {
-        return result.hasEk();
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public com.taobao.zeus.socket.protocol.Protocol.ExecuteKind getEk() {
-        return result.getEk();
+        return ek_;
       }
       public Builder setEk(com.taobao.zeus.socket.protocol.Protocol.ExecuteKind value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        result.hasEk = true;
-        result.ek_ = value;
+        bitField0_ |= 0x00000004;
+        ek_ = value;
+        onChanged();
         return this;
       }
       public Builder clearEk() {
-        result.hasEk = false;
-        result.ek_ = com.taobao.zeus.socket.protocol.Protocol.ExecuteKind.ScheduleKind;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        ek_ = com.taobao.zeus.socket.protocol.Protocol.ExecuteKind.ScheduleKind;
+        onChanged();
         return this;
       }
       
       // required string id = 4;
+      private Object id_ = "";
       public boolean hasId() {
-        return result.hasId();
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
-      public java.lang.String getId() {
-        return result.getId();
+      public String getId() {
+        Object ref = id_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setId(java.lang.String value) {
+      public Builder setId(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasId = true;
-        result.id_ = value;
+  bitField0_ |= 0x00000008;
+        id_ = value;
+        onChanged();
         return this;
       }
       public Builder clearId() {
-        result.hasId = false;
-        result.id_ = getDefaultInstance().getId();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        id_ = getDefaultInstance().getId();
+        onChanged();
         return this;
+      }
+      void setId(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000008;
+        id_ = value;
+        onChanged();
       }
       
       // optional string executor = 5;
+      private Object executor_ = "";
       public boolean hasExecutor() {
-        return result.hasExecutor();
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
-      public java.lang.String getExecutor() {
-        return result.getExecutor();
+      public String getExecutor() {
+        Object ref = executor_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          executor_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setExecutor(java.lang.String value) {
+      public Builder setExecutor(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasExecutor = true;
-        result.executor_ = value;
+  bitField0_ |= 0x00000010;
+        executor_ = value;
+        onChanged();
         return this;
       }
       public Builder clearExecutor() {
-        result.hasExecutor = false;
-        result.executor_ = getDefaultInstance().getExecutor();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        executor_ = getDefaultInstance().getExecutor();
+        onChanged();
         return this;
+      }
+      void setExecutor(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000010;
+        executor_ = value;
+        onChanged();
       }
       
       // optional bytes body = 6;
+      private com.google.protobuf.ByteString body_ = com.google.protobuf.ByteString.EMPTY;
       public boolean hasBody() {
-        return result.hasBody();
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       public com.google.protobuf.ByteString getBody() {
-        return result.getBody();
+        return body_;
       }
       public Builder setBody(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasBody = true;
-        result.body_ = value;
+  bitField0_ |= 0x00000020;
+        body_ = value;
+        onChanged();
         return this;
       }
       public Builder clearBody() {
-        result.hasBody = false;
-        result.body_ = getDefaultInstance().getBody();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        body_ = getDefaultInstance().getBody();
+        onChanged();
         return this;
       }
       
@@ -1268,18 +1601,41 @@ public final class Protocol {
     
     static {
       defaultInstance = new WebRequest(true);
-      com.taobao.zeus.socket.protocol.Protocol.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:com.taobao.zeus.socket.protocol.WebRequest)
   }
   
+  public interface WebResponseOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required .com.taobao.zeus.socket.protocol.Status status = 1;
+    boolean hasStatus();
+    com.taobao.zeus.socket.protocol.Protocol.Status getStatus();
+    
+    // required sint32 rid = 2;
+    boolean hasRid();
+    int getRid();
+    
+    // required .com.taobao.zeus.socket.protocol.WebOperate operate = 3;
+    boolean hasOperate();
+    com.taobao.zeus.socket.protocol.Protocol.WebOperate getOperate();
+    
+    // optional string errorText = 4;
+    boolean hasErrorText();
+    String getErrorText();
+    
+    // optional bytes body = 5;
+    boolean hasBody();
+    com.google.protobuf.ByteString getBody();
+  }
   public static final class WebResponse extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements WebResponseOrBuilder {
     // Use WebResponse.newBuilder() to construct.
-    private WebResponse() {
-      initFields();
+    private WebResponse(Builder builder) {
+      super(builder);
     }
     private WebResponse(boolean noInit) {}
     
@@ -1302,69 +1658,124 @@ public final class Protocol {
       return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_WebResponse_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required .com.taobao.zeus.socket.protocol.Status status = 1;
     public static final int STATUS_FIELD_NUMBER = 1;
-    private boolean hasStatus;
     private com.taobao.zeus.socket.protocol.Protocol.Status status_;
-    public boolean hasStatus() { return hasStatus; }
-    public com.taobao.zeus.socket.protocol.Protocol.Status getStatus() { return status_; }
+    public boolean hasStatus() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.taobao.zeus.socket.protocol.Protocol.Status getStatus() {
+      return status_;
+    }
     
     // required sint32 rid = 2;
     public static final int RID_FIELD_NUMBER = 2;
-    private boolean hasRid;
-    private int rid_ = 0;
-    public boolean hasRid() { return hasRid; }
-    public int getRid() { return rid_; }
+    private int rid_;
+    public boolean hasRid() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getRid() {
+      return rid_;
+    }
     
     // required .com.taobao.zeus.socket.protocol.WebOperate operate = 3;
     public static final int OPERATE_FIELD_NUMBER = 3;
-    private boolean hasOperate;
     private com.taobao.zeus.socket.protocol.Protocol.WebOperate operate_;
-    public boolean hasOperate() { return hasOperate; }
-    public com.taobao.zeus.socket.protocol.Protocol.WebOperate getOperate() { return operate_; }
+    public boolean hasOperate() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public com.taobao.zeus.socket.protocol.Protocol.WebOperate getOperate() {
+      return operate_;
+    }
     
     // optional string errorText = 4;
     public static final int ERRORTEXT_FIELD_NUMBER = 4;
-    private boolean hasErrorText;
-    private java.lang.String errorText_ = "";
-    public boolean hasErrorText() { return hasErrorText; }
-    public java.lang.String getErrorText() { return errorText_; }
+    private Object errorText_;
+    public boolean hasErrorText() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public String getErrorText() {
+      Object ref = errorText_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          errorText_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getErrorTextBytes() {
+      Object ref = errorText_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        errorText_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional bytes body = 5;
     public static final int BODY_FIELD_NUMBER = 5;
-    private boolean hasBody;
-    private com.google.protobuf.ByteString body_ = com.google.protobuf.ByteString.EMPTY;
-    public boolean hasBody() { return hasBody; }
-    public com.google.protobuf.ByteString getBody() { return body_; }
+    private com.google.protobuf.ByteString body_;
+    public boolean hasBody() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public com.google.protobuf.ByteString getBody() {
+      return body_;
+    }
     
     private void initFields() {
       status_ = com.taobao.zeus.socket.protocol.Protocol.Status.OK;
+      rid_ = 0;
       operate_ = com.taobao.zeus.socket.protocol.Protocol.WebOperate.UpdateJob;
+      errorText_ = "";
+      body_ = com.google.protobuf.ByteString.EMPTY;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasStatus) return false;
-      if (!hasRid) return false;
-      if (!hasOperate) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasStatus()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasRid()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasOperate()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasStatus()) {
-        output.writeEnum(1, getStatus().getNumber());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeEnum(1, status_.getNumber());
       }
-      if (hasRid()) {
-        output.writeSInt32(2, getRid());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeSInt32(2, rid_);
       }
-      if (hasOperate()) {
-        output.writeEnum(3, getOperate().getNumber());
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeEnum(3, operate_.getNumber());
       }
-      if (hasErrorText()) {
-        output.writeString(4, getErrorText());
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getErrorTextBytes());
       }
-      if (hasBody()) {
-        output.writeBytes(5, getBody());
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(5, body_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1375,29 +1786,34 @@ public final class Protocol {
       if (size != -1) return size;
     
       size = 0;
-      if (hasStatus()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, getStatus().getNumber());
+          .computeEnumSize(1, status_.getNumber());
       }
-      if (hasRid()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(2, getRid());
+          .computeSInt32Size(2, rid_);
       }
-      if (hasOperate()) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(3, getOperate().getNumber());
+          .computeEnumSize(3, operate_.getNumber());
       }
-      if (hasErrorText()) {
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(4, getErrorText());
+          .computeBytesSize(4, getErrorTextBytes());
       }
-      if (hasBody()) {
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getBody());
+          .computeBytesSize(5, body_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    @java.lang.Override
+    protected Object writeReplace() throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static com.taobao.zeus.socket.protocol.Protocol.WebResponse parseFrom(
@@ -1474,34 +1890,59 @@ public final class Protocol {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.taobao.zeus.socket.protocol.Protocol.WebResponse result;
-      
-      // Construct using com.taobao.zeus.socket.protocol.Protocol.WebResponse.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.taobao.zeus.socket.protocol.Protocol.WebResponse();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.taobao.zeus.socket.protocol.Protocol.WebResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_WebResponse_descriptor;
       }
       
-      protected com.taobao.zeus.socket.protocol.Protocol.WebResponse internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_WebResponse_fieldAccessorTable;
+      }
+      
+      // Construct using com.taobao.zeus.socket.protocol.Protocol.WebResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.taobao.zeus.socket.protocol.Protocol.WebResponse();
+        super.clear();
+        status_ = com.taobao.zeus.socket.protocol.Protocol.Status.OK;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        rid_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        operate_ = com.taobao.zeus.socket.protocol.Protocol.WebOperate.UpdateJob;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        errorText_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        body_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -1513,33 +1954,51 @@ public final class Protocol {
         return com.taobao.zeus.socket.protocol.Protocol.WebResponse.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public com.taobao.zeus.socket.protocol.Protocol.WebResponse build() {
-        if (result != null && !isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.WebResponse result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private com.taobao.zeus.socket.protocol.Protocol.WebResponse buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.WebResponse result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public com.taobao.zeus.socket.protocol.Protocol.WebResponse buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        com.taobao.zeus.socket.protocol.Protocol.WebResponse result = new com.taobao.zeus.socket.protocol.Protocol.WebResponse(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        com.taobao.zeus.socket.protocol.Protocol.WebResponse returnMe = result;
-        result = null;
-        return returnMe;
+        result.status_ = status_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.rid_ = rid_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.operate_ = operate_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.errorText_ = errorText_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.body_ = body_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -1572,6 +2031,22 @@ public final class Protocol {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasStatus()) {
+          
+          return false;
+        }
+        if (!hasRid()) {
+          
+          return false;
+        }
+        if (!hasOperate()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1584,11 +2059,13 @@ public final class Protocol {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
@@ -1599,12 +2076,14 @@ public final class Protocol {
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
               } else {
-                setStatus(value);
+                bitField0_ |= 0x00000001;
+                status_ = value;
               }
               break;
             }
             case 16: {
-              setRid(input.readSInt32());
+              bitField0_ |= 0x00000002;
+              rid_ = input.readSInt32();
               break;
             }
             case 24: {
@@ -1613,122 +2092,153 @@ public final class Protocol {
               if (value == null) {
                 unknownFields.mergeVarintField(3, rawValue);
               } else {
-                setOperate(value);
+                bitField0_ |= 0x00000004;
+                operate_ = value;
               }
               break;
             }
             case 34: {
-              setErrorText(input.readString());
+              bitField0_ |= 0x00000008;
+              errorText_ = input.readBytes();
               break;
             }
             case 42: {
-              setBody(input.readBytes());
+              bitField0_ |= 0x00000010;
+              body_ = input.readBytes();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required .com.taobao.zeus.socket.protocol.Status status = 1;
+      private com.taobao.zeus.socket.protocol.Protocol.Status status_ = com.taobao.zeus.socket.protocol.Protocol.Status.OK;
       public boolean hasStatus() {
-        return result.hasStatus();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public com.taobao.zeus.socket.protocol.Protocol.Status getStatus() {
-        return result.getStatus();
+        return status_;
       }
       public Builder setStatus(com.taobao.zeus.socket.protocol.Protocol.Status value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        result.hasStatus = true;
-        result.status_ = value;
+        bitField0_ |= 0x00000001;
+        status_ = value;
+        onChanged();
         return this;
       }
       public Builder clearStatus() {
-        result.hasStatus = false;
-        result.status_ = com.taobao.zeus.socket.protocol.Protocol.Status.OK;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        status_ = com.taobao.zeus.socket.protocol.Protocol.Status.OK;
+        onChanged();
         return this;
       }
       
       // required sint32 rid = 2;
+      private int rid_ ;
       public boolean hasRid() {
-        return result.hasRid();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public int getRid() {
-        return result.getRid();
+        return rid_;
       }
       public Builder setRid(int value) {
-        result.hasRid = true;
-        result.rid_ = value;
+        bitField0_ |= 0x00000002;
+        rid_ = value;
+        onChanged();
         return this;
       }
       public Builder clearRid() {
-        result.hasRid = false;
-        result.rid_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        rid_ = 0;
+        onChanged();
         return this;
       }
       
       // required .com.taobao.zeus.socket.protocol.WebOperate operate = 3;
+      private com.taobao.zeus.socket.protocol.Protocol.WebOperate operate_ = com.taobao.zeus.socket.protocol.Protocol.WebOperate.UpdateJob;
       public boolean hasOperate() {
-        return result.hasOperate();
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public com.taobao.zeus.socket.protocol.Protocol.WebOperate getOperate() {
-        return result.getOperate();
+        return operate_;
       }
       public Builder setOperate(com.taobao.zeus.socket.protocol.Protocol.WebOperate value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        result.hasOperate = true;
-        result.operate_ = value;
+        bitField0_ |= 0x00000004;
+        operate_ = value;
+        onChanged();
         return this;
       }
       public Builder clearOperate() {
-        result.hasOperate = false;
-        result.operate_ = com.taobao.zeus.socket.protocol.Protocol.WebOperate.UpdateJob;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        operate_ = com.taobao.zeus.socket.protocol.Protocol.WebOperate.UpdateJob;
+        onChanged();
         return this;
       }
       
       // optional string errorText = 4;
+      private Object errorText_ = "";
       public boolean hasErrorText() {
-        return result.hasErrorText();
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
-      public java.lang.String getErrorText() {
-        return result.getErrorText();
+      public String getErrorText() {
+        Object ref = errorText_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          errorText_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setErrorText(java.lang.String value) {
+      public Builder setErrorText(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasErrorText = true;
-        result.errorText_ = value;
+  bitField0_ |= 0x00000008;
+        errorText_ = value;
+        onChanged();
         return this;
       }
       public Builder clearErrorText() {
-        result.hasErrorText = false;
-        result.errorText_ = getDefaultInstance().getErrorText();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        errorText_ = getDefaultInstance().getErrorText();
+        onChanged();
         return this;
+      }
+      void setErrorText(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000008;
+        errorText_ = value;
+        onChanged();
       }
       
       // optional bytes body = 5;
+      private com.google.protobuf.ByteString body_ = com.google.protobuf.ByteString.EMPTY;
       public boolean hasBody() {
-        return result.hasBody();
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       public com.google.protobuf.ByteString getBody() {
-        return result.getBody();
+        return body_;
       }
       public Builder setBody(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasBody = true;
-        result.body_ = value;
+  bitField0_ |= 0x00000010;
+        body_ = value;
+        onChanged();
         return this;
       }
       public Builder clearBody() {
-        result.hasBody = false;
-        result.body_ = getDefaultInstance().getBody();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        body_ = getDefaultInstance().getBody();
+        onChanged();
         return this;
       }
       
@@ -1737,18 +2247,33 @@ public final class Protocol {
     
     static {
       defaultInstance = new WebResponse(true);
-      com.taobao.zeus.socket.protocol.Protocol.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:com.taobao.zeus.socket.protocol.WebResponse)
   }
   
+  public interface RequestOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required sint32 rid = 1;
+    boolean hasRid();
+    int getRid();
+    
+    // required .com.taobao.zeus.socket.protocol.Operate operate = 2;
+    boolean hasOperate();
+    com.taobao.zeus.socket.protocol.Protocol.Operate getOperate();
+    
+    // optional bytes body = 3;
+    boolean hasBody();
+    com.google.protobuf.ByteString getBody();
+  }
   public static final class Request extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements RequestOrBuilder {
     // Use Request.newBuilder() to construct.
-    private Request() {
-      initFields();
+    private Request(Builder builder) {
+      super(builder);
     }
     private Request(boolean noInit) {}
     
@@ -1771,47 +2296,70 @@ public final class Protocol {
       return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_Request_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required sint32 rid = 1;
     public static final int RID_FIELD_NUMBER = 1;
-    private boolean hasRid;
-    private int rid_ = 0;
-    public boolean hasRid() { return hasRid; }
-    public int getRid() { return rid_; }
+    private int rid_;
+    public boolean hasRid() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public int getRid() {
+      return rid_;
+    }
     
     // required .com.taobao.zeus.socket.protocol.Operate operate = 2;
     public static final int OPERATE_FIELD_NUMBER = 2;
-    private boolean hasOperate;
     private com.taobao.zeus.socket.protocol.Protocol.Operate operate_;
-    public boolean hasOperate() { return hasOperate; }
-    public com.taobao.zeus.socket.protocol.Protocol.Operate getOperate() { return operate_; }
+    public boolean hasOperate() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public com.taobao.zeus.socket.protocol.Protocol.Operate getOperate() {
+      return operate_;
+    }
     
     // optional bytes body = 3;
     public static final int BODY_FIELD_NUMBER = 3;
-    private boolean hasBody;
-    private com.google.protobuf.ByteString body_ = com.google.protobuf.ByteString.EMPTY;
-    public boolean hasBody() { return hasBody; }
-    public com.google.protobuf.ByteString getBody() { return body_; }
+    private com.google.protobuf.ByteString body_;
+    public boolean hasBody() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public com.google.protobuf.ByteString getBody() {
+      return body_;
+    }
     
     private void initFields() {
+      rid_ = 0;
       operate_ = com.taobao.zeus.socket.protocol.Protocol.Operate.HeartBeat;
+      body_ = com.google.protobuf.ByteString.EMPTY;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasRid) return false;
-      if (!hasOperate) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasRid()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasOperate()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasRid()) {
-        output.writeSInt32(1, getRid());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeSInt32(1, rid_);
       }
-      if (hasOperate()) {
-        output.writeEnum(2, getOperate().getNumber());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeEnum(2, operate_.getNumber());
       }
-      if (hasBody()) {
-        output.writeBytes(3, getBody());
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, body_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1822,21 +2370,26 @@ public final class Protocol {
       if (size != -1) return size;
     
       size = 0;
-      if (hasRid()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(1, getRid());
+          .computeSInt32Size(1, rid_);
       }
-      if (hasOperate()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(2, getOperate().getNumber());
+          .computeEnumSize(2, operate_.getNumber());
       }
-      if (hasBody()) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, getBody());
+          .computeBytesSize(3, body_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    @java.lang.Override
+    protected Object writeReplace() throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static com.taobao.zeus.socket.protocol.Protocol.Request parseFrom(
@@ -1913,34 +2466,55 @@ public final class Protocol {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.taobao.zeus.socket.protocol.Protocol.Request result;
-      
-      // Construct using com.taobao.zeus.socket.protocol.Protocol.Request.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.taobao.zeus.socket.protocol.Protocol.Request();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.taobao.zeus.socket.protocol.Protocol.RequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_Request_descriptor;
       }
       
-      protected com.taobao.zeus.socket.protocol.Protocol.Request internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_Request_fieldAccessorTable;
+      }
+      
+      // Construct using com.taobao.zeus.socket.protocol.Protocol.Request.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.taobao.zeus.socket.protocol.Protocol.Request();
+        super.clear();
+        rid_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        operate_ = com.taobao.zeus.socket.protocol.Protocol.Operate.HeartBeat;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        body_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -1952,33 +2526,43 @@ public final class Protocol {
         return com.taobao.zeus.socket.protocol.Protocol.Request.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public com.taobao.zeus.socket.protocol.Protocol.Request build() {
-        if (result != null && !isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.Request result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private com.taobao.zeus.socket.protocol.Protocol.Request buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.Request result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public com.taobao.zeus.socket.protocol.Protocol.Request buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        com.taobao.zeus.socket.protocol.Protocol.Request result = new com.taobao.zeus.socket.protocol.Protocol.Request(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        com.taobao.zeus.socket.protocol.Protocol.Request returnMe = result;
-        result = null;
-        return returnMe;
+        result.rid_ = rid_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.operate_ = operate_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.body_ = body_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -2005,6 +2589,18 @@ public final class Protocol {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasRid()) {
+          
+          return false;
+        }
+        if (!hasOperate()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -2017,17 +2613,20 @@ public final class Protocol {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 8: {
-              setRid(input.readSInt32());
+              bitField0_ |= 0x00000001;
+              rid_ = input.readSInt32();
               break;
             }
             case 16: {
@@ -2036,76 +2635,88 @@ public final class Protocol {
               if (value == null) {
                 unknownFields.mergeVarintField(2, rawValue);
               } else {
-                setOperate(value);
+                bitField0_ |= 0x00000002;
+                operate_ = value;
               }
               break;
             }
             case 26: {
-              setBody(input.readBytes());
+              bitField0_ |= 0x00000004;
+              body_ = input.readBytes();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required sint32 rid = 1;
+      private int rid_ ;
       public boolean hasRid() {
-        return result.hasRid();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public int getRid() {
-        return result.getRid();
+        return rid_;
       }
       public Builder setRid(int value) {
-        result.hasRid = true;
-        result.rid_ = value;
+        bitField0_ |= 0x00000001;
+        rid_ = value;
+        onChanged();
         return this;
       }
       public Builder clearRid() {
-        result.hasRid = false;
-        result.rid_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        rid_ = 0;
+        onChanged();
         return this;
       }
       
       // required .com.taobao.zeus.socket.protocol.Operate operate = 2;
+      private com.taobao.zeus.socket.protocol.Protocol.Operate operate_ = com.taobao.zeus.socket.protocol.Protocol.Operate.HeartBeat;
       public boolean hasOperate() {
-        return result.hasOperate();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public com.taobao.zeus.socket.protocol.Protocol.Operate getOperate() {
-        return result.getOperate();
+        return operate_;
       }
       public Builder setOperate(com.taobao.zeus.socket.protocol.Protocol.Operate value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        result.hasOperate = true;
-        result.operate_ = value;
+        bitField0_ |= 0x00000002;
+        operate_ = value;
+        onChanged();
         return this;
       }
       public Builder clearOperate() {
-        result.hasOperate = false;
-        result.operate_ = com.taobao.zeus.socket.protocol.Protocol.Operate.HeartBeat;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        operate_ = com.taobao.zeus.socket.protocol.Protocol.Operate.HeartBeat;
+        onChanged();
         return this;
       }
       
       // optional bytes body = 3;
+      private com.google.protobuf.ByteString body_ = com.google.protobuf.ByteString.EMPTY;
       public boolean hasBody() {
-        return result.hasBody();
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public com.google.protobuf.ByteString getBody() {
-        return result.getBody();
+        return body_;
       }
       public Builder setBody(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasBody = true;
-        result.body_ = value;
+  bitField0_ |= 0x00000004;
+        body_ = value;
+        onChanged();
         return this;
       }
       public Builder clearBody() {
-        result.hasBody = false;
-        result.body_ = getDefaultInstance().getBody();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        body_ = getDefaultInstance().getBody();
+        onChanged();
         return this;
       }
       
@@ -2114,18 +2725,41 @@ public final class Protocol {
     
     static {
       defaultInstance = new Request(true);
-      com.taobao.zeus.socket.protocol.Protocol.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:com.taobao.zeus.socket.protocol.Request)
   }
   
+  public interface ResponseOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required .com.taobao.zeus.socket.protocol.Status status = 1;
+    boolean hasStatus();
+    com.taobao.zeus.socket.protocol.Protocol.Status getStatus();
+    
+    // required sint32 rid = 2;
+    boolean hasRid();
+    int getRid();
+    
+    // required .com.taobao.zeus.socket.protocol.Operate operate = 3;
+    boolean hasOperate();
+    com.taobao.zeus.socket.protocol.Protocol.Operate getOperate();
+    
+    // optional string errorText = 4;
+    boolean hasErrorText();
+    String getErrorText();
+    
+    // optional bytes body = 5;
+    boolean hasBody();
+    com.google.protobuf.ByteString getBody();
+  }
   public static final class Response extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements ResponseOrBuilder {
     // Use Response.newBuilder() to construct.
-    private Response() {
-      initFields();
+    private Response(Builder builder) {
+      super(builder);
     }
     private Response(boolean noInit) {}
     
@@ -2148,69 +2782,124 @@ public final class Protocol {
       return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_Response_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required .com.taobao.zeus.socket.protocol.Status status = 1;
     public static final int STATUS_FIELD_NUMBER = 1;
-    private boolean hasStatus;
     private com.taobao.zeus.socket.protocol.Protocol.Status status_;
-    public boolean hasStatus() { return hasStatus; }
-    public com.taobao.zeus.socket.protocol.Protocol.Status getStatus() { return status_; }
+    public boolean hasStatus() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.taobao.zeus.socket.protocol.Protocol.Status getStatus() {
+      return status_;
+    }
     
     // required sint32 rid = 2;
     public static final int RID_FIELD_NUMBER = 2;
-    private boolean hasRid;
-    private int rid_ = 0;
-    public boolean hasRid() { return hasRid; }
-    public int getRid() { return rid_; }
+    private int rid_;
+    public boolean hasRid() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getRid() {
+      return rid_;
+    }
     
     // required .com.taobao.zeus.socket.protocol.Operate operate = 3;
     public static final int OPERATE_FIELD_NUMBER = 3;
-    private boolean hasOperate;
     private com.taobao.zeus.socket.protocol.Protocol.Operate operate_;
-    public boolean hasOperate() { return hasOperate; }
-    public com.taobao.zeus.socket.protocol.Protocol.Operate getOperate() { return operate_; }
+    public boolean hasOperate() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public com.taobao.zeus.socket.protocol.Protocol.Operate getOperate() {
+      return operate_;
+    }
     
     // optional string errorText = 4;
     public static final int ERRORTEXT_FIELD_NUMBER = 4;
-    private boolean hasErrorText;
-    private java.lang.String errorText_ = "";
-    public boolean hasErrorText() { return hasErrorText; }
-    public java.lang.String getErrorText() { return errorText_; }
+    private Object errorText_;
+    public boolean hasErrorText() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public String getErrorText() {
+      Object ref = errorText_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          errorText_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getErrorTextBytes() {
+      Object ref = errorText_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        errorText_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional bytes body = 5;
     public static final int BODY_FIELD_NUMBER = 5;
-    private boolean hasBody;
-    private com.google.protobuf.ByteString body_ = com.google.protobuf.ByteString.EMPTY;
-    public boolean hasBody() { return hasBody; }
-    public com.google.protobuf.ByteString getBody() { return body_; }
+    private com.google.protobuf.ByteString body_;
+    public boolean hasBody() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public com.google.protobuf.ByteString getBody() {
+      return body_;
+    }
     
     private void initFields() {
       status_ = com.taobao.zeus.socket.protocol.Protocol.Status.OK;
+      rid_ = 0;
       operate_ = com.taobao.zeus.socket.protocol.Protocol.Operate.HeartBeat;
+      errorText_ = "";
+      body_ = com.google.protobuf.ByteString.EMPTY;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasStatus) return false;
-      if (!hasRid) return false;
-      if (!hasOperate) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasStatus()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasRid()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasOperate()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasStatus()) {
-        output.writeEnum(1, getStatus().getNumber());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeEnum(1, status_.getNumber());
       }
-      if (hasRid()) {
-        output.writeSInt32(2, getRid());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeSInt32(2, rid_);
       }
-      if (hasOperate()) {
-        output.writeEnum(3, getOperate().getNumber());
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeEnum(3, operate_.getNumber());
       }
-      if (hasErrorText()) {
-        output.writeString(4, getErrorText());
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getErrorTextBytes());
       }
-      if (hasBody()) {
-        output.writeBytes(5, getBody());
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(5, body_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -2221,29 +2910,34 @@ public final class Protocol {
       if (size != -1) return size;
     
       size = 0;
-      if (hasStatus()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, getStatus().getNumber());
+          .computeEnumSize(1, status_.getNumber());
       }
-      if (hasRid()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(2, getRid());
+          .computeSInt32Size(2, rid_);
       }
-      if (hasOperate()) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(3, getOperate().getNumber());
+          .computeEnumSize(3, operate_.getNumber());
       }
-      if (hasErrorText()) {
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(4, getErrorText());
+          .computeBytesSize(4, getErrorTextBytes());
       }
-      if (hasBody()) {
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getBody());
+          .computeBytesSize(5, body_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    @java.lang.Override
+    protected Object writeReplace() throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static com.taobao.zeus.socket.protocol.Protocol.Response parseFrom(
@@ -2320,34 +3014,59 @@ public final class Protocol {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.taobao.zeus.socket.protocol.Protocol.Response result;
-      
-      // Construct using com.taobao.zeus.socket.protocol.Protocol.Response.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.taobao.zeus.socket.protocol.Protocol.Response();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.taobao.zeus.socket.protocol.Protocol.ResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_Response_descriptor;
       }
       
-      protected com.taobao.zeus.socket.protocol.Protocol.Response internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_Response_fieldAccessorTable;
+      }
+      
+      // Construct using com.taobao.zeus.socket.protocol.Protocol.Response.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.taobao.zeus.socket.protocol.Protocol.Response();
+        super.clear();
+        status_ = com.taobao.zeus.socket.protocol.Protocol.Status.OK;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        rid_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        operate_ = com.taobao.zeus.socket.protocol.Protocol.Operate.HeartBeat;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        errorText_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        body_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -2359,33 +3078,51 @@ public final class Protocol {
         return com.taobao.zeus.socket.protocol.Protocol.Response.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public com.taobao.zeus.socket.protocol.Protocol.Response build() {
-        if (result != null && !isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.Response result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private com.taobao.zeus.socket.protocol.Protocol.Response buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.Response result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public com.taobao.zeus.socket.protocol.Protocol.Response buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        com.taobao.zeus.socket.protocol.Protocol.Response result = new com.taobao.zeus.socket.protocol.Protocol.Response(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        com.taobao.zeus.socket.protocol.Protocol.Response returnMe = result;
-        result = null;
-        return returnMe;
+        result.status_ = status_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.rid_ = rid_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.operate_ = operate_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.errorText_ = errorText_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.body_ = body_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -2418,6 +3155,22 @@ public final class Protocol {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasStatus()) {
+          
+          return false;
+        }
+        if (!hasRid()) {
+          
+          return false;
+        }
+        if (!hasOperate()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -2430,11 +3183,13 @@ public final class Protocol {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
@@ -2445,12 +3200,14 @@ public final class Protocol {
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
               } else {
-                setStatus(value);
+                bitField0_ |= 0x00000001;
+                status_ = value;
               }
               break;
             }
             case 16: {
-              setRid(input.readSInt32());
+              bitField0_ |= 0x00000002;
+              rid_ = input.readSInt32();
               break;
             }
             case 24: {
@@ -2459,122 +3216,153 @@ public final class Protocol {
               if (value == null) {
                 unknownFields.mergeVarintField(3, rawValue);
               } else {
-                setOperate(value);
+                bitField0_ |= 0x00000004;
+                operate_ = value;
               }
               break;
             }
             case 34: {
-              setErrorText(input.readString());
+              bitField0_ |= 0x00000008;
+              errorText_ = input.readBytes();
               break;
             }
             case 42: {
-              setBody(input.readBytes());
+              bitField0_ |= 0x00000010;
+              body_ = input.readBytes();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required .com.taobao.zeus.socket.protocol.Status status = 1;
+      private com.taobao.zeus.socket.protocol.Protocol.Status status_ = com.taobao.zeus.socket.protocol.Protocol.Status.OK;
       public boolean hasStatus() {
-        return result.hasStatus();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public com.taobao.zeus.socket.protocol.Protocol.Status getStatus() {
-        return result.getStatus();
+        return status_;
       }
       public Builder setStatus(com.taobao.zeus.socket.protocol.Protocol.Status value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        result.hasStatus = true;
-        result.status_ = value;
+        bitField0_ |= 0x00000001;
+        status_ = value;
+        onChanged();
         return this;
       }
       public Builder clearStatus() {
-        result.hasStatus = false;
-        result.status_ = com.taobao.zeus.socket.protocol.Protocol.Status.OK;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        status_ = com.taobao.zeus.socket.protocol.Protocol.Status.OK;
+        onChanged();
         return this;
       }
       
       // required sint32 rid = 2;
+      private int rid_ ;
       public boolean hasRid() {
-        return result.hasRid();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public int getRid() {
-        return result.getRid();
+        return rid_;
       }
       public Builder setRid(int value) {
-        result.hasRid = true;
-        result.rid_ = value;
+        bitField0_ |= 0x00000002;
+        rid_ = value;
+        onChanged();
         return this;
       }
       public Builder clearRid() {
-        result.hasRid = false;
-        result.rid_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        rid_ = 0;
+        onChanged();
         return this;
       }
       
       // required .com.taobao.zeus.socket.protocol.Operate operate = 3;
+      private com.taobao.zeus.socket.protocol.Protocol.Operate operate_ = com.taobao.zeus.socket.protocol.Protocol.Operate.HeartBeat;
       public boolean hasOperate() {
-        return result.hasOperate();
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public com.taobao.zeus.socket.protocol.Protocol.Operate getOperate() {
-        return result.getOperate();
+        return operate_;
       }
       public Builder setOperate(com.taobao.zeus.socket.protocol.Protocol.Operate value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        result.hasOperate = true;
-        result.operate_ = value;
+        bitField0_ |= 0x00000004;
+        operate_ = value;
+        onChanged();
         return this;
       }
       public Builder clearOperate() {
-        result.hasOperate = false;
-        result.operate_ = com.taobao.zeus.socket.protocol.Protocol.Operate.HeartBeat;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        operate_ = com.taobao.zeus.socket.protocol.Protocol.Operate.HeartBeat;
+        onChanged();
         return this;
       }
       
       // optional string errorText = 4;
+      private Object errorText_ = "";
       public boolean hasErrorText() {
-        return result.hasErrorText();
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
-      public java.lang.String getErrorText() {
-        return result.getErrorText();
+      public String getErrorText() {
+        Object ref = errorText_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          errorText_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setErrorText(java.lang.String value) {
+      public Builder setErrorText(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasErrorText = true;
-        result.errorText_ = value;
+  bitField0_ |= 0x00000008;
+        errorText_ = value;
+        onChanged();
         return this;
       }
       public Builder clearErrorText() {
-        result.hasErrorText = false;
-        result.errorText_ = getDefaultInstance().getErrorText();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        errorText_ = getDefaultInstance().getErrorText();
+        onChanged();
         return this;
+      }
+      void setErrorText(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000008;
+        errorText_ = value;
+        onChanged();
       }
       
       // optional bytes body = 5;
+      private com.google.protobuf.ByteString body_ = com.google.protobuf.ByteString.EMPTY;
       public boolean hasBody() {
-        return result.hasBody();
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       public com.google.protobuf.ByteString getBody() {
-        return result.getBody();
+        return body_;
       }
       public Builder setBody(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasBody = true;
-        result.body_ = value;
+  bitField0_ |= 0x00000010;
+        body_ = value;
+        onChanged();
         return this;
       }
       public Builder clearBody() {
-        result.hasBody = false;
-        result.body_ = getDefaultInstance().getBody();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        body_ = getDefaultInstance().getBody();
+        onChanged();
         return this;
       }
       
@@ -2583,18 +3371,48 @@ public final class Protocol {
     
     static {
       defaultInstance = new Response(true);
-      com.taobao.zeus.socket.protocol.Protocol.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:com.taobao.zeus.socket.protocol.Response)
   }
   
+  public interface HeartBeatMessageOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // repeated string runnings = 1;
+    java.util.List<String> getRunningsList();
+    int getRunningsCount();
+    String getRunnings(int index);
+    
+    // repeated string debugRunnings = 2;
+    java.util.List<String> getDebugRunningsList();
+    int getDebugRunningsCount();
+    String getDebugRunnings(int index);
+    
+    // repeated string manualRunnings = 3;
+    java.util.List<String> getManualRunningsList();
+    int getManualRunningsCount();
+    String getManualRunnings(int index);
+    
+    // optional int64 timestamp = 4;
+    boolean hasTimestamp();
+    long getTimestamp();
+    
+    // optional float mem_rate = 5;
+    boolean hasMemRate();
+    float getMemRate();
+    
+    // optional string host = 6;
+    boolean hasHost();
+    String getHost();
+  }
   public static final class HeartBeatMessage extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements HeartBeatMessageOrBuilder {
     // Use HeartBeatMessage.newBuilder() to construct.
-    private HeartBeatMessage() {
-      initFields();
+    private HeartBeatMessage(Builder builder) {
+      super(builder);
     }
     private HeartBeatMessage(boolean noInit) {}
     
@@ -2617,89 +3435,138 @@ public final class Protocol {
       return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_HeartBeatMessage_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // repeated string runnings = 1;
     public static final int RUNNINGS_FIELD_NUMBER = 1;
-    private java.util.List<java.lang.String> runnings_ =
-      java.util.Collections.emptyList();
-    public java.util.List<java.lang.String> getRunningsList() {
+    private com.google.protobuf.LazyStringList runnings_;
+    public java.util.List<String>
+        getRunningsList() {
       return runnings_;
     }
-    public int getRunningsCount() { return runnings_.size(); }
-    public java.lang.String getRunnings(int index) {
+    public int getRunningsCount() {
+      return runnings_.size();
+    }
+    public String getRunnings(int index) {
       return runnings_.get(index);
     }
     
     // repeated string debugRunnings = 2;
     public static final int DEBUGRUNNINGS_FIELD_NUMBER = 2;
-    private java.util.List<java.lang.String> debugRunnings_ =
-      java.util.Collections.emptyList();
-    public java.util.List<java.lang.String> getDebugRunningsList() {
+    private com.google.protobuf.LazyStringList debugRunnings_;
+    public java.util.List<String>
+        getDebugRunningsList() {
       return debugRunnings_;
     }
-    public int getDebugRunningsCount() { return debugRunnings_.size(); }
-    public java.lang.String getDebugRunnings(int index) {
+    public int getDebugRunningsCount() {
+      return debugRunnings_.size();
+    }
+    public String getDebugRunnings(int index) {
       return debugRunnings_.get(index);
     }
     
     // repeated string manualRunnings = 3;
     public static final int MANUALRUNNINGS_FIELD_NUMBER = 3;
-    private java.util.List<java.lang.String> manualRunnings_ =
-      java.util.Collections.emptyList();
-    public java.util.List<java.lang.String> getManualRunningsList() {
+    private com.google.protobuf.LazyStringList manualRunnings_;
+    public java.util.List<String>
+        getManualRunningsList() {
       return manualRunnings_;
     }
-    public int getManualRunningsCount() { return manualRunnings_.size(); }
-    public java.lang.String getManualRunnings(int index) {
+    public int getManualRunningsCount() {
+      return manualRunnings_.size();
+    }
+    public String getManualRunnings(int index) {
       return manualRunnings_.get(index);
     }
     
     // optional int64 timestamp = 4;
     public static final int TIMESTAMP_FIELD_NUMBER = 4;
-    private boolean hasTimestamp;
-    private long timestamp_ = 0L;
-    public boolean hasTimestamp() { return hasTimestamp; }
-    public long getTimestamp() { return timestamp_; }
+    private long timestamp_;
+    public boolean hasTimestamp() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public long getTimestamp() {
+      return timestamp_;
+    }
     
     // optional float mem_rate = 5;
     public static final int MEM_RATE_FIELD_NUMBER = 5;
-    private boolean hasMemRate;
-    private float memRate_ = 0F;
-    public boolean hasMemRate() { return hasMemRate; }
-    public float getMemRate() { return memRate_; }
+    private float memRate_;
+    public boolean hasMemRate() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public float getMemRate() {
+      return memRate_;
+    }
     
     // optional string host = 6;
     public static final int HOST_FIELD_NUMBER = 6;
-    private boolean hasHost;
-    private java.lang.String host_ = "";
-    public boolean hasHost() { return hasHost; }
-    public java.lang.String getHost() { return host_; }
+    private Object host_;
+    public boolean hasHost() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public String getHost() {
+      Object ref = host_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          host_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getHostBytes() {
+      Object ref = host_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        host_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     private void initFields() {
+      runnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      debugRunnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      manualRunnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      timestamp_ = 0L;
+      memRate_ = 0F;
+      host_ = "";
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      for (java.lang.String element : getRunningsList()) {
-        output.writeString(1, element);
+      for (int i = 0; i < runnings_.size(); i++) {
+        output.writeBytes(1, runnings_.getByteString(i));
       }
-      for (java.lang.String element : getDebugRunningsList()) {
-        output.writeString(2, element);
+      for (int i = 0; i < debugRunnings_.size(); i++) {
+        output.writeBytes(2, debugRunnings_.getByteString(i));
       }
-      for (java.lang.String element : getManualRunningsList()) {
-        output.writeString(3, element);
+      for (int i = 0; i < manualRunnings_.size(); i++) {
+        output.writeBytes(3, manualRunnings_.getByteString(i));
       }
-      if (hasTimestamp()) {
-        output.writeInt64(4, getTimestamp());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt64(4, timestamp_);
       }
-      if (hasMemRate()) {
-        output.writeFloat(5, getMemRate());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeFloat(5, memRate_);
       }
-      if (hasHost()) {
-        output.writeString(6, getHost());
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(6, getHostBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -2712,46 +3579,51 @@ public final class Protocol {
       size = 0;
       {
         int dataSize = 0;
-        for (java.lang.String element : getRunningsList()) {
+        for (int i = 0; i < runnings_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeStringSizeNoTag(element);
+            .computeBytesSizeNoTag(runnings_.getByteString(i));
         }
         size += dataSize;
         size += 1 * getRunningsList().size();
       }
       {
         int dataSize = 0;
-        for (java.lang.String element : getDebugRunningsList()) {
+        for (int i = 0; i < debugRunnings_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeStringSizeNoTag(element);
+            .computeBytesSizeNoTag(debugRunnings_.getByteString(i));
         }
         size += dataSize;
         size += 1 * getDebugRunningsList().size();
       }
       {
         int dataSize = 0;
-        for (java.lang.String element : getManualRunningsList()) {
+        for (int i = 0; i < manualRunnings_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeStringSizeNoTag(element);
+            .computeBytesSizeNoTag(manualRunnings_.getByteString(i));
         }
         size += dataSize;
         size += 1 * getManualRunningsList().size();
       }
-      if (hasTimestamp()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, getTimestamp());
+          .computeInt64Size(4, timestamp_);
       }
-      if (hasMemRate()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(5, getMemRate());
+          .computeFloatSize(5, memRate_);
       }
-      if (hasHost()) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(6, getHost());
+          .computeBytesSize(6, getHostBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    @java.lang.Override
+    protected Object writeReplace() throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage parseFrom(
@@ -2828,34 +3700,61 @@ public final class Protocol {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage result;
-      
-      // Construct using com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessageOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_HeartBeatMessage_descriptor;
       }
       
-      protected com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_HeartBeatMessage_fieldAccessorTable;
+      }
+      
+      // Construct using com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage();
+        super.clear();
+        runnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        debugRunnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        manualRunnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        timestamp_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        memRate_ = 0F;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        host_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -2867,45 +3766,61 @@ public final class Protocol {
         return com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage build() {
-        if (result != null && !isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage result = new com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          runnings_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              runnings_);
+          bitField0_ = (bitField0_ & ~0x00000001);
         }
-        if (result.runnings_ != java.util.Collections.EMPTY_LIST) {
-          result.runnings_ =
-            java.util.Collections.unmodifiableList(result.runnings_);
+        result.runnings_ = runnings_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          debugRunnings_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              debugRunnings_);
+          bitField0_ = (bitField0_ & ~0x00000002);
         }
-        if (result.debugRunnings_ != java.util.Collections.EMPTY_LIST) {
-          result.debugRunnings_ =
-            java.util.Collections.unmodifiableList(result.debugRunnings_);
+        result.debugRunnings_ = debugRunnings_;
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          manualRunnings_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              manualRunnings_);
+          bitField0_ = (bitField0_ & ~0x00000004);
         }
-        if (result.manualRunnings_ != java.util.Collections.EMPTY_LIST) {
-          result.manualRunnings_ =
-            java.util.Collections.unmodifiableList(result.manualRunnings_);
+        result.manualRunnings_ = manualRunnings_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000001;
         }
-        com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage returnMe = result;
-        result = null;
-        return returnMe;
+        result.timestamp_ = timestamp_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.memRate_ = memRate_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.host_ = host_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -2920,22 +3835,34 @@ public final class Protocol {
       public Builder mergeFrom(com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage other) {
         if (other == com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage.getDefaultInstance()) return this;
         if (!other.runnings_.isEmpty()) {
-          if (result.runnings_.isEmpty()) {
-            result.runnings_ = new java.util.ArrayList<java.lang.String>();
+          if (runnings_.isEmpty()) {
+            runnings_ = other.runnings_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureRunningsIsMutable();
+            runnings_.addAll(other.runnings_);
           }
-          result.runnings_.addAll(other.runnings_);
+          onChanged();
         }
         if (!other.debugRunnings_.isEmpty()) {
-          if (result.debugRunnings_.isEmpty()) {
-            result.debugRunnings_ = new java.util.ArrayList<java.lang.String>();
+          if (debugRunnings_.isEmpty()) {
+            debugRunnings_ = other.debugRunnings_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureDebugRunningsIsMutable();
+            debugRunnings_.addAll(other.debugRunnings_);
           }
-          result.debugRunnings_.addAll(other.debugRunnings_);
+          onChanged();
         }
         if (!other.manualRunnings_.isEmpty()) {
-          if (result.manualRunnings_.isEmpty()) {
-            result.manualRunnings_ = new java.util.ArrayList<java.lang.String>();
+          if (manualRunnings_.isEmpty()) {
+            manualRunnings_ = other.manualRunnings_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureManualRunningsIsMutable();
+            manualRunnings_.addAll(other.manualRunnings_);
           }
-          result.manualRunnings_.addAll(other.manualRunnings_);
+          onChanged();
         }
         if (other.hasTimestamp()) {
           setTimestamp(other.getTimestamp());
@@ -2950,6 +3877,10 @@ public final class Protocol {
         return this;
       }
       
+      public final boolean isInitialized() {
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -2962,219 +3893,297 @@ public final class Protocol {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              addRunnings(input.readString());
+              ensureRunningsIsMutable();
+              runnings_.add(input.readBytes());
               break;
             }
             case 18: {
-              addDebugRunnings(input.readString());
+              ensureDebugRunningsIsMutable();
+              debugRunnings_.add(input.readBytes());
               break;
             }
             case 26: {
-              addManualRunnings(input.readString());
+              ensureManualRunningsIsMutable();
+              manualRunnings_.add(input.readBytes());
               break;
             }
             case 32: {
-              setTimestamp(input.readInt64());
+              bitField0_ |= 0x00000008;
+              timestamp_ = input.readInt64();
               break;
             }
             case 45: {
-              setMemRate(input.readFloat());
+              bitField0_ |= 0x00000010;
+              memRate_ = input.readFloat();
               break;
             }
             case 50: {
-              setHost(input.readString());
+              bitField0_ |= 0x00000020;
+              host_ = input.readBytes();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // repeated string runnings = 1;
-      public java.util.List<java.lang.String> getRunningsList() {
-        return java.util.Collections.unmodifiableList(result.runnings_);
+      private com.google.protobuf.LazyStringList runnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureRunningsIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          runnings_ = new com.google.protobuf.LazyStringArrayList(runnings_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      public java.util.List<String>
+          getRunningsList() {
+        return java.util.Collections.unmodifiableList(runnings_);
       }
       public int getRunningsCount() {
-        return result.getRunningsCount();
+        return runnings_.size();
       }
-      public java.lang.String getRunnings(int index) {
-        return result.getRunnings(index);
+      public String getRunnings(int index) {
+        return runnings_.get(index);
       }
-      public Builder setRunnings(int index, java.lang.String value) {
+      public Builder setRunnings(
+          int index, String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.runnings_.set(index, value);
+  ensureRunningsIsMutable();
+        runnings_.set(index, value);
+        onChanged();
         return this;
       }
-      public Builder addRunnings(java.lang.String value) {
+      public Builder addRunnings(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  if (result.runnings_.isEmpty()) {
-          result.runnings_ = new java.util.ArrayList<java.lang.String>();
-        }
-        result.runnings_.add(value);
+  ensureRunningsIsMutable();
+        runnings_.add(value);
+        onChanged();
         return this;
       }
       public Builder addAllRunnings(
-          java.lang.Iterable<? extends java.lang.String> values) {
-        if (result.runnings_.isEmpty()) {
-          result.runnings_ = new java.util.ArrayList<java.lang.String>();
-        }
-        super.addAll(values, result.runnings_);
+          java.lang.Iterable<String> values) {
+        ensureRunningsIsMutable();
+        super.addAll(values, runnings_);
+        onChanged();
         return this;
       }
       public Builder clearRunnings() {
-        result.runnings_ = java.util.Collections.emptyList();
+        runnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
         return this;
+      }
+      void addRunnings(com.google.protobuf.ByteString value) {
+        ensureRunningsIsMutable();
+        runnings_.add(value);
+        onChanged();
       }
       
       // repeated string debugRunnings = 2;
-      public java.util.List<java.lang.String> getDebugRunningsList() {
-        return java.util.Collections.unmodifiableList(result.debugRunnings_);
+      private com.google.protobuf.LazyStringList debugRunnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureDebugRunningsIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          debugRunnings_ = new com.google.protobuf.LazyStringArrayList(debugRunnings_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      public java.util.List<String>
+          getDebugRunningsList() {
+        return java.util.Collections.unmodifiableList(debugRunnings_);
       }
       public int getDebugRunningsCount() {
-        return result.getDebugRunningsCount();
+        return debugRunnings_.size();
       }
-      public java.lang.String getDebugRunnings(int index) {
-        return result.getDebugRunnings(index);
+      public String getDebugRunnings(int index) {
+        return debugRunnings_.get(index);
       }
-      public Builder setDebugRunnings(int index, java.lang.String value) {
+      public Builder setDebugRunnings(
+          int index, String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.debugRunnings_.set(index, value);
+  ensureDebugRunningsIsMutable();
+        debugRunnings_.set(index, value);
+        onChanged();
         return this;
       }
-      public Builder addDebugRunnings(java.lang.String value) {
+      public Builder addDebugRunnings(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  if (result.debugRunnings_.isEmpty()) {
-          result.debugRunnings_ = new java.util.ArrayList<java.lang.String>();
-        }
-        result.debugRunnings_.add(value);
+  ensureDebugRunningsIsMutable();
+        debugRunnings_.add(value);
+        onChanged();
         return this;
       }
       public Builder addAllDebugRunnings(
-          java.lang.Iterable<? extends java.lang.String> values) {
-        if (result.debugRunnings_.isEmpty()) {
-          result.debugRunnings_ = new java.util.ArrayList<java.lang.String>();
-        }
-        super.addAll(values, result.debugRunnings_);
+          java.lang.Iterable<String> values) {
+        ensureDebugRunningsIsMutable();
+        super.addAll(values, debugRunnings_);
+        onChanged();
         return this;
       }
       public Builder clearDebugRunnings() {
-        result.debugRunnings_ = java.util.Collections.emptyList();
+        debugRunnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
         return this;
+      }
+      void addDebugRunnings(com.google.protobuf.ByteString value) {
+        ensureDebugRunningsIsMutable();
+        debugRunnings_.add(value);
+        onChanged();
       }
       
       // repeated string manualRunnings = 3;
-      public java.util.List<java.lang.String> getManualRunningsList() {
-        return java.util.Collections.unmodifiableList(result.manualRunnings_);
+      private com.google.protobuf.LazyStringList manualRunnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureManualRunningsIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          manualRunnings_ = new com.google.protobuf.LazyStringArrayList(manualRunnings_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+      public java.util.List<String>
+          getManualRunningsList() {
+        return java.util.Collections.unmodifiableList(manualRunnings_);
       }
       public int getManualRunningsCount() {
-        return result.getManualRunningsCount();
+        return manualRunnings_.size();
       }
-      public java.lang.String getManualRunnings(int index) {
-        return result.getManualRunnings(index);
+      public String getManualRunnings(int index) {
+        return manualRunnings_.get(index);
       }
-      public Builder setManualRunnings(int index, java.lang.String value) {
+      public Builder setManualRunnings(
+          int index, String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.manualRunnings_.set(index, value);
+  ensureManualRunningsIsMutable();
+        manualRunnings_.set(index, value);
+        onChanged();
         return this;
       }
-      public Builder addManualRunnings(java.lang.String value) {
+      public Builder addManualRunnings(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  if (result.manualRunnings_.isEmpty()) {
-          result.manualRunnings_ = new java.util.ArrayList<java.lang.String>();
-        }
-        result.manualRunnings_.add(value);
+  ensureManualRunningsIsMutable();
+        manualRunnings_.add(value);
+        onChanged();
         return this;
       }
       public Builder addAllManualRunnings(
-          java.lang.Iterable<? extends java.lang.String> values) {
-        if (result.manualRunnings_.isEmpty()) {
-          result.manualRunnings_ = new java.util.ArrayList<java.lang.String>();
-        }
-        super.addAll(values, result.manualRunnings_);
+          java.lang.Iterable<String> values) {
+        ensureManualRunningsIsMutable();
+        super.addAll(values, manualRunnings_);
+        onChanged();
         return this;
       }
       public Builder clearManualRunnings() {
-        result.manualRunnings_ = java.util.Collections.emptyList();
+        manualRunnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
         return this;
+      }
+      void addManualRunnings(com.google.protobuf.ByteString value) {
+        ensureManualRunningsIsMutable();
+        manualRunnings_.add(value);
+        onChanged();
       }
       
       // optional int64 timestamp = 4;
+      private long timestamp_ ;
       public boolean hasTimestamp() {
-        return result.hasTimestamp();
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       public long getTimestamp() {
-        return result.getTimestamp();
+        return timestamp_;
       }
       public Builder setTimestamp(long value) {
-        result.hasTimestamp = true;
-        result.timestamp_ = value;
+        bitField0_ |= 0x00000008;
+        timestamp_ = value;
+        onChanged();
         return this;
       }
       public Builder clearTimestamp() {
-        result.hasTimestamp = false;
-        result.timestamp_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        timestamp_ = 0L;
+        onChanged();
         return this;
       }
       
       // optional float mem_rate = 5;
+      private float memRate_ ;
       public boolean hasMemRate() {
-        return result.hasMemRate();
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       public float getMemRate() {
-        return result.getMemRate();
+        return memRate_;
       }
       public Builder setMemRate(float value) {
-        result.hasMemRate = true;
-        result.memRate_ = value;
+        bitField0_ |= 0x00000010;
+        memRate_ = value;
+        onChanged();
         return this;
       }
       public Builder clearMemRate() {
-        result.hasMemRate = false;
-        result.memRate_ = 0F;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        memRate_ = 0F;
+        onChanged();
         return this;
       }
       
       // optional string host = 6;
+      private Object host_ = "";
       public boolean hasHost() {
-        return result.hasHost();
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
-      public java.lang.String getHost() {
-        return result.getHost();
+      public String getHost() {
+        Object ref = host_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          host_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setHost(java.lang.String value) {
+      public Builder setHost(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasHost = true;
-        result.host_ = value;
+  bitField0_ |= 0x00000020;
+        host_ = value;
+        onChanged();
         return this;
       }
       public Builder clearHost() {
-        result.hasHost = false;
-        result.host_ = getDefaultInstance().getHost();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        host_ = getDefaultInstance().getHost();
+        onChanged();
         return this;
+      }
+      void setHost(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000020;
+        host_ = value;
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:com.taobao.zeus.socket.protocol.HeartBeatMessage)
@@ -3182,18 +4191,29 @@ public final class Protocol {
     
     static {
       defaultInstance = new HeartBeatMessage(true);
-      com.taobao.zeus.socket.protocol.Protocol.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:com.taobao.zeus.socket.protocol.HeartBeatMessage)
   }
   
+  public interface ExecuteMessageOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string jobId = 1;
+    boolean hasJobId();
+    String getJobId();
+    
+    // optional sint32 exitCode = 2;
+    boolean hasExitCode();
+    int getExitCode();
+  }
   public static final class ExecuteMessage extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements ExecuteMessageOrBuilder {
     // Use ExecuteMessage.newBuilder() to construct.
-    private ExecuteMessage() {
-      initFields();
+    private ExecuteMessage(Builder builder) {
+      super(builder);
     }
     private ExecuteMessage(boolean noInit) {}
     
@@ -3216,35 +4236,74 @@ public final class Protocol {
       return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_ExecuteMessage_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required string jobId = 1;
     public static final int JOBID_FIELD_NUMBER = 1;
-    private boolean hasJobId;
-    private java.lang.String jobId_ = "";
-    public boolean hasJobId() { return hasJobId; }
-    public java.lang.String getJobId() { return jobId_; }
+    private Object jobId_;
+    public boolean hasJobId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getJobId() {
+      Object ref = jobId_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          jobId_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getJobIdBytes() {
+      Object ref = jobId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        jobId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional sint32 exitCode = 2;
     public static final int EXITCODE_FIELD_NUMBER = 2;
-    private boolean hasExitCode;
-    private int exitCode_ = 0;
-    public boolean hasExitCode() { return hasExitCode; }
-    public int getExitCode() { return exitCode_; }
+    private int exitCode_;
+    public boolean hasExitCode() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getExitCode() {
+      return exitCode_;
+    }
     
     private void initFields() {
+      jobId_ = "";
+      exitCode_ = 0;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasJobId) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasJobId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasJobId()) {
-        output.writeString(1, getJobId());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getJobIdBytes());
       }
-      if (hasExitCode()) {
-        output.writeSInt32(2, getExitCode());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeSInt32(2, exitCode_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -3255,17 +4314,22 @@ public final class Protocol {
       if (size != -1) return size;
     
       size = 0;
-      if (hasJobId()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getJobId());
+          .computeBytesSize(1, getJobIdBytes());
       }
-      if (hasExitCode()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(2, getExitCode());
+          .computeSInt32Size(2, exitCode_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    @java.lang.Override
+    protected Object writeReplace() throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage parseFrom(
@@ -3342,34 +4406,53 @@ public final class Protocol {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage result;
-      
-      // Construct using com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.taobao.zeus.socket.protocol.Protocol.ExecuteMessageOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_ExecuteMessage_descriptor;
       }
       
-      protected com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_ExecuteMessage_fieldAccessorTable;
+      }
+      
+      // Construct using com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage();
+        super.clear();
+        jobId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        exitCode_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -3381,33 +4464,39 @@ public final class Protocol {
         return com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage build() {
-        if (result != null && !isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage result = new com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        com.taobao.zeus.socket.protocol.Protocol.ExecuteMessage returnMe = result;
-        result = null;
-        return returnMe;
+        result.jobId_ = jobId_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.exitCode_ = exitCode_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -3431,6 +4520,14 @@ public final class Protocol {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasJobId()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -3443,64 +4540,87 @@ public final class Protocol {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              setJobId(input.readString());
+              bitField0_ |= 0x00000001;
+              jobId_ = input.readBytes();
               break;
             }
             case 16: {
-              setExitCode(input.readSInt32());
+              bitField0_ |= 0x00000002;
+              exitCode_ = input.readSInt32();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required string jobId = 1;
+      private Object jobId_ = "";
       public boolean hasJobId() {
-        return result.hasJobId();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public java.lang.String getJobId() {
-        return result.getJobId();
+      public String getJobId() {
+        Object ref = jobId_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          jobId_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setJobId(java.lang.String value) {
+      public Builder setJobId(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasJobId = true;
-        result.jobId_ = value;
+  bitField0_ |= 0x00000001;
+        jobId_ = value;
+        onChanged();
         return this;
       }
       public Builder clearJobId() {
-        result.hasJobId = false;
-        result.jobId_ = getDefaultInstance().getJobId();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        jobId_ = getDefaultInstance().getJobId();
+        onChanged();
         return this;
+      }
+      void setJobId(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        jobId_ = value;
+        onChanged();
       }
       
       // optional sint32 exitCode = 2;
+      private int exitCode_ ;
       public boolean hasExitCode() {
-        return result.hasExitCode();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public int getExitCode() {
-        return result.getExitCode();
+        return exitCode_;
       }
       public Builder setExitCode(int value) {
-        result.hasExitCode = true;
-        result.exitCode_ = value;
+        bitField0_ |= 0x00000002;
+        exitCode_ = value;
+        onChanged();
         return this;
       }
       public Builder clearExitCode() {
-        result.hasExitCode = false;
-        result.exitCode_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        exitCode_ = 0;
+        onChanged();
         return this;
       }
       
@@ -3509,18 +4629,29 @@ public final class Protocol {
     
     static {
       defaultInstance = new ExecuteMessage(true);
-      com.taobao.zeus.socket.protocol.Protocol.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:com.taobao.zeus.socket.protocol.ExecuteMessage)
   }
   
+  public interface CancelMessageOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required .com.taobao.zeus.socket.protocol.ExecuteKind ek = 1;
+    boolean hasEk();
+    com.taobao.zeus.socket.protocol.Protocol.ExecuteKind getEk();
+    
+    // required string id = 2;
+    boolean hasId();
+    String getId();
+  }
   public static final class CancelMessage extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements CancelMessageOrBuilder {
     // Use CancelMessage.newBuilder() to construct.
-    private CancelMessage() {
-      initFields();
+    private CancelMessage(Builder builder) {
+      super(builder);
     }
     private CancelMessage(boolean noInit) {}
     
@@ -3543,37 +4674,78 @@ public final class Protocol {
       return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_CancelMessage_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required .com.taobao.zeus.socket.protocol.ExecuteKind ek = 1;
     public static final int EK_FIELD_NUMBER = 1;
-    private boolean hasEk;
     private com.taobao.zeus.socket.protocol.Protocol.ExecuteKind ek_;
-    public boolean hasEk() { return hasEk; }
-    public com.taobao.zeus.socket.protocol.Protocol.ExecuteKind getEk() { return ek_; }
+    public boolean hasEk() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.taobao.zeus.socket.protocol.Protocol.ExecuteKind getEk() {
+      return ek_;
+    }
     
     // required string id = 2;
     public static final int ID_FIELD_NUMBER = 2;
-    private boolean hasId;
-    private java.lang.String id_ = "";
-    public boolean hasId() { return hasId; }
-    public java.lang.String getId() { return id_; }
+    private Object id_;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public String getId() {
+      Object ref = id_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          id_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getIdBytes() {
+      Object ref = id_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     private void initFields() {
       ek_ = com.taobao.zeus.socket.protocol.Protocol.ExecuteKind.ScheduleKind;
+      id_ = "";
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasEk) return false;
-      if (!hasId) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasEk()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasEk()) {
-        output.writeEnum(1, getEk().getNumber());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeEnum(1, ek_.getNumber());
       }
-      if (hasId()) {
-        output.writeString(2, getId());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getIdBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -3584,17 +4756,22 @@ public final class Protocol {
       if (size != -1) return size;
     
       size = 0;
-      if (hasEk()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, getEk().getNumber());
+          .computeEnumSize(1, ek_.getNumber());
       }
-      if (hasId()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(2, getId());
+          .computeBytesSize(2, getIdBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    @java.lang.Override
+    protected Object writeReplace() throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static com.taobao.zeus.socket.protocol.Protocol.CancelMessage parseFrom(
@@ -3671,34 +4848,53 @@ public final class Protocol {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.taobao.zeus.socket.protocol.Protocol.CancelMessage result;
-      
-      // Construct using com.taobao.zeus.socket.protocol.Protocol.CancelMessage.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.taobao.zeus.socket.protocol.Protocol.CancelMessage();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.taobao.zeus.socket.protocol.Protocol.CancelMessageOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_CancelMessage_descriptor;
       }
       
-      protected com.taobao.zeus.socket.protocol.Protocol.CancelMessage internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_CancelMessage_fieldAccessorTable;
+      }
+      
+      // Construct using com.taobao.zeus.socket.protocol.Protocol.CancelMessage.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.taobao.zeus.socket.protocol.Protocol.CancelMessage();
+        super.clear();
+        ek_ = com.taobao.zeus.socket.protocol.Protocol.ExecuteKind.ScheduleKind;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        id_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -3710,33 +4906,39 @@ public final class Protocol {
         return com.taobao.zeus.socket.protocol.Protocol.CancelMessage.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public com.taobao.zeus.socket.protocol.Protocol.CancelMessage build() {
-        if (result != null && !isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.CancelMessage result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private com.taobao.zeus.socket.protocol.Protocol.CancelMessage buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.CancelMessage result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public com.taobao.zeus.socket.protocol.Protocol.CancelMessage buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        com.taobao.zeus.socket.protocol.Protocol.CancelMessage result = new com.taobao.zeus.socket.protocol.Protocol.CancelMessage(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        com.taobao.zeus.socket.protocol.Protocol.CancelMessage returnMe = result;
-        result = null;
-        return returnMe;
+        result.ek_ = ek_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.id_ = id_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -3760,6 +4962,18 @@ public final class Protocol {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasEk()) {
+          
+          return false;
+        }
+        if (!hasId()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -3772,11 +4986,13 @@ public final class Protocol {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
@@ -3787,59 +5003,80 @@ public final class Protocol {
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
               } else {
-                setEk(value);
+                bitField0_ |= 0x00000001;
+                ek_ = value;
               }
               break;
             }
             case 18: {
-              setId(input.readString());
+              bitField0_ |= 0x00000002;
+              id_ = input.readBytes();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required .com.taobao.zeus.socket.protocol.ExecuteKind ek = 1;
+      private com.taobao.zeus.socket.protocol.Protocol.ExecuteKind ek_ = com.taobao.zeus.socket.protocol.Protocol.ExecuteKind.ScheduleKind;
       public boolean hasEk() {
-        return result.hasEk();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public com.taobao.zeus.socket.protocol.Protocol.ExecuteKind getEk() {
-        return result.getEk();
+        return ek_;
       }
       public Builder setEk(com.taobao.zeus.socket.protocol.Protocol.ExecuteKind value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        result.hasEk = true;
-        result.ek_ = value;
+        bitField0_ |= 0x00000001;
+        ek_ = value;
+        onChanged();
         return this;
       }
       public Builder clearEk() {
-        result.hasEk = false;
-        result.ek_ = com.taobao.zeus.socket.protocol.Protocol.ExecuteKind.ScheduleKind;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        ek_ = com.taobao.zeus.socket.protocol.Protocol.ExecuteKind.ScheduleKind;
+        onChanged();
         return this;
       }
       
       // required string id = 2;
+      private Object id_ = "";
       public boolean hasId() {
-        return result.hasId();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      public java.lang.String getId() {
-        return result.getId();
+      public String getId() {
+        Object ref = id_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setId(java.lang.String value) {
+      public Builder setId(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasId = true;
-        result.id_ = value;
+  bitField0_ |= 0x00000002;
+        id_ = value;
+        onChanged();
         return this;
       }
       public Builder clearId() {
-        result.hasId = false;
-        result.id_ = getDefaultInstance().getId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        id_ = getDefaultInstance().getId();
+        onChanged();
         return this;
+      }
+      void setId(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000002;
+        id_ = value;
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:com.taobao.zeus.socket.protocol.CancelMessage)
@@ -3847,18 +5084,29 @@ public final class Protocol {
     
     static {
       defaultInstance = new CancelMessage(true);
-      com.taobao.zeus.socket.protocol.Protocol.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:com.taobao.zeus.socket.protocol.CancelMessage)
   }
   
+  public interface DebugMessageOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string debugId = 1;
+    boolean hasDebugId();
+    String getDebugId();
+    
+    // optional sint32 exitCode = 2;
+    boolean hasExitCode();
+    int getExitCode();
+  }
   public static final class DebugMessage extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements DebugMessageOrBuilder {
     // Use DebugMessage.newBuilder() to construct.
-    private DebugMessage() {
-      initFields();
+    private DebugMessage(Builder builder) {
+      super(builder);
     }
     private DebugMessage(boolean noInit) {}
     
@@ -3881,35 +5129,74 @@ public final class Protocol {
       return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_DebugMessage_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required string debugId = 1;
     public static final int DEBUGID_FIELD_NUMBER = 1;
-    private boolean hasDebugId;
-    private java.lang.String debugId_ = "";
-    public boolean hasDebugId() { return hasDebugId; }
-    public java.lang.String getDebugId() { return debugId_; }
+    private Object debugId_;
+    public boolean hasDebugId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getDebugId() {
+      Object ref = debugId_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          debugId_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getDebugIdBytes() {
+      Object ref = debugId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        debugId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional sint32 exitCode = 2;
     public static final int EXITCODE_FIELD_NUMBER = 2;
-    private boolean hasExitCode;
-    private int exitCode_ = 0;
-    public boolean hasExitCode() { return hasExitCode; }
-    public int getExitCode() { return exitCode_; }
+    private int exitCode_;
+    public boolean hasExitCode() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getExitCode() {
+      return exitCode_;
+    }
     
     private void initFields() {
+      debugId_ = "";
+      exitCode_ = 0;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasDebugId) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasDebugId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasDebugId()) {
-        output.writeString(1, getDebugId());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getDebugIdBytes());
       }
-      if (hasExitCode()) {
-        output.writeSInt32(2, getExitCode());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeSInt32(2, exitCode_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -3920,17 +5207,22 @@ public final class Protocol {
       if (size != -1) return size;
     
       size = 0;
-      if (hasDebugId()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getDebugId());
+          .computeBytesSize(1, getDebugIdBytes());
       }
-      if (hasExitCode()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(2, getExitCode());
+          .computeSInt32Size(2, exitCode_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    @java.lang.Override
+    protected Object writeReplace() throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static com.taobao.zeus.socket.protocol.Protocol.DebugMessage parseFrom(
@@ -4007,34 +5299,53 @@ public final class Protocol {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.taobao.zeus.socket.protocol.Protocol.DebugMessage result;
-      
-      // Construct using com.taobao.zeus.socket.protocol.Protocol.DebugMessage.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.taobao.zeus.socket.protocol.Protocol.DebugMessage();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.taobao.zeus.socket.protocol.Protocol.DebugMessageOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_DebugMessage_descriptor;
       }
       
-      protected com.taobao.zeus.socket.protocol.Protocol.DebugMessage internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_DebugMessage_fieldAccessorTable;
+      }
+      
+      // Construct using com.taobao.zeus.socket.protocol.Protocol.DebugMessage.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.taobao.zeus.socket.protocol.Protocol.DebugMessage();
+        super.clear();
+        debugId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        exitCode_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -4046,33 +5357,39 @@ public final class Protocol {
         return com.taobao.zeus.socket.protocol.Protocol.DebugMessage.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public com.taobao.zeus.socket.protocol.Protocol.DebugMessage build() {
-        if (result != null && !isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.DebugMessage result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private com.taobao.zeus.socket.protocol.Protocol.DebugMessage buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.DebugMessage result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public com.taobao.zeus.socket.protocol.Protocol.DebugMessage buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        com.taobao.zeus.socket.protocol.Protocol.DebugMessage result = new com.taobao.zeus.socket.protocol.Protocol.DebugMessage(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        com.taobao.zeus.socket.protocol.Protocol.DebugMessage returnMe = result;
-        result = null;
-        return returnMe;
+        result.debugId_ = debugId_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.exitCode_ = exitCode_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -4096,6 +5413,14 @@ public final class Protocol {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasDebugId()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -4108,64 +5433,87 @@ public final class Protocol {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              setDebugId(input.readString());
+              bitField0_ |= 0x00000001;
+              debugId_ = input.readBytes();
               break;
             }
             case 16: {
-              setExitCode(input.readSInt32());
+              bitField0_ |= 0x00000002;
+              exitCode_ = input.readSInt32();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required string debugId = 1;
+      private Object debugId_ = "";
       public boolean hasDebugId() {
-        return result.hasDebugId();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public java.lang.String getDebugId() {
-        return result.getDebugId();
+      public String getDebugId() {
+        Object ref = debugId_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          debugId_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setDebugId(java.lang.String value) {
+      public Builder setDebugId(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasDebugId = true;
-        result.debugId_ = value;
+  bitField0_ |= 0x00000001;
+        debugId_ = value;
+        onChanged();
         return this;
       }
       public Builder clearDebugId() {
-        result.hasDebugId = false;
-        result.debugId_ = getDefaultInstance().getDebugId();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        debugId_ = getDefaultInstance().getDebugId();
+        onChanged();
         return this;
+      }
+      void setDebugId(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        debugId_ = value;
+        onChanged();
       }
       
       // optional sint32 exitCode = 2;
+      private int exitCode_ ;
       public boolean hasExitCode() {
-        return result.hasExitCode();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public int getExitCode() {
-        return result.getExitCode();
+        return exitCode_;
       }
       public Builder setExitCode(int value) {
-        result.hasExitCode = true;
-        result.exitCode_ = value;
+        bitField0_ |= 0x00000002;
+        exitCode_ = value;
+        onChanged();
         return this;
       }
       public Builder clearExitCode() {
-        result.hasExitCode = false;
-        result.exitCode_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        exitCode_ = 0;
+        onChanged();
         return this;
       }
       
@@ -4174,18 +5522,29 @@ public final class Protocol {
     
     static {
       defaultInstance = new DebugMessage(true);
-      com.taobao.zeus.socket.protocol.Protocol.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:com.taobao.zeus.socket.protocol.DebugMessage)
   }
   
+  public interface ManualMessageOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string historyId = 1;
+    boolean hasHistoryId();
+    String getHistoryId();
+    
+    // optional sint32 exitCode = 2;
+    boolean hasExitCode();
+    int getExitCode();
+  }
   public static final class ManualMessage extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements ManualMessageOrBuilder {
     // Use ManualMessage.newBuilder() to construct.
-    private ManualMessage() {
-      initFields();
+    private ManualMessage(Builder builder) {
+      super(builder);
     }
     private ManualMessage(boolean noInit) {}
     
@@ -4208,35 +5567,74 @@ public final class Protocol {
       return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_ManualMessage_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required string historyId = 1;
     public static final int HISTORYID_FIELD_NUMBER = 1;
-    private boolean hasHistoryId;
-    private java.lang.String historyId_ = "";
-    public boolean hasHistoryId() { return hasHistoryId; }
-    public java.lang.String getHistoryId() { return historyId_; }
+    private Object historyId_;
+    public boolean hasHistoryId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getHistoryId() {
+      Object ref = historyId_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          historyId_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getHistoryIdBytes() {
+      Object ref = historyId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        historyId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional sint32 exitCode = 2;
     public static final int EXITCODE_FIELD_NUMBER = 2;
-    private boolean hasExitCode;
-    private int exitCode_ = 0;
-    public boolean hasExitCode() { return hasExitCode; }
-    public int getExitCode() { return exitCode_; }
+    private int exitCode_;
+    public boolean hasExitCode() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getExitCode() {
+      return exitCode_;
+    }
     
     private void initFields() {
+      historyId_ = "";
+      exitCode_ = 0;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasHistoryId) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasHistoryId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasHistoryId()) {
-        output.writeString(1, getHistoryId());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getHistoryIdBytes());
       }
-      if (hasExitCode()) {
-        output.writeSInt32(2, getExitCode());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeSInt32(2, exitCode_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -4247,17 +5645,22 @@ public final class Protocol {
       if (size != -1) return size;
     
       size = 0;
-      if (hasHistoryId()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getHistoryId());
+          .computeBytesSize(1, getHistoryIdBytes());
       }
-      if (hasExitCode()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(2, getExitCode());
+          .computeSInt32Size(2, exitCode_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    @java.lang.Override
+    protected Object writeReplace() throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static com.taobao.zeus.socket.protocol.Protocol.ManualMessage parseFrom(
@@ -4334,34 +5737,53 @@ public final class Protocol {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private com.taobao.zeus.socket.protocol.Protocol.ManualMessage result;
-      
-      // Construct using com.taobao.zeus.socket.protocol.Protocol.ManualMessage.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new com.taobao.zeus.socket.protocol.Protocol.ManualMessage();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.taobao.zeus.socket.protocol.Protocol.ManualMessageOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_ManualMessage_descriptor;
       }
       
-      protected com.taobao.zeus.socket.protocol.Protocol.ManualMessage internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.taobao.zeus.socket.protocol.Protocol.internal_static_com_taobao_zeus_socket_protocol_ManualMessage_fieldAccessorTable;
+      }
+      
+      // Construct using com.taobao.zeus.socket.protocol.Protocol.ManualMessage.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new com.taobao.zeus.socket.protocol.Protocol.ManualMessage();
+        super.clear();
+        historyId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        exitCode_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -4373,33 +5795,39 @@ public final class Protocol {
         return com.taobao.zeus.socket.protocol.Protocol.ManualMessage.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public com.taobao.zeus.socket.protocol.Protocol.ManualMessage build() {
-        if (result != null && !isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.ManualMessage result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private com.taobao.zeus.socket.protocol.Protocol.ManualMessage buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        com.taobao.zeus.socket.protocol.Protocol.ManualMessage result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public com.taobao.zeus.socket.protocol.Protocol.ManualMessage buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        com.taobao.zeus.socket.protocol.Protocol.ManualMessage result = new com.taobao.zeus.socket.protocol.Protocol.ManualMessage(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        com.taobao.zeus.socket.protocol.Protocol.ManualMessage returnMe = result;
-        result = null;
-        return returnMe;
+        result.historyId_ = historyId_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.exitCode_ = exitCode_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -4423,6 +5851,14 @@ public final class Protocol {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasHistoryId()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -4435,64 +5871,87 @@ public final class Protocol {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              setHistoryId(input.readString());
+              bitField0_ |= 0x00000001;
+              historyId_ = input.readBytes();
               break;
             }
             case 16: {
-              setExitCode(input.readSInt32());
+              bitField0_ |= 0x00000002;
+              exitCode_ = input.readSInt32();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required string historyId = 1;
+      private Object historyId_ = "";
       public boolean hasHistoryId() {
-        return result.hasHistoryId();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public java.lang.String getHistoryId() {
-        return result.getHistoryId();
+      public String getHistoryId() {
+        Object ref = historyId_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          historyId_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setHistoryId(java.lang.String value) {
+      public Builder setHistoryId(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasHistoryId = true;
-        result.historyId_ = value;
+  bitField0_ |= 0x00000001;
+        historyId_ = value;
+        onChanged();
         return this;
       }
       public Builder clearHistoryId() {
-        result.hasHistoryId = false;
-        result.historyId_ = getDefaultInstance().getHistoryId();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        historyId_ = getDefaultInstance().getHistoryId();
+        onChanged();
         return this;
+      }
+      void setHistoryId(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        historyId_ = value;
+        onChanged();
       }
       
       // optional sint32 exitCode = 2;
+      private int exitCode_ ;
       public boolean hasExitCode() {
-        return result.hasExitCode();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public int getExitCode() {
-        return result.getExitCode();
+        return exitCode_;
       }
       public Builder setExitCode(int value) {
-        result.hasExitCode = true;
-        result.exitCode_ = value;
+        bitField0_ |= 0x00000002;
+        exitCode_ = value;
+        onChanged();
         return this;
       }
       public Builder clearExitCode() {
-        result.hasExitCode = false;
-        result.exitCode_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        exitCode_ = 0;
+        onChanged();
         return this;
       }
       
@@ -4501,7 +5960,6 @@ public final class Protocol {
     
     static {
       defaultInstance = new ManualMessage(true);
-      com.taobao.zeus.socket.protocol.Protocol.internalForceInit();
       defaultInstance.initFields();
     }
     
@@ -4701,8 +6159,6 @@ public final class Protocol {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
   }
-  
-  public static void internalForceInit() {}
   
   // @@protoc_insertion_point(outer_class_scope)
 }

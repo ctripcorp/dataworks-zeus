@@ -87,7 +87,12 @@ public class HiveJob extends ProcessJob {
 		String hiveFilePath = getProperty(PropertyKeys.RUN_HIVE_PATH, "");
 		List<String> list = new ArrayList<String>();
 		StringBuffer sb = new StringBuffer();
-		sb.append("hive");
+		
+		// get operator uid
+		String shellUid = jobContext.getJobHistory().getOperator();
+		
+		
+		sb.append("sudo -u " + shellUid + " hive");
 
 		// 引入常用udf函数
 		if (getUdfSql()) {

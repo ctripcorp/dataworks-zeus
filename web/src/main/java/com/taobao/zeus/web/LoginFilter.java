@@ -1,10 +1,7 @@
 package com.taobao.zeus.web;
 
 import java.io.IOException;
-<<<<<<< HEAD
-=======
 import java.util.Enumeration;
->>>>>>> e46f80fb78ae791d5d1ca50e90f60a7c3a13d618
 import java.util.Map;
 
 import javax.servlet.Filter;
@@ -32,7 +29,7 @@ public class LoginFilter implements Filter {
 	
 	private UserManager userManager;
 	private SSOLogin login=new SSOLogin() {
-<<<<<<< HEAD
+/*<<<<<<< HEAD
 //		private String username = "";
 //		private String usermail = "";
 //		private String fullname = "";
@@ -60,7 +57,7 @@ public class LoginFilter implements Filter {
 		public String getEmail(HttpServletRequest req) {
 			return ZeusUser.ADMIN.getEmail();
 			//return usermail;
-=======
+=======*/
 		public String getUid(HttpServletRequest req) {
 		
 			return ZeusUser.USER.getUid();
@@ -73,7 +70,6 @@ public class LoginFilter implements Filter {
 		}
 		public String getEmail(HttpServletRequest req) {
 			return ZeusUser.USER.getEmail();
->>>>>>> e46f80fb78ae791d5d1ca50e90f60a7c3a13d618
 		}
 	};
 	@Override

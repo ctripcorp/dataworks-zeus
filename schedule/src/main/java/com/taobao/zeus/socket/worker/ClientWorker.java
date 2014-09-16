@@ -91,9 +91,10 @@ public class ClientWorker {
 								throws Exception {
 							if (!future.isSuccess()) {
 								failCount++;
-								SocketLog.info("heart beat send fail ,failCount="+ failCount);
+								SocketLog.error("heart beat send fail ,failCount="+ failCount);
 							} else {
 								failCount = 0;
+								SocketLog.info("heart beat send success!");
 							}
 							if (failCount > 3) {
 								future.getChannel().close();

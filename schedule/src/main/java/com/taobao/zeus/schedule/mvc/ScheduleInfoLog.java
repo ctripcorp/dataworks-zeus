@@ -11,6 +11,10 @@ public class ScheduleInfoLog {
 		log.info(msg);
 	}
 	
+	public static void error(String msg){
+		log.error(msg);
+	}
+	
 	public static void error(String msg,Exception e){
 		log.error(msg,e);
 	}

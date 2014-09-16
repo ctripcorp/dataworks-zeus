@@ -1,6 +1,8 @@
 package com.taobao.zeus.web;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -27,16 +29,17 @@ public class LoginFilter implements Filter {
 	private UserManager userManager;
 	private SSOLogin login=new SSOLogin() {
 		public String getUid(HttpServletRequest req) {
-			return ZeusUser.ADMIN.getUid();
+		
+			return ZeusUser.USER.getUid();
 		}
 		public String getPhone(HttpServletRequest req) {
-			return ZeusUser.ADMIN.getPhone();
+			return ZeusUser.USER.getPhone();
 		}
 		public String getName(HttpServletRequest req) {
-			return ZeusUser.ADMIN.getName();
+			return ZeusUser.USER.getName();
 		}
 		public String getEmail(HttpServletRequest req) {
-			return ZeusUser.ADMIN.getEmail();
+			return ZeusUser.USER.getEmail();
 		}
 	};
 	@Override
@@ -77,6 +80,7 @@ public class LoginFilter implements Filter {
 		if(uid==null){
 			return;
 		}
+		
 		zeusUser=new ZeusUser();
 		zeusUser.setEmail(login.getEmail(httpRequest));
 		zeusUser.setUid(login.getUid(httpRequest));

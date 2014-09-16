@@ -21,12 +21,18 @@
         <log4j.version>1.2.17</log4j.version> 
 	</properties>
 	
-	<dependencies> 				
+	<dependencies> 	
+		<dependency>
+		    <groupId>jdk.tools</groupId>
+		    <artifactId>jdk.tools</artifactId>
+		    <version>1.6</version>
+		    <scope>system</scope>
+		    <systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
+		</dependency>			
 		<dependency>
 			<groupId>com.taobao.zeus</groupId>
 			<artifactId>zeus-client</artifactId>
-			<version>2.0.1-SNAPSHOT</version>
-		</dependency>
+			</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>

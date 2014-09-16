@@ -11,4 +11,6 @@ public interface UserServiceAsync {
 
 	void getUser(AsyncCallback<ZUser> callback);
 
+	
+	void checkUser(String username,AsyncCallback<String> callback);
 }

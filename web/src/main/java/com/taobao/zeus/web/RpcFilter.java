@@ -57,6 +57,7 @@ public class RpcFilter implements Filter, SerializationPolicyProvider {
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
+		
 		if (request.getRequestURI().endsWith(".rpc")) {
 			String requestURI = request.getRequestURI();
 			String rpc = requestURI.substring(requestURI.lastIndexOf("/") + 1);

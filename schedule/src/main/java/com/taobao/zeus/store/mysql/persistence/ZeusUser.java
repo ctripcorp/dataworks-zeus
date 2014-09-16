@@ -1,11 +1,16 @@
 package com.taobao.zeus.store.mysql.persistence;
 
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Query;
 
 /**
  * 用户信息
@@ -21,6 +26,8 @@ public class ZeusUser{
 		public String getPhone() {return "18612201251";};
 		public String getUid() {return "yangfei";};
 	};
+	public static ZeusUser USER=new ZeusUser("yangfei@ptthink.com","杨飞","18612201251","yangfei");
+
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -38,6 +45,17 @@ public class ZeusUser{
 	private Date gmtCreate;
 	@Column(name="gmt_modified")
 	private Date gmtModified;
+	public ZeusUser(String string, String string2, String string3,
+			String string4) {
+		this.email = string;
+		this.name = string2;
+		this.uid = string4;
+		this.phone = string3;
+		// TODO Auto-generated constructor stub
+	}
+	public ZeusUser() {
+		// TODO Auto-generated constructor stub
+	}
 	public Long getId() {
 		return id;
 	}
@@ -45,7 +63,7 @@ public class ZeusUser{
 		this.id = id;
 	}
 	public String getUid() {
-		return uid;
+		return this.uid;
 	}
 	public void setUid(String uid) {
 		this.uid = uid;
@@ -57,7 +75,7 @@ public class ZeusUser{
 		this.email = email;
 	}
 	public String getWangwang() {
-		return wangwang;
+		return this.wangwang;
 	}
 	public void setWangwang(String wangwang) {
 		this.wangwang = wangwang;
@@ -81,7 +99,7 @@ public class ZeusUser{
 		this.phone = phone;
 	}
 	public String getName() {
-		return name;
+		return this.name;
 	}
 	public void setName(String name) {
 		this.name = name;
@@ -90,4 +108,5 @@ public class ZeusUser{
 	public String toString() {
 		return "ZeusUser [uid=" + uid + ", wangwang=" + wangwang + "]";
 	}
+
 }

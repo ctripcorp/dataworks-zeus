@@ -97,6 +97,5 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 		
 	
 	}
-	
 
 }

@@ -45,6 +45,7 @@ public class JobDebugRpcImpl implements JobDebugService {
 
 		DebugHistory history = new DebugHistory();
 		history.setFileId(fileId);
+		history.setOwner(uid);
 		history.setJobRunType(JobRunType.parser(mode));
 		history.setScript(script);
 		debugHistoryManager.addDebugHistory(history);

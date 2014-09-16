@@ -67,7 +67,7 @@ public class LoginFilter implements Filter {
 			response.getWriter().write("success");
 			return;
 		}
-		
+	
 		ZeusUser zeusUser=null;
 		String uri=httpRequest.getRequestURI();
 		if(uri.endsWith(".taobao") || uri.endsWith(".js") || uri.endsWith(".css") || uri.endsWith(".gif") ||
@@ -75,12 +75,12 @@ public class LoginFilter implements Filter {
 			chain.doFilter(request, response);
 			return;
 		}
-
+	
 		String uid=login.getUid(httpRequest);
 		if(uid==null){
 			return;
 		}
-		
+		System.out.println("1`3333");
 		zeusUser=new ZeusUser();
 		zeusUser.setEmail(login.getEmail(httpRequest));
 		zeusUser.setUid(login.getUid(httpRequest));

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -45,9 +46,14 @@ import com.taobao.zeus.socket.protocol.Protocol.ExecuteKind;
 import com.taobao.zeus.socket.protocol.Protocol.Response;
 import com.taobao.zeus.socket.protocol.Protocol.Status;
 import com.taobao.zeus.store.GroupBean;
+import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobBean;
+import com.taobao.zeus.store.mysql.persistence.JobPersistence;
+import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
+import com.taobao.zeus.util.CronExpParser;
 import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.Tuple;
+import com.taobao.zeus.util.ZeusDateTool;
 
 public class Master {
 
@@ -71,6 +77,25 @@ public class Master {
 				new DebugListener(context));
 		context.getDispatcher().addDispatcherListener(
 				new JobSuccessListener(context));
+		//***************2014-09-15 定时扫描JOB表,生成action表********************
+		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				Date now = new Date();
+				SimpleDateFormat df=new SimpleDateFormat("HH");
+				SimpleDateFormat df2=new SimpleDateFormat("yyyy-MM-dd");
+				if(Integer.parseInt(df.format(now)) == 1){
+					List<JobPersistenceOld> jobDetails = context.getGroupManagerOld().getAllJobs();
+					Map<Long, JobPersistence> actionDetails = new HashMap<Long, JobPersistence>();
+					//首先，生成独立任务action
+					runScheduleJobToAction(jobDetails, now, df2, actionDetails);
+					//其次，生成依赖任务action
+					runDependencesJobToAction(jobDetails, actionDetails);
+				}
+			}
+		}, 0, 30, TimeUnit.MINUTES);
+		
+		//*********************************************************************
 		Map<String, JobBean> allJobBeans = root.getAllSubJobBeans();
 		for (String id : allJobBeans.keySet()) {
 			context.getDispatcher().addController(
@@ -109,6 +134,7 @@ public class Master {
 		}, 30, 30, TimeUnit.SECONDS);
 	}
 
+	//获取可用的worker
 	private MasterWorkerHolder getRunableWorker() {
 		MasterWorkerHolder selectWorker = null;
 		Float selectMemRate = null;
@@ -153,6 +179,7 @@ public class Master {
 
 	}
 
+	//扫描可用的worker，给worker分配JOB任务
 	private void scan() {
 
 		if (!context.getQueue().isEmpty()) {
@@ -667,5 +694,198 @@ public class Master {
 		context.getJobHistoryManager().updateJobHistoryLog(history.getId(),
 				history.getLog().getContent());
 		return history;
+	}
+	
+	//将定时任务生成action
+	public void runScheduleJobToAction(List<JobPersistenceOld> jobDetails, Date now, SimpleDateFormat df2, Map<Long, JobPersistence> actionDetails){
+		for(JobPersistenceOld jobDetail : jobDetails){
+			//ScheduleType: 0 独立任务; 1依赖任务
+			if(jobDetail.getScheduleType()==0){
+				String jobCronExpression = jobDetail.getCronExpression();
+				String cronDate= df2.format(now);
+				List<String> lTime = new ArrayList<String>();
+				if(jobCronExpression != null && jobCronExpression.trim().length() > 0){
+					//定时调度
+					boolean isCronExp = false;
+					try{
+						isCronExp = CronExpParser.Parser(jobCronExpression, cronDate, lTime);
+					}catch(Exception ex){
+						isCronExp = false;
+					}
+					if (!isCronExp) {
+						log.error("无法生成Cron表达式：日期," + cronDate + ";不符合规则cron表达式：" + jobCronExpression);
+					}
+					for (int i = 0; i < lTime.size(); i++) {
+						String actionDateStr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "yyyyMMddHHmmss");
+						String actionCronExpr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "s m H d M") + " ?";
+						
+						JobPersistence actionPer = new JobPersistence();
+						actionPer.setId(Long.parseLong(actionDateStr)*10000+jobDetail.getId());//update action id
+						actionPer.setToJobId(jobDetail.getId());
+						actionPer.setAuto(jobDetail.getAuto());
+						actionPer.setConfigs(jobDetail.getConfigs());
+						actionPer.setCronExpression(actionCronExpr);//update action cron expression
+						actionPer.setCycle(jobDetail.getCycle());
+						String jobDependencies = jobDetail.getDependencies();
+						actionPer.setDependencies(jobDependencies);
+						actionPer.setJobDependencies(jobDependencies);
+						actionPer.setDescr(jobDetail.getDescr());
+						actionPer.setGmtCreate(jobDetail.getGmtCreate());
+						actionPer.setGmtModified(jobDetail.getGmtModified());
+						actionPer.setGroupId(jobDetail.getGroupId());
+						actionPer.setHistoryId(jobDetail.getHistoryId());
+						actionPer.setHost(jobDetail.getHost());
+						actionPer.setLastEndTime(jobDetail.getLastEndTime());
+						actionPer.setLastResult(jobDetail.getLastResult());
+						actionPer.setName(jobDetail.getName());
+						actionPer.setOffset(jobDetail.getOffset());
+						actionPer.setOwner(jobDetail.getOwner());
+						actionPer.setPostProcessers(jobDetail.getPostProcessers());
+						actionPer.setPreProcessers(jobDetail.getPreProcessers());
+						actionPer.setReadyDependency(jobDetail.getReadyDependency());
+						actionPer.setResources(jobDetail.getResources());
+						actionPer.setRunType(jobDetail.getRunType());
+						actionPer.setScheduleType(jobDetail.getScheduleType());
+						actionPer.setScript(jobDetail.getScript());
+						actionPer.setStartTime(jobDetail.getStartTime());
+						actionPer.setStartTimestamp(jobDetail.getStartTimestamp());
+						actionPer.setStatisStartTime(jobDetail.getStatisStartTime());
+						actionPer.setStatisEndTime(jobDetail.getStatisEndTime());
+						actionPer.setStatus(jobDetail.getStatus());
+						actionPer.setTimezone(jobDetail.getTimezone());
+						try {
+							context.getGroupManager().saveJob(actionPer);
+							actionDetails.put(actionPer.getId(),actionPer);
+						} catch (ZeusException e) {
+							log.error("独立JobId:" + jobDetail.getId() + " 生成Action" +actionPer.getId() + "失败", e);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	//将依赖任务生成action
+	public void runDependencesJobToAction(List<JobPersistenceOld> jobDetails, Map<Long, JobPersistence> actionDetails){
+		int noCompleteCount = 0;
+		for(JobPersistenceOld jobDetail : jobDetails){
+			//ScheduleType: 0 独立任务; 1依赖任务
+			if(jobDetail.getScheduleType()==1){
+				String jobDependencies = jobDetail.getDependencies();
+				String actionDependencies = "";
+				if(jobDependencies != null && jobDependencies.trim().length()>0){
+
+					//计算这些依赖任务的版本数
+					Map<String,List<JobPersistence>> dependActionList = new HashMap<String,List<JobPersistence>>();
+					String[] dependStrs = jobDependencies.split(",");
+					for(String deps : dependStrs){
+						List<JobPersistence> dependActions = new ArrayList<JobPersistence>();
+						Iterator<JobPersistence> actionIt = actionDetails.values().iterator();
+						while(actionIt.hasNext()){
+							JobPersistence action = actionIt.next();
+							if(action.getToJobId().toString().equals(deps)){
+								dependActions.add(action);
+							}
+						}
+						dependActionList.put(deps, dependActions);
+					}
+					//判断是否有未完成的
+					boolean isComplete = true;
+//					Long actionId = 0L;
+					String actionMostDeps = "";
+					for(String deps : dependStrs){
+						if(jobDetail.getCycle().trim().equals("day") || jobDetail.getCycle().trim().equals("hour")){
+							if(dependActionList.get(deps).size()==0){
+								isComplete = false;
+								noCompleteCount ++;
+								break;
+							}
+							if(actionMostDeps.trim().length()==0){
+								actionMostDeps = deps;
+							}
+							if(dependActionList.get(deps).size()>dependActionList.get(actionMostDeps).size()){
+								actionMostDeps = deps;
+							}
+						}
+					}
+					if(!isComplete){
+						break;
+					}else{
+						List<JobPersistence> actions = dependActionList.get(actionMostDeps);
+						if(actions != null && actions.size()>0){
+							for(JobPersistence actionModel : actions){
+								actionDependencies = String.valueOf((actionModel.getId()/10000)*10000 + actionModel.getToJobId());
+								for(String deps : dependStrs){
+									if(!deps.equals(actionMostDeps)){
+										Long actionOtherId = actionModel.getId();
+										List<JobPersistence> actionOthers = dependActionList.get(deps);
+										int i = 0;
+										for(JobPersistence actionOtherModel : actionOthers){
+											if(i==0){
+												if(actionOtherId<actionOtherModel.getId()){
+													actionOtherId = actionOtherModel.getId();
+													i++;
+												}
+											}else{
+												if(actionOtherModel.getId()<actionOtherId && actionOtherModel.getId()>actionModel.getId()){
+													actionOtherId = actionOtherModel.getId();
+												}
+											}
+										}
+										if(actionDependencies.trim().length()>0){
+											actionDependencies += ",";
+										}
+										actionDependencies += String.valueOf((actionOtherId/10000)*10000 + Long.parseLong(deps));
+									}
+								}
+								//保存多版本的action
+								JobPersistence actionPer = new JobPersistence();
+								actionPer.setId((actionModel.getId()/10000)*10000+jobDetail.getId());//update action id
+								actionPer.setToJobId(jobDetail.getId());
+								actionPer.setAuto(jobDetail.getAuto());
+								actionPer.setConfigs(jobDetail.getConfigs());
+								actionPer.setCronExpression(jobDetail.getCronExpression());//update action cron expression
+								actionPer.setCycle(jobDetail.getCycle());
+								actionPer.setDependencies(actionDependencies);
+								actionPer.setJobDependencies(jobDependencies);
+								actionPer.setDescr(jobDetail.getDescr());
+								actionPer.setGmtCreate(jobDetail.getGmtCreate());
+								actionPer.setGmtModified(jobDetail.getGmtModified());
+								actionPer.setGroupId(jobDetail.getGroupId());
+								actionPer.setHistoryId(jobDetail.getHistoryId());
+								actionPer.setHost(jobDetail.getHost());
+								actionPer.setLastEndTime(jobDetail.getLastEndTime());
+								actionPer.setLastResult(jobDetail.getLastResult());
+								actionPer.setName(jobDetail.getName());
+								actionPer.setOffset(jobDetail.getOffset());
+								actionPer.setOwner(jobDetail.getOwner());
+								actionPer.setPostProcessers(jobDetail.getPostProcessers());
+								actionPer.setPreProcessers(jobDetail.getPreProcessers());
+								actionPer.setReadyDependency(jobDetail.getReadyDependency());
+								actionPer.setResources(jobDetail.getResources());
+								actionPer.setRunType(jobDetail.getRunType());
+								actionPer.setScheduleType(jobDetail.getScheduleType());
+								actionPer.setScript(jobDetail.getScript());
+								actionPer.setStartTime(jobDetail.getStartTime());
+								actionPer.setStartTimestamp(jobDetail.getStartTimestamp());
+								actionPer.setStatisStartTime(jobDetail.getStatisStartTime());
+								actionPer.setStatisEndTime(jobDetail.getStatisEndTime());
+								actionPer.setStatus(jobDetail.getStatus());
+								actionPer.setTimezone(jobDetail.getTimezone());
+								try {
+									context.getGroupManager().saveJob(actionPer);
+									actionDetails.put(actionPer.getId(),actionPer);
+								} catch (ZeusException e) {
+									log.error("依赖JobId:" + jobDetail.getId() + " 生成Action" +actionPer.getId() + "失败", e);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if(noCompleteCount>0){
+			runDependencesJobToAction(jobDetails, actionDetails);
+		}
 	}
 }

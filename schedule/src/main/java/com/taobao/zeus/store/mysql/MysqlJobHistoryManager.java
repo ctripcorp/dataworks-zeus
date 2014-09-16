@@ -1,7 +1,6 @@
 package com.taobao.zeus.store.mysql;
 
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -10,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -19,12 +17,9 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.taobao.zeus.model.JobHistory;
-import com.taobao.zeus.model.JobStatus.Status;
-import com.taobao.zeus.model.JobStatus.TriggerType;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.mysql.persistence.JobHistoryPersistence;
 import com.taobao.zeus.store.mysql.tool.PersistenceAndBeanConvert;
-import com.taobao.zeus.util.DateUtil;
 @SuppressWarnings("unchecked")
 public class MysqlJobHistoryManager extends HibernateDaoSupport implements JobHistoryManager{
 
@@ -71,9 +66,10 @@ public class MysqlJobHistoryManager extends HibernateDaoSupport implements JobHi
 			@Override
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
-				SQLQuery query=session.createSQLQuery("select id,job_id,start_time,end_time,execute_host,status,trigger_type,illustrate,operator,properties,statis_end_time,timezone,cycle from zeus_job_history" +
-						" where job_id=? order by id desc");
+				SQLQuery query=session.createSQLQuery("select id,action_id,job_id,start_time,end_time,execute_host,status,trigger_type,illustrate,operator,properties,statis_end_time,timezone,cycle from zeus_action_history" +
+						" where job_id=? or action_id=? order by id desc");
 				query.setParameter(0, Long.valueOf(jobId));
+				query.setParameter(1, Long.valueOf(jobId));
 				query.setMaxResults(limit);
 				query.setFirstResult(start);
 				List<Object[]> list=query.list();
@@ -82,17 +78,18 @@ public class MysqlJobHistoryManager extends HibernateDaoSupport implements JobHi
 					JobHistoryPersistence p=new JobHistoryPersistence();
 					p.setId(((Number)o[0]).longValue());
 					p.setJobId(((Number)o[1]).longValue());
-					p.setStartTime((Date)o[2]);
-					p.setEndTime((Date)o[3]);
-					p.setExecuteHost((String)o[4]);
-					p.setStatus((String)o[5]);  
-					p.setTriggerType(o[6]==null?null:((Number)o[6]).intValue());
-					p.setIllustrate((String)o[7]);
-					p.setOperator((String)o[8]);
-					p.setProperties((String)o[9]);
-					p.setStatisEndTime(o[10]==null?null:(Date)o[10]);
-					p.setTimezone((String)o[11]);
-					p.setCycle((String)o[12]);
+					p.setToJobId(((Number)o[2]).longValue());
+					p.setStartTime((Date)o[3]);
+					p.setEndTime((Date)o[4]);
+					p.setExecuteHost((String)o[5]);
+					p.setStatus((String)o[6]);  
+					p.setTriggerType(o[7]==null?null:((Number)o[7]).intValue());
+					p.setIllustrate((String)o[8]);
+					p.setOperator((String)o[9]);
+					p.setProperties((String)o[10]);
+					p.setStatisEndTime(o[11]==null?null:(Date)o[11]);
+					p.setTimezone((String)o[12]);
+					p.setCycle((String)o[13]);
 					result.add(PersistenceAndBeanConvert.convert(p));
 				}
 				return result;

@@ -51,10 +51,14 @@
 	<bean id="jobHistoryManager" class="com.taobao.zeus.store.mysql.MysqlJobHistoryManager" />
 	<bean id="permissionManager" class="com.taobao.zeus.store.mysql.MysqlPermissionManager" />
 	<bean id="groupManager" class="com.taobao.zeus.store.mysql.MysqlGroupManager" />
+	<bean id="groupManagerOld" class="com.taobao.zeus.store.mysql.MysqlGroupManagerOld" />
 	<bean id="tableManager" class="com.taobao.zeus.store.CliTableManager" />
 	<bean id="reportManager" class="com.taobao.zeus.store.mysql.MysqlReportManager" />
 	<bean id="readOnlyGroupManager" class="com.taobao.zeus.store.mysql.ReadOnlyGroupManager" >
 		<property name="groupManager" ref="groupManager" />
+	</bean>
+	<bean id="readOnlyGroupManagerOld" class="com.taobao.zeus.store.mysql.ReadOnlyGroupManagerOld" >
+		<property name="groupManager" ref="groupManagerOld" />
 	</bean>
 	<bean id="permissionScheduleGroupManager" class="com.taobao.zeus.web.PermissionGroupManager" >
 		<property name="groupManager" ref="scheduleGroupManager"></property>
@@ -64,6 +68,8 @@
 	</bean>
 	
 	<bean id="jobValidate" class="com.taobao.zeus.store.mysql.tool.JobValidate"></bean>
+	
+	<bean id="jobValidateOld" class="com.taobao.zeus.store.mysql.tool.JobValidateOld"></bean>
 	
 	<bean id="distributeLocker" class="com.taobao.zeus.schedule.DistributeLocker" init-method="init" >
 		<constructor-arg>

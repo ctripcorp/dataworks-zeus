@@ -411,6 +411,7 @@ public class JobServiceImpl implements JobService {
 		jobDescriptor = job.getX();
 		JobHistory history = new JobHistory();
 		history.setJobId(jobId);
+		history.setToJobId(jobDescriptor.getToJobId());
 		history.setTriggerType(triggerType);
 		history.setOperator(LoginUser.getUser().getUid());
 		history.setIllustrate("触发人：" + LoginUser.getUser().getUid());
@@ -456,6 +457,7 @@ public class JobServiceImpl implements JobService {
 		JobHistoryModel d = new JobHistoryModel();
 		d.setId(his.getId());
 		d.setJobId(his.getJobId());
+		d.setToJobId(his.getToJobId());
 		d.setStartTime(his.getStartTime());
 		d.setEndTime(his.getEndTime());
 		d.setExecuteHost(his.getExecuteHost());
@@ -491,6 +493,7 @@ public class JobServiceImpl implements JobService {
 			JobHistoryModel d = new JobHistoryModel();
 			d.setId(his.getId());
 			d.setJobId(his.getJobId());
+			d.setToJobId(his.getToJobId());
 			d.setStartTime(his.getStartTime());
 			d.setEndTime(his.getEndTime());
 			d.setExecuteHost(his.getExecuteHost());

@@ -42,6 +42,7 @@ import com.taobao.zeus.socket.worker.reqresp.WorkerWebExecute;
 import com.taobao.zeus.socket.worker.reqresp.WorkerWebUpdate;
 
 public class ClientWorker {
+	// Client服务启动器
 	private ClientBootstrap bootstrap;
 	private WorkerContext context = new WorkerContext();
 	private static Logger log = LoggerFactory.getLogger(ClientWorker.class);
@@ -54,6 +55,8 @@ public class ClientWorker {
 						Executors.newCachedThreadPool()));
 
 		// 每建立一个connection,也就是channel,就会调用pipelinFacty().getPipeline()方法一次.
+		// 设置一个处理服务端消息和各种消息事件的类(WorkHandler)  
+		// Pipeline：管道，传输途径。也就是说，在这里他是控制ChannelEvent事件分发和传递的
 		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
@@ -66,7 +69,9 @@ public class ClientWorker {
 			}
 		});
 		this.bootstrap = bootstrap;
+		//将clientworker对象注入到上下文对象中
 		context.setClientWorker(this);
+		//将spring容器注入到上下文对象中
 		context.setApplicationContext(applicationContext);
 		// 定时发送心跳
 		ScheduledExecutorService service = Executors.newScheduledThreadPool(2);
@@ -177,6 +182,8 @@ public class ClientWorker {
 
 	}
 
+	//client 与 server 建立连接
+	//DistributeLocker类中worker.connect(lock.getHost(),port) 
 	public synchronized void connect(String host,int port) throws Exception {
 		if (context.getServerChannel() != null) {
 			if (host.equals(context.getServerHost())) {
@@ -262,6 +269,8 @@ public class ClientWorker {
 	}
 
 	/**
+	 * 以下是一些来自web请求的处理方法
+	 * 
 	 * worker->master 执行任务 包含手动恢复，手动执行，调试执行
 	 * 
 	 * @param kind

@@ -7,13 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Entity(name="zeus_job_history")
+@Entity(name="zeus_action_history")
 public class JobHistoryPersistence {
 	@Id
 	@GeneratedValue
 	private Long id;
-	@Column(name="job_id")
+	@Column(name="action_id")
 	private Long jobId;
+	@Column(name="job_id")
+	private Long toJobId;
 	@Column(name="start_time")
 	private Date startTime;
 	@Column(name="end_time")
@@ -56,6 +58,12 @@ public class JobHistoryPersistence {
 	}
 	public void setJobId(Long jobId) {
 		this.jobId = jobId;
+	}
+	public Long getToJobId() {
+		return toJobId;
+	}
+	public void setToJobId(Long toJobId) {
+		this.toJobId = toJobId;
 	}
 	public Date getStartTime() {
 		return startTime;

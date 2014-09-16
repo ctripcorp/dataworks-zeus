@@ -19,7 +19,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class CodeMirror extends Widget{
 
-	public static String theme="default";
+	public static String theme="default"; //default
 	static{
 		CodeMirrorCSS css=GWT.create(CodeMirrorCSS.class);
 		css.style().ensureInjected();

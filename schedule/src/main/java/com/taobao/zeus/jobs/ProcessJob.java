@@ -309,6 +309,8 @@ public abstract class ProcessJob extends AbstractJob implements Job {
 			commands.add("/C");
 			commands.add(command);
 		}else{
+//			commands.add("sudo -u root bash");
+//			commands.add("su - biubt");
 			int index = 0;
 
 	        StringBuffer buffer = new StringBuffer(command.length());

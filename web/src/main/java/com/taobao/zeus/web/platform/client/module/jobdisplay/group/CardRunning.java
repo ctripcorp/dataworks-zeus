@@ -49,7 +49,8 @@ public class CardRunning extends CenterTemplate implements Refreshable<GroupMode
 	public CardRunning(final GroupPresenter presenter){
 		IdentityValueProvider<JobHistoryModel> identity = new IdentityValueProvider<JobHistoryModel>();
 		RowNumberer<JobHistoryModel> numberer = new RowNumberer<JobHistoryModel>(identity);
-		ColumnConfig<JobHistoryModel,String> jobId=new ColumnConfig<JobHistoryModel, String>(prop.jobId(), 30, "JobId");
+		ColumnConfig<JobHistoryModel,String> jobId=new ColumnConfig<JobHistoryModel, String>(prop.jobId(), 30, "ActionId");
+		ColumnConfig<JobHistoryModel,String> toJobId=new ColumnConfig<JobHistoryModel, String>(prop.toJobId(), 30, "JobId");
 		ColumnConfig<JobHistoryModel,String> name=new ColumnConfig<JobHistoryModel, String>(prop.name(),100,"任务名称");
 		ColumnConfig<JobHistoryModel,String> owner=new ColumnConfig<JobHistoryModel,String>(prop.owner(),50,"所有人");
 		owner.setCell(new AbstractCell<String>(){
@@ -151,7 +152,7 @@ public class CardRunning extends CenterTemplate implements Refreshable<GroupMode
 				}
 			}
 		});
-		ColumnModel<JobHistoryModel> cm=new ColumnModel(Arrays.asList(numberer,jobId,name,owner,startTime,executeHost,triggerType,illustrate,operate));
+		ColumnModel<JobHistoryModel> cm=new ColumnModel(Arrays.asList(numberer,jobId,toJobId,name,owner,startTime,executeHost,triggerType,illustrate,operate));
 		
 		
 		store=new ListStore<JobHistoryModel>(prop.key());

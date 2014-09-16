@@ -8,33 +8,48 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Entity(name = "zeus_job")
+@Entity(name = "zeus_action")
 public class JobPersistence implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue
-	private Long id;
+//	@GeneratedValue
+	private Long id;	//action id
+	
+	/**
+	 * jobid  
+	 */
+	@Column(name = "job_id")
+	private Long toJobId;
+
 	/**
 	 * 是否开启调度 1:true 0:false
 	 */
 	@Column
 	private Integer auto = 0;
+	
 	/**
 	 * 1:独立Job 2：有依赖的Job
 	 */
 	@Column(name = "schedule_type")
 	private Integer scheduleType;
+	
 	/**
 	 * 运行的类型，比如Shell， Hive Mapreduce
 	 */
 	@Column(name = "run_type")
 	private String runType;
+	
 	@Column(length=4096)
 	private String configs;
+	
 	@Column(name = "cron_expression")
 	private String cronExpression;
+	
 	@Column
 	private String dependencies;
+	
+	@Column(name = "job_dependencies")
+	private String jobDependencies;
 
 	@Column(nullable = false)
 	private String name;
@@ -105,6 +120,15 @@ public class JobPersistence implements Serializable {
 	@Column(name="host")
 	private String host;
 	
+	
+	public Long getToJobId() {
+		return toJobId;
+	}
+
+	public void setToJobId(Long toJobId) {
+		this.toJobId = toJobId;
+	}
+	
 	public String getConfigs() {
 		return configs;
 	}
@@ -127,6 +151,14 @@ public class JobPersistence implements Serializable {
 
 	public void setDependencies(String dependencies) {
 		this.dependencies = dependencies;
+	}
+
+	public String getJobDependencies() {
+		return jobDependencies;
+	}
+
+	public void setJobDependencies(String jobDependencies) {
+		this.jobDependencies = jobDependencies;
 	}
 
 	public String getName() {

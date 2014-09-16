@@ -80,6 +80,7 @@ public class PersistenceAndBeanConvert {
 		}
 		JobDescriptor jd = new JobDescriptor();
 		jd.setId(String.valueOf(persist.getId()));
+		jd.setToJobId(String.valueOf(persist.getToJobId() == null ? null : persist.getToJobId()));
 		jd.setName(persist.getName());
 		jd.setDesc(persist.getDescr());
 		jd.setOwner(persist.getOwner());
@@ -346,6 +347,7 @@ public class PersistenceAndBeanConvert {
 		JobHistory history = new JobHistory();
 		history.setId(String.valueOf(persist.getId()));
 		history.setJobId(String.valueOf(persist.getJobId()));
+		history.setToJobId(String.valueOf(persist.getToJobId() == null ? null : persist.getToJobId()));
 		history.setStartTime(persist.getStartTime());
 		history.setEndTime(persist.getEndTime());
 		history.setLog(persist.getLog());
@@ -379,6 +381,7 @@ public class PersistenceAndBeanConvert {
 		persist.setId(history.getId() == null ? null : Long.valueOf(history
 				.getId()));
 		persist.setJobId(Long.valueOf(history.getJobId()));
+		persist.setToJobId(Long.valueOf(history.getToJobId()==null ? null : history.getToJobId()));
 		persist.setLog(history.getLog().getContent());
 		persist.setStartTime(history.getStartTime());
 		persist.setStatus(history.getStatus() == null ? null : history

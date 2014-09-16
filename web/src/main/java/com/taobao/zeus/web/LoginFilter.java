@@ -1,6 +1,7 @@
 package com.taobao.zeus.web;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -11,6 +12,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -26,17 +28,33 @@ public class LoginFilter implements Filter {
 	
 	private UserManager userManager;
 	private SSOLogin login=new SSOLogin() {
-		public String getUid(HttpServletRequest req) {
+//		private String username = "";
+//		private String usermail = "";
+//		private String fullname = "";
+//		private String phone = "";
+//		private String department = "";
+		public String getUid(HttpServletRequest request) {
+//			AttributePrincipal principal = (AttributePrincipal)request.getUserPrincipal();
+//			Map<String,String> map = principal.getAttributes();
+//			username = map.get("name");
+//			usermail = map.get("mail");
+//			department = map.get("department");
+//			fullname = map.get("sn");
+//			return username;
 			return ZeusUser.ADMIN.getUid();
+
 		}
 		public String getPhone(HttpServletRequest req) {
 			return ZeusUser.ADMIN.getPhone();
+			//return phone;
 		}
 		public String getName(HttpServletRequest req) {
 			return ZeusUser.ADMIN.getName();
+			//return fullname;
 		}
 		public String getEmail(HttpServletRequest req) {
 			return ZeusUser.ADMIN.getEmail();
+			//return usermail;
 		}
 	};
 	@Override
@@ -51,6 +69,7 @@ public class LoginFilter implements Filter {
 		String getName(HttpServletRequest req);
 		String getPhone(HttpServletRequest req);
 	}
+	
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
@@ -67,6 +86,9 @@ public class LoginFilter implements Filter {
 		
 		ZeusUser zeusUser=null;
 		String uri=httpRequest.getRequestURI();
+/*		if(uri.contains("zeus_platform.nocache.js")){
+			System.out.println(uri);
+		}*/
 		if(uri.endsWith(".taobao") || uri.endsWith(".js") || uri.endsWith(".css") || uri.endsWith(".gif") ||
 				uri.endsWith(".jpg") || uri.endsWith(".png") || uri.endsWith("dump.do")){
 			chain.doFilter(request, response);
@@ -87,6 +109,7 @@ public class LoginFilter implements Filter {
 			httpRequest.getSession().setAttribute("user", zeusUser.getUid());
 		}
 		LoginUser.user.set(zeusUser);
+		//System.out.println(zeusUser.toString());
 		
 		chain.doFilter(request, response);
 	}

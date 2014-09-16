@@ -2,6 +2,10 @@ package com.taobao.zeus.jobs.sub.conf;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.hadoop.conf.Configuration;
 import org.slf4j.Logger;
@@ -12,15 +16,17 @@ public class ConfUtil {
 	private static Logger log=LoggerFactory.getLogger(ConfUtil.class);
 	
 	public static String getHadoopHome(){
-		return System.getenv("HADOOP_HOME");
+		//System.out.println(System.getenv("HADOOP_HOME"));
+		return System.getenv("HADOOP_HOME") == null ? null : "";
 	}
 	
 	public static String getHiveHome(){
-		return System.getenv("HIVE_HOME");
+		return System.getenv("HIVE_HOME") == null ? null : "";
 	}
 	
 	public static String getHiveConfDir(){
 		String dir=System.getenv("HIVE_CONF_DIR");
+		dir = "\\etc\\hive\\conf";
 		if(dir==null || "".equals(dir.trim())){
 			dir=getHiveHome()+File.separator+"conf";
 		}
@@ -29,6 +35,7 @@ public class ConfUtil {
 	
 	public static String getHadoopConfDir(){
 		String dir=System.getenv("HADOOP_CONF_DIR");
+		dir = "\\etc\\hadoop\\conf";
 		if(dir==null || "".equals(dir.trim())){
 			//hadoop2中，配置的默认地址已经修改
 			dir=getHadoopHome()+File.separator+"etc"+File.separator+"hadoop";

@@ -8,6 +8,7 @@ public class JobHistoryModel implements Serializable{
 
 	private String id;
 	private String jobId;
+	private String toJobId;
 	private String name;
 	private String owner;
 	private Date startTime;
@@ -34,6 +35,12 @@ public class JobHistoryModel implements Serializable{
 	}
 	public void setJobId(String jobId) {
 		this.jobId = jobId;
+	}
+	public String getToJobId() {
+		return toJobId;
+	}
+	public void setToJobId(String toJobId) {
+		this.toJobId = toJobId;
 	}
 	public String getName() {
 		return name;

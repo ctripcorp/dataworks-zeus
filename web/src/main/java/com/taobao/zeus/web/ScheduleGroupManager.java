@@ -17,6 +17,7 @@ import com.taobao.zeus.socket.worker.ClientWorker;
 import com.taobao.zeus.store.GroupBean;
 import com.taobao.zeus.store.GroupManager;
 import com.taobao.zeus.store.JobBean;
+import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.Worker;
 import com.taobao.zeus.util.Tuple;
 /**
@@ -194,6 +195,12 @@ public class ScheduleGroupManager implements GroupManager{
 
 	@Override
 	public void removeWorker(String host) throws ZeusException {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void saveJob(JobPersistence actionPer) throws ZeusException {
 		// TODO Auto-generated method stub
 		
 	}

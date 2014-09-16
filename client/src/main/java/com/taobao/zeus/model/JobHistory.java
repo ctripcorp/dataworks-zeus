@@ -12,6 +12,7 @@ public class JobHistory{
 
 	private String id;
 	private String jobId;
+	private String toJobId;
 	private Date startTime;
 	private Date endTime;
 	private String executeHost;
@@ -41,7 +42,15 @@ public class JobHistory{
 	public void setJobId(String jobId) {
 		this.jobId = jobId;
 	}
+	
+	public String getToJobId() {
+		return toJobId;
+	}
 
+	public void setToJobId(String toJobId) {
+		this.toJobId = toJobId;
+	}
+	
 	public Date getStartTime() {
 		return startTime;
 	}

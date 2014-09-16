@@ -1,18 +1,17 @@
 package com.taobao.zeus.client.crud;
 
 import com.taobao.zeus.client.ZeusException;
-import com.taobao.zeus.model.JobDescriptor;
-import com.taobao.zeus.model.JobDescriptor.JobRunType;
-import com.taobao.zeus.model.JobStatus.TriggerType;
+import com.taobao.zeus.model.JobDescriptorOld;
+import com.taobao.zeus.model.JobDescriptorOld.JobRunTypeOld;
 
 public interface ZeusJobService {
 
-	public JobDescriptor createJob(String uid,String jobName,String parentGroup,JobRunType jobType) throws ZeusException;
+	public JobDescriptorOld createJob(String uid,String jobName,String parentGroup,JobRunTypeOld jobType) throws ZeusException;
 	
-	public void updateJob(String uid,JobDescriptor jobDescriptor) throws ZeusException;
+	public void updateJob(String uid,JobDescriptorOld jobDescriptor) throws ZeusException;
 	
 	public void deleteJob(String uid,String jobId) throws ZeusException;
 	
-	public JobDescriptor getJobDescriptor(String jobId);
+	public JobDescriptorOld getJobDescriptor(String jobId);
 	
 }

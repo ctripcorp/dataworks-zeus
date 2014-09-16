@@ -213,6 +213,7 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 					GroupPersistence persist = new GroupPersistence();
 					persist.setName("众神之神");
 					persist.setOwner(ZeusUser.ADMIN.getUid());
+					//persist.setOwner("yangfei");
 					persist.setDirectory(0);
 					session.save(persist);
 					if (persist.getId() == null) {
@@ -536,6 +537,15 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 			throw new ZeusException(e);
 		}
 
+	}
+	
+	@Override
+	public void saveJob(JobPersistence actionPer) throws ZeusException{
+		try{
+			getHibernateTemplate().saveOrUpdate(actionPer);
+		}catch(DataAccessException e){
+			throw new ZeusException(e);
+		}
 	}
 
 }

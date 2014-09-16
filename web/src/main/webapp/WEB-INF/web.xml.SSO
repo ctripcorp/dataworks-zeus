@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://java.sun.com/xml/ns/j2ee  http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd
+    ">
+	<context-param>
+		<param-name>hdfsLibPath</param-name>
+		<param-value>${zeus.hdfsLibPath}</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext.xml,
+					classpath:broadcast-applicationContext.xml,
+					classpath:persistence.xml</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>jobtracker</param-name>
+		<param-value>${zeus.jobtracker}</param-value>
+	</context-param>
+	
+	
+	<!-- cas start -->
+	<!--   DelegatingFilterProxy 是一个 SpringFramework 的类，它可以代理一个 applicationcontext 中定义的 Springbean 所实现的 filter -->
+    <listener> 
+        <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class> 
+    </listener> 
+ 
+    <!-- 该过滤器用于实现单点登出功能，可选配置。 --> 
+    <filter> 
+        <filter-name>CAS Single Sign Out Filter</filter-name> 
+        <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+
+    </filter> 
+    <filter-mapping> 
+        <filter-name>CAS Single Sign Out Filter</filter-name> 
+        <url-pattern>/*</url-pattern> 
+    </filter-mapping> 
+	
+    <!-- 该过滤器负责用户的认证工作，必须启用它 --> 
+    <filter> 
+        <filter-name>CASFilter</filter-name> 
+        <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class> 
+        <init-param> 
+            <param-name>casServerLoginUrl</param-name> 
+            <!-- <param-value>https://cas.ctripcorp.com/caso/login</param-value> -->
+            <param-value>http://cas.uat.qa.nt.ctripcorp.com/caso/login</param-value>
+            <!--这里的server是服务端的IP --> 
+        </init-param> 
+        <init-param> 
+            <param-name>serverName</param-name> 
+            <param-value>http://localhost:8080</param-value> 
+        </init-param> 
+
+    </filter> 
+    <filter-mapping> 
+        <filter-name>CASFilter</filter-name> 
+        <url-pattern>/*</url-pattern> 
+    </filter-mapping> 
+ 
+    <!-- 该过滤器负责对Ticket的校验工作，必须启用它 --> 
+    <filter> 
+        <filter-name>CAS Validation Filter</filter-name> 
+        <filter-class> 
+            org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter</filter-class> 
+        <init-param> 
+            <param-name>casServerUrlPrefix</param-name> 
+            <!-- <param-value>https://cas.ctripcorp.com/caso</param-value> -->
+            <param-value>http://cas.uat.qa.nt.ctripcorp.com/caso</param-value>
+        </init-param> 
+        <init-param> 
+            <param-name>serverName</param-name> 
+            <param-value>http://localhost:8080</param-value> 
+        </init-param>
+        <init-param> 
+            <param-name>encoding</param-name> 
+            <param-value>UTF-8</param-value> 
+        </init-param>
+     </filter> 
+    <filter-mapping> 
+        <filter-name>CAS Validation Filter</filter-name> 
+        <url-pattern>/*</url-pattern> 
+    </filter-mapping> 
+ 
+    <!-- 该过滤器负责实现HttpServletRequest请求的包裹， 比如允许开发者通过HttpServletRequest的getRemoteUser()方法获得SSO登录用户的登录名，可选配置。 --> 
+    <filter> 
+        <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name> 
+        <filter-class> 
+            org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class> 
+    </filter> 
+    <filter-mapping> 
+        <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name> 
+        <url-pattern>/*</url-pattern> 
+    </filter-mapping>  
+ 
+    <!-- 该过滤器使得开发者可以通过org.jasig.cas.client.util.AssertionHolder来获取用户的登录名。 比如AssertionHolder.getAssertion().getPrincipal().getName()。 --> 
+    <filter> 
+        <filter-name>CAS Assertion Thread Local Filter</filter-name> 
+        <filter-class>org.jasig.cas.client.util.AssertionThreadLocalFilter</filter-class> 
+    </filter> 
+    <filter-mapping> 
+        <filter-name>CAS Assertion Thread Local Filter</filter-name> 
+        <url-pattern>/*</url-pattern> 
+    </filter-mapping>  
+    <!-- cas end -->
+
+    
+    
+    
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- need config a ssoFilter -->
+
+	<filter>
+		<filter-name>LoginFilter</filter-name>
+		<filter-class>com.taobao.zeus.web.LoginFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>LoginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>rpcFilter</filter-name>
+		<filter-class>com.taobao.zeus.web.RpcFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>rpcFilter</filter-name>
+		<url-pattern>*.rpc</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>upload</servlet-name>
+		<servlet-class>com.taobao.zeus.web.FileUploadServlet</servlet-class>
+		<load-on-startup>11</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>upload</servlet-name>
+		<url-pattern>/upload.do</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>partitionDownload</servlet-name>
+		<servlet-class>com.taobao.zeus.web.PartitionDownloadServlet</servlet-class>
+		<load-on-startup>11</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>partitionDownload</servlet-name>
+		<url-pattern>/partition_download.do</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>dump</servlet-name>
+		<servlet-class>com.taobao.zeus.web.ScheduleDump</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dump</servlet-name>
+		<url-pattern>/dump.do</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>yunti_jobdetail</servlet-name>
+		<servlet-class>com.taobao.zeus.web.YuntiJobDetailServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>yunti_jobdetail</servlet-name>
+		<url-pattern>/jobdetail.jsp</url-pattern>
+	</servlet-mapping>
+
+
+	<session-config>
+		<session-timeout>600</session-timeout>
+	</session-config>
+
+	<welcome-file-list>
+		<welcome-file>platform.html</welcome-file>
+	</welcome-file-list>
+
+	<error-page>
+		<error-code>400</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>401</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>405</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>407</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>408</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>414</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>415</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page> 
+		<error-code>501</error-code>
+		<location>/error.htm</location>
+	</error-page>
+	<error-page>
+		<error-code>503</error-code>
+		<location>/error.htm</location>
+	</error-page>
+
+</web-app>

@@ -15,6 +15,7 @@ public class JobDescriptor implements Serializable {
 	private String cronExpression;
 	private List<String> dependencies = new ArrayList<String>();
 	private String id;
+	private String toJobId;
 	private String name;
 	private String desc;
 	private String groupId;
@@ -56,6 +57,7 @@ public class JobDescriptor implements Serializable {
 		jobDescriptor.setDesc(this.getDesc());
 		jobDescriptor.setGroupId(this.getGroupId());
 		jobDescriptor.setId(this.getId());
+		jobDescriptor.setToJobId(this.getToJobId());
 		jobDescriptor.setJobType(this.getJobType());
 		jobDescriptor.setName(this.getName());
 		jobDescriptor.setOffRaw(this.getOffRaw());
@@ -72,6 +74,14 @@ public class JobDescriptor implements Serializable {
 		jobDescriptor.setStatisStartTime(this.getStatisStartTime());
 		jobDescriptor.setTimezone(this.getTimezone());
 		return jobDescriptor;
+	}
+
+	public String getToJobId() {
+		return toJobId;
+	}
+
+	public void setToJobId(String toJobId) {
+		this.toJobId = toJobId;
 	}
 
 	public List<Map<String, String>> getResources() {

@@ -24,6 +24,7 @@ import com.taobao.zeus.store.GroupManager;
 import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.UserManager;
+import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.Worker;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.util.Tuple;
@@ -350,6 +351,12 @@ public class PermissionGroupManager implements GroupManager{
 	}
 	@Override
 	public void removeWorker(String host) throws ZeusException {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void saveJob(JobPersistence actionPer) throws ZeusException {
 		// TODO Auto-generated method stub
 		
 	}

@@ -19,6 +19,7 @@ import com.taobao.zeus.schedule.mvc.ScheduleInfoLog;
 import com.taobao.zeus.store.DebugHistoryManager;
 import com.taobao.zeus.store.FileManager;
 import com.taobao.zeus.store.GroupManager;
+import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.ProfileManager;
 
@@ -108,6 +109,9 @@ public class MasterContext {
 	}
 	public GroupManager getGroupManager() {
 		return (GroupManager) applicationContext.getBean("groupManager");
+	}
+	public GroupManagerOld getGroupManagerOld() {
+		return (GroupManagerOld) applicationContext.getBean("groupManagerOld");
 	}
 	public MasterHandler getHandler() {
 		return handler;

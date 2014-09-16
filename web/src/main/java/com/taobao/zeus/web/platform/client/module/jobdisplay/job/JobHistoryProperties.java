@@ -19,6 +19,8 @@ public interface JobHistoryProperties extends PropertyAccess<JobHistoryModel>{
 	
 	ValueProvider<JobHistoryModel, String> jobId();
 	
+	ValueProvider<JobHistoryModel, String> toJobId();
+	
 	ValueProvider<JobHistoryModel, String> status();
 	
 	ValueProvider<JobHistoryModel, String> executeHost();

@@ -21,9 +21,9 @@ import javax.persistence.Query;
 public class ZeusUser{
 	
 	public static final ZeusUser ADMIN=new ZeusUser(){
-		public String getEmail() {return "yangfei@ptthink.com";};
+		public String getEmail() {return "yangfei@Ctrip.com";};
 		public String getName() {return "杨飞";};
-		public String getPhone() {return "18612201251";};
+		public String getPhone() {return "";};
 		public String getUid() {return "yangfei";};
 	};
 	public static ZeusUser USER=new ZeusUser("yangfei@ptthink.com","杨飞","18612201251","yangfei");
@@ -106,7 +106,7 @@ public class ZeusUser{
 	}
 	@Override
 	public String toString() {
-		return "ZeusUser [uid=" + uid + ", wangwang=" + wangwang + "]";
+		return "ZeusUser [uid=" + uid + ", name=" + name + ", email=" + email + ", wangwang=" + wangwang + "]";
 	}
 
 }

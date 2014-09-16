@@ -148,7 +148,9 @@ public class CardHistory extends CenterTemplate implements
 		ColumnConfig<JobHistoryModel, String> id = new ColumnConfig<JobHistoryModel, String>(
 				prop.id(), 50, "id");
 		ColumnConfig<JobHistoryModel, String> jobId = new ColumnConfig<JobHistoryModel, String>(
-				prop.jobId(), 40, "JobId");
+				prop.jobId(), 40, "ActionId");
+		ColumnConfig<JobHistoryModel, String> toJobId = new ColumnConfig<JobHistoryModel, String>(
+				prop.toJobId(), 40, "JobId");
 		ColumnConfig<JobHistoryModel, Date> startTime = new ColumnConfig<JobHistoryModel, Date>(
 				prop.startTime(), 80, "开始时间");
 		startTime.setCell(new AbstractCell<Date>() {
@@ -287,7 +289,7 @@ public class CardHistory extends CenterTemplate implements
 			}
 		});
 		ColumnModel<JobHistoryModel> cm = new ColumnModel(Arrays.asList(id,
-				jobId, startTime, endTime, executeHost, status, operator,
+				jobId, toJobId, startTime, endTime, executeHost, status, operator,
 				triggerType, illustrate,statisEndTime,timezone,cycle,operate));
 
 		RpcProxy<PagingLoadConfig, PagingLoadResult<JobHistoryModel>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<JobHistoryModel>>() {

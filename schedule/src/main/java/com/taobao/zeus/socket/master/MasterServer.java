@@ -22,7 +22,7 @@ import com.taobao.zeus.socket.protocol.Protocol;
 
 
 public class MasterServer{
-
+	// Server服务启动器
 	private ServerBootstrap bootstrap;
 	private ChannelPipelineFactory pipelineFactory;
 	

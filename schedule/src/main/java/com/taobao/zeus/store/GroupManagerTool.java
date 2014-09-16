@@ -5,9 +5,8 @@ import java.util.Map;
 
 import com.taobao.zeus.model.GroupDescriptor;
 import com.taobao.zeus.model.JobDescriptor;
-import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.model.JobDescriptor.JobScheduleType;
-import com.taobao.zeus.store.mysql.tool.PersistenceAndBeanConvert;
+import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.util.Tuple;
 
 public class GroupManagerTool {

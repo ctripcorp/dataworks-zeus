@@ -147,6 +147,13 @@ public class JobController extends Controller {
 			try {
 				CronTrigger trigger = new CronTrigger(jd.getId(), "zeus",
 						cronExpression);
+				
+				/**************2014-09-14**************
+				Date date=null;  
+			    SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+			    date=formatter.parse(cronExpression);  
+				SimpleTrigger trigger = new SimpleTrigger(jd.getId(), "zeus", date, null, 0, 0L);
+				//**********************************************************************************/
 				JobDetail detail = new JobDetail(jd.getId(), "zeus",
 						TimerJob.class);
 				detail.getJobDataMap().put("jobId", jd.getId());
@@ -309,6 +316,7 @@ public class JobController extends Controller {
 					PropertyKeys.DEPENDENCY_CYCLE);
 			if (cycle != null && !"".equals(cycle)) {
 				Map<String, String> dep = jobStatus.getReadyDependency();
+				//判断依赖周期是同一天，如果依赖Job的完成时间与当前时间不是同一天，就移除此依赖关系
 				if ("sameday".equals(cycle)) {
 					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 					String now = format.format(new Date());
@@ -358,6 +366,7 @@ public class JobController extends Controller {
 		history.setIllustrate("依赖任务全部到位，开始执行");
 		history.setTriggerType(TriggerType.SCHEDULE);
 		history.setJobId(jobId);
+		history.setToJobId(jobDescriptor.getToJobId() == null ? null : jobDescriptor.getToJobId());
 		context.getJobHistoryManager().addJobHistory(history);
 		history = master.run(history);
 		if (history.getStatus() == Status.FAILED) {

@@ -15,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 import com.taobao.zeus.jobs.JobContext;
 import com.taobao.zeus.jobs.ProcessJob;
 import com.taobao.zeus.util.PropertyKeys;
+
 /**
  * 采用Shell脚本的任务
  * @author zhoufang
@@ -62,13 +63,19 @@ public class ShellJob extends ProcessJob{
 		}
 		
 		String shellFilePath=getProperty(PropertyKeys.RUN_SHELLPATH, "");
+		
 		List<String> list=new ArrayList<String>();
+		
+		// get operator uid
+		String shellUid = jobContext.getJobHistory().getOperator();
+		
 		//修改权限
 		list.add("chmod u+x " + shellFilePath);
 		//格式转换
 		list.add("dos2unix " + shellFilePath);
 		//执行shell
-		list.add("sh "+shellFilePath);
+		// run shell as current user
+		list.add("sudo -u " + shellUid + " sh "+shellFilePath);
 		return list;
 	}
 }

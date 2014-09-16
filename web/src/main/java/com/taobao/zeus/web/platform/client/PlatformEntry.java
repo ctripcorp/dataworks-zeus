@@ -1,11 +1,33 @@
 package com.taobao.zeus.web.platform.client;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DomEvent.Type;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.impl.DOMImpl;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.TextBoxBase;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -47,9 +69,100 @@ public class PlatformEntry implements EntryPoint {
 		});
 		
 	}
-	
+	private VerticalPanel mainPanel = new VerticalPanel(); 
+	private FlexTable stocksFlexTable = new FlexTable();
+	private HorizontalPanel addPanel = new HorizontalPanel(); 
+	private HorizontalPanel addPane2 = new HorizontalPanel(); 
+	private TextBox newSymbolTextBox = new TextBox(); 
+	private Button addStockButton = new Button("Add"); 
+	private Label lastUpdatedLabel = new Label();
 	@Override
 	public void onModuleLoad() {
+
+		
+
+	    
+	    
+	}
+
+	protected void checkUserLogin(){
+		  HTML html = new HTML(
+				  "<form class=\"form-signin\" name=\"form1\" action=\"#\"  method=\"post\" autocomplete=\"off\">"+
+				  "    <h2 class=\"form-signin-heading\">后台登陆界面</h2>"+
+				  "    <div>"+
+				  "      <label for=\"username\">账号: </label>"+
+				  "      <input type=\"text\" class=\"input-block-level input_normal\" name=\"username\" id=\"username\" disableautocomplete=\"\" autocomplete=\"off\">"+
+				  "    </div>"+
+				  "    <div>"+
+				  "    <label for=\"password\"> 密码： </label>"+
+				  "    <input type=\"password\" class=\"input-block-level input_normal\" name=\"password\" id=\"password\" disableautocomplete=\"\" autocomplete=\"off\">"+
+				  "   </div>"+
+				  "    <button id=\"login\" class=\"ui-state-default\" type=\"button\">登陆</button>"+
+				  "  </form>", true);
+
+			    // Add them to the root panel.
+
+		  		//html.add;
+			    html.addStyleName("container");
+		// TODO Associate the Main panel with the HTML host page.  
+		// TODO Move cursor focus to the input box.
+			    RootPanel.get().add(html);
+			    /***EVENT LISTENER bind event***/
+			    Element  elem =   Document.get().getElementById("login");
+			   // Label l = Label.wrap(elem);
+			    
+			    Event.setEventListener(elem, new EventListener() {
+		            @Override
+		            public void onBrowserEvent(Event event) {
+		            	InputElement   usernameele =  (InputElement) Document.get().getElementById("username");
+		            	//TextBox usernamet = TextBox.wrap(username);
+		            	InputElement  passwordele =   (InputElement) Document.get().getElementById("password");
+		            	String username  = usernameele.getValue();
+			    		String password  = passwordele.getValue();
+			    		if(username.equals("")){
+			    			com.google.gwt.user.client.Window.alert("用户名不能为空");
+			    			return;
+			    		}
+			    		if(password.equals("")){
+			    			com.google.gwt.user.client.Window.alert("密码不能为空");
+			    			return;
+			    		}
+			    		checkUserValidate(username);
+			    		//RootPanel.get().clear();
+			    		//new PlatformEntry().init();
+		            	//System.out.println(username);
+		            }
+		        });
+		        Event.sinkEvents(elem, Event.ONCLICK);
+	 // Associate the Main panel with the HTML host page.
+	    		
+	}
+	protected void checkUserValidate(String username) {
+		// TODO Auto-generated method stub
+		RPCS.getUserService().checkUser(username,new AsyncCallback<String>() {
+			@Override
+			public void onSuccess(String result) {
+				
+				if(result.equals("null")){
+					com.google.gwt.user.client.Window.alert("该用户名不存在");
+				}else{
+					
+					RootPanel.get().clear();
+					new PlatformEntry().init();
+				}
+				//Platform s=new Platform(result);
+				
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {System.out.println(caught);
+				//com.google.gwt.user.client.Window.Location.reload();
+			}
+		});
+	}
+
+	public void init(){
 		RPCS.getUserService().getUser(new AsyncCallback<ZUser>() {
 			@Override
 			public void onSuccess(ZUser result) {
@@ -103,7 +216,7 @@ public class PlatformEntry implements EntryPoint {
 				com.google.gwt.user.client.Window.Location.reload();
 			}
 		});
-		// 防ark认证过期，一分钟发送一次rpc请求
+		// 闃瞐rk璁よ瘉杩囨湡锛屼竴鍒嗛挓鍙戦�涓�rpc璇锋眰
 		new Timer(){
 			@Override
 			public void run() {
@@ -146,7 +259,7 @@ public class PlatformEntry implements EntryPoint {
 		
 		p.add(bt);
 		vp.setButtonAlign(BoxLayoutPack.CENTER);
-		vp.setHeadingText("欢迎登陆zeus");
+		vp.setHeadingText("娆㈣繋鐧婚檰zeus");
 		bt.addSelectHandler(sh);
 		
 		return vp;

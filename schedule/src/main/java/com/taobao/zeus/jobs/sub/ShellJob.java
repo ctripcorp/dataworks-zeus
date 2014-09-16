@@ -71,8 +71,7 @@ public class ShellJob extends ProcessJob{
 		
 		// get current username
 		ZeusUser u= LoginUser.getUser();
-
-		String shellName = u.getName();
+		String shellUserName = u.getName();
 		
 		//修改权限
 		list.add("chmod u+x " + shellFilePath);
@@ -80,7 +79,7 @@ public class ShellJob extends ProcessJob{
 		list.add("dos2unix " + shellFilePath);
 		//执行shell
 		// run shell as current user
-		list.add("sudo -u " + shellName + " sh "+shellFilePath);
+		list.add("sudo -u " + shellUserName + " sh "+shellFilePath);
 		return list;
 	}
 }

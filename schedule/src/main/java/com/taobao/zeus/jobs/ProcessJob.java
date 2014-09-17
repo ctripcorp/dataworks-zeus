@@ -187,7 +187,7 @@ public abstract class ProcessJob extends AbstractJob implements Job {
 		List<String> commands=getCommandList();
 		for(String s:commands){
 			log("DEBUG Command:"+s);
-			
+			log("Comments: abctest");
 			ProcessBuilder builder = new ProcessBuilder(partitionCommandLine(s));
 			builder.directory(new File(jobContext.getWorkDir()));
 			builder.environment().putAll(envMap);
@@ -309,8 +309,6 @@ public abstract class ProcessJob extends AbstractJob implements Job {
 			commands.add("/C");
 			commands.add(command);
 		}else{
-//			commands.add("sudo -u root bash");
-//			commands.add("su - biubt");
 			int index = 0;
 
 	        StringBuffer buffer = new StringBuffer(command.length());

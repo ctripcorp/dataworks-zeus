@@ -89,11 +89,14 @@ public class HiveJob extends ProcessJob {
 		StringBuffer sb = new StringBuffer();
 		
 		// get operator uid
-		String shellUid = jobContext.getJobHistory().getOperator();
+		String shellPrefix = "";
+		if (jobContext.getRunType() == 3) {
+			shellPrefix = "sudo -u " + jobContext.getDebugHistory().getOwner();
+		} else {
+			shellPrefix = "sudo -u " + jobContext.getJobHistory().getOperator();
+		}
+		sb.append(shellPrefix + " hive");
 		
-		
-		sb.append("sudo -u " + shellUid + " hive");
-
 		// 引入常用udf函数
 		if (getUdfSql()) {
 			sb.append(" -i ").append(jobContext.getWorkDir())

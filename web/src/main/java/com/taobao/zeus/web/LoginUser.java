@@ -8,5 +8,9 @@ public class LoginUser {
 	public static ZeusUser getUser(){
 		return user.get();
 	}
+
+	public static void setUser(ThreadLocal<ZeusUser> user) {
+		LoginUser.user = user;
+	}
 	
 }

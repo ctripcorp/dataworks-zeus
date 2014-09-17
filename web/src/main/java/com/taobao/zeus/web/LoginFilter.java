@@ -1,8 +1,6 @@
 package com.taobao.zeus.web;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -13,12 +11,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.taobao.zeus.store.UserManager;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
+
+import com.taobao.zeus.web.LoginUser;
+
 /**
  * 登陆信息设置
  * @author zhoufang
@@ -29,35 +29,6 @@ public class LoginFilter implements Filter {
 	
 	private UserManager userManager;
 	private SSOLogin login=new SSOLogin() {
-/*<<<<<<< HEAD
-//		private String username = "";
-//		private String usermail = "";
-//		private String fullname = "";
-//		private String phone = "";
-//		private String department = "";
-		public String getUid(HttpServletRequest request) {
-//			AttributePrincipal principal = (AttributePrincipal)request.getUserPrincipal();
-//			Map<String,String> map = principal.getAttributes();
-//			username = map.get("name");
-//			usermail = map.get("mail");
-//			department = map.get("department");
-//			fullname = map.get("sn");
-//			return username;
-			return ZeusUser.ADMIN.getUid();
-
-		}
-		public String getPhone(HttpServletRequest req) {
-			return ZeusUser.ADMIN.getPhone();
-			//return phone;
-		}
-		public String getName(HttpServletRequest req) {
-			return ZeusUser.ADMIN.getName();
-			//return fullname;
-		}
-		public String getEmail(HttpServletRequest req) {
-			return ZeusUser.ADMIN.getEmail();
-			//return usermail;
-=======*/
 		public String getUid(HttpServletRequest req) {
 		
 			return ZeusUser.USER.getUid();
@@ -114,7 +85,7 @@ public class LoginFilter implements Filter {
 		if(uid==null){
 			return;
 		}
-		System.out.println("1`3333");
+		System.out.println("cccc");
 		zeusUser=new ZeusUser();
 		zeusUser.setEmail(login.getEmail(httpRequest));
 		zeusUser.setUid(login.getUid(httpRequest));

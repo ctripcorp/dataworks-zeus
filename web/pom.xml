@@ -16,11 +16,7 @@
 		<java.encoding>UTF-8</java.encoding>
 		<jetty-version>6.1.22</jetty-version>
 		<gwt-version>2.5.0</gwt-version>
-<<<<<<< HEAD
-		<local.highcharts>D:/Users/yongchengchen/prometheus/web/libs/highcharts-1.4.0.jar</local.highcharts>
-=======
 		<local.highcharts>D:/Users/jinjb/prometheus/web/libs/highcharts-1.4.0.jar</local.highcharts>
->>>>>>> e46f80fb78ae791d5d1ca50e90f60a7c3a13d618
 	</properties>
 
 	<name>Zeus Web服务</name>
@@ -29,11 +25,6 @@
     </description>
 
 	<dependencies>
-		<dependency>
-		   <groupId>org.jasig.cas.client</groupId>
-		   <artifactId>cas-client-core</artifactId>
-		   <version>3.1.12</version>
-		</dependency>
 		<dependency>
 			<groupId>com.taobao.zeus</groupId>
 			<artifactId>zeus-client</artifactId>
@@ -174,8 +165,6 @@
 			</resource>
 		</resources>
 		<plugins>
-		
-		
 		<plugin>
 			<groupId>org.codehaus.mojo</groupId>
 			<artifactId>tomcat-maven-plugin</artifactId>

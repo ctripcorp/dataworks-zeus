@@ -17,6 +17,9 @@
     <name>Zeus</name>
 	<dependencies>
 	</dependencies>
+	
+	
+ 
 	<dependencyManagement>
 		<dependencies>
 			<!-- ================================================= -->
@@ -106,6 +109,34 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
+	<repositories>
+	<repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>mvnrepository</id>
+      		<url>http://mvnrepository.com/</url>
+        </repository>
+    <repository>
+      <id>cloudera</id>
+      <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+    </repository>
+	</repositories>
+	
     <build>
         <plugins>
         	<plugin>

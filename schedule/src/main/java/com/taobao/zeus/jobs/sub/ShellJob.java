@@ -14,11 +14,11 @@ import org.apache.commons.io.IOUtils;
 
 import com.taobao.zeus.jobs.JobContext;
 import com.taobao.zeus.jobs.ProcessJob;
+import com.taobao.zeus.model.DebugHistory;
 import com.taobao.zeus.store.Super;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.util.PropertyKeys;
-import com.taobao.zeus.web.LoginUser;
-import com.taobao.zeus.web.platform.client.util.ZUser;
+
 
 /**
  * 采用Shell脚本的任务
@@ -44,6 +44,7 @@ public class ShellJob extends ProcessJob{
 
 	@Override
 	public List<String> getCommandList() {
+		System.out.println("begin");
 		String script=null;
 		if(shell!=null){
 			script=shell;
@@ -53,6 +54,7 @@ public class ShellJob extends ProcessJob{
 		
 		OutputStreamWriter writer=null;
 		try {
+			System.out.println("try");
 			File f=new File(jobContext.getWorkDir()+File.separator+(new Date().getTime())+".sh");
 			if(!f.exists()){
 				f.createNewFile();
@@ -70,14 +72,15 @@ public class ShellJob extends ProcessJob{
 		
 		List<String> list=new ArrayList<String>();
 		
-		// get current username
-		ZeusUser u= LoginUser.getUser();
-		String shellUserName = u.getName();
 		
 		//修改权限
-		// get operator uid
-		String shellUid = jobContext.getJobHistory().getOperator();
-		
+		// get operator uid]
+		System.out.println("运行脚本——————————————————————————");
+		System.out.println(jobContext.getDebugHistory());
+		System.out.println("运行脚本————————222——");
+		//DebugHistory debugHistory = jobContext.getDebugHistory();
+		//String shellUid = jobContext.getDebugHistory().getOwner();
+		//System.out.println(shellUid);
 		//修改权限
 
 		list.add("chmod u+x " + shellFilePath);
@@ -85,8 +88,8 @@ public class ShellJob extends ProcessJob{
 		list.add("dos2unix " + shellFilePath);
 		//执行shell
 		// run shell as current user
-		list.add("sudo -u " + shellUserName + " sh "+shellFilePath);
-		list.add("sudo -u " + shellUid + " sh "+shellFilePath);
+		
+		//list.add("sudo -u " + shellUid + " sh "+shellFilePath);
 		return list;
 	}
 }

@@ -57,7 +57,7 @@ public class MysqlDebugHistoryManager extends HibernateDaoSupport implements Deb
 					history.setStatus(o[5]==null?null:Status.parser(String.valueOf(o[5])));
 					history.setScript(String.valueOf(o[6]));
 					history.setLog(String.valueOf(o[7]));
-					history.setLog(String.valueOf(o[12]));
+					history.setOwner(String.valueOf(o[12]));
 					result.add(history);
 				}
 				return result;

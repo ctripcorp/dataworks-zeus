@@ -26,7 +26,6 @@ public class ConfUtil {
 	
 	public static String getHiveConfDir(){
 		String dir=System.getenv("HIVE_CONF_DIR");
-		//dir = "\\etc\\hive\\conf";
 		if(dir==null || "".equals(dir.trim())){
 			dir=getHiveHome()+File.separator+"conf";
 		}
@@ -35,7 +34,6 @@ public class ConfUtil {
 	
 	public static String getHadoopConfDir(){
 		String dir=System.getenv("HADOOP_CONF_DIR");
-		//dir = "\\etc\\hadoop\\conf";
 		if(dir==null || "".equals(dir.trim())){
 			//hadoop2中，配置的默认地址已经修改
 			dir=getHadoopHome()+File.separator+"etc"+File.separator+"hadoop";

@@ -32,6 +32,16 @@ public class DebugHistoryPersistence {
 	private String runtype;
 	@Column(length=100000)
 	private String log;
+	@Column(name="owner")
+	private String owner;
+	
+	
+	public String getOwner() {
+		return owner;
+	}
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
 	public Date getStartTime() {
 		return startTime;
 	}

@@ -142,6 +142,7 @@ public class MasterBeWebCancel {
 		// 再查一次，获取最新数据
 		history = context.getDebugHistoryManager().findDebugHistory(debugId);
 		history.setEndTime(new Date());
+		//history.setOwner(history.getOwner());
 		history.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
 		context.getDebugHistoryManager().updateDebugHistory(history);
 		return ret;

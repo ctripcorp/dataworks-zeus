@@ -42,7 +42,7 @@
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://192.168.83.243:3306/zeus2?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;autoReconnectForPools=true"/>
+		<property name="url" value="jdbc:mysql://192.168.83.243:3306/zeus3?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;autoReconnectForPools=true"/>
 		<property name="username" value="biuser"/>
 		<property name="password" value="biuser"/>
 		<property name="maxActive" value="20" />

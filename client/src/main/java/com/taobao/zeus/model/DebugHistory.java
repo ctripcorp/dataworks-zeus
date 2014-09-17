@@ -13,6 +13,15 @@ public class DebugHistory{
 	private Date endTime;
 	private String executeHost;
 	private Status status;
+	private String owner;
+	
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
 
 	private Date gmtCreate = new Date();
 	private Date gmtModified = new Date();

@@ -45,12 +45,12 @@ public class ZeusUser{
 	private Date gmtCreate;
 	@Column(name="gmt_modified")
 	private Date gmtModified;
-	public ZeusUser(String string, String string2, String string3,
-			String string4) {
-		this.email = string;
-		this.name = string2;
-		this.uid = string4;
-		this.phone = string3;
+	public ZeusUser(String email, String name, String phone,
+			String uid) {
+		this.email = email;
+		this.name = name;
+		this.uid = uid;
+		this.phone = phone;
 		// TODO Auto-generated constructor stub
 	}
 	public ZeusUser() {

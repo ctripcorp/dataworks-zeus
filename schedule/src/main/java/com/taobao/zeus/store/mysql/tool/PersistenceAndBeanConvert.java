@@ -477,6 +477,9 @@ public class PersistenceAndBeanConvert {
 		persist.setId(debug.getId() == null ? null
 				: Long.valueOf(debug.getId()));
 		persist.setStartTime(debug.getStartTime());
+		if(debug.getOwner() != null){
+			persist.setOwner(debug.getOwner() );
+		}
 		persist.setStatus(debug.getStatus() == null ? null : debug.getStatus()
 				.toString());
 		persist.setGmtCreate(debug.getGmtCreate());

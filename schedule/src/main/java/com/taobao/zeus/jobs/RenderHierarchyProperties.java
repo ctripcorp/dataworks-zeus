@@ -2,6 +2,7 @@ package com.taobao.zeus.jobs;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +47,7 @@ public class RenderHierarchyProperties extends HierarchyProperties{
 			 StringWriter sw=new StringWriter();
 			 try {
 				VelocityContext context=new VelocityContext();
-				context.put("zdt", new ZeusDateTool());
+				context.put("zdt", new ZeusDateTool(new Date()));
 				Velocity.evaluate(context, sw, "", m);
 				if(m.equals(sw.toString())){
 					//渲染后和原数据一样，则直接跳出，如果不跳出会导致死循环
@@ -61,15 +62,43 @@ public class RenderHierarchyProperties extends HierarchyProperties{
 			 matcher=pt.matcher(template);
 		}
 		//${yesterday}变量替换
-		template=template.replace("${yesterday}",new ZeusDateTool().addDay(-1).format("yyyyMMdd"));
+		template=template.replace("${yesterday}",new ZeusDateTool(new Date()).addDay(-1).format("yyyyMMdd"));
 		return template;
 	}
 	
+	public static String render(String template, String dateStr){
+		if(template==null){
+			return null;
+		}
+		Matcher matcher=pt.matcher(template);
+		while(matcher.find()){
+			 String m= template.substring(matcher.start(),matcher.end());
+			 StringWriter sw=new StringWriter();
+			 try {
+				VelocityContext context=new VelocityContext();
+				context.put("zdt", new ZeusDateTool(ZeusDateTool.StringToDate(dateStr, "yyyyMMdd")));
+				Velocity.evaluate(context, sw, "", m);
+				if(m.equals(sw.toString())){
+					//渲染后和原数据一样，则直接跳出，如果不跳出会导致死循环
+					log.error("render fail with target:"+m);
+					break;
+				}
+			} catch (Exception e) {
+				log.error("zdt render error",e);
+				break;//防止死循环
+			}
+			 template=template.replace(m, sw.toString());
+			 matcher=pt.matcher(template);
+		}
+		//${yesterday}变量替换
+		template=template.replace("${yesterday}",new ZeusDateTool(ZeusDateTool.StringToDate(dateStr, "yyyyMMdd")).addDay(-1).format("yyyyMMdd"));
+		return template;
+	}
 	
 	public static void main(String[] args) throws Exception{
-		VelocityContext context=new VelocityContext();
-		context.put("zdt", new ZeusDateTool());
-		String s="abc${zdt.addDay(-1).format(\"yyyyMMdd\")} ${zdt.addDay(1).format(\"yyyyMMdd\")}";
+		/*VelocityContext context=new VelocityContext();
+		context.put("zdt", new ZeusDateTool(new Date()));
+		String s="abc${zdt.addDay(-1).format(\"yyyyMMdd\")} ${zdt.addDay(1).format(\"yyyyMMdd\")} ${yesterday}";
 		Pattern pt = Pattern.compile("\\$\\{zdt.*\\}");
 		Matcher matcher=pt.matcher(s);
 		while(matcher.find()){
@@ -80,7 +109,12 @@ public class RenderHierarchyProperties extends HierarchyProperties{
 			 System.out.println(sw.toString());
 			 s=s.replace(m, sw.toString());
 		}
-		System.out.println("result:"+s);
+		s=s.replace("${yesterday}",new ZeusDateTool(new Date()).addDay(-1).format("yyyyMMdd"));
+		System.out.println("result:"+s);*/
+		String s="abc${zdt.addDay(-10).format(\"yyyyMMdd\")} ${zdt.addDay(1).format(\"yyyyMMdd\")} ${yesterday}";
+		s=render(s,"20140915");
+		//render(s);
+		System.out.println("render result:"+s);
 	}
 	@Override
 	public Set<String> getPropertyKeys(){
@@ -139,6 +173,15 @@ public class RenderHierarchyProperties extends HierarchyProperties{
 		Map<String, String> result=new HashMap<String, String>();
 		for(String key:map.keySet()){
 			result.put(key, render(map.get(key)));
+		}
+		return result;
+	}
+	@Override
+	public Map<String, String> getAllProperties(String dateStr){
+		Map<String, String> map= properties.getAllProperties();
+		Map<String, String> result=new HashMap<String, String>();
+		for(String key:map.keySet()){
+			result.put(key, render(map.get(key),dateStr));
 		}
 		return result;
 	}

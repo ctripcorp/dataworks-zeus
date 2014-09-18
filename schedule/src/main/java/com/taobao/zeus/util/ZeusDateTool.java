@@ -12,7 +12,9 @@ import java.util.Date;
  *
  */
 public class ZeusDateTool {
-
+	public ZeusDateTool(Date date){
+		this.calendar.setTime(date);
+	}
 	private Calendar calendar=Calendar.getInstance();
 	
 	public ZeusDateTool addDay(int amount){
@@ -34,7 +36,7 @@ public class ZeusDateTool {
     }
 	
 	public static void main(String[] args) {
-		String v=new ZeusDateTool().add(Calendar.DAY_OF_MONTH,-1000).format("yyyy-MM-dd");
+		String v=new ZeusDateTool(new Date()).format("yyyy-MM-dd");
 		System.out.println(v);
         System.out.println(DateUtil.getDefaultRawOffset());
 	}

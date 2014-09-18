@@ -110,6 +110,14 @@ public class JobUtils {
 		jobContext.setProperties(new RenderHierarchyProperties(hp));
 		List<Map<String, String>> resources = jobBean.getHierarchyResources();
 		String script = jobBean.getJobDescriptor().getScript();
+		///*************************update run date  2014-09-18**************
+		String dateStr = history.getJobId().substring(0,8);
+		System.out.println("Manual Job run date :"+dateStr);
+		if(dateStr != null && dateStr.length() == 8){
+			script = RenderHierarchyProperties.render(script, dateStr);
+			System.out.println("Manual Job script :"+script);
+		}		
+		///*********************************************************
 		// 处理脚本中的 资源引用 语句
 		if (jobBean.getJobDescriptor().getJobType().equals(JobRunType.Shell)
 				|| jobBean.getJobDescriptor().getJobType()
@@ -118,7 +126,12 @@ public class JobUtils {
 			jobBean.getJobDescriptor().setScript(script);
 		}
 		jobContext.setResources(resources);
-		script = replace(jobContext.getProperties().getAllProperties(), script);
+		if(dateStr != null && dateStr.length() == 8){
+			script = replace(jobContext.getProperties().getAllProperties(dateStr), script);
+		}else{
+			script = replace(jobContext.getProperties().getAllProperties(), script);
+		}
+		System.out.println("Manual Job last script :"+script);
 		script=replaceScript(history,script);
 		hp.setProperty(PropertyKeys.JOB_SCRIPT, script);
 

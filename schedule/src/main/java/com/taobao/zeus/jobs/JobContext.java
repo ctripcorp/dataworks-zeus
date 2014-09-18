@@ -18,8 +18,8 @@ import com.taobao.zeus.util.DateUtil;
  */
 public class JobContext {
 	
-	public static JobContext getTempJobContext(){
-		JobContext jobContext=new JobContext();
+	public static JobContext getTempJobContext(int runType){
+		JobContext jobContext=new JobContext(runType);
 		JobHistory history=new JobHistory();
 		jobContext.setJobHistory(history);
 		File f=new File("/tmp/zeus/"+DateUtil.getToday());
@@ -37,6 +37,8 @@ public class JobContext {
 	public static final int MANUAL_RUN=2;
     //DEBUG执行
 	public static final int DEBUG_RUN=3;
+    //系统命令执行
+	public static final int SYSTEM_RUN=4;
 	
 	private final int runType;
 

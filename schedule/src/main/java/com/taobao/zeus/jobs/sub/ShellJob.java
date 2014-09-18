@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.taobao.zeus.jobs.JobContext;
 import com.taobao.zeus.jobs.ProcessJob;
@@ -25,7 +27,7 @@ import com.taobao.zeus.util.PropertyKeys;
  *
  */
 public class ShellJob extends ProcessJob{
-
+	private static Logger log=LoggerFactory.getLogger(ShellJob.class);
 	protected String shell;
 
 	public ShellJob(JobContext jobContext) {
@@ -73,10 +75,14 @@ public class ShellJob extends ProcessJob{
 		//修改权限
 		// get operator uid
 		String shellPrefix = "";
-		if (jobContext.getRunType() == 3) {
-			shellPrefix = "sudo -u " + jobContext.getDebugHistory().getOwner();
-		} else {
+		if (jobContext.getRunType() == 1 || jobContext.getRunType() == 2) {
 			shellPrefix = "sudo -u " + jobContext.getJobHistory().getOperator();
+		} else if (jobContext.getRunType() == 3) {
+			shellPrefix = "sudo -u " + jobContext.getDebugHistory().getOwner();
+		} else if (jobContext.getRunType() == 4) {
+			shellPrefix = "";
+		}else{
+			log("没有RunType=" + jobContext.getRunType() + " 的执行类别");
 		}
 		
 		//修改权限

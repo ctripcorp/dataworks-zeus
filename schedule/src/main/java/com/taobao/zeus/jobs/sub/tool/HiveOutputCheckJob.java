@@ -1,6 +1,7 @@
 package com.taobao.zeus.jobs.sub.tool;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -84,7 +85,7 @@ public class HiveOutputCheckJob extends AbstractJob {
 				exitCode = -1;
 				continue;
 			}
-			String lastDay = new ZeusDateTool().addDay(-1).format("yyyyMMdd");
+			String lastDay = new ZeusDateTool(new Date()).addDay(-1).format("yyyyMMdd");
 
 			// 获取最新分区
 			Partition lastPartition = getLastPartition(parts, lastDay, ptIndex);

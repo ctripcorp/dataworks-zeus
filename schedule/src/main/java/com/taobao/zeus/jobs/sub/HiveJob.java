@@ -90,10 +90,14 @@ public class HiveJob extends ProcessJob {
 		
 		// get operator uid
 		String shellPrefix = "";
-		if (jobContext.getRunType() == 3) {
-			shellPrefix = "sudo -u " + jobContext.getDebugHistory().getOwner();
-		} else {
+		if (jobContext.getRunType() == 1 || jobContext.getRunType() == 2) {
 			shellPrefix = "sudo -u " + jobContext.getJobHistory().getOperator();
+		} else if (jobContext.getRunType() == 3) {
+			shellPrefix = "sudo -u " + jobContext.getDebugHistory().getOwner();
+		} else if (jobContext.getRunType() == 4) {
+			shellPrefix = "";
+		}else{
+			log("没有RunType=" + jobContext.getRunType() + " 的执行类别");
 		}
 		sb.append(shellPrefix + " hive");
 		

@@ -90,7 +90,7 @@ public class LoginFilter implements Filter {
 
 			LoginUser.user.set(zeusUser);
 		}
-if(null!=uidfromlogin){
+		if(null!=uidfromlogin){
 			zeusUser=new ZeusUser();
 			zeusUser.setEmail(login.getEmail(httpRequest));
 			zeusUser.setUid(login.getUid(httpRequest));
@@ -105,7 +105,7 @@ if(null!=uidfromlogin){
 			LoginUser.user.set(zeusUser);
 		}else{
 			LoginUser.user.set(zeusUser.USER);
-		}		}
+		}		
 
 		
 		//System.out.println(zeusUser.toString());

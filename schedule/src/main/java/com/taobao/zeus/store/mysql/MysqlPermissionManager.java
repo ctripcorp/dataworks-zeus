@@ -76,10 +76,10 @@ public class MysqlPermissionManager extends HibernateDaoSupport implements Permi
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
 				
-				
-				List<Long> result= getHibernateTemplate().find("select toJobId from com.taobao.zeus.store.mysql.persistence.JobPersistence where id="+jobId);
-				Long job_id = result.get(0);
-				Query query=session.createQuery("select id from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId="+job_id);
+				System.out.println("select toJobId from com.taobao.zeus.store.mysql.persistence.JobPersistence where id="+jobId);
+//				List<Long> result= getHibernateTemplate().find("select toJobId from com.taobao.zeus.store.mysql.persistence.JobPersistence where id="+jobId);
+//				Long job_id = result.get(0);
+				Query query=session.createQuery("select id from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId="+jobId);
 	
 				return  query.list();
 			}

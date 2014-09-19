@@ -33,6 +33,7 @@ import com.taobao.zeus.web.platform.client.app.PlatformPlace;
 import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror;
 import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror.CodeMirrorConfig;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.AdminConfigWindow;
+import com.taobao.zeus.web.platform.client.module.jobdisplay.ChooseConfigWindow;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.CenterTemplate;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.ProcesserType.HiveP;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.ProcesserType.ZooKeeperP;

@@ -119,7 +119,7 @@ public class MysqlJobHistoryManager extends HibernateDaoSupport implements JobHi
 		final List<Long> ids=(List<Long>) getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
-				String sql="select max(id) as m_id,job_id  from zeus_job_history where job_id in (:idList) group by job_id";
+				String sql="select max(id) as m_id,action_id  from zeus_action_history where action_id in (:idList) group by action_id desc";
 				SQLQuery query=session.createSQLQuery(sql);
 				query.setParameterList("idList", jobIds);
 				List<Object[]> list= query.list();
@@ -136,7 +136,7 @@ public class MysqlJobHistoryManager extends HibernateDaoSupport implements JobHi
 				if(ids==null || ids.isEmpty()){
 					return Collections.emptyList();
 				}
-				String sql="select id,job_id,start_time,end_time,execute_host,status,trigger_type,illustrate,operator,properties from zeus_job_history where id in (:ids)";
+				String sql="select id,action_id,job_id,start_time,end_time,execute_host,status,trigger_type,illustrate,operator,properties from zeus_action_history where id in (:ids)";
 				SQLQuery query=session.createSQLQuery(sql);
 				query.setParameterList("ids", ids);
 				List<Object[]> list= query.list();
@@ -145,14 +145,15 @@ public class MysqlJobHistoryManager extends HibernateDaoSupport implements JobHi
 					JobHistoryPersistence p=new JobHistoryPersistence();
 					p.setId(((Number)o[0]).longValue());
 					p.setJobId(((Number)o[1]).longValue());
-					p.setStartTime((Date)o[2]);
-					p.setEndTime((Date)o[3]);
-					p.setExecuteHost((String)o[4]);
-					p.setStatus((String)o[5]);
-					p.setTriggerType((Integer)o[6]);
-					p.setIllustrate((String)o[7]);
-					p.setOperator((String)o[8]);
-					p.setProperties((String)o[9]);
+					p.setToJobId(((Number)o[2]).longValue());
+					p.setStartTime((Date)o[3]);
+					p.setEndTime((Date)o[4]);
+					p.setExecuteHost((String)o[5]);
+					p.setStatus((String)o[6]);
+					p.setTriggerType((Integer)o[7]);
+					p.setIllustrate((String)o[8]);
+					p.setOperator((String)o[9]);
+					p.setProperties((String)o[10]);
 					result.add(PersistenceAndBeanConvert.convert(p));
 				}
 				return result;
@@ -172,7 +173,7 @@ public class MysqlJobHistoryManager extends HibernateDaoSupport implements JobHi
 		return (List<JobHistory>) getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
-				String sql="select id,job_id,start_time,end_time,execute_host,status,trigger_type,illustrate,operator,properties from zeus_job_history where start_time>?";
+				String sql="select id,action_id,job_id,start_time,end_time,execute_host,status,trigger_type,illustrate,operator,properties from zeus_action_history where start_time>?";
 				SQLQuery query=session.createSQLQuery(sql);
 				Calendar cal=Calendar.getInstance();
 				cal.add(Calendar.DAY_OF_YEAR, -1);
@@ -183,14 +184,15 @@ public class MysqlJobHistoryManager extends HibernateDaoSupport implements JobHi
 					JobHistoryPersistence p=new JobHistoryPersistence();
 					p.setId(((Number)o[0]).longValue());
 					p.setJobId(((Number)o[1]).longValue());
-					p.setStartTime((Date)o[2]);
-					p.setEndTime((Date)o[3]);
-					p.setExecuteHost((String)o[4]);
-					p.setStatus((String)o[5]);
-					p.setTriggerType((Integer)o[6]);
-					p.setIllustrate((String)o[7]);
-					p.setOperator((String)o[8]);
-					p.setProperties((String)o[9]);
+					p.setToJobId(((Number)o[2]).longValue());
+					p.setStartTime((Date)o[3]);
+					p.setEndTime((Date)o[4]);
+					p.setExecuteHost((String)o[5]);
+					p.setStatus((String)o[6]);
+					p.setTriggerType((Integer)o[7]);
+					p.setIllustrate((String)o[8]);
+					p.setOperator((String)o[9]);
+					p.setProperties((String)o[10]);
 					result.add(PersistenceAndBeanConvert.convert(p));
 				}
 				return result;

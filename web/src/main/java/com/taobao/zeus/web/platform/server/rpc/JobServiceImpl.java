@@ -24,8 +24,9 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.model.JobDescriptor;
-import com.taobao.zeus.model.JobDescriptor.JobRunType;
-import com.taobao.zeus.model.JobDescriptor.JobScheduleType;
+import com.taobao.zeus.model.JobDescriptorOld;
+import com.taobao.zeus.model.JobDescriptorOld.JobRunTypeOld;
+import com.taobao.zeus.model.JobDescriptorOld.JobScheduleTypeOld;
 import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.model.JobStatus.Status;
@@ -35,11 +36,14 @@ import com.taobao.zeus.model.processer.Processer;
 import com.taobao.zeus.socket.protocol.Protocol.ExecuteKind;
 import com.taobao.zeus.socket.worker.ClientWorker;
 import com.taobao.zeus.store.FollowManager;
+import com.taobao.zeus.store.GroupBeanOld;
 import com.taobao.zeus.store.GroupBean;
 import com.taobao.zeus.store.JobBean;
+import com.taobao.zeus.store.JobBeanOld;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.UserManager;
+import com.taobao.zeus.store.mysql.ReadOnlyGroupManagerOld;
 import com.taobao.zeus.store.mysql.ReadOnlyGroupManager;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.store.mysql.tool.ProcesserUtil;
@@ -49,6 +53,7 @@ import com.taobao.zeus.web.LoginUser;
 import com.taobao.zeus.web.PermissionGroupManager;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
+import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
 import com.taobao.zeus.web.platform.client.util.GwtException;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.shared.rpc.JobService;
@@ -58,7 +63,9 @@ public class JobServiceImpl implements JobService {
 	@Autowired
 	private PermissionGroupManager permissionGroupManager;
 	@Autowired
-	private ReadOnlyGroupManager readOnlyGroupManager;
+	private ReadOnlyGroupManagerOld readOnlyGroupManager;
+	@Autowired
+	private ReadOnlyGroupManager readOnlyGroupManagerAction;
 	@Autowired
 	private JobHistoryManager jobHistoryManager;
 	@Autowired
@@ -73,17 +80,17 @@ public class JobServiceImpl implements JobService {
 	@Override
 	public JobModel createJob(String jobName, String parentGroupId,
 			String jobType) throws GwtException {
-		JobRunType type = null;
+		JobRunTypeOld type = null;
 		JobModel model = new JobModel();
 		if (JobModel.MapReduce.equals(jobType)) {
-			type = JobRunType.MapReduce;
+			type = JobRunTypeOld.MapReduce;
 		} else if (JobModel.SHELL.equals(jobType)) {
-			type = JobRunType.Shell;
+			type = JobRunTypeOld.Shell;
 		} else if (JobModel.HIVE.equals(jobType)) {
-			type = JobRunType.Hive;
+			type = JobRunTypeOld.Hive;
 		}
 		try {
-			JobDescriptor jd = permissionGroupManager.createJob(LoginUser
+			JobDescriptorOld jd = permissionGroupManager.createJob(LoginUser
 					.getUser().getUid(), jobName, parentGroupId, type);
 			model = getUpstreamJob(jd.getId());
 			model.setDefaultTZ(DateUtil.getDefaultTZStr());
@@ -96,7 +103,7 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public JobModel getUpstreamJob(String jobId) throws GwtException {
-		JobBean jobBean = permissionGroupManager.getUpstreamJobBean(jobId);
+		JobBeanOld jobBean = permissionGroupManager.getUpstreamJobBean(jobId);
 		JobModel jobModel = new JobModel();
 
 		jobModel.setCronExpression(jobBean.getJobDescriptor()
@@ -106,22 +113,22 @@ public class JobServiceImpl implements JobService {
 		jobModel.setGroupId(jobBean.getJobDescriptor().getGroupId());
 		jobModel.setId(jobBean.getJobDescriptor().getId());
 		String jobRunType = null;
-		if (jobBean.getJobDescriptor().getJobType() == JobRunType.MapReduce) {
+		if (jobBean.getJobDescriptor().getJobType() == JobRunTypeOld.MapReduce) {
 			jobRunType = JobModel.MapReduce;
-		} else if (jobBean.getJobDescriptor().getJobType() == JobRunType.Shell) {
+		} else if (jobBean.getJobDescriptor().getJobType() == JobRunTypeOld.Shell) {
 			jobRunType = JobModel.SHELL;
-		} else if (jobBean.getJobDescriptor().getJobType() == JobRunType.Hive) {
+		} else if (jobBean.getJobDescriptor().getJobType() == JobRunTypeOld.Hive) {
 			jobRunType = JobModel.HIVE;
 		}
 		jobModel.setJobRunType(jobRunType);
 		String jobScheduleType = null;
-		if (jobBean.getJobDescriptor().getScheduleType() == JobScheduleType.Dependent) {
+		if (jobBean.getJobDescriptor().getScheduleType() == JobScheduleTypeOld.Dependent) {
 			jobScheduleType = JobModel.DEPEND_JOB;
 		}
-		if (jobBean.getJobDescriptor().getScheduleType() == JobScheduleType.Independent) {
+		if (jobBean.getJobDescriptor().getScheduleType() == JobScheduleTypeOld.Independent) {
 			jobScheduleType = JobModel.INDEPEN_JOB;
 		}
-		if (jobBean.getJobDescriptor().getScheduleType() == JobScheduleType.CyleJob) {
+		if (jobBean.getJobDescriptor().getScheduleType() == JobScheduleTypeOld.CyleJob) {
 			jobScheduleType = JobModel.CYCLE_JOB;
 		}
 		jobModel.setJobScheduleType(jobScheduleType);
@@ -192,7 +199,7 @@ public class JobServiceImpl implements JobService {
 
 		List<String> owners = new ArrayList<String>();
 		owners.add(jobBean.getJobDescriptor().getOwner());
-		GroupBean parent = jobBean.getGroupBean();
+		GroupBeanOld parent = jobBean.getGroupBean();
 		while (parent != null) {
 			if (!owners.contains(parent.getGroupDescriptor().getOwner())) {
 				owners.add(parent.getGroupDescriptor().getOwner());
@@ -266,30 +273,30 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public JobModel updateJob(JobModel jobModel) throws GwtException {
-		JobDescriptor jd = new JobDescriptor();
+		JobDescriptorOld jd = new JobDescriptorOld();
 		jd.setCronExpression(jobModel.getCronExpression());
 		jd.setDependencies(jobModel.getDependencies());
 		jd.setDesc(jobModel.getDesc());
 		jd.setGroupId(jobModel.getGroupId());
 		jd.setId(jobModel.getId());
-		JobRunType type = null;
+		JobRunTypeOld type = null;
 		if (jobModel.getJobRunType().equals(JobModel.MapReduce)) {
-			type = JobRunType.MapReduce;
+			type = JobRunTypeOld.MapReduce;
 		} else if (jobModel.getJobRunType().equals(JobModel.SHELL)) {
-			type = JobRunType.Shell;
+			type = JobRunTypeOld.Shell;
 		} else if (jobModel.getJobRunType().equals(JobModel.HIVE)) {
-			type = JobRunType.Hive;
+			type = JobRunTypeOld.Hive;
 		}
 		jd.setJobType(type);
-		JobScheduleType scheduleType = null;
+		JobScheduleTypeOld scheduleType = null;
 		if (JobModel.DEPEND_JOB.equals(jobModel.getJobScheduleType())) {
-			scheduleType = JobScheduleType.Dependent;
+			scheduleType = JobScheduleTypeOld.Dependent;
 		}
 		if (JobModel.INDEPEN_JOB.equals(jobModel.getJobScheduleType())) {
-			scheduleType = JobScheduleType.Independent;
+			scheduleType = JobScheduleTypeOld.Independent;
 		}
 		if (JobModel.CYCLE_JOB.equals(jobModel.getJobScheduleType())) {
-			scheduleType = JobScheduleType.CyleJob;
+			scheduleType = JobScheduleTypeOld.CyleJob;
 		}
 		jd.setName(jobModel.getName());
 		jd.setOwner(jobModel.getOwner());
@@ -327,13 +334,13 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public void switchAuto(String jobId, Boolean auto) throws GwtException {
-		Tuple<JobDescriptor, JobStatus> job = permissionGroupManager
+		Tuple<JobDescriptorOld, JobStatus> job = permissionGroupManager
 				.getJobDescriptor(jobId);
-		JobDescriptor jd = job.getX();
+		JobDescriptorOld jd = job.getX();
 		// 如果是周期任务，在开启自动调度时，需要计算下一次任务执行时间
 		// 2 代表周期调度
 		if (auto
-				&& jd.getScheduleType() == JobDescriptor.JobScheduleType.CyleJob) {
+				&& jd.getScheduleType() == JobDescriptorOld.JobScheduleTypeOld.CyleJob) {
 			String tz = jd.getTimezone();
 			// 小时任务，计算下一个小时的开始时间
 			if (jd.getCycle().equals("hour")) {
@@ -407,7 +414,7 @@ public class JobServiceImpl implements JobService {
 			throw e;
 		}
 		Tuple<JobDescriptor, JobStatus> job = permissionGroupManager
-				.getJobDescriptor(jobId);
+				.getActionDescriptor(jobId);
 		jobDescriptor = job.getX();
 		JobHistory history = new JobHistory();
 		history.setJobId(jobId);
@@ -537,13 +544,19 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public PagingLoadResult<JobModel> getSubJobStatus(String groupId,
+	public PagingLoadResult<JobModelAction> getSubJobStatus(String groupId,
 			PagingLoadConfig config) {
 		int start = config.getOffset();
 		int limit = config.getLimit();
-		GroupBean gb = permissionGroupManager.getDownstreamGroupBean(groupId);
+		//GroupBeanOld gb = permissionGroupManager.getDownstreamGroupBean(groupId);
+		GroupBean globe = readOnlyGroupManagerAction.getGlobeGroupBean();
+		GroupBean gb = null;
+		if (globe.getGroupDescriptor().getId().equals(groupId)) {
+			gb = globe;
+		} else {
+			gb = globe.getAllSubGroupBeans().get(groupId);
+		}
 		Map<String, JobBean> map = gb.getAllSubJobBeans();
-
 		List<Tuple<JobDescriptor, JobStatus>> allJobs = new ArrayList<Tuple<JobDescriptor, JobStatus>>();
 		for (String key : map.keySet()) {
 			Tuple<JobDescriptor, JobStatus> tuple = new Tuple<JobDescriptor, JobStatus>(
@@ -575,11 +588,11 @@ public class JobServiceImpl implements JobService {
 		}
 		Map<String, JobHistory> jobHisMap = jobHistoryManager
 				.findLastHistoryByList(jobIds);
-		List<JobModel> result = new ArrayList<JobModel>();
+		List<JobModelAction> result = new ArrayList<JobModelAction>();
 		for (Tuple<JobDescriptor, JobStatus> job : allJobs) {
 			JobStatus status = job.getY();
 			JobDescriptor jd = job.getX();
-			JobModel model = new JobModel();
+			JobModelAction model = new JobModelAction();
 			model.setId(status.getJobId());
 			Map<String, String> dep = new HashMap<String, String>();
 			for (String jobId : job.getX().getDependencies()) {
@@ -593,6 +606,7 @@ public class JobServiceImpl implements JobService {
 					.getStatus().getId());
 			model.setName(jd.getName());
 			model.setAuto(jd.getAuto());
+			model.setToJobId(jd.getToJobId());
 			JobHistory his = jobHisMap.get(jd.getId());
 			if (his != null && his.getStartTime() != null) {
 				SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm:ss");
@@ -604,7 +618,7 @@ public class JobServiceImpl implements JobService {
 			result.add(model);
 		}
 
-		return new PagingLoadResultBean<JobModel>(result, total, start);
+		return new PagingLoadResultBean<JobModelAction>(result, total, start);
 	}
 
 	@Override
@@ -763,7 +777,7 @@ public class JobServiceImpl implements JobService {
 	@Override
 	public List<JobHistoryModel> getAutoRunning(String groupId) {
 		List<JobHistoryModel> result = new ArrayList<JobHistoryModel>();
-		GroupBean globe = readOnlyGroupManager.getGlobeGroupBean();
+		GroupBean globe = readOnlyGroupManagerAction.getGlobeGroupBean();
 		GroupBean gb = null;
 		if (globe.getGroupDescriptor().getId().equals(groupId)) {
 			gb = globe;
@@ -787,31 +801,34 @@ public class JobServiceImpl implements JobService {
 			}
 		}
 		for (JobHistory his : hiss) {
-			JobHistoryModel d = new JobHistoryModel();
-			d.setId(his.getId());
-			d.setName(gb.getAllSubJobBeans().get(his.getJobId())
-					.getJobDescriptor().getName());
-			d.setOwner(gb.getAllSubJobBeans().get(his.getJobId())
-					.getJobDescriptor().getOwner());
-			d.setJobId(his.getJobId());
-			d.setStartTime(his.getStartTime());
-			d.setEndTime(his.getEndTime());
-			d.setExecuteHost(his.getExecuteHost());
-			d.setStatus(his.getStatus() == null ? null : his.getStatus()
-					.toString());
-			String type = "";
-			if (his.getTriggerType() != null) {
-				if (his.getTriggerType() == TriggerType.MANUAL) {
-					type = "手动调度";
-				} else if (his.getTriggerType() == TriggerType.MANUAL_RECOVER) {
-					type = "手动恢复";
-				} else if (his.getTriggerType() == TriggerType.SCHEDULE) {
-					type = "自动调度";
+			if(his!=null){
+				JobHistoryModel d = new JobHistoryModel();
+				d.setId(his.getId());
+				d.setName(gb.getAllSubJobBeans().get(his.getJobId())
+						.getJobDescriptor().getName());
+				d.setOwner(gb.getAllSubJobBeans().get(his.getJobId())
+						.getJobDescriptor().getOwner());
+				d.setJobId(his.getJobId());
+				d.setToJobId(his.getToJobId());
+				d.setStartTime(his.getStartTime());
+				d.setEndTime(his.getEndTime());
+				d.setExecuteHost(his.getExecuteHost());
+				d.setStatus(his.getStatus() == null ? null : his.getStatus()
+						.toString());
+				String type = "";
+				if (his.getTriggerType() != null) {
+					if (his.getTriggerType() == TriggerType.MANUAL) {
+						type = "手动调度";
+					} else if (his.getTriggerType() == TriggerType.MANUAL_RECOVER) {
+						type = "手动恢复";
+					} else if (his.getTriggerType() == TriggerType.SCHEDULE) {
+						type = "自动调度";
+					}
 				}
+				d.setTriggerType(type);
+				d.setIllustrate(his.getIllustrate());
+				result.add(d);
 			}
-			d.setTriggerType(type);
-			d.setIllustrate(his.getIllustrate());
-			result.add(d);
 		}
 
 		return result;
@@ -820,7 +837,7 @@ public class JobServiceImpl implements JobService {
 	@Override
 	public List<JobHistoryModel> getManualRunning(String groupId) {
 		GroupBean gb = null;
-		GroupBean globe = readOnlyGroupManager
+		GroupBean globe = readOnlyGroupManagerAction
 				.getGlobeGroupBeanForTreeDisplay(false);
 		if (globe.getGroupDescriptor().getId().equals(groupId)) {
 			gb = globe;
@@ -847,31 +864,34 @@ public class JobServiceImpl implements JobService {
 		}
 		List<JobHistoryModel> result = new ArrayList<JobHistoryModel>();
 		for (JobHistory his : list) {
-			JobHistoryModel d = new JobHistoryModel();
-			d.setId(his.getId());
-			d.setName(gb.getAllSubJobBeans().get(his.getJobId())
-					.getJobDescriptor().getName());
-			d.setOwner(gb.getAllSubJobBeans().get(his.getJobId())
-					.getJobDescriptor().getOwner());
-			d.setJobId(his.getJobId());
-			d.setStartTime(his.getStartTime());
-			d.setEndTime(his.getEndTime());
-			d.setExecuteHost(his.getExecuteHost());
-			d.setStatus(his.getStatus() == null ? null : his.getStatus()
-					.toString());
-			String type = "";
-			if (his.getTriggerType() != null) {
-				if (his.getTriggerType() == TriggerType.MANUAL) {
-					type = "手动调度";
-				} else if (his.getTriggerType() == TriggerType.MANUAL_RECOVER) {
-					type = "手动恢复";
-				} else if (his.getTriggerType() == TriggerType.SCHEDULE) {
-					type = "自动调度";
+			if(his != null){
+				JobHistoryModel d = new JobHistoryModel();
+				d.setId(his.getId());
+				d.setName(gb.getAllSubJobBeans().get(his.getJobId())
+						.getJobDescriptor().getName());
+				d.setOwner(gb.getAllSubJobBeans().get(his.getJobId())
+						.getJobDescriptor().getOwner());
+				d.setJobId(his.getJobId());
+				d.setToJobId(his.getToJobId());
+				d.setStartTime(his.getStartTime());
+				d.setEndTime(his.getEndTime());
+				d.setExecuteHost(his.getExecuteHost());
+				d.setStatus(his.getStatus() == null ? null : his.getStatus()
+						.toString());
+				String type = "";
+				if (his.getTriggerType() != null) {
+					if (his.getTriggerType() == TriggerType.MANUAL) {
+						type = "手动调度";
+					} else if (his.getTriggerType() == TriggerType.MANUAL_RECOVER) {
+						type = "手动恢复";
+					} else if (his.getTriggerType() == TriggerType.SCHEDULE) {
+						type = "自动调度";
+					}
 				}
+				d.setTriggerType(type);
+				d.setIllustrate(his.getIllustrate());
+				result.add(d);
 			}
-			d.setTriggerType(type);
-			d.setIllustrate(his.getIllustrate());
-			result.add(d);
 		}
 		return result;
 	}
@@ -889,7 +909,7 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public void syncScript(String jobId, String script) throws GwtException {
-		JobDescriptor jd = permissionGroupManager.getJobDescriptor(jobId)
+		JobDescriptorOld jd = permissionGroupManager.getJobDescriptor(jobId)
 				.getX();
 		jd.setScript(script);
 		try {

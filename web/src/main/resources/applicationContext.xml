@@ -64,7 +64,7 @@
 		<property name="groupManager" ref="scheduleGroupManager"></property>
 	</bean>
 	<bean id="scheduleGroupManager" class="com.taobao.zeus.web.ScheduleGroupManager" >
-		<property name="groupManager" ref="groupManager"></property>
+		<property name="groupManager" ref="groupManagerOld"></property>
 	</bean>
 	
 	<bean id="jobValidate" class="com.taobao.zeus.store.mysql.tool.JobValidate"></bean>

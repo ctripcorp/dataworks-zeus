@@ -7,6 +7,7 @@ import java.util.Map;
 import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.model.GroupDescriptor;
 import com.taobao.zeus.model.JobDescriptorOld;
+import com.taobao.zeus.model.JobDescriptor;
 import com.taobao.zeus.model.JobDescriptorOld.JobRunTypeOld;
 import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
@@ -40,7 +41,7 @@ public interface GroupManagerOld {
 	 * @return
 	 */
 	GroupBeanOld getDownstreamGroupBean(String groupId);
-	
+
 	GroupBeanOld getDownstreamGroupBean(GroupBeanOld parent);
 	/**
 	 * 根据groupId查询该组的记录
@@ -67,6 +68,14 @@ public interface GroupManagerOld {
 	 * @return
 	 */
 	Tuple<JobDescriptorOld,JobStatus> getJobDescriptor(String jobId);
+	
+	/**
+	 * 根据actionid查询action的记录信息
+	 * @param jobId==actionid
+	 * @return
+	 */
+	Tuple<JobDescriptor,JobStatus> getActionDescriptor(String jobId);
+	
 	/**
 	 * 获取组下的job
 	 * @param groupId

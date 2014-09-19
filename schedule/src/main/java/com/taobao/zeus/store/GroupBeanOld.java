@@ -74,6 +74,7 @@ public class GroupBeanOld implements Serializable{
 		map.putAll(jobBeanMap);
 		return map;
 	}
+	
 	/**
 	 * 获取组下(一级)所有的任务Map
 	 * @return

@@ -40,7 +40,6 @@ public class MysqlDebugHistoryManager extends HibernateDaoSupport implements Deb
 			@Override
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
-				Query query=session.createQuery("select id,fileId,startTime,endTime,executeHost,status,script,log from com.taobao.zeus.store.mysql.persistence.DebugHistoryPersistence" +
 				Query query=session.createQuery("select id,fileId,startTime,endTime,executeHost,status,script,log,owner from com.taobao.zeus.store.mysql.persistence.DebugHistoryPersistence" +
 						" where fileId=? order by id desc");
 				query.setParameter(0, Long.valueOf(fileId));
@@ -58,7 +57,6 @@ public class MysqlDebugHistoryManager extends HibernateDaoSupport implements Deb
 					history.setStatus(o[5]==null?null:Status.parser(String.valueOf(o[5])));
 					history.setScript(String.valueOf(o[6]));
 					history.setLog(String.valueOf(o[7]));
-					history.setLog(String.valueOf(o[12]));
 					history.setOwner(String.valueOf(o[8]));
 					result.add(history);
 				}

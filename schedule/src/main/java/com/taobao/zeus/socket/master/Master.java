@@ -111,10 +111,8 @@ public class Master {
 			@Override
 			public void run() {
 				try {
-					System.out.println("start scan");
 					//System.out.println("start scan");
 					scan();
-					System.out.println("end scan");
 					//System.out.println("end scan");
 				} catch (Exception e) {
 					log.error("get job from queue failed!", e);
@@ -128,14 +126,12 @@ public class Master {
 				Date now = new Date();
 				for (MasterWorkerHolder holder : new ArrayList<MasterWorkerHolder>(
 						context.getWorkers().values())) {
-					System.out.println("worker start:"+holder.getDebugRunnings().size());
 					System.out.println("schedule worker start:"+holder.getDebugRunnings().size());
 					if (holder.getHeart().timestamp == null
 							|| (now.getTime() - holder.getHeart().timestamp
 									.getTime()) > 1000 * 60) {
 						holder.getChannel().close();
 					}
-					System.out.println("worker end:"+holder.getDebugRunnings().size());
 					System.out.println("schedule worker end:"+holder.getDebugRunnings().size());
 				}
 			}
@@ -148,29 +144,18 @@ public class Master {
 		Float selectMemRate = null;
 		for (MasterWorkerHolder worker : context.getWorkers().values()) {
 			HeartBeatInfo heart = worker.getHeart();
-			System.out.println("worker a" + "heart :" +heart);
-			System.out.println("worker a" + "heart :" +heart.memRate);
-			System.out.println("111111111111111111111");
-			//if (heart != null && heart.memRate != null && heart.memRate < 0.8) {
-			if (heart != null && heart.memRate != null/* && heart.memRate < 0.8*/) {
-				System.out.println("22222222222222222222");
 			System.out.println("worker a : heart :" + heart.memRate);
 			if (heart != null && heart.memRate != null && heart.memRate < 0.8) {
 				if (selectWorker == null) {
-					System.out.println("worker b");
 					selectWorker = worker;
 					selectMemRate = heart.memRate;
-				} else /*if (selectMemRate > heart.memRate) */{
-					System.out.println("333333333333333333333333");
 					System.out.println("worker b : heart :"+ selectMemRate);
 				} else if (selectMemRate > heart.memRate) {
 					selectWorker = worker;
 					selectMemRate = heart.memRate;
-					System.out.println("worker c");
 					System.out.println("worker c : heart :"+ selectMemRate);
 				}
 			}
-			System.out.println("worker d");
 		}
 		return selectWorker;
 	}
@@ -235,7 +220,6 @@ public class Master {
 			System.out.println("debug queue :" +context.getDebugQueue().size() );
 			final JobElement e = context.getDebugQueue().poll();
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
-			System.out.println("selectWorker :" +selectWorker+" host :"+e.getHost());
 			System.out.println("debug selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
 				context.getDebugQueue().offer(e);
@@ -676,7 +660,6 @@ public class Master {
 		context.getDebugHistoryManager().updateDebugHistoryLog(debug.getId(),
 				debug.getLog().getContent());
 		context.getDebugQueue().offer(element);
-System.out.println("offer debug queue :" +context.getDebugQueue().size()+ "element :"+element.getJobID());
 		System.out.println("offer debug queue :" +context.getDebugQueue().size()+ " element :"+element.getJobID());
 	}
 

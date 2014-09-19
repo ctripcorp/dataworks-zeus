@@ -26,6 +26,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.model.GroupDescriptor;
+import com.taobao.zeus.model.JobDescriptor;
 import com.taobao.zeus.model.JobDescriptorOld;
 import com.taobao.zeus.model.JobDescriptorOld.JobRunTypeOld;
 import com.taobao.zeus.model.JobStatus;
@@ -433,6 +434,11 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 				log.error("getDownstreamGroupBean failed", e);
 				return null;
 			}
+		}
+		@Override
+		public Tuple<JobDescriptor, JobStatus> getActionDescriptor(String jobId) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 		
 		private Future<GroupBeanOld> getDownstreamGroupBean(final GroupBeanOld parent, final int depth) throws Exception{

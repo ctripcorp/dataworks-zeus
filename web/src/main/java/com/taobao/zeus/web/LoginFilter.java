@@ -16,10 +16,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.taobao.zeus.store.UserManager;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
-
-import com.taobao.zeus.web.LoginUser;
-
-/**
+import com.taobao.zeus.web.LoginUser;/**
  * 登陆信息设置
  * @author zhoufang
  *
@@ -93,7 +90,7 @@ public class LoginFilter implements Filter {
 
 			LoginUser.user.set(zeusUser);
 		}
-		if(null!=uidfromlogin){
+if(null!=uidfromlogin){
 			zeusUser=new ZeusUser();
 			zeusUser.setEmail(login.getEmail(httpRequest));
 			zeusUser.setUid(login.getUid(httpRequest));
@@ -108,8 +105,9 @@ public class LoginFilter implements Filter {
 			LoginUser.user.set(zeusUser);
 		}else{
 			LoginUser.user.set(zeusUser.USER);
-		}
+		}		}
 
+		
 		//System.out.println(zeusUser.toString());
 		
 		chain.doFilter(request, response);

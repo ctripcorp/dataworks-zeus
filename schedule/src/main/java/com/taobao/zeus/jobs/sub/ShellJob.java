@@ -11,13 +11,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.taobao.zeus.jobs.JobContext;
 import com.taobao.zeus.jobs.ProcessJob;
 import com.taobao.zeus.store.Super;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.util.PropertyKeys;
-
 
 
 /**
@@ -27,6 +28,7 @@ import com.taobao.zeus.util.PropertyKeys;
  */
 public class ShellJob extends ProcessJob{
 
+	private static Logger log=LoggerFactory.getLogger(ShellJob.class);
 	protected String shell;
 
 	public ShellJob(JobContext jobContext) {
@@ -70,13 +72,20 @@ public class ShellJob extends ProcessJob{
 		
 		List<String> list=new ArrayList<String>();
 		
-		// get current username
-		//ZeusUser u= LoginUser.getUser();
-		//String shellUserName = u.getName();
 		
 		//修改权限
 		// get operator uid
 		String shellUid = jobContext.getJobHistory().getOperator();
+		String shellPrefix = "";
+		if (jobContext.getRunType() == 1 || jobContext.getRunType() == 2) {
+			shellPrefix = "sudo -u " + jobContext.getJobHistory().getOperator();
+		} else if (jobContext.getRunType() == 3) {
+			shellPrefix = "sudo -u " + jobContext.getDebugHistory().getOwner();
+		} else if (jobContext.getRunType() == 4) {
+			shellPrefix = "";
+		}else{
+			log("没有RunType=" + jobContext.getRunType() + " 的执行类别");
+		}
 		
 		//修改权限
 
@@ -85,9 +94,8 @@ public class ShellJob extends ProcessJob{
 		list.add("dos2unix " + shellFilePath);
 		//执行shell
 		// run shell as current user
-		//list.add("sudo -u " + shellUserName + " sh "+shellFilePath);
 		list.add("sudo -u " + shellUid + " sh "+shellFilePath);
-		list.add("sudo -u " + shellUid + " sh "+shellFilePath);
+		list.add(shellPrefix + " sh "+shellFilePath);
 
 		return list;
 	}

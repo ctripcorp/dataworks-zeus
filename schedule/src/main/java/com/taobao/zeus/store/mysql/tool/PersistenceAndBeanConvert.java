@@ -465,6 +465,7 @@ public class PersistenceAndBeanConvert {
 		debug.setScript(persistence.getScript());
 		debug.setJobRunType(JobRunType.parser(persistence.getRuntype()));
 		debug.setLog(persistence.getLog());
+		debug.setOwner(persistence.getOwner());
 		return debug;
 	}
 
@@ -488,6 +489,7 @@ public class PersistenceAndBeanConvert {
 		persist.setRuntype(debug.getJobRunType() == null ? null : debug
 				.getJobRunType().toString());
 		persist.setLog(debug.getLog().getContent());
+		persist.setOwner(debug.getOwner() == null ? null : debug.getOwner());
 		return persist;
 	}
 

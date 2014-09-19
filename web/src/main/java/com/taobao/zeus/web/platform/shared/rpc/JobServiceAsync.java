@@ -7,6 +7,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
+import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 
@@ -40,7 +41,10 @@ public interface JobServiceAsync {
 //			AsyncCallback<List<JobHistoryModel>> callback);
 
 	void getSubJobStatus(String groupId, PagingLoadConfig config,
-			AsyncCallback<PagingLoadResult<JobModel>> callback);
+			AsyncCallback<PagingLoadResult<JobModelAction>> callback);
+	
+/*	void getSubJobStatusAction(String groupId, PagingLoadConfig config,
+			AsyncCallback<PagingLoadResult<JobModelAction>> callback);*/
 
 	void getUpstreamJob(String jobId, AsyncCallback<JobModel> callback);
 

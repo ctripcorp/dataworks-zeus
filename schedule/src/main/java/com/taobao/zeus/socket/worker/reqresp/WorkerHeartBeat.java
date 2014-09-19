@@ -29,7 +29,7 @@ public class WorkerHeartBeat {
 	}
 
 	public ChannelFuture execute(WorkerContext context) {
-		JobContext jobContext = JobContext.getTempJobContext();
+		JobContext jobContext = JobContext.getTempJobContext(JobContext.SYSTEM_RUN);
 		MemUseRateJob job = new MemUseRateJob(jobContext, 1);
 		try {
 			int exitCode = -1;

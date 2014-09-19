@@ -273,7 +273,7 @@ public class TableManagerRpcImpl implements TableManagerService {
 		try {
 			TablePreviewModel result;
 			String path = model.getPath();
-			JobContext jobContext = JobContext.getTempJobContext();
+			JobContext jobContext = JobContext.getTempJobContext(JobContext.SYSTEM_RUN);
 			jobContext.setProperties(new HierarchyProperties(
 					new HashMap<String, String>()));
 			jobContext.getProperties().setProperty("preview.hdfs.path", path);

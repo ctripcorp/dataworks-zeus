@@ -80,7 +80,7 @@ public class MapReduceJob extends JavaJob{
 	}
 
 	public static void main(String[] args) {
-		JobContext context=JobContext.getTempJobContext();
+		JobContext context=JobContext.getTempJobContext(JobContext.SYSTEM_RUN);
 		Map<String, String> map=new HashMap<String, String>();
 		map.put("hadoop.ugi.name", "uginame");
 		HierarchyProperties properties=new HierarchyProperties(map);

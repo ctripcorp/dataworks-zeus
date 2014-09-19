@@ -28,8 +28,9 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.CenterTemplate;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.GroupModel;
-import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
-import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelProperties;
+//import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
+import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
+import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelPropertiesAction;
 import com.taobao.zeus.web.platform.client.module.jobmanager.TreeKeyProviderTool;
 import com.taobao.zeus.web.platform.client.module.jobmanager.event.TreeNodeSelectEvent;
 import com.taobao.zeus.web.platform.client.util.RPCS;
@@ -56,33 +57,33 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 		loader.load(config);
 	}
 
-	private Grid<JobModel> grid;
-	private ListStore<JobModel> store;
-	private PagingLoader<PagingLoadConfig,PagingLoadResult<JobModel>> loader;
+	private Grid<JobModelAction> grid;
+	private ListStore<JobModelAction> store;
+	private PagingLoader<PagingLoadConfig,PagingLoadResult<JobModelAction>> loader;
 	private PagingToolBar toolBar;
 	
-	private static JobModelProperties prop=GWT.create(JobModelProperties.class);
+	private static JobModelPropertiesAction prop=GWT.create(JobModelPropertiesAction.class);
 	
 	public CardOverall(GroupPresenter p){
 		this.presenter=p;
-		
-		ColumnConfig<JobModel,String> jobId=new ColumnConfig<JobModel,String>(prop.id(), 20,"JobId");
-		ColumnConfig<JobModel,String> jobName=new ColumnConfig<JobModel,String>(prop.name(),100, "任务名称");
+		ColumnConfig<JobModelAction,String> jobId=new ColumnConfig<JobModelAction,String>(prop.id(), 60,"ActionId");
+		ColumnConfig<JobModelAction,String> toJobId=new ColumnConfig<JobModelAction,String>(prop.toJobId(), 20,"JobId");
+		ColumnConfig<JobModelAction,String> jobName=new ColumnConfig<JobModelAction,String>(prop.name(),100, "任务名称");
 		jobName.setCell(new AbstractCell<String>(){
 			public void render(Context context,
 					String value, SafeHtmlBuilder sb) {
 				sb.appendHtmlConstant("<span title='"+value+"'>"+value+"</span>");
 			}
 		});
-		ColumnConfig<JobModel,String> status=new ColumnConfig<JobModel,String>(prop.status(), 30,"执行状态");
-		ColumnConfig<JobModel,String> lastStatus=new ColumnConfig<JobModel,String>(prop.lastStatus(),80, "上一次任务情况");
+		ColumnConfig<JobModelAction,String> status=new ColumnConfig<JobModelAction,String>(prop.status(), 30,"执行状态");
+		ColumnConfig<JobModelAction,String> lastStatus=new ColumnConfig<JobModelAction,String>(prop.lastStatus(),80, "上一次任务情况");
 		lastStatus.setCell(new AbstractCell<String>() {
 			public void render(com.google.gwt.cell.client.Cell.Context context,
 					String value, SafeHtmlBuilder sb) {
 				sb.appendHtmlConstant("<span title='"+value+"'>"+value+"</span>");
 			}
 		});
-		ColumnConfig<JobModel,Map<String, String>> readyDependency=new ColumnConfig<JobModel,Map<String, String>>(prop.readyDependencies(), 100,"依赖状态");
+		ColumnConfig<JobModelAction,Map<String, String>> readyDependency=new ColumnConfig<JobModelAction,Map<String, String>>(prop.readyDependencies(), 100,"依赖状态");
 		readyDependency.setCell(new AbstractCell<Map<String, String>>() {
 			private DateTimeFormat format=DateTimeFormat.getFormat("MM月dd日 HH:mm");
 			public void render(com.google.gwt.cell.client.Cell.Context context,
@@ -102,35 +103,35 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 				}
 			}
 		});
-		ColumnModel cm=new ColumnModel(Arrays.asList(jobId,jobName,status,readyDependency,lastStatus));
+		ColumnModel cm=new ColumnModel(Arrays.asList(jobId,toJobId,jobName,status,readyDependency,lastStatus));
 		
-		RpcProxy<PagingLoadConfig,PagingLoadResult<JobModel>> proxy=new RpcProxy<PagingLoadConfig,PagingLoadResult<JobModel>>(){
+		RpcProxy<PagingLoadConfig,PagingLoadResult<JobModelAction>> proxy=new RpcProxy<PagingLoadConfig,PagingLoadResult<JobModelAction>>(){
 			@Override
 			public void load(PagingLoadConfig loadConfig,
-					AsyncCallback<PagingLoadResult<JobModel>> callback) {
+					AsyncCallback<PagingLoadResult<JobModelAction>> callback) {
 				PagingLoadConfig config=(PagingLoadConfig)loadConfig;
 				RPCS.getJobService().getSubJobStatus(presenter.getGroupModel().getId(),config, callback);				
 			}
 		};
-		store=new ListStore<JobModel>(new ModelKeyProvider<JobModel>() {
-			public String getKey(JobModel item) {
+		store=new ListStore<JobModelAction>(new ModelKeyProvider<JobModelAction>() {
+			public String getKey(JobModelAction item) {
 				return item.getId();
 			}
 		});
-		loader=new PagingLoader<PagingLoadConfig,PagingLoadResult<JobModel>>(proxy);
+		loader=new PagingLoader<PagingLoadConfig,PagingLoadResult<JobModelAction>>(proxy);
 		loader.setLimit(15);
-		loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig,JobModel,PagingLoadResult<JobModel>>(store));
+		loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig,JobModelAction,PagingLoadResult<JobModelAction>>(store));
 
 		
 		
-		grid=new Grid<JobModel>(store, cm);
+		grid=new Grid<JobModelAction>(store, cm);
 		grid.setLoadMask(true);
 		grid.getView().setForceFit(true);
 		
 		grid.addCellDoubleClickHandler(new CellDoubleClickHandler() {
 			public void onCellClick(CellDoubleClickEvent event) {
 				int row=event.getRowIndex();
-				JobModel model=grid.getStore().get(row);
+				JobModelAction model=grid.getStore().get(row);
 				if(model!=null){
 					TreeNodeSelectEvent te=new TreeNodeSelectEvent(TreeKeyProviderTool.genJobProviderKey(model.getId()));
 					presenter.getPlatformContext().getPlatformBus().fireEvent(te);
@@ -139,7 +140,7 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 		});
 		grid.addRefreshHandler(new RefreshHandler() {
 			public void onRefresh(RefreshEvent event) {
-				for(JobModel m:store.getAll()){
+				for(JobModelAction m:store.getAll()){
 					if(m.getAuto()){
 						grid.getView().getRow(m).setAttribute("style", "color:green");
 					}

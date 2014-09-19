@@ -128,6 +128,15 @@ public class HierarchyProperties {
 		return getLocalProperties();
 	}
 	
+	public Map<String, String> getAllProperties(String dateStr){
+		if(parent!=null){
+			Map<String, String> parentMap=new HashMap<String, String>(parent.getAllProperties());
+			parentMap.putAll(getLocalProperties());
+			return parentMap;
+		}
+		return getLocalProperties();
+	}
+	
 	public void setProperty(String key,String value){
 		properties.put(key, value);
 	}

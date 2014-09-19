@@ -15,23 +15,21 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.model.ZeusFollow;
 import com.taobao.zeus.store.FollowManager;
-import com.taobao.zeus.store.GroupBean;
-import com.taobao.zeus.store.GroupManager;
-import com.taobao.zeus.store.JobBean;
+import com.taobao.zeus.store.GroupBeanOld;
+import com.taobao.zeus.store.JobBeanOld;
 import com.taobao.zeus.store.JobHistoryManager;
-import com.taobao.zeus.store.mysql.ReadOnlyGroupManager;
+import com.taobao.zeus.store.mysql.ReadOnlyGroupManagerOld;
 import com.taobao.zeus.web.LoginUser;
 import com.taobao.zeus.web.platform.client.module.jobmanager.GroupJobTreeModel;
 import com.taobao.zeus.web.platform.shared.rpc.TreeService;
 
 public class TreeServiceImpl implements TreeService{
 	@Autowired
-	private ReadOnlyGroupManager readOnlyGroupManager;
+	private ReadOnlyGroupManagerOld readOnlyGroupManager;
 	@Autowired
 	private FollowManager followManager;
 	@Autowired
@@ -41,33 +39,33 @@ public class TreeServiceImpl implements TreeService{
 	@Override
 	public GroupJobTreeModel getMyTreeData() {
 		String uid=LoginUser.getUser().getUid();
-		GroupBean rootGroup=readOnlyGroupManager.getGlobeGroupBeanForTreeDisplay(true);
-		Map<String, JobBean> allJobs=rootGroup.getAllSubJobBeans();
+		GroupBeanOld rootGroup=readOnlyGroupManager.getGlobeGroupBeanForTreeDisplay(true);
+		Map<String, JobBeanOld> allJobs=rootGroup.getAllSubJobBeans();
 		for(String key:allJobs.keySet()){
-			JobBean bean=allJobs.get(key);
+			JobBeanOld bean=allJobs.get(key);
 			//不是owner，删除
 			if(!bean.getJobDescriptor().getOwner().equals(uid)){
 				bean.getGroupBean().getJobBeans().remove(key);
 			}
 		}
 		
-		Map<String, GroupBean> allGroups=rootGroup.getAllSubGroupBeans();
-		List<GroupBean> leafGroups=new ArrayList<GroupBean>();
-		for(GroupBean bean:allGroups.values()){
+		Map<String, GroupBeanOld> allGroups=rootGroup.getAllSubGroupBeans();
+		List<GroupBeanOld> leafGroups=new ArrayList<GroupBeanOld>();
+		for(GroupBeanOld bean:allGroups.values()){
 			if(!bean.isDirectory() || bean.getChildrenGroupBeans().isEmpty()){
 				leafGroups.add(bean);
 			}
 		}
-		for(GroupBean bean:leafGroups){
+		for(GroupBeanOld bean:leafGroups){
 			recursionRemove(bean, uid);
 		}
 		
 		return getTreeData(rootGroup);
 	}
-	private void recursionRemove(GroupBean bean,String uid){
+	private void recursionRemove(GroupBeanOld bean,String uid){
 		if(!bean.isDirectory()){
 			if(!bean.getGroupDescriptor().getOwner().equals(uid) && bean.getJobBeans().isEmpty()){
-				GroupBean parent=bean.getParentGroupBean();
+				GroupBeanOld parent=bean.getParentGroupBean();
 				if(parent!=null){
 					parent.getChildrenGroupBeans().remove(bean);
 					recursionRemove(parent, uid);
@@ -75,7 +73,7 @@ public class TreeServiceImpl implements TreeService{
 			}
 		}else{
 			if(!bean.getGroupDescriptor().getOwner().equals(uid) && bean.getChildrenGroupBeans().isEmpty()){
-				GroupBean parent=bean.getParentGroupBean();
+				GroupBeanOld parent=bean.getParentGroupBean();
 				if(parent!=null){
 					parent.getChildrenGroupBeans().remove(bean);
 					recursionRemove(parent, uid);
@@ -85,11 +83,11 @@ public class TreeServiceImpl implements TreeService{
 	}
 	@Override
 	public GroupJobTreeModel getTreeData() {
-		GroupBean globe=null;
+		GroupBeanOld globe=null;
 		globe=readOnlyGroupManager.getGlobeGroupBeanForTreeDisplay(false);
 		return getTreeData(globe);
 	}
-	private GroupJobTreeModel getTreeData(GroupBean rootGroup) {
+	private GroupJobTreeModel getTreeData(GroupBeanOld rootGroup) {
 		
 		String uid=LoginUser.getUser().getUid();
 		List<ZeusFollow> list=followManager.findAllTypeFollows(uid);
@@ -121,13 +119,13 @@ public class TreeServiceImpl implements TreeService{
 		return root;
 	}
 	
-	private void setGroup(GroupJobTreeModel parent,List<GroupBean> children,Map<String, Boolean> groupFollow,Map<String, Boolean> jobFollow){
-		Collections.sort(children, new Comparator<GroupBean>() {
-			public int compare(GroupBean o1, GroupBean o2) {
+	private void setGroup(GroupJobTreeModel parent,List<GroupBeanOld> children,Map<String, Boolean> groupFollow,Map<String, Boolean> jobFollow){
+		Collections.sort(children, new Comparator<GroupBeanOld>() {
+			public int compare(GroupBeanOld o1, GroupBeanOld o2) {
 				return o1.getGroupDescriptor().getName().compareToIgnoreCase(o2.getGroupDescriptor().getName());
 			}
 		});
-		for(GroupBean g:children){
+		for(GroupBeanOld g:children){
 			GroupJobTreeModel group=new GroupJobTreeModel();
 			group.setName(g.getGroupDescriptor().getName());
 			group.setId(g.getGroupDescriptor().getId());
@@ -141,16 +139,16 @@ public class TreeServiceImpl implements TreeService{
 			if(g.isDirectory()){
 				setGroup(group,g.getChildrenGroupBeans(),groupFollow,jobFollow);
 			}else{
-				List<JobBean> list=new ArrayList<JobBean>();
-				for(JobBean jb:g.getJobBeans().values()){
+				List<JobBeanOld> list=new ArrayList<JobBeanOld>();
+				for(JobBeanOld jb:g.getJobBeans().values()){
 					list.add(jb);
 				}
-				Collections.sort(list, new Comparator<JobBean>() {
-					public int compare(JobBean o1, JobBean o2) {
+				Collections.sort(list, new Comparator<JobBeanOld>() {
+					public int compare(JobBeanOld o1, JobBeanOld o2) {
 						return o1.getJobDescriptor().getName().compareTo(o2.getJobDescriptor().getName());
 					}
 				});
-				for(JobBean jb:list){
+				for(JobBeanOld jb:list){
 					GroupJobTreeModel job=new GroupJobTreeModel();
 					job.setId(jb.getJobDescriptor().getId());
 					job.setGroup(false);
@@ -178,8 +176,8 @@ public class TreeServiceImpl implements TreeService{
 
 	@Override
 	public GroupJobTreeModel getDependeeTree(String jobId) {
-		GroupBean globe=readOnlyGroupManager.getGlobeGroupBean();
-		JobBean jb=globe.getAllSubJobBeans().get(jobId);
+		GroupBeanOld globe=readOnlyGroupManager.getGlobeGroupBean();
+		JobBeanOld jb=globe.getAllSubJobBeans().get(jobId);
 		if(jb!=null){
 			GroupJobTreeModel root=new GroupJobTreeModel();
 			root.setName(jb.getJobDescriptor().getName());
@@ -194,8 +192,8 @@ public class TreeServiceImpl implements TreeService{
 		}
 		return null;
 	}
-	private void setJob(GroupJobTreeModel parent,Collection<JobBean> children,boolean dependee){
-		for(JobBean g:children){
+	private void setJob(GroupJobTreeModel parent,Collection<JobBeanOld> children,boolean dependee){
+		for(JobBeanOld g:children){
 			GroupJobTreeModel job=new GroupJobTreeModel();
 			job.setName(g.getJobDescriptor().getName());
 			job.setId(g.getJobDescriptor().getId());
@@ -203,7 +201,7 @@ public class TreeServiceImpl implements TreeService{
 			job.setJob(true);
 			job.setOwner(g.getJobDescriptor().getOwner());
 			Boolean dir=false;
-			Collection<JobBean> childs=null;
+			Collection<JobBeanOld> childs=null;
 			if(dependee){
 				dir=g.getDependee().isEmpty()?false:true;
 				childs=g.getDependee();
@@ -221,8 +219,8 @@ public class TreeServiceImpl implements TreeService{
 
 	@Override
 	public GroupJobTreeModel getDependerTree(String jobId) {
-		GroupBean globe=readOnlyGroupManager.getGlobeGroupBean();
-		JobBean jb=globe.getAllSubJobBeans().get(jobId);
+		GroupBeanOld globe=readOnlyGroupManager.getGlobeGroupBean();
+		JobBeanOld jb=globe.getAllSubJobBeans().get(jobId);
 		if(jb!=null){
 			GroupJobTreeModel root=new GroupJobTreeModel();
 			root.setName(jb.getJobDescriptor().getName());

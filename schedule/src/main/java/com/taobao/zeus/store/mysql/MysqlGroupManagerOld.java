@@ -21,6 +21,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.model.GroupDescriptor;
+import com.taobao.zeus.model.JobDescriptor;
 import com.taobao.zeus.model.JobDescriptorOld;
 import com.taobao.zeus.model.JobDescriptorOld.JobRunTypeOld;
 import com.taobao.zeus.model.JobDescriptorOld.JobScheduleTypeOld;
@@ -550,6 +551,12 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		List<JobPersistenceOld> list = getHibernateTemplate().find(
 				"from com.taobao.zeus.store.mysql.persistence.JobPersistenceOld ");
 		return list;
+	}
+	
+	@Override
+	public Tuple<JobDescriptor, JobStatus> getActionDescriptor(String jobId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

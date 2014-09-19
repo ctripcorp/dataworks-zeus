@@ -122,7 +122,7 @@ public class JobController extends Controller {
 							&& history.getStatus() == Status.RUNNING) {
 						operator = history.getOperator();
 						try {
-							JobContext temp = JobContext.getTempJobContext();
+							JobContext temp = JobContext.getTempJobContext(JobContext.MANUAL_RUN);
 							temp.setJobHistory(history);
 							new CancelHadoopJob(temp).run();
 						} catch (Exception e) {
@@ -135,6 +135,10 @@ public class JobController extends Controller {
 				history.setOperator(operator);
 				history.setTriggerType(TriggerType.MANUAL_RECOVER);
 				history.setJobId(jobId);
+				JobDescriptor jobDescriptor = groupManager.getUpstreamJobBean(jobId).getJobDescriptor();
+				if(jobDescriptor != null){
+					history.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
+				}
 				context.getJobHistoryManager().addJobHistory(history);
 				master.run(history);
 			}
@@ -366,6 +370,8 @@ public class JobController extends Controller {
 		history.setIllustrate("依赖任务全部到位，开始执行");
 		history.setTriggerType(TriggerType.SCHEDULE);
 		history.setJobId(jobId);
+		System.out.println("依赖任务执行的operator ："+jobDescriptor.getOwner());
+		history.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
 		history.setToJobId(jobDescriptor.getToJobId() == null ? null : jobDescriptor.getToJobId());
 		context.getJobHistoryManager().addJobHistory(history);
 		history = master.run(history);
@@ -591,6 +597,7 @@ public class JobController extends Controller {
 				history.setStatisEndTime(jobDescriptor.getStatisEndTime());
 				history.setTimezone(jobDescriptor.getTimezone());
 				history.setCycle(jobDescriptor.getCycle());
+				history.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
 				history = jobHistoryManager.addJobHistory(history);
 				jobHistoryManager.updateJobHistoryLog(history.getId(), history
 						.getLog().getContent());
@@ -710,6 +717,7 @@ public class JobController extends Controller {
 		history.setTimezone(jobDescriptor.getTimezone());
 		history.setCycle(jobDescriptor.getCycle());
 		history.setExecuteHost(jobDescriptor.getHost());
+		history.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
 		context.getJobHistoryManager().addJobHistory(history);
 		master.run(history);
 	}

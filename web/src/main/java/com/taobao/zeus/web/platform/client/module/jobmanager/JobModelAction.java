@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JobModel implements Serializable {
+public class JobModelAction implements Serializable {
 
 	/**
 	 * 
@@ -18,6 +18,7 @@ public class JobModel implements Serializable {
 	private String cronExpression;
 	private List<String> dependencies;
 	private String id;
+	private String toJobId;
 	private String name;
 	private String desc;
 	private String groupId;
@@ -55,9 +56,10 @@ public class JobModel implements Serializable {
 	public static final String JOB_CYCLE_HOUR="小时任务";
 	public static final String JOB_CYCLE_DAY="天任务";
 
-	public JobModel copy() {
-		JobModel model = new JobModel();
+	public JobModelAction copy() {
+		JobModelAction model = new JobModelAction();
 		model.setAdmin(getAdmin());
+		model.setToJobId(getToJobId());
 		model.setAdmins(new ArrayList<String>(getAdmins()));
 		model.setAllProperties(new HashMap<String, String>(getAllProperties()));
 		model.setAllResources(new ArrayList<Map<String, String>>(
@@ -89,6 +91,13 @@ public class JobModel implements Serializable {
 		return model;
 	}
 
+	public String getToJobId() {
+		return toJobId;
+	}
+
+	public void setToJobId(String toJobId) {
+		this.toJobId = toJobId;
+	}
 	
 	public Map<String, String> getAllProperties() {
 		return allProperties;

@@ -146,9 +146,9 @@ public class CardHistory extends CenterTemplate implements
 		this.presenter = p;
 
 		ColumnConfig<JobHistoryModel, String> id = new ColumnConfig<JobHistoryModel, String>(
-				prop.id(), 50, "id");
+				prop.id(), 30, "id");
 		ColumnConfig<JobHistoryModel, String> jobId = new ColumnConfig<JobHistoryModel, String>(
-				prop.jobId(), 40, "ActionId");
+				prop.jobId(), 80, "ActionId");
 		ColumnConfig<JobHistoryModel, String> toJobId = new ColumnConfig<JobHistoryModel, String>(
 				prop.toJobId(), 40, "JobId");
 		ColumnConfig<JobHistoryModel, Date> startTime = new ColumnConfig<JobHistoryModel, Date>(

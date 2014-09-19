@@ -111,8 +111,10 @@ public class Master {
 			@Override
 			public void run() {
 				try {
+					System.out.println("start scan");
 					//System.out.println("start scan");
 					scan();
+					System.out.println("end scan");
 					//System.out.println("end scan");
 				} catch (Exception e) {
 					log.error("get job from queue failed!", e);
@@ -126,13 +128,15 @@ public class Master {
 				Date now = new Date();
 				for (MasterWorkerHolder holder : new ArrayList<MasterWorkerHolder>(
 						context.getWorkers().values())) {
-					//System.out.println("worker start:"+holder.getDebugRunnings().size());
+					System.out.println("worker start:"+holder.getDebugRunnings().size());
+					System.out.println("schedule worker start:"+holder.getDebugRunnings().size());
 					if (holder.getHeart().timestamp == null
 							|| (now.getTime() - holder.getHeart().timestamp
 									.getTime()) > 1000 * 60) {
 						holder.getChannel().close();
 					}
-					//System.out.println("worker end:"+holder.getDebugRunnings().size());
+					System.out.println("worker end:"+holder.getDebugRunnings().size());
+					System.out.println("schedule worker end:"+holder.getDebugRunnings().size());
 				}
 			}
 		}, 30, 30, TimeUnit.SECONDS);
@@ -150,15 +154,20 @@ public class Master {
 			//if (heart != null && heart.memRate != null && heart.memRate < 0.8) {
 			if (heart != null && heart.memRate != null/* && heart.memRate < 0.8*/) {
 				System.out.println("22222222222222222222");
+			System.out.println("worker a : heart :" + heart.memRate);
+			if (heart != null && heart.memRate != null && heart.memRate < 0.8) {
 				if (selectWorker == null) {
 					System.out.println("worker b");
 					selectWorker = worker;
 					selectMemRate = heart.memRate;
 				} else /*if (selectMemRate > heart.memRate) */{
 					System.out.println("333333333333333333333333");
+					System.out.println("worker b : heart :"+ selectMemRate);
+				} else if (selectMemRate > heart.memRate) {
 					selectWorker = worker;
 					selectMemRate = heart.memRate;
 					System.out.println("worker c");
+					System.out.println("worker c : heart :"+ selectMemRate);
 				}
 			}
 			System.out.println("worker d");
@@ -172,14 +181,17 @@ public class Master {
 		if (host != null && !"".equals(host)) {
 			for (MasterWorkerHolder worker : context.getWorkers().values()) {
 				HeartBeatInfo heart = worker.getHeart();
+				System.out.println("worker a : host :" + host + " heart :" + heart.memRate);
 				if (heart != null && heart.memRate != null
 						&& heart.memRate < 0.8 && host.equals(heart.host)) {
 					if (selectWorker == null) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
+						System.out.println("worker b : host :" + host+ " heart :" + selectMemRate);
 					} else if (selectMemRate > heart.memRate) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
+						System.out.println("worker c : host :" + host+ " heart :" + selectMemRate);
 					}
 				}
 			}
@@ -196,8 +208,10 @@ public class Master {
 	private void scan() {
 
 		if (!context.getQueue().isEmpty()) {
+			System.out.println("schedule queue :" +context.getQueue().size());
 			final JobElement e = context.getQueue().poll();
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
+			System.out.println("schedule selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
 				context.getQueue().offer(e);
 			} else {
@@ -206,8 +220,10 @@ public class Master {
 		}
 		
 		if (!context.getManualQueue().isEmpty()) {
+			System.out.println("manual queue :" +context.getManualQueue().size());
 			final JobElement e = context.getManualQueue().poll();
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
+			System.out.println("manual selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
 				context.getManualQueue().offer(e);
 			} else {
@@ -220,6 +236,7 @@ public class Master {
 			final JobElement e = context.getDebugQueue().poll();
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
 			System.out.println("selectWorker :" +selectWorker+" host :"+e.getHost());
+			System.out.println("debug selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
 				context.getDebugQueue().offer(e);
 			} else {
@@ -660,6 +677,7 @@ public class Master {
 				debug.getLog().getContent());
 		context.getDebugQueue().offer(element);
 System.out.println("offer debug queue :" +context.getDebugQueue().size()+ "element :"+element.getJobID());
+		System.out.println("offer debug queue :" +context.getDebugQueue().size()+ " element :"+element.getJobID());
 	}
 
 	public JobHistory run(JobHistory history) {

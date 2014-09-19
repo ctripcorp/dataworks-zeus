@@ -49,7 +49,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 	private UserManager userManager;
 	@Override
 	public ZUser getUser() {
-		ZeusUser u= LoginUser.getUser();System.out.println(u);
+		ZeusUser u= LoginUser.getUser();//System.out.println(u);
 		ZUser zu=new ZUser();
 		zu.setName(u.getName());
 		zu.setUid(u.getUid());

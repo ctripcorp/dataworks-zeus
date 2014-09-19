@@ -13,7 +13,7 @@ import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.model.GroupDescriptor;
 import com.taobao.zeus.model.ZeusFollow;
 import com.taobao.zeus.store.FollowManager;
-import com.taobao.zeus.store.GroupBean;
+import com.taobao.zeus.store.GroupBeanOld;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.UserManager;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
@@ -84,7 +84,7 @@ public class GroupServiceImpl implements GroupService{
 	
 	
 	public GroupModel getUpstreamGroup(String groupId) throws GwtException{
-		GroupBean bean=permissionGroupManager.getUpstreamGroupBean(groupId);
+		GroupBeanOld bean=permissionGroupManager.getUpstreamGroupBean(groupId);
 		GroupDescriptor gd=bean.getGroupDescriptor();
 		GroupModel model=new GroupModel();
 		model.setParent(bean.getParentGroupBean()==null?null:bean.getParentGroupBean().getGroupDescriptor().getId());
@@ -130,7 +130,7 @@ public class GroupServiceImpl implements GroupService{
 		
 		List<String> owners=new ArrayList<String>();
 		owners.add(bean.getGroupDescriptor().getOwner());
-		GroupBean parent=bean.getParentGroupBean();
+		GroupBeanOld parent=bean.getParentGroupBean();
 		while(parent!=null){
 			if(!owners.contains(parent.getGroupDescriptor().getOwner())){
 				owners.add(parent.getGroupDescriptor().getOwner());

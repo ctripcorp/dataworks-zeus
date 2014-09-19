@@ -16,4 +16,6 @@ public interface UserService extends RemoteService {
 	
 	
 	String checkUser(String username);
+	
+	String checkUserSession();
 }

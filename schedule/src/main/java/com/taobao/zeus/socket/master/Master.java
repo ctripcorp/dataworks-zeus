@@ -111,9 +111,9 @@ public class Master {
 			@Override
 			public void run() {
 				try {
-					System.out.println("start scan");
+					//System.out.println("start scan");
 					scan();
-					System.out.println("end scan");
+					//System.out.println("end scan");
 				} catch (Exception e) {
 					log.error("get job from queue failed!", e);
 				}
@@ -126,13 +126,13 @@ public class Master {
 				Date now = new Date();
 				for (MasterWorkerHolder holder : new ArrayList<MasterWorkerHolder>(
 						context.getWorkers().values())) {
-					System.out.println("worker start:"+holder.getDebugRunnings().size());
+					//System.out.println("worker start:"+holder.getDebugRunnings().size());
 					if (holder.getHeart().timestamp == null
 							|| (now.getTime() - holder.getHeart().timestamp
 									.getTime()) > 1000 * 60) {
 						holder.getChannel().close();
 					}
-					System.out.println("worker end:"+holder.getDebugRunnings().size());
+					//System.out.println("worker end:"+holder.getDebugRunnings().size());
 				}
 			}
 		}, 30, 30, TimeUnit.SECONDS);

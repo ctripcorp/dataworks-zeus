@@ -37,4 +37,10 @@ public interface PermissionManager {
 	 * @return
 	 */
 	List<String> getJobAdmins(String jobId);
+	/**
+	 * 该Job的同系列任务
+	 * @param jobId
+	 * @return
+	 */
+	List<Long> getJobACtion(String jobId);
 }

@@ -17,8 +17,7 @@ import com.taobao.zeus.jobs.ProcessJob;
 import com.taobao.zeus.store.Super;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.util.PropertyKeys;
-import com.taobao.zeus.web.LoginUser;
-import com.taobao.zeus.web.platform.client.util.ZUser;
+
 
 
 /**
@@ -72,8 +71,8 @@ public class ShellJob extends ProcessJob{
 		List<String> list=new ArrayList<String>();
 		
 		// get current username
-		ZeusUser u= LoginUser.getUser();
-		String shellUserName = u.getName();
+		//ZeusUser u= LoginUser.getUser();
+		//String shellUserName = u.getName();
 		
 		//修改权限
 		// get operator uid
@@ -86,7 +85,7 @@ public class ShellJob extends ProcessJob{
 		list.add("dos2unix " + shellFilePath);
 		//执行shell
 		// run shell as current user
-		list.add("sudo -u " + shellUserName + " sh "+shellFilePath);
+		//list.add("sudo -u " + shellUserName + " sh "+shellFilePath);
 		list.add("sudo -u " + shellUid + " sh "+shellFilePath);
 		list.add("sudo -u " + shellUid + " sh "+shellFilePath);
 

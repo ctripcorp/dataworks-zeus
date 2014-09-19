@@ -120,7 +120,7 @@ public class RpcFilter implements Filter, SerializationPolicyProvider {
 			      // Try to encode the caught exception
 			      //
 			      Throwable cause = e.getCause();
-
+			      
 			      responsePayload = RPC.encodeResponseForFailure(serviceMethod, cause, serializationPolicy, flags);
 			    }
 

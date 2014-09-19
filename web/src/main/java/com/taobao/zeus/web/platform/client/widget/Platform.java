@@ -66,7 +66,7 @@ public class Platform implements IsWidget ,PlaceHandler{
 		apps.put(app, null);
 		if(!shortcuts.contains(app.getShortcut())){
 			app.getShortcut().addSelectHandler(new SelectHandler() {
-				public void onSelect(SelectEvent event) {
+				public void onSelect(SelectEvent event) {System.out.println("SelectHandler");
 					if(screen.getActiveWidget()!=null && screen.getActiveWidget().equals(apps.get(app))){
 						return;
 					}

@@ -97,33 +97,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 	private TextButton execute=new TextButton("手动执行",new SelectHandler() {
 		@Override
 		public void onSelect(SelectEvent event) {
-			ConfirmMessageBox box=new ConfirmMessageBox("执行任务", "你确认手动执行该任务吗?");
-			box.addHideHandler(new HideHandler() {
-				@Override
-				public void onHide(HideEvent event) {
-					Dialog btn=(Dialog)event.getSource();
-					if(btn.getHideButton().getText().equalsIgnoreCase("yes")){
-						final AutoProgressMessageBox wait=new AutoProgressMessageBox("运行中","doing");
-						wait.auto();
-						wait.show();
-						RPCS.getJobService().run(presenter.getJobModel().getId(), 1, new AbstractAsyncCallback<Void>() {
-							@Override
-							public void onSuccess(Void result) {
-								wait.hide();
-								Info.display("成功", "手动执行任务开始");
-								
-							}
-							@Override
-							public void onFailure(Throwable caught) {
-								wait.hide();
-								AlertMessageBox alert=new AlertMessageBox("失败", "手动执行任务失败");
-								alert.show();
-							};
-						});
-					}
-				}
-			});
-			box.show();
+			new ChooseConfigWindow(presenter).show();
 		}
 	});
 	private TextButton recover=new TextButton("手动恢复",new SelectHandler() {

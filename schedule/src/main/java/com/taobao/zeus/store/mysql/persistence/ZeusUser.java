@@ -26,7 +26,7 @@ public class ZeusUser{
 		public String getPhone() {return "";};
 		public String getUid() {return "yangfei";};
 	};
-	public static ZeusUser USER=new ZeusUser("yangfei@ptthink.com","杨飞","18612201251","yangfei");
+	public static ZeusUser USER=new ZeusUser(null,null,null,null);
 
 	@Id
 	@GeneratedValue

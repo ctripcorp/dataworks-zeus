@@ -13,5 +13,8 @@ public interface UserServiceAsync {
 
 	
 	void checkUser(String username,AsyncCallback<String> callback);
+	
+
+	void checkUserSession(AsyncCallback<String> callback);
 
 }

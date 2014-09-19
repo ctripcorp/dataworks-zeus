@@ -8,6 +8,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.util.ZUser;
+import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 
 public interface JobServiceAsync {
 
@@ -59,5 +60,8 @@ public interface JobServiceAsync {
 	void move(String jobId, String newGroupId, AsyncCallback<Void> callback);
 
 	void syncScript(String jobId, String script, AsyncCallback<Void> callback);
+
+	void getJobACtion(String id,
+			AsyncCallback<List<Long>> callback);
 
 }

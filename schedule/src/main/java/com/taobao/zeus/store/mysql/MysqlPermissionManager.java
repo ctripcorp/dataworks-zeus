@@ -19,6 +19,7 @@ import com.taobao.zeus.store.GroupManager;
 import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.Super;
+import com.taobao.zeus.store.mysql.persistence.GroupPersistence;
 import com.taobao.zeus.store.mysql.persistence.PermissionPersistence;
 @SuppressWarnings("unchecked")
 public class MysqlPermissionManager extends HibernateDaoSupport implements PermissionManager{
@@ -70,7 +71,20 @@ public class MysqlPermissionManager extends HibernateDaoSupport implements Permi
 			}
 		});
 	}
+	public List<Long> getJobACtion(final String jobId){
+		return (List<Long>) getHibernateTemplate().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException,
+					SQLException {
+				
+				
+				List<Long> result= getHibernateTemplate().find("select toJobId from com.taobao.zeus.store.mysql.persistence.JobPersistence where id="+jobId);
+				Long job_id = result.get(0);
+				Query query=session.createQuery("select id from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId="+job_id);
 	
+				return  query.list();
+			}
+		});
+	}
 	private PermissionPersistence getGroupPermission(final String user,final String groupId){
 		List<PermissionPersistence> list=(List<PermissionPersistence>) getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException,

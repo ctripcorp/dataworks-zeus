@@ -99,7 +99,10 @@ public class FilterJobServiceImpl implements JobService{
 	public List<ZUser> getJobAdmins(String jobId) {
 		return jobService.getJobAdmins(jobId);
 	}
-
+	@Override
+	public List<Long> getJobACtion(String jobId) {
+		return jobService.getJobACtion(jobId);
+	}
 	@Override
 	public void removeJobAdmin(String jobId, String uid) throws GwtException {
 		jobService.removeJobAdmin(jobId, uid);

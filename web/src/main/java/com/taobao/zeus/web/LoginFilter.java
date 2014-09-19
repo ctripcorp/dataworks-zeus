@@ -80,22 +80,36 @@ public class LoginFilter implements Filter {
 			chain.doFilter(request, response);
 			return;
 		}
-	
-		String uid=login.getUid(httpRequest);
-		if(uid==null){
-			return;
+		
+		String uid=(String) httpRequest.getSession().getAttribute("user");//login.getUid(httpRequest);
+		String uidfromlogin = login.getUid(httpRequest);
+		if(null!=uid){//如果存在session
+			
+			zeusUser=new ZeusUser();
+			//zeusUser.setEmail(login.getEmail(httpRequest));
+			zeusUser.setUid(login.getUid(httpRequest));
+			//zeusUser.setName(login.getName(httpRequest));
+			//zeusUser.setPhone(login.getPhone(httpRequest));
+
+			LoginUser.user.set(zeusUser);
 		}
-		System.out.println("cccc");
-		zeusUser=new ZeusUser();
-		zeusUser.setEmail(login.getEmail(httpRequest));
-		zeusUser.setUid(login.getUid(httpRequest));
-		zeusUser.setName(login.getName(httpRequest));
-		zeusUser.setPhone(login.getPhone(httpRequest));
-		if(!uid.equals(httpRequest.getSession().getAttribute("user"))){
-			userManager.addOrUpdateUser(zeusUser);
-			httpRequest.getSession().setAttribute("user", zeusUser.getUid());
+		if(null!=uidfromlogin){
+			zeusUser=new ZeusUser();
+			zeusUser.setEmail(login.getEmail(httpRequest));
+			zeusUser.setUid(login.getUid(httpRequest));
+			zeusUser.setName(login.getName(httpRequest));
+			zeusUser.setPhone(login.getPhone(httpRequest));
+			String sessionuser = (String) httpRequest.getSession().getAttribute("user");
+			if(!uidfromlogin.equals(httpRequest.getSession().getAttribute("user"))){
+				userManager.addOrUpdateUser(zeusUser);
+				System.out.println("set session");
+				httpRequest.getSession().setAttribute("user", zeusUser.getUid());
+			}
+			LoginUser.user.set(zeusUser);
+		}else{
+			LoginUser.user.set(zeusUser.USER);
 		}
-		LoginUser.user.set(zeusUser);
+
 		//System.out.println(zeusUser.toString());
 		
 		chain.doFilter(request, response);

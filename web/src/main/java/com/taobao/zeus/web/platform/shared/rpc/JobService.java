@@ -11,6 +11,7 @@ import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.util.GwtException;
 import com.taobao.zeus.web.platform.client.util.ZUser;
+import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 
 /**
  *
@@ -123,4 +124,15 @@ public interface JobService extends RemoteService {
 	 * @throws GwtException
 	 */
 	void syncScript(String jobId,String script) throws GwtException;
+	
+	
+	/**
+	 * 获得该JOB ID下面的的所有ACTIONDI
+	 * 给开发中心使用，方便开发中心直接同步脚本到调度中心
+	 * @param jobId
+	 * @param script
+	 * @return 
+	 * @throws GwtException
+	 */
+	List<Long> getJobACtion(String id);
 }

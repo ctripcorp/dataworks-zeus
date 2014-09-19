@@ -8,9 +8,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.taobao.zeus.store.Super;
@@ -96,6 +100,25 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 		
 		
 	
+	}
+
+
+	public String checkUserSession() {System.out.println("get session");
+		//HttpSession httpSession = getThreadLocalRequest().getSession();
+		//HttpServletRequest request =  this.getThreadLocalRequest();
+		 //String uid = "null";
+		// System.out.println(RequestContextHolder.currentRequestAttributes());
+		 //ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+//		  if (requestAttributes != null) {
+//		       HttpServletRequest req = requestAttributes.getRequest();
+//		       uid = req.getSession().getAttribute("user").toString();
+//		  }
+		//String uid = (String) request.getSession().getAttribute("user");
+		ZeusUser u= LoginUser.getUser();
+		String uid = u.getUid();
+		
+		return uid;
+
 	}
 
 }

@@ -310,6 +310,9 @@ public class PermissionGroupManager implements GroupManager{
 	public List<ZeusUser> getJobAdmins(String jobId) {
 		return userManager.findListByUid(permissionManager.getJobAdmins(jobId));
 	}
+	public List<Long> getJobACtion(String jobId) {
+		return permissionManager.getJobACtion(jobId);
+	}
 	@Override
 	public List<GroupDescriptor> getChildrenGroup(String groupId) {
 		return groupManager.getChildrenGroup(groupId);

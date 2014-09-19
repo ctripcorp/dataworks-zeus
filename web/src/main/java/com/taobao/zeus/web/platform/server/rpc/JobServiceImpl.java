@@ -628,18 +628,7 @@ public class JobServiceImpl implements JobService {
 		}
 	}
 
-	@Override
-	public List<ZUser> getJobAdmins(String jobId) {
-		List<ZeusUser> users = permissionGroupManager.getJobAdmins(jobId);
-		List<ZUser> result = new ArrayList<ZUser>();
-		for (ZeusUser zu : users) {
-			ZUser z = new ZUser();
-			z.setName(zu.getName());
-			z.setUid(zu.getUid());
-			result.add(z);
-		}
-		return result;
-	}
+
 
 	@Override
 	public void removeJobAdmin(String jobId, String uid) throws GwtException {
@@ -900,5 +889,23 @@ public class JobServiceImpl implements JobService {
 					"同步失败，可能是因为目标任务没有配置一些必填项。请去调度中心配置完整的必填项. cause:"
 							+ e.getMessage());
 		}
+	}
+	@Override
+	public List<ZUser> getJobAdmins(String jobId) {
+		List<ZeusUser> users = permissionGroupManager.getJobAdmins(jobId);
+		List<ZUser> result = new ArrayList<ZUser>();
+		for (ZeusUser zu : users) {
+			ZUser z = new ZUser();
+			z.setName(zu.getName());
+			z.setUid(zu.getUid());
+			result.add(z);
+		}
+		return result;
+	}
+	@Override
+	public List<Long> getJobACtion(String jobId) {
+		List<Long> result = permissionGroupManager.getJobACtion(jobId);
+		
+		return result;
 	}
 }

@@ -552,11 +552,5 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 				"from com.taobao.zeus.store.mysql.persistence.JobPersistenceOld ");
 		return list;
 	}
-	
-	@Override
-	public Tuple<JobDescriptor, JobStatus> getActionDescriptor(String jobId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

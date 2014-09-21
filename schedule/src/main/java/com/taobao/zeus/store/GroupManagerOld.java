@@ -74,7 +74,7 @@ public interface GroupManagerOld {
 	 * @param jobId==actionid
 	 * @return
 	 */
-	Tuple<JobDescriptor,JobStatus> getActionDescriptor(String jobId);
+/*	Tuple<JobDescriptor,JobStatus> getActionDescriptor(String jobId);*/
 	
 	/**
 	 * 获取组下的job

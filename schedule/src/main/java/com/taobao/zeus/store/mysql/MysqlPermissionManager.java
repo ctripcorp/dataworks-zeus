@@ -13,19 +13,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-
 import com.taobao.zeus.store.GroupBean;
+import com.taobao.zeus.store.GroupBeanOld;
 import com.taobao.zeus.store.GroupManager;
+import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobBean;
+import com.taobao.zeus.store.JobBeanOld;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.Super;
-import com.taobao.zeus.store.mysql.persistence.GroupPersistence;
 import com.taobao.zeus.store.mysql.persistence.PermissionPersistence;
 @SuppressWarnings("unchecked")
 public class MysqlPermissionManager extends HibernateDaoSupport implements PermissionManager{
 	@Autowired
+	@Qualifier("groupManagerOld")
+	private GroupManagerOld groupManager;
+	
+	@Autowired
 	@Qualifier("groupManager")
-	private GroupManager groupManager;
+	private GroupManager groupManagerAction;
+	
 	@Override
 	public Boolean hasGroupPermission(final String user, final String groupId) {
 		if(Super.getSupers().contains(user)){
@@ -33,7 +39,7 @@ public class MysqlPermissionManager extends HibernateDaoSupport implements Permi
 			return true;
 		}
 		Set<String> groups=new HashSet<String>();
-		GroupBean gb=groupManager.getUpstreamGroupBean(groupId);
+		GroupBeanOld gb=groupManager.getUpstreamGroupBean(groupId);
 		if(user.equals(gb.getGroupDescriptor().getOwner())){
 			//组所有人
 			return true;
@@ -75,12 +81,7 @@ public class MysqlPermissionManager extends HibernateDaoSupport implements Permi
 		return (List<Long>) getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
-				
-				
-				List<Long> result= getHibernateTemplate().find("select toJobId from com.taobao.zeus.store.mysql.persistence.JobPersistence where id="+jobId);
-				Long job_id = result.get(0);
-				Query query=session.createQuery("select id from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId="+job_id);
-	
+				Query query=session.createQuery("select id from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId="+jobId);
 				return  query.list();
 			}
 		});
@@ -148,7 +149,32 @@ public class MysqlPermissionManager extends HibernateDaoSupport implements Permi
 			return true;
 		}
 		Set<String> groups=new HashSet<String>();
-		JobBean jobBean=groupManager.getUpstreamJobBean(jobId);
+		JobBeanOld jobBean=groupManager.getUpstreamJobBean(jobId);
+		if(user.equals(jobBean.getJobDescriptor().getOwner())){
+			//任务所有人
+			return true;
+		}
+		GroupBeanOld gb=jobBean.getGroupBean();
+		while(gb!=null){
+			groups.add(gb.getGroupDescriptor().getId());
+			gb=gb.getParentGroupBean();
+		}
+		Set<String> users=new HashSet<String>();
+		users.addAll(getJobAdmins(jobId));
+		for(String g:groups){
+			users.addAll(getGroupAdmins(g));
+		}
+		return users.contains(user)?true:hasGroupPermission(user, groupManager.getJobDescriptor(jobId).getX().getGroupId());
+	}
+	
+	@Override
+	public Boolean hasActionPermission(String user, String jobId) {
+		if(Super.getSupers().contains(user)){
+			//超级管理员
+			return true;
+		}
+		Set<String> groups=new HashSet<String>();
+		JobBean jobBean=groupManagerAction.getUpstreamJobBean(jobId);
 		if(user.equals(jobBean.getJobDescriptor().getOwner())){
 			//任务所有人
 			return true;
@@ -163,8 +189,9 @@ public class MysqlPermissionManager extends HibernateDaoSupport implements Permi
 		for(String g:groups){
 			users.addAll(getGroupAdmins(g));
 		}
-		return users.contains(user)?true:hasGroupPermission(user, groupManager.getJobDescriptor(jobId).getX().getGroupId());
+		return users.contains(user)?true:hasGroupPermission(user, groupManagerAction.getJobDescriptor(jobId).getX().getGroupId());
 	}
+	
 	@Override
 	public void removeGroupAdmin(String user, String groupId) {
 		PermissionPersistence pp=getGroupPermission(user, groupId);

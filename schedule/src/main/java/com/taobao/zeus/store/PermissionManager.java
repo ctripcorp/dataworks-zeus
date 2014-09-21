@@ -11,6 +11,7 @@ public interface PermissionManager {
 	
 	Boolean hasJobPermission(String user,String jobId);
 	
+	Boolean hasActionPermission(String user,String jobId);
 	/**
 	 * 添加组的管理员
 	 * @param user 被授权人 

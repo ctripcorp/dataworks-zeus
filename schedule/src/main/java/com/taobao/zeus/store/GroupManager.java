@@ -162,4 +162,6 @@ public interface GroupManager {
 	void removeWorker(String host) throws ZeusException;
 	
 	void saveJob(JobPersistence actionPer) throws ZeusException;
+	
+	
 }

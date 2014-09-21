@@ -145,7 +145,7 @@ public class Master {
 		for (MasterWorkerHolder worker : context.getWorkers().values()) {
 			HeartBeatInfo heart = worker.getHeart();
 			System.out.println("worker a : heart :" + heart.memRate);
-			if (heart != null && heart.memRate != null && heart.memRate < 0.8) {
+			if (heart != null && heart.memRate != null /*&& heart.memRate < 0.8*/) {
 				if (selectWorker == null) {
 					selectWorker = worker;
 					selectMemRate = heart.memRate;
@@ -168,12 +168,12 @@ public class Master {
 				HeartBeatInfo heart = worker.getHeart();
 				System.out.println("worker a : host :" + host + " heart :" + heart.memRate);
 				if (heart != null && heart.memRate != null
-						&& heart.memRate < 0.8 && host.equals(heart.host)) {
+						/*&& heart.memRate < 0.8 */&& host.equals(heart.host)) {
 					if (selectWorker == null) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
 						System.out.println("worker b : host :" + host+ " heart :" + selectMemRate);
-					} else if (selectMemRate > heart.memRate) {
+					} else/* if (selectMemRate > heart.memRate) */{
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
 						System.out.println("worker c : host :" + host+ " heart :" + selectMemRate);
@@ -786,8 +786,8 @@ public class Master {
 	public void runDependencesJobToAction(List<JobPersistenceOld> jobDetails, Map<Long, JobPersistence> actionDetails){
 		int noCompleteCount = 0;
 		for(JobPersistenceOld jobDetail : jobDetails){
-			//ScheduleType: 0 独立任务; 1依赖任务
-			if(jobDetail.getScheduleType()==1){
+			//ScheduleType: 0 独立任务; 1依赖任务; 2周期任务
+			if(jobDetail.getScheduleType()==1 || jobDetail.getScheduleType()==2){
 				String jobDependencies = jobDetail.getDependencies();
 				String actionDependencies = "";
 				if(jobDependencies != null && jobDependencies.trim().length()>0){

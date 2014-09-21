@@ -34,6 +34,7 @@ import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror;
 import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror.CodeMirrorConfig;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.AdminConfigWindow;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.CenterTemplate;
+import com.taobao.zeus.web.platform.client.module.jobdisplay.ChooseConfigWindow;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.ProcesserType.HiveP;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.ProcesserType.ZooKeeperP;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
@@ -98,6 +99,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		@Override
 		public void onSelect(SelectEvent event) {
 			new ChooseConfigWindow(presenter).show();
+			
 		}
 	});
 	private TextButton recover=new TextButton("手动恢复",new SelectHandler() {

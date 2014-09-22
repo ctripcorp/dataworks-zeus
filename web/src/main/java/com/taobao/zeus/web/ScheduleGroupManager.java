@@ -205,4 +205,10 @@ public class ScheduleGroupManager implements GroupManager{
 		
 	}
 
+	@Override
+	public List<JobPersistence> getLastJobAction(String jobId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

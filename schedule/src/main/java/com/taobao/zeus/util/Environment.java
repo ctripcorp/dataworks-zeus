@@ -20,7 +20,12 @@ public class Environment {
 	private static String downloadPath;
 	private static String scheduleGroup;
 	
-	public Environment(String env,String scheduleGroup,String downloadPath){
+	private static String hadoopHome;
+	private static String hadoopConfDir;
+	private static String hiveHome;
+	private static String hiveConfDir;
+	
+	public Environment(String env,String scheduleGroup,String downloadPath,String hadoopHome,String hadoopConfDir,String hiveHome,String hiveConfDir){
 		Environment.env=env;
 		Environment.scheduleGroup=scheduleGroup;
 		Environment.downloadPath=downloadPath;
@@ -28,6 +33,10 @@ public class Environment {
 		if(!file.exists()){
 			file.mkdirs();
 		}
+		Environment.hadoopHome=hadoopHome;
+		Environment.hadoopConfDir=hadoopConfDir;
+		Environment.hiveHome=hiveHome;
+		Environment.hiveConfDir=hiveConfDir;
 	}
 	
 	public static Boolean isOnline(){
@@ -47,5 +56,21 @@ public class Environment {
 
 	public static String getDownloadPath() {
 		return downloadPath;
+	}
+	
+	public static String getHadoopHome() {
+		return hadoopHome;
+	}
+	
+	public static String getHadoopConfDir() {
+		return hadoopConfDir;
+	}
+	
+	public static String getHiveHome() {
+		return hiveHome;
+	}
+	
+	public static String getHiveConfDir() {
+		return hiveConfDir;
 	}
 }

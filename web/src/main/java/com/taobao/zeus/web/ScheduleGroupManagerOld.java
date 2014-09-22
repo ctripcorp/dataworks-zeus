@@ -46,13 +46,13 @@ public class ScheduleGroupManagerOld implements GroupManagerOld{
 	public JobDescriptorOld createJob(String user, String jobName,
 			String parentGroup, JobRunTypeOld jobType) throws ZeusException {
 		JobDescriptorOld jd=groupManager.createJob(user, jobName, parentGroup, jobType);
-		try {
-			worker.updateJobFromWeb(jd.getId());
-		} catch (Exception e) {
-			String msg="创建Job成功，但是调度Job失败";
-			log.error(msg,e);
-			throw new ZeusException(msg,e);
-		}
+//		try {
+//			worker.updateJobFromWeb(jd.getId());
+//		} catch (Exception e) {
+//			String msg="创建Job成功，但是调度Job失败";
+//			log.error(msg,e);
+//			throw new ZeusException(msg,e);
+//		}
 		return jd;
 	}
 
@@ -64,13 +64,13 @@ public class ScheduleGroupManagerOld implements GroupManagerOld{
 	@Override
 	public void deleteJob(String user, String jobId) throws ZeusException {
 		groupManager.deleteJob(user, jobId);
-		try {
-			worker.updateJobFromWeb(jobId);
-		} catch (Exception e) {
-			String msg="删除Job成功，但是调度Job失败";
-			log.error(msg,e);
-			throw new ZeusException(msg, e);
-		}
+//		try {
+//			worker.updateJobFromWeb(jobId);
+//		} catch (Exception e) {
+//			String msg="删除Job成功，但是调度Job失败";
+//			log.error(msg,e);
+//			throw new ZeusException(msg, e);
+//		}
 	}
 
 	@Override
@@ -118,13 +118,13 @@ public class ScheduleGroupManagerOld implements GroupManagerOld{
 	@Override
 	public void updateJob(String user, JobDescriptorOld job) throws ZeusException {
 		groupManager.updateJob(user, job);
-		try {
-			worker.updateJobFromWeb(job.getId());
-		} catch (Exception e) {
-			String msg="更新Job成功，但是调度Job失败";
-			log.error(msg,e);
-			throw new ZeusException(msg,e);
-		}
+//		try {
+//			worker.updateJobFromWeb(job.getId());
+//		} catch (Exception e) {
+//			String msg="更新Job成功，但是调度Job失败";
+//			log.error(msg,e);
+//			throw new ZeusException(msg,e);
+//		}
 	}
 
 	@Override

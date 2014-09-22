@@ -1,5 +1,6 @@
 package com.taobao.zeus.util;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -11,8 +12,31 @@ public class DateUtil {
 
 	public static void main(String[] args) throws ParseException {
 		System.out.println(string2Date("2014-01-22 23:59:59").toString());
+		System.out.println(getDateTimeStrByTZ("2014-09-22 00:09:59"));
+		System.out.println(timestamp2Date(1411315799000L,"GMT+0800"));
+		System.out.println(getRawOffset("2014-09-22 00:09:59"));
+		System.out.println(StringToDate("2014-09-22 00:09:59", "yyyy-MM-dd HH:mm:ss").getTime());
+		System.out.println(getDelayStartTime(4, "GMT+0800"));
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(new Date().getTime());
+		calendar.add(10, -1);
+		System.out.println(calendar.getTime());
+		calendar.add(Calendar.HOUR,-1);
+		System.out.println(calendar.getTime());
 	}
-
+	
+	public static Date StringToDate(String dateStr,String formatStr){
+		DateFormat sdf=new SimpleDateFormat(formatStr);
+		Date date=null;
+		try {
+			date = sdf.parse(dateStr);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
+	
 	public static Date timestamp2Date(long timestamp, String timezone)
 			throws ParseException {
 		SimpleDateFormat dateFormatGmt = new SimpleDateFormat(

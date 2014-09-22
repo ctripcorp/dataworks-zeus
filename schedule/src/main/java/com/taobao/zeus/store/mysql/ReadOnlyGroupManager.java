@@ -590,6 +590,11 @@ public class ReadOnlyGroupManager extends HibernateDaoSupport{
 			// TODO Auto-generated method stub
 			
 		}
+		@Override
+		public List<JobPersistence> getLastJobAction(String jobId){
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 	
 	/**

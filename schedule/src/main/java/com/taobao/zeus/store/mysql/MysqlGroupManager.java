@@ -33,6 +33,7 @@ import com.taobao.zeus.store.GroupManagerTool;
 import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.mysql.persistence.GroupPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
+import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.store.mysql.persistence.Worker;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.store.mysql.tool.GroupValidate;
@@ -542,10 +543,20 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 	@Override
 	public void saveJob(JobPersistence actionPer) throws ZeusException{
 		try{
+			JobPersistence action = (JobPersistence)getHibernateTemplate().get(JobPersistence.class, actionPer.getId());
+			if(action != null){
+				actionPer.setStatus(action.getStatus());
+			}
 			getHibernateTemplate().saveOrUpdate(actionPer);
 		}catch(DataAccessException e){
 			throw new ZeusException(e);
 		}
 	}
-
+	
+	@Override
+	public List<JobPersistence> getLastJobAction(String jobId) {
+		List<JobPersistence> list = getHibernateTemplate().find(
+				"from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId='"+jobId+"' order by id desc");
+		return list;
+	}
 }

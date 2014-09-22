@@ -1,5 +1,6 @@
 package com.taobao.zeus.socket.master;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -25,6 +27,7 @@ import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.model.JobStatus.TriggerType;
 import com.taobao.zeus.model.Profile;
+import com.taobao.zeus.mvc.Controller;
 import com.taobao.zeus.schedule.mvc.AddJobListener;
 import com.taobao.zeus.schedule.mvc.DebugInfoLog;
 import com.taobao.zeus.schedule.mvc.DebugListener;
@@ -38,6 +41,7 @@ import com.taobao.zeus.schedule.mvc.event.DebugFailEvent;
 import com.taobao.zeus.schedule.mvc.event.DebugSuccessEvent;
 import com.taobao.zeus.schedule.mvc.event.Events;
 import com.taobao.zeus.schedule.mvc.event.JobFailedEvent;
+import com.taobao.zeus.schedule.mvc.event.JobMaintenanceEvent;
 import com.taobao.zeus.schedule.mvc.event.JobSuccessEvent;
 import com.taobao.zeus.socket.SocketLog;
 import com.taobao.zeus.socket.master.MasterWorkerHolder.HeartBeatInfo;
@@ -51,6 +55,7 @@ import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.util.CronExpParser;
+import com.taobao.zeus.util.DateUtil;
 import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.Tuple;
 import com.taobao.zeus.util.ZeusDateTool;
@@ -76,7 +81,15 @@ public class Master {
 		context.getDispatcher().addDispatcherListener(
 				new DebugListener(context));
 		context.getDispatcher().addDispatcherListener(
-				new JobSuccessListener(context));
+				new JobSuccessListener(context));		
+		Map<String, JobBean> allJobBeans = root.getAllSubJobBeans();
+		for (String id : allJobBeans.keySet()) {
+			context.getDispatcher().addController(
+					new JobController(context, this, id));
+		}
+		// 初始化
+		context.getDispatcher().forwardEvent(Events.Initialize);
+		context.setMaster(this);
 		//***************2014-09-15 定时扫描JOB表,生成action表********************
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
 			@Override
@@ -84,28 +97,29 @@ public class Master {
 				Date now = new Date();
 				SimpleDateFormat df=new SimpleDateFormat("HH");
 				SimpleDateFormat df2=new SimpleDateFormat("yyyy-MM-dd");
-				if(Integer.parseInt(df.format(now)) == 1){
+				SimpleDateFormat df3=new SimpleDateFormat("yyyyMMddHHmmss");
+				String currentDateStr = df3.format(now)+"0000";
+				//if(Integer.parseInt(df.format(now)) == 1){
 					List<JobPersistenceOld> jobDetails = context.getGroupManagerOld().getAllJobs();
 					Map<Long, JobPersistence> actionDetails = new HashMap<Long, JobPersistence>();
+					//
 					//首先，生成独立任务action
-					runScheduleJobToAction(jobDetails, now, df2, actionDetails);
+					runScheduleJobToAction(jobDetails, now, df2, actionDetails, currentDateStr);
 					//其次，生成依赖任务action
-					runDependencesJobToAction(jobDetails, actionDetails);
-				}
+					runDependencesJobToAction(jobDetails, actionDetails, currentDateStr, 0);
+					for (Long id : actionDetails.keySet()) {
+						context.getDispatcher().addController(
+								new JobController(context, context.getMaster(), id.toString()));
+						if(id>Long.parseLong(currentDateStr)){
+							context.getDispatcher().forwardEvent(new JobMaintenanceEvent(Events.UpdateJob,id.toString()));
+						}
+					}
+				//}
 			}
-		}, 0, 30, TimeUnit.MINUTES);
+		}, 0, 1, TimeUnit.MINUTES);
 		
 		//*********************************************************************
-		Map<String, JobBean> allJobBeans = root.getAllSubJobBeans();
-		for (String id : allJobBeans.keySet()) {
-			context.getDispatcher().addController(
-					new JobController(context, this, id));
-		}
-
-		// 初始化
-		context.getDispatcher().forwardEvent(Events.Initialize);
-		context.setMaster(this);
-
+		
 		// 定时扫描等待队列
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
 			@Override
@@ -713,10 +727,10 @@ public class Master {
 		return history;
 	}
 	
-	//将定时任务生成action
-	public void runScheduleJobToAction(List<JobPersistenceOld> jobDetails, Date now, SimpleDateFormat df2, Map<Long, JobPersistence> actionDetails){
+	//将定时任务生成action、以及没有依赖关系的周期任务生成action
+	public void runScheduleJobToAction(List<JobPersistenceOld> jobDetails, Date now, SimpleDateFormat df2, Map<Long, JobPersistence> actionDetails, String currentDateStr){
 		for(JobPersistenceOld jobDetail : jobDetails){
-			//ScheduleType: 0 独立任务; 1依赖任务
+			//ScheduleType: 0 独立任务; 1依赖任务; 2周期任务
 			if(jobDetail.getScheduleType()==0){
 				String jobCronExpression = jobDetail.getCronExpression();
 				String cronDate= df2.format(now);
@@ -748,7 +762,7 @@ public class Master {
 						actionPer.setJobDependencies(jobDependencies);
 						actionPer.setDescr(jobDetail.getDescr());
 						actionPer.setGmtCreate(jobDetail.getGmtCreate());
-						actionPer.setGmtModified(jobDetail.getGmtModified());
+						actionPer.setGmtModified(new Date());
 						actionPer.setGroupId(jobDetail.getGroupId());
 						actionPer.setHistoryId(jobDetail.getHistoryId());
 						actionPer.setHost(jobDetail.getHost());
@@ -771,20 +785,157 @@ public class Master {
 						actionPer.setStatus(jobDetail.getStatus());
 						actionPer.setTimezone(jobDetail.getTimezone());
 						try {
-							context.getGroupManager().saveJob(actionPer);
-							actionDetails.put(actionPer.getId(),actionPer);
+							if(actionPer.getId()>Long.parseLong(currentDateStr)){
+								context.getGroupManager().saveJob(actionPer);
+								actionDetails.put(actionPer.getId(),actionPer);
+							}
 						} catch (ZeusException e) {
-							log.error("独立JobId:" + jobDetail.getId() + " 生成Action" +actionPer.getId() + "失败", e);
+							log.error("定时任务JobId:" + jobDetail.getId() + " 生成Action" +actionPer.getId() + "失败", e);
 						}
 					}
 				}
+			}
+			if(jobDetail.getScheduleType()==2){
+				if(jobDetail.getDependencies()==null || jobDetail.getDependencies().trim().length()==0){
+					Date date = null;
+					try {
+						date = DateUtil.timestamp2Date(jobDetail.getStartTimestamp(),
+								DateUtil.getDefaultTZStr());
+						//System.out.println(date);
+					} catch (ParseException e) {
+						date = new Date();
+						log.error("parse job start timestamp to date failed,", e);
+					}
+					SimpleDateFormat dfTime=new SimpleDateFormat("HHmmss");
+					SimpleDateFormat dfDate=new SimpleDateFormat("yyyyMMdd");
+					SimpleDateFormat dfMinute=new SimpleDateFormat("mmss");
+					String currentDate = dfDate.format(new Date());
+					String startTime = dfTime.format(date);
+					String startMinute = dfMinute.format(date);
+					//天-周期调度
+					if(jobDetail.getCycle().equals("day")){
+						Date newStartDate = ZeusDateTool.StringToDate(currentDate+startTime, "yyyyMMddHHmmss");
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTimeInMillis(newStartDate.getTime());
+						calendar.add(Calendar.DATE, -1);
+						calendar.getTime();
+						Date statisStartTime = calendar.getTime();
+						calendar.add(Calendar.MINUTE, 60*23+59);
+						Date statisEndTime = calendar.getTime();
+						
+						JobPersistence actionPer = new JobPersistence();
+						actionPer.setId(Long.parseLong(currentDate+startTime)*10000+jobDetail.getId());//update action id
+						actionPer.setToJobId(jobDetail.getId());
+						actionPer.setAuto(jobDetail.getAuto());
+						actionPer.setConfigs(jobDetail.getConfigs());
+						actionPer.setCronExpression(jobDetail.getCronExpression());
+						actionPer.setCycle(jobDetail.getCycle());
+						String jobDependencies = jobDetail.getDependencies();
+						actionPer.setDependencies(jobDependencies);
+						actionPer.setJobDependencies(jobDependencies);
+						actionPer.setDescr(jobDetail.getDescr());
+						actionPer.setGmtCreate(jobDetail.getGmtCreate());
+						actionPer.setGmtModified(new Date());
+						actionPer.setGroupId(jobDetail.getGroupId());
+						actionPer.setHistoryId(jobDetail.getHistoryId());
+						actionPer.setHost(jobDetail.getHost());
+						actionPer.setLastEndTime(jobDetail.getLastEndTime());
+						actionPer.setLastResult(jobDetail.getLastResult());
+						actionPer.setName(jobDetail.getName());
+						actionPer.setOffset(jobDetail.getOffset());
+						actionPer.setOwner(jobDetail.getOwner());
+						actionPer.setPostProcessers(jobDetail.getPostProcessers());
+						actionPer.setPreProcessers(jobDetail.getPreProcessers());
+						actionPer.setReadyDependency(jobDetail.getReadyDependency());
+						actionPer.setResources(jobDetail.getResources());
+						actionPer.setRunType(jobDetail.getRunType());
+						actionPer.setScheduleType(jobDetail.getScheduleType());
+						actionPer.setScript(jobDetail.getScript());
+						actionPer.setStartTime(newStartDate);
+						actionPer.setStartTimestamp(newStartDate.getTime());
+						actionPer.setStatisStartTime(statisStartTime);
+						actionPer.setStatisEndTime(statisEndTime);
+						actionPer.setStatus(jobDetail.getStatus());
+						actionPer.setTimezone(jobDetail.getTimezone());
+						try {
+							if(actionPer.getId()>Long.parseLong(currentDateStr)){
+								context.getGroupManager().saveJob(actionPer);
+								actionDetails.put(actionPer.getId(),actionPer);
+							}
+						} catch (ZeusException e) {
+							log.error("周期任务（天）JobId:" + jobDetail.getId() + " 生成Action" +actionPer.getId() + "失败", e);
+						}
+					}
+					if(jobDetail.getCycle().equals("hour")){
+						for (int i = 0; i < 24; i++) {		
+							String startHour = String.valueOf(i);
+							if(startHour.trim().length()<2){
+								startHour = "0"+startHour;
+							}
+							Date newStartDate = ZeusDateTool.StringToDate(currentDate+startHour+startMinute, "yyyyMMddHHmmss");
+							Calendar calendar = Calendar.getInstance();
+							calendar.setTimeInMillis(newStartDate.getTime());
+							calendar.add(Calendar.HOUR, -1);
+							calendar.getTime();
+							Date statisStartTime = calendar.getTime();
+							calendar.add(Calendar.MINUTE, 59);
+							Date statisEndTime = calendar.getTime();
+							
+							JobPersistence actionPer = new JobPersistence();
+							actionPer.setId(Long.parseLong(currentDate+startHour+startMinute)*10000+jobDetail.getId());//update action id
+							actionPer.setToJobId(jobDetail.getId());
+							actionPer.setAuto(jobDetail.getAuto());
+							actionPer.setConfigs(jobDetail.getConfigs());
+							actionPer.setCronExpression(jobDetail.getCronExpression());
+							actionPer.setCycle(jobDetail.getCycle());
+							String jobDependencies = jobDetail.getDependencies();
+							actionPer.setDependencies(jobDependencies);
+							actionPer.setJobDependencies(jobDependencies);
+							actionPer.setDescr(jobDetail.getDescr());
+							actionPer.setGmtCreate(jobDetail.getGmtCreate());
+							actionPer.setGmtModified(new Date());
+							actionPer.setGroupId(jobDetail.getGroupId());
+							actionPer.setHistoryId(jobDetail.getHistoryId());
+							actionPer.setHost(jobDetail.getHost());
+							actionPer.setLastEndTime(jobDetail.getLastEndTime());
+							actionPer.setLastResult(jobDetail.getLastResult());
+							actionPer.setName(jobDetail.getName());
+							actionPer.setOffset(jobDetail.getOffset());
+							actionPer.setOwner(jobDetail.getOwner());
+							actionPer.setPostProcessers(jobDetail.getPostProcessers());
+							actionPer.setPreProcessers(jobDetail.getPreProcessers());
+							actionPer.setReadyDependency(jobDetail.getReadyDependency());
+							actionPer.setResources(jobDetail.getResources());
+							actionPer.setRunType(jobDetail.getRunType());
+							actionPer.setScheduleType(jobDetail.getScheduleType());
+							actionPer.setScript(jobDetail.getScript());
+							actionPer.setStartTime(newStartDate);
+							actionPer.setStartTimestamp(newStartDate.getTime());
+							actionPer.setStatisStartTime(statisStartTime);
+							actionPer.setStatisEndTime(statisEndTime);
+							actionPer.setStatus(jobDetail.getStatus());
+							actionPer.setTimezone(jobDetail.getTimezone());
+							try {
+								if(actionPer.getId()>Long.parseLong(currentDateStr)){
+									context.getGroupManager().saveJob(actionPer);
+									actionDetails.put(actionPer.getId(),actionPer);
+								}
+							} catch (ZeusException e) {
+								log.error("周期任务（时）JobId:" + jobDetail.getId() + " 生成Action" +actionPer.getId() + "失败", e);
+							}
+						}
+					}
+				}
+			}else{
+				log.error("JobId:" + jobDetail.getId() + " 的schedule类型不存在");
 			}
 		}
 	}
 	
 	//将依赖任务生成action
-	public void runDependencesJobToAction(List<JobPersistenceOld> jobDetails, Map<Long, JobPersistence> actionDetails){
+	public void runDependencesJobToAction(List<JobPersistenceOld> jobDetails, Map<Long, JobPersistence> actionDetails,String currentDateStr, int loopCount){
 		int noCompleteCount = 0;
+		loopCount ++;
 		for(JobPersistenceOld jobDetail : jobDetails){
 			//ScheduleType: 0 独立任务; 1依赖任务; 2周期任务
 			if(jobDetail.getScheduleType()==1 || jobDetail.getScheduleType()==2){
@@ -805,24 +956,36 @@ public class Master {
 							}
 						}
 						dependActionList.put(deps, dependActions);
+						if(loopCount>1000){
+							if(!jobDetail.getConfigs().contains("sameday")){
+								if(dependActionList.get(deps).size()==0){
+									List<JobPersistence> lastJobActions = context.getGroupManager().getLastJobAction(deps);
+									if(lastJobActions != null && lastJobActions.size()>0){
+										actionDetails.put(lastJobActions.get(0).getId(),lastJobActions.get(0));
+										dependActions.add(lastJobActions.get(0));
+										dependActionList.put(deps, dependActions);
+									}else{
+										break;
+									}
+								}
+							}
+						}
 					}
 					//判断是否有未完成的
 					boolean isComplete = true;
 //					Long actionId = 0L;
 					String actionMostDeps = "";
 					for(String deps : dependStrs){
-						if(jobDetail.getCycle().trim().equals("day") || jobDetail.getCycle().trim().equals("hour")){
-							if(dependActionList.get(deps).size()==0){
-								isComplete = false;
-								noCompleteCount ++;
-								break;
-							}
-							if(actionMostDeps.trim().length()==0){
-								actionMostDeps = deps;
-							}
-							if(dependActionList.get(deps).size()>dependActionList.get(actionMostDeps).size()){
-								actionMostDeps = deps;
-							}
+						if(dependActionList.get(deps).size()==0){
+							isComplete = false;
+							noCompleteCount ++;
+							break;
+						}
+						if(actionMostDeps.trim().length()==0){
+							actionMostDeps = deps;
+						}
+						if(dependActionList.get(deps).size()>dependActionList.get(actionMostDeps).size()){
+							actionMostDeps = deps;
 						}
 					}
 					if(!isComplete){
@@ -867,7 +1030,7 @@ public class Master {
 								actionPer.setJobDependencies(jobDependencies);
 								actionPer.setDescr(jobDetail.getDescr());
 								actionPer.setGmtCreate(jobDetail.getGmtCreate());
-								actionPer.setGmtModified(jobDetail.getGmtModified());
+								actionPer.setGmtModified(new Date());
 								actionPer.setGroupId(jobDetail.getGroupId());
 								actionPer.setHistoryId(jobDetail.getHistoryId());
 								actionPer.setHost(jobDetail.getHost());
@@ -890,10 +1053,12 @@ public class Master {
 								actionPer.setStatus(jobDetail.getStatus());
 								actionPer.setTimezone(jobDetail.getTimezone());
 								try {
-									context.getGroupManager().saveJob(actionPer);
-									actionDetails.put(actionPer.getId(),actionPer);
+									if(actionPer.getId()>Long.parseLong(currentDateStr)){
+										context.getGroupManager().saveJob(actionPer);
+										actionDetails.put(actionPer.getId(),actionPer);
+									}
 								} catch (ZeusException e) {
-									log.error("依赖JobId:" + jobDetail.getId() + " 生成Action" +actionPer.getId() + "失败", e);
+									log.error("依赖任务JobId:" + jobDetail.getId() + " 生成Action" +actionPer.getId() + "失败", e);
 								}
 							}
 						}
@@ -902,7 +1067,7 @@ public class Master {
 			}
 		}
 		if(noCompleteCount>0){
-			runDependencesJobToAction(jobDetails, actionDetails);
+			runDependencesJobToAction(jobDetails, actionDetails, currentDateStr, loopCount);
 		}
 	}
 }

@@ -545,7 +545,13 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 		try{
 			JobPersistence action = (JobPersistence)getHibernateTemplate().get(JobPersistence.class, actionPer.getId());
 			if(action != null){
-				actionPer.setStatus(action.getStatus());
+					if(action.getStatus() == null || !action.getStatus().equalsIgnoreCase("running")){
+						actionPer.setHistoryId(action.getHistoryId());
+						actionPer.setReadyDependency(action.getReadyDependency());
+						actionPer.setStatus(action.getStatus());
+					}else{
+						actionPer = action;
+					}
 			}
 			getHibernateTemplate().saveOrUpdate(actionPer);
 		}catch(DataAccessException e){

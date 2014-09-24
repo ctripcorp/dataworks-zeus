@@ -36,7 +36,7 @@ public class ZeusDateTool {
     }
 	
 	public static void main(String[] args) {
-		String v=new ZeusDateTool(new Date()).format("yyyy-MM-dd");
+		String v=new ZeusDateTool(new Date()).format("yyyy-MM-dd HH:mm:ss");
 		System.out.println(v);
         System.out.println(DateUtil.getDefaultRawOffset());
 	}

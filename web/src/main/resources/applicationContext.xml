@@ -11,7 +11,13 @@
     default-autowire="byName">
 
 	<context:annotation-config />
-	
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	 <property name="locations">
+	            <list>
+	                <value>classpath:antx.properties</value>
+	            </list>
+	 </property>
+	</bean>
 	<bean id="environment" class="com.taobao.zeus.util.Environment" >
 		<constructor-arg index="0">
 			<value>${zeus.env}</value>
@@ -33,6 +39,21 @@
 		</constructor-arg>
 		<constructor-arg index="6">
 			<value>${hive.conf.dir}</value>
+		</constructor-arg>
+		<constructor-arg index="7">
+			<value>${email.host}</value>
+		</constructor-arg>
+		<constructor-arg index="8">
+			<value>${email.port}</value>
+		</constructor-arg>
+		<constructor-arg index="9">
+			<value>${email.username}</value>
+		</constructor-arg>
+		<constructor-arg index="10">
+			<value>${email.password}</value>
+		</constructor-arg>
+		<constructor-arg index="11">
+			<value>${email.sendFrom}</value>
 		</constructor-arg>
 	</bean>
 	

@@ -111,9 +111,9 @@ public class JobUtils {
 		List<Map<String, String>> resources = jobBean.getHierarchyResources();
 		String script = jobBean.getJobDescriptor().getScript();
 		///*************************update run date  2014-09-18**************
-		String dateStr = history.getJobId().substring(0,8);
+		String dateStr = history.getJobId().substring(0,16);
 		System.out.println("Manual Job run date :"+dateStr);
-		if(dateStr != null && dateStr.length() == 8){
+		if(dateStr != null && dateStr.length() == 16){
 			script = RenderHierarchyProperties.render(script, dateStr);
 			System.out.println("Manual Job script :"+script);
 		}		
@@ -126,7 +126,7 @@ public class JobUtils {
 			jobBean.getJobDescriptor().setScript(script);
 		}
 		jobContext.setResources(resources);
-		if(dateStr != null && dateStr.length() == 8){
+		if(dateStr != null && dateStr.length() == 16){
 			script = replace(jobContext.getProperties().getAllProperties(dateStr), script);
 		}else{
 			script = replace(jobContext.getProperties().getAllProperties(), script);

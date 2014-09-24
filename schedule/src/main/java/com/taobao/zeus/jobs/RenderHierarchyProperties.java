@@ -76,7 +76,7 @@ public class RenderHierarchyProperties extends HierarchyProperties{
 			 StringWriter sw=new StringWriter();
 			 try {
 				VelocityContext context=new VelocityContext();
-				context.put("zdt", new ZeusDateTool(ZeusDateTool.StringToDate(dateStr, "yyyyMMdd")));
+				context.put("zdt", new ZeusDateTool(ZeusDateTool.StringToDate(dateStr, "yyyyMMddHHmmss")));
 				Velocity.evaluate(context, sw, "", m);
 				if(m.equals(sw.toString())){
 					//渲染后和原数据一样，则直接跳出，如果不跳出会导致死循环
@@ -91,7 +91,7 @@ public class RenderHierarchyProperties extends HierarchyProperties{
 			 matcher=pt.matcher(template);
 		}
 		//${yesterday}变量替换
-		template=template.replace("${yesterday}",new ZeusDateTool(ZeusDateTool.StringToDate(dateStr, "yyyyMMdd")).addDay(-1).format("yyyyMMdd"));
+		template=template.replace("${yesterday}",new ZeusDateTool(ZeusDateTool.StringToDate(dateStr, "yyyyMMddHHmmss")).addDay(-1).format("yyyyMMdd"));
 		return template;
 	}
 	
@@ -111,8 +111,8 @@ public class RenderHierarchyProperties extends HierarchyProperties{
 		}
 		s=s.replace("${yesterday}",new ZeusDateTool(new Date()).addDay(-1).format("yyyyMMdd"));
 		System.out.println("result:"+s);*/
-		String s="abc${zdt.addDay(-10).format(\"yyyyMMdd\")} ${zdt.addDay(1).format(\"yyyyMMdd\")} ${yesterday}";
-		s=render(s,"20140915");
+		String s="abc${zdt.addDay(-2).format(\"yyyy-MM-dd HH:mm:ss\")} ${zdt.addDay(-2).format(\"yyyyMMddHHmmss\")} ${yesterday}";
+		s=render(s,"20140924112200");
 		//render(s);
 		System.out.println("render result:"+s);
 	}

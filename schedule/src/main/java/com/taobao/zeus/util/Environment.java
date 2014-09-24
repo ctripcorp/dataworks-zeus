@@ -24,19 +24,30 @@ public class Environment {
 	private static String hadoopConfDir;
 	private static String hiveHome;
 	private static String hiveConfDir;
+	private static String host;
+	private static String port;
+	private static String username;
+	private static String password;
+	private static String sendFrom;
 	
-	public Environment(String env,String scheduleGroup,String downloadPath,String hadoopHome,String hadoopConfDir,String hiveHome,String hiveConfDir){
-		Environment.env=env;
-		Environment.scheduleGroup=scheduleGroup;
-		Environment.downloadPath=downloadPath;
+	public Environment(String env,String scheduleGroup,String downloadPath,String hadoopHome,String hadoopConfDir,String hiveHome,String hiveConfDir,
+			String host,String port,String username,String password,String sendFrom){
+		Environment.env=env.trim();
+		Environment.scheduleGroup=scheduleGroup.trim();
+		Environment.downloadPath=downloadPath.trim();
 		File file=new File(downloadPath);
 		if(!file.exists()){
 			file.mkdirs();
 		}
-		Environment.hadoopHome=hadoopHome;
-		Environment.hadoopConfDir=hadoopConfDir;
-		Environment.hiveHome=hiveHome;
-		Environment.hiveConfDir=hiveConfDir;
+		Environment.hadoopHome=hadoopHome.trim();
+		Environment.hadoopConfDir=hadoopConfDir.trim();
+		Environment.hiveHome=hiveHome.trim();
+		Environment.hiveConfDir=hiveConfDir.trim();
+		Environment.host=host.trim();
+		Environment.port=port.trim();
+		Environment.username=username.trim();
+		Environment.password=password.trim();
+		Environment.sendFrom=sendFrom.trim();
 	}
 	
 	public static Boolean isOnline(){
@@ -72,5 +83,25 @@ public class Environment {
 	
 	public static String getHiveConfDir() {
 		return hiveConfDir;
+	}
+
+	public static String getHost() {
+		return host;
+	}
+
+	public static String getPort() {
+		return port;
+	}
+
+	public static String getUsername() {
+		return username;
+	}
+
+	public static String getPassword() {
+		return password;
+	}
+
+	public static String getSendFrom() {
+		return sendFrom;
 	}
 }

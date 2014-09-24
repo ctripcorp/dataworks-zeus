@@ -56,6 +56,7 @@ public class DistributeLocker extends HibernateDaoSupport{
 	public DistributeLocker(String port){
 		try {
 			this.port=Integer.valueOf(port);
+			System.out.println("DistributeLocker port:"+port);
 		} catch (NumberFormatException e) {
 			log.error("port must be a number", e);
 		}

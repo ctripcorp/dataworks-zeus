@@ -143,7 +143,7 @@ public class PlatformEntry implements EntryPoint {
 			    			com.google.gwt.user.client.Window.alert("密码不能为空");
 			    			return;
 			    		}
-			    		checkUserValidate(username);
+			    		checkUserValidate(username,password);
 			    		//RootPanel.get().clear();
 			    		//new PlatformEntry().init();
 		            	//System.out.println(username);
@@ -154,14 +154,16 @@ public class PlatformEntry implements EntryPoint {
 		
 	}
 	
-	protected void checkUserValidate(String username) {
+	protected void checkUserValidate(String username,String password) {
 		// TODO Auto-generated method stub
-		RPCS.getUserService().checkUser(username,new AsyncCallback<String>() {
+		RPCS.getUserService().checkUser(username,password,new AsyncCallback<String>() {
 			@Override
 			public void onSuccess(String result) {
 				
 				if(result.equals("null")){
 					com.google.gwt.user.client.Window.alert("该用户名不存在");
+				}else if(result.equals("error")){
+					com.google.gwt.user.client.Window.alert("账号不正确");
 				}else{
 					
 					RootPanel.get().clear();

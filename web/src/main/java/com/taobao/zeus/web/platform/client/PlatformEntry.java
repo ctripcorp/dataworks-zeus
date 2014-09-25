@@ -104,7 +104,7 @@ public class PlatformEntry implements EntryPoint {
 	public void loginhtml(){
 		HTML html = new HTML(
 				  "<form class=\"form-signin\" name=\"form1\" action=\"#\"  method=\"post\" autocomplete=\"off\">"+
-				  "    <h2 class=\"form-signin-heading\">后台登陆界面</h2>"+
+				  "    <h2 class=\"form-signin-heading\">Zeus登陆界面</h2>"+
 				  "    <div>"+
 				  "      <label for=\"username\">账号: </label>"+
 				  "      <input type=\"text\" class=\"input-block-level input_normal\" name=\"username\" id=\"username\" disableautocomplete=\"\" autocomplete=\"off\">"+

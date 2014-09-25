@@ -103,7 +103,8 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 	}
 
 
-	public String checkUserSession() {System.out.println("get session");
+	public String checkUserSession() {
+		//System.out.println("get session");
 		//HttpSession httpSession = getThreadLocalRequest().getSession();
 		//HttpServletRequest request =  this.getThreadLocalRequest();
 		 //String uid = "null";

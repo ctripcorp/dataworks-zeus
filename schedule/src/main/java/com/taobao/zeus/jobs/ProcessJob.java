@@ -187,7 +187,7 @@ public abstract class ProcessJob extends AbstractJob implements Job {
 		List<String> commands=getCommandList();
 		for(String s:commands){
 			log("DEBUG Command:"+s);
-			log("Comments: abctest");
+//			log("Comments: abctest");
 			ProcessBuilder builder = new ProcessBuilder(partitionCommandLine(s));
 			builder.directory(new File(jobContext.getWorkDir()));
 			builder.environment().putAll(envMap);

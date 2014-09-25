@@ -44,6 +44,7 @@ public class MailAlarm extends AbstractZeusAlarm{
 				System.out.println(title);
 				System.out.println(content);
 				System.out.println("send OK!");
+				content = content.replace("<br/>", "\r\n");
 				sendEmail(emails,title,content);
 			}
 		}
@@ -63,8 +64,8 @@ public class MailAlarm extends AbstractZeusAlarm{
             msg.setSentDate(new Date());
             InternetAddress fromAddress = new InternetAddress(from);
             msg.setFrom(fromAddress);
-            InternetAddress[] toAddress = new InternetAddress[1];
-            for(int i=0;i<emails.size();i++){
+            InternetAddress[] toAddress = new InternetAddress[emails.size()];
+            for(int i = 0;i < emails.size();i++){
                 toAddress[i] = new InternetAddress(emails.get(i));
             }
             msg.setRecipients(Message.RecipientType.TO, toAddress);

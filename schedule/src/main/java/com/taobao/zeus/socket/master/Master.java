@@ -147,13 +147,13 @@ public class Master {
 				Date now = new Date();
 				for (MasterWorkerHolder holder : new ArrayList<MasterWorkerHolder>(
 						context.getWorkers().values())) {
-					System.out.println("schedule worker start:"+holder.getDebugRunnings().size());
+//					System.out.println("schedule worker start:"+holder.getDebugRunnings().size());
 					if (holder.getHeart().timestamp == null
 							|| (now.getTime() - holder.getHeart().timestamp
 									.getTime()) > 1000 * 60) {
 						holder.getChannel().close();
 					}
-					System.out.println("schedule worker end:"+holder.getDebugRunnings().size());
+//					System.out.println("schedule worker end:"+holder.getDebugRunnings().size());
 				}
 			}
 		}, 30, 30, TimeUnit.SECONDS);

@@ -12,7 +12,7 @@ public interface UserServiceAsync {
 	void getUser(AsyncCallback<ZUser> callback);
 
 	
-	void checkUser(String username,AsyncCallback<String> callback);
+	void checkUser(String username,String password,AsyncCallback<String> callback);
 	
 
 	void checkUserSession(AsyncCallback<String> callback);

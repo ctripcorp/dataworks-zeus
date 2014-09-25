@@ -15,7 +15,7 @@ public interface UserService extends RemoteService {
 	List<ZUser> getAllUsers();
 	
 	
-	String checkUser(String username);
+	String checkUser(String username,String password);
 	
 	String checkUserSession();
 }

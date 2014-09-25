@@ -90,6 +90,8 @@ public class LoginFilter implements Filter {
 			//zeusUser.setPhone(login.getPhone(httpRequest));
 
 			LoginUser.user.set(zeusUser);
+		}else{//不存在user
+			httpResponse.sendRedirect("/zeus-web/login.do");
 		}
 		if(null!=uidfromlogin){
 			zeusUser=new ZeusUser();

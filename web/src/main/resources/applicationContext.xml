@@ -22,6 +22,18 @@
 		<constructor-arg index="2">
 			<value>${zeus.localdata.dir}</value>
 		</constructor-arg>
+		<constructor-arg index="3">
+			<value>${hadoop.home}</value>
+		</constructor-arg>
+		<constructor-arg index="4">
+			<value>${hadoop.conf.dir}</value>
+		</constructor-arg>
+		<constructor-arg index="5">
+			<value>${hive.home}</value>
+		</constructor-arg>
+		<constructor-arg index="6">
+			<value>${hive.conf.dir}</value>
+		</constructor-arg>
 	</bean>
 	
 	<bean id="clientWorker" class="com.taobao.zeus.socket.worker.ClientWorker" >
@@ -60,11 +72,17 @@
 	<bean id="readOnlyGroupManagerOld" class="com.taobao.zeus.store.mysql.ReadOnlyGroupManagerOld" >
 		<property name="groupManager" ref="groupManagerOld" />
 	</bean>
+	<bean id="permissionScheduleGroupManagerOld" class="com.taobao.zeus.web.PermissionGroupManagerOld" >
+		<property name="groupManager" ref="scheduleGroupManagerOld"></property>
+	</bean>
 	<bean id="permissionScheduleGroupManager" class="com.taobao.zeus.web.PermissionGroupManager" >
 		<property name="groupManager" ref="scheduleGroupManager"></property>
 	</bean>
-	<bean id="scheduleGroupManager" class="com.taobao.zeus.web.ScheduleGroupManager" >
+	<bean id="scheduleGroupManagerOld" class="com.taobao.zeus.web.ScheduleGroupManagerOld" >
 		<property name="groupManager" ref="groupManagerOld"></property>
+	</bean>
+		<bean id="scheduleGroupManager" class="com.taobao.zeus.web.ScheduleGroupManager" >
+		<property name="groupManager" ref="groupManager"></property>
 	</bean>
 	
 	<bean id="jobValidate" class="com.taobao.zeus.store.mysql.tool.JobValidate"></bean>

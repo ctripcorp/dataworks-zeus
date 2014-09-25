@@ -161,5 +161,16 @@ public interface GroupManager {
 	 */
 	void removeWorker(String host) throws ZeusException;
 	
+	/**
+	 * 保存jobAction
+	 * @throws ZeusException
+	 */
 	void saveJob(JobPersistence actionPer) throws ZeusException;
+	
+	/**
+	 * 获取最近的jobAction
+	 * @throws ZeusException
+	 */
+	List<JobPersistence> getLastJobAction(String jobId);
+	
 }

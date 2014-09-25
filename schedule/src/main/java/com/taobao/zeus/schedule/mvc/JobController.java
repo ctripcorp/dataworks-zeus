@@ -151,7 +151,6 @@ public class JobController extends Controller {
 			try {
 				CronTrigger trigger = new CronTrigger(jd.getId(), "zeus",
 						cronExpression);
-				
 				/**************2014-09-14**************
 				Date date=null;  
 			    SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
@@ -200,18 +199,18 @@ public class JobController extends Controller {
 			log.error("parse job start timestamp to date failed,", e);
 		}
 		SimpleTrigger simpleTrigger=null;
-		if(jd.getCycle().equals("hour")){
-			simpleTrigger = new SimpleTrigger(jd.getId(), "zeus",
-					date, this.getForver(), SimpleTrigger.REPEAT_INDEFINITELY, 60*60*1000);
-		}
-		else if(jd.getCycle().equals("day")){
-			simpleTrigger = new SimpleTrigger(jd.getId(), "zeus",
-					date, this.getForver(), SimpleTrigger.REPEAT_INDEFINITELY, 24*60*60*1000);
-		}
-		else{
+//		if(jd.getCycle().equals("hour")){
+//			simpleTrigger = new SimpleTrigger(jd.getId(), "zeus",
+//					date, this.getForver(), SimpleTrigger.REPEAT_INDEFINITELY, 60*60*1000);
+//		}
+//		else if(jd.getCycle().equals("day")){
+//			simpleTrigger = new SimpleTrigger(jd.getId(), "zeus",
+//					date, this.getForver(), SimpleTrigger.REPEAT_INDEFINITELY, 24*60*60*1000);
+//		}
+//		else{
 			simpleTrigger = new SimpleTrigger(jd.getId(), "zeus",
 					date, null, 0, 0L);
-		}
+//		}
 		
 		JobDetail detail = null;
 		// 先查看之前是否存在该任务的调度，如果存在，先删除
@@ -591,6 +590,7 @@ public class JobController extends Controller {
 				history.setEndTime(new Date());
 				history.setExecuteHost(null);
 				history.setJobId(jobId);
+				history.setToJobId(jobDescriptor.getToJobId() == null ? null : jobDescriptor.getToJobId());
 				history.setTriggerType(event.getTriggerType());
 				history.setStatus(Status.FAILED);
 				history.getLog().appendZeusException(exception);
@@ -712,6 +712,7 @@ public class JobController extends Controller {
 	private void runJob(JobDescriptor jobDescriptor) {
 		JobHistory history = new JobHistory();
 		history.setJobId(jobDescriptor.getId());
+		history.setToJobId(jobDescriptor.getToJobId() == null ? null : jobDescriptor.getToJobId());
 		history.setTriggerType(TriggerType.SCHEDULE);
 		history.setStatisEndTime(jobDescriptor.getStatisEndTime());
 		history.setTimezone(jobDescriptor.getTimezone());

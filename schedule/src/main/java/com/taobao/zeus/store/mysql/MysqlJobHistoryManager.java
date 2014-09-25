@@ -106,8 +106,7 @@ public class MysqlJobHistoryManager extends HibernateDaoSupport implements JobHi
 
 	@Override
 	public JobHistory findJobHistory(String id) {
-		JobHistoryPersistence persist= (JobHistoryPersistence) getHibernateTemplate().get(JobHistoryPersistence.class, Long.valueOf(id));
-		
+		JobHistoryPersistence persist= (JobHistoryPersistence) getHibernateTemplate().get(JobHistoryPersistence.class, Long.valueOf(id));	
 		return PersistenceAndBeanConvert.convert(persist);
 	}
  

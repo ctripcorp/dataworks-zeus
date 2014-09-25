@@ -286,5 +286,11 @@ public class CacheMysqlGroupManager extends HibernateDaoSupport implements Group
 	public void saveJob(JobPersistence actionPer) throws ZeusException {
 		// TODO Auto-generated method stub
 	}
+	
+	@Override
+	public List<JobPersistence> getLastJobAction(String jobId){
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

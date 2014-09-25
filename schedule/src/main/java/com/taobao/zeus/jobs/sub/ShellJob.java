@@ -74,8 +74,7 @@ public class ShellJob extends ProcessJob{
 		
 		
 		//修改权限
-		// get operator uid
-		String shellUid = jobContext.getJobHistory().getOperator();
+
 		String shellPrefix = "";
 		if (jobContext.getRunType() == 1 || jobContext.getRunType() == 2) {
 			shellPrefix = "sudo -u " + jobContext.getJobHistory().getOperator();
@@ -94,7 +93,6 @@ public class ShellJob extends ProcessJob{
 		list.add("dos2unix " + shellFilePath);
 		//执行shell
 		// run shell as current user
-		list.add("sudo -u " + shellUid + " sh "+shellFilePath);
 		list.add(shellPrefix + " sh "+shellFilePath);
 
 		return list;

@@ -2,38 +2,39 @@ package com.taobao.zeus.jobs.sub.conf;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.apache.hadoop.conf.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.taobao.zeus.util.Environment;
 
 public class ConfUtil {
 	
 	private static Logger log=LoggerFactory.getLogger(ConfUtil.class);
 	
 	public static String getHadoopHome(){
-		//System.out.println(System.getenv("HADOOP_HOME"));
-		return System.getenv("HADOOP_HOME") == null ? null : "";
+		String dir = System.getenv("HADOOP_HOME");
+		if(dir==null || "".equals(dir.trim())){
+			dir = Environment.getHadoopHome();
+		}
+		return dir == null ? null : "";
 	}
 	
 	public static String getHiveHome(){
-		return System.getenv("HIVE_HOME") == null ? null : "";
-	}
-	
-	public static String getHiveConfDir(){
-		String dir=System.getenv("HIVE_CONF_DIR");
+		String dir = System.getenv("HIVE_HOME");
 		if(dir==null || "".equals(dir.trim())){
-			dir=getHiveHome()+File.separator+"conf";
+			dir = Environment.getHiveHome();
 		}
-		return dir;
+		return dir == null ? null : "";
 	}
 	
 	public static String getHadoopConfDir(){
 		String dir=System.getenv("HADOOP_CONF_DIR");
+		//2014-09-19增加配置文件的读取
+		if(dir==null || "".equals(dir.trim())){
+			dir=Environment.getHadoopConfDir();
+		}
 		if(dir==null || "".equals(dir.trim())){
 			//hadoop2中，配置的默认地址已经修改
 			dir=getHadoopHome()+File.separator+"etc"+File.separator+"hadoop";
@@ -44,11 +45,24 @@ public class ConfUtil {
 			if(!f.exists()){
 				dir=getHadoopHome()+File.separator+"conf";
 			}
-			
-			
 		}
+//		System.out.println(dir);
 		return dir;
 	}
+	
+	public static String getHiveConfDir(){
+		String dir=System.getenv("HIVE_CONF_DIR");
+		//2014-09-19增加配置文件的读取
+		if(dir==null || "".equals(dir.trim())){
+			dir=Environment.getHiveConfDir();
+		}
+		if(dir==null || "".equals(dir.trim())){
+			dir=getHiveHome()+File.separator+"conf";
+		}
+//		System.out.println(dir);
+		return dir;
+	}
+	
 	
 	public static Configuration getDefaultHiveSite(){
 		try {

@@ -435,12 +435,7 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 				return null;
 			}
 		}
-		@Override
-		public Tuple<JobDescriptor, JobStatus> getActionDescriptor(String jobId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
+
 		private Future<GroupBeanOld> getDownstreamGroupBean(final GroupBeanOld parent, final int depth) throws Exception{
 			Callable<GroupBeanOld> callable = new Callable<GroupBeanOld>(){
 				

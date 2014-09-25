@@ -1,5 +1,8 @@
 package com.taobao.zeus.web.platform.server.rpc;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -70,7 +73,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 		return result;
 	}
 	@Override
-	public String checkUser(String username) {
+	public String checkUser(String username,String password) {
 		//ZeusUser u= LoginUser.getUser();
 		//HttpServletRequest httpRequest
 		ZeusUser u = userManager.findByUid(username);
@@ -78,6 +81,15 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 		if(null == u){
 			return "null";
 		}else{
+			String ps = u.getPassword();
+			System.out.println(password);
+			System.out.println(ps);
+			System.out.println(MD5(password));
+			if(null !=ps){
+				if(!MD5(password).toUpperCase().equals(ps.toUpperCase())){
+					return "error";
+				}
+			}
 //			ZeusUser zeusUser=null;
 //			zeusUser=new ZeusUser();
 //			zeusUser.setEmail(u.getEmail());
@@ -101,7 +113,31 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 		
 	
 	}
-
+	private static String MD5(String sourceStr) {
+        String result = "";
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(sourceStr.getBytes());
+            byte b[] = md.digest();
+            int i;
+            StringBuffer buf = new StringBuffer("");
+            for (int offset = 0; offset < b.length; offset++) {
+                i = b[offset];
+                if (i < 0)
+                    i += 256;
+                if (i < 16)
+                    buf.append("0");
+                buf.append(Integer.toHexString(i));
+            }
+            result = buf.toString();
+            //System.out.println("MD5(" + sourceStr + ",32) = " + result);
+            
+            //System.out.println("MD5(" + sourceStr + ",16) = " + buf.toString().substring(8, 24));
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println(e);
+        }
+        return result;
+    }
 
 	public String checkUserSession() {System.out.println("get session");
 		//HttpSession httpSession = getThreadLocalRequest().getSession();

@@ -33,9 +33,25 @@ import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 public class ChooseConfigWindow extends Window{
 
 	private JobPresenter jobPresenter;
+	private ArrayList<String> Startmsg = new ArrayList<String>() {/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
+	{
+	    add("手动执行任务开始");
+	    add("手动恢复任务开始");
+	}};
+	private int type;
+	private ArrayList<String> Errormsg = new ArrayList<String>() {/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
-
+	{
+	    add("手动执行任务失败");
+	    add("手动恢复任务失败");
+	}};	
 		private ListStore<Map<String, String>> store=new ListStore<Map<String, String>>(new ModelKeyProvider<Map<String, String>>() {
 			public String getKey(Map<String, String> item) {
 				return item.get("name")+"("+item.get("uid")+")";
@@ -50,17 +66,18 @@ public class ChooseConfigWindow extends Window{
 						final AutoProgressMessageBox wait=new AutoProgressMessageBox("运行中","doing");
 						wait.auto();
 						wait.show();
-						RPCS.getJobService().run(jobPresenter.getJobModel().getId(), 1, new AbstractAsyncCallback<Void>() {
+						String actionid = md.get("actionid");System.out.println(actionid);System.out.println(type);
+						RPCS.getJobService().run(actionid, type, new AbstractAsyncCallback<Void>() {
 							@Override
 							public void onSuccess(Void result) {
 								wait.hide();
-								Info.display("成功", "手动执行任务开始");
-								
+								Info.display("成功", Startmsg.get(type-1));
+								hide();
 							}
 							@Override
 							public void onFailure(Throwable caught) {
 								wait.hide();
-								AlertMessageBox alert=new AlertMessageBox("失败", "手动执行任务失败");
+								AlertMessageBox alert=new AlertMessageBox("失败", Errormsg.get(type-1));
 								alert.show();
 							};
 						});
@@ -90,6 +107,12 @@ public class ChooseConfigWindow extends Window{
 		this.jobPresenter=presenter;
 		refresh();
 	}
+	public ChooseConfigWindow(JobPresenter presenter,int type){
+		this();
+		this.type = type;
+		this.jobPresenter=presenter;
+		refresh();
+	}
 	public ChooseConfigWindow() {
 		setHeadingText("选择JOB版本");
 		setSize("350", "100");
@@ -104,6 +127,7 @@ public class ChooseConfigWindow extends Window{
 		combo.setStore(store);
 		add(new FieldLabel(combo, "选择JOB版本"));
 		addButton(submit);
+		
 		// TODO Auto-generated constructor stub
 	}
 	private void refresh(){
@@ -125,6 +149,7 @@ public class ChooseConfigWindow extends Window{
 							store.add(md);
 						}
 						combo.reset();
+						show();
 					}
 				}
 			});

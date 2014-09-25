@@ -16,3 +16,4 @@ web/.project
 web/.settings
 /web/src/main/webapp/zeus_platform
 /web/.gwt
+/web/pom.xml

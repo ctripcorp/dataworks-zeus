@@ -38,6 +38,8 @@ public class ZeusUser{
 	@Column
 	private String email;
 	@Column
+	private String password;
+	@Column
 	private String wangwang;
 	@Column
 	private String phone;
@@ -52,6 +54,12 @@ public class ZeusUser{
 		this.uid = uid;
 		this.phone = phone;
 		// TODO Auto-generated constructor stub
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	public ZeusUser() {
 		// TODO Auto-generated constructor stub

@@ -107,6 +107,7 @@ public class JobController extends Controller {
 
 	private void initializeEventHandle() {
 		JobStatus jobStatus = groupManager.getJobStatus(jobId);
+//		System.out.println("jobId: "+jobId+" jobStatus:"+jobStatus.getStatus());
 		if (jobStatus != null) {
 			// 启动时发现在RUNNING 状态，说明上一次运行的结果丢失，将立即进行重试
 			if (jobStatus.getStatus() == Status.RUNNING) {
@@ -123,24 +124,28 @@ public class JobController extends Controller {
 						operator = history.getOperator();
 						try {
 							JobContext temp = JobContext.getTempJobContext(JobContext.MANUAL_RUN);
+							history.setIllustrate("启动服务器发现正在running状态，判断状态已经丢失，进行重试操作");
 							temp.setJobHistory(history);
 							new CancelHadoopJob(temp).run();
+							master.run(history);
 						} catch (Exception e) {
 							// 忽略
 						}
 					}
+				}else{
+					JobHistory history = new JobHistory();
+					history.setIllustrate("启动服务器发现正在running状态，判断状态已经丢失，进行重试操作");
+					history.setOperator(operator);
+					history.setTriggerType(TriggerType.MANUAL_RECOVER);
+					history.setJobId(jobId);
+					JobDescriptor jobDescriptor = groupManager.getUpstreamJobBean(jobId).getJobDescriptor();
+					history.setToJobId(jobDescriptor.getToJobId());
+					if(jobDescriptor != null){
+						history.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
+					}
+					context.getJobHistoryManager().addJobHistory(history);
+					master.run(history);
 				}
-				JobHistory history = new JobHistory();
-				history.setIllustrate("启动服务器发现正在running状态，判断状态已经丢失，进行重试操作");
-				history.setOperator(operator);
-				history.setTriggerType(TriggerType.MANUAL_RECOVER);
-				history.setJobId(jobId);
-				JobDescriptor jobDescriptor = groupManager.getUpstreamJobBean(jobId).getJobDescriptor();
-				if(jobDescriptor != null){
-					history.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
-				}
-				context.getJobHistoryManager().addJobHistory(history);
-				master.run(history);
 			}
 		}
 

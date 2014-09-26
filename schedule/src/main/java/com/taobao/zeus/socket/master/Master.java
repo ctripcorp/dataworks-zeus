@@ -14,6 +14,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.jboss.netty.channel.Channel;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,7 @@ import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.model.JobStatus.TriggerType;
 import com.taobao.zeus.model.Profile;
 import com.taobao.zeus.mvc.Controller;
+import com.taobao.zeus.mvc.Dispatcher;
 import com.taobao.zeus.schedule.mvc.AddJobListener;
 import com.taobao.zeus.schedule.mvc.DebugInfoLog;
 import com.taobao.zeus.schedule.mvc.DebugListener;
@@ -109,18 +111,39 @@ public class Master {
 					//其次，生成依赖任务action
 					runDependencesJobToAction(jobDetails, actionDetails, currentDateStr, 0);
 					
-					if (actionDetails.size() > 0) {
-						for (Long id : actionDetails.keySet()) {
-							context.getDispatcher().addController(
-									new JobController(context, context.getMaster(),
-											id.toString()));
-							if (id > Long.parseLong(currentDateStr)) {
-								context.getDispatcher().forwardEvent(
-										new JobMaintenanceEvent(Events.UpdateJob,
+					Dispatcher dispatcher=context.getDispatcher();
+					if(dispatcher != null){
+						//增加controller，并修改event
+						if (actionDetails.size() > 0) {
+							for (Long id : actionDetails.keySet()) {
+								dispatcher.addController(
+										new JobController(context, context.getMaster(),
 												id.toString()));
+								if (id > Long.parseLong(currentDateStr)) {
+									context.getDispatcher().forwardEvent(
+											new JobMaintenanceEvent(Events.UpdateJob,
+													id.toString()));
+								}
+							}
+						}
+					
+						//清理schedule
+						List<Controller> controllers = dispatcher.getControllers();
+						if(controllers!=null && controllers.size()>0){
+							for(Controller c : controllers){
+								JobController jobc = (JobController)c;
+								String jobId = jobc.getJobId();
+								if(Long.parseLong(jobId)<Long.parseLong(currentDateStr)){
+									try {
+										context.getScheduler().deleteJob(jobId, "zeus");
+									} catch (SchedulerException e) {
+										e.printStackTrace();
+									}
+								}
 							}
 						}
 					}
+					System.out.println("Action版本生成完毕！");
 				//}
 			}
 		}, 0, 60, TimeUnit.MINUTES);
@@ -166,7 +189,7 @@ public class Master {
 		for (MasterWorkerHolder worker : context.getWorkers().values()) {
 			HeartBeatInfo heart = worker.getHeart();
 			System.out.println("worker a : heart :" + heart.memRate);
-			if (heart != null && heart.memRate != null /*&& heart.memRate < 0.8*/) {
+			if (heart != null && heart.memRate != null && heart.memRate < 0.8) {
 				if (selectWorker == null) {
 					selectWorker = worker;
 					selectMemRate = heart.memRate;
@@ -189,12 +212,12 @@ public class Master {
 				HeartBeatInfo heart = worker.getHeart();
 				System.out.println("worker a : host :" + host + " heart :" + heart.memRate);
 				if (heart != null && heart.memRate != null
-						/*&& heart.memRate < 0.8 */&& host.equals(heart.host)) {
+						&& heart.memRate < 0.8 && host.equals(heart.host)) {
 					if (selectWorker == null) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
 						System.out.println("worker b : host :" + host+ " heart :" + selectMemRate);
-					} else/* if (selectMemRate > heart.memRate) */{
+					} else if (selectMemRate > heart.memRate) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
 						System.out.println("worker c : host :" + host+ " heart :" + selectMemRate);
@@ -326,6 +349,12 @@ public class Master {
 								.format(new Date()) + " 开始运行");
 				context.getJobHistoryManager().updateJobHistoryLog(
 						jobID, history.getLog().getContent());
+				//更新手动运行状态
+				JobStatus jobstatus = context.getGroupManager().getJobStatus(history.getJobId());
+				jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
+				jobstatus.setHistoryId(jobID);
+				context.getGroupManager().updateJobStatus(jobstatus);
+				
 				Exception exception = null;
 				Response resp = null;
 				try {
@@ -337,6 +366,8 @@ public class Master {
 					exception = e;
 					ScheduleInfoLog.error("JobId:" + history.getJobId()
 							+ " run failed", e);
+					jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
+					context.getGroupManager().updateJobStatus(jobstatus);
 				}
 				boolean success = resp.getStatus() == Status.OK ? true : false;
 
@@ -356,6 +387,8 @@ public class Master {
 							+ " run fail ");
 					history = context.getJobHistoryManager().findJobHistory(
 							jobID);
+					
+					jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
 					JobFailedEvent jfe = new JobFailedEvent(history.getJobId(),
 							history.getTriggerType(), history, jobException);
 					context.getDispatcher().forwardEvent(jfe);
@@ -363,11 +396,13 @@ public class Master {
 					// 运行成功，发出成功消息
 					ScheduleInfoLog.info("manual jobId::" + history.getJobId()
 							+ " run success");
+					jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.SUCCESS);
 					JobSuccessEvent jse = new JobSuccessEvent(
 							history.getJobId(), history.getTriggerType(),
 							jobID);
 					context.getDispatcher().forwardEvent(jse);
 				}
+				context.getGroupManager().updateJobStatus(jobstatus);
 			};
 		}.start();
 	}
@@ -390,6 +425,11 @@ public class Master {
 								.format(new Date()) + " 开始运行");
 				context.getJobHistoryManager().updateJobHistoryLog(his.getId(),
 						his.getLog().getContent());
+				JobStatus jobstatus = context.getGroupManager().getJobStatus(his.getJobId());
+				jobstatus.setHistoryId(his.getId());
+				jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
+				context.getGroupManager().updateJobStatus(jobstatus);
+				
 				Exception exception = null;
 				Response resp = null;
 				try {
@@ -400,13 +440,10 @@ public class Master {
 					exception = e;
 					ScheduleInfoLog.error(
 							String.format("JobId:%s run failed", jobID), e);
+					jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
+					context.getGroupManager().updateJobStatus(jobstatus);
 				}
 				boolean success = resp.getStatus() == Status.OK ? true : false;
-
-				JobStatus jobstatus = context.getGroupManager().getJobStatus(
-						jobID);
-				jobstatus
-						.setStatus(com.taobao.zeus.model.JobStatus.Status.WAIT);
 				if (success
 						&& (his.getTriggerType() == TriggerType.SCHEDULE || his
 								.getTriggerType() == TriggerType.MANUAL_RECOVER)) {
@@ -414,8 +451,6 @@ public class Master {
 							+ " clear ready dependency");
 					jobstatus.setReadyDependency(new HashMap<String, String>());
 				}
-				context.getGroupManager().updateJobStatus(jobstatus);
-
 				if (!success) {
 					// 运行失败，更新失败状态，发出失败消息
 					ZeusJobException jobException = null;
@@ -430,6 +465,7 @@ public class Master {
 					}
 					ScheduleInfoLog.info("JobId:" + jobID
 							+ " run fail and dispatch the fail event");
+					jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
 					JobFailedEvent jfe = new JobFailedEvent(jobID,
 							type, context.getJobHistoryManager()
 									.findJobHistory(his.getId()), jobException);
@@ -438,11 +474,13 @@ public class Master {
 					// 运行成功，发出成功消息
 					ScheduleInfoLog.info("JobId:" + jobID
 							+ " run success and dispatch the success event");
+					jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.SUCCESS);
 					JobSuccessEvent jse = new JobSuccessEvent(jobID,
 							his.getTriggerType(), his.getId());
 					jse.setStatisEndTime(his.getStatisEndTime());
 					context.getDispatcher().forwardEvent(jse);
 				}
+				context.getGroupManager().updateJobStatus(jobstatus);
 			}
 		}.start();
 	}
@@ -587,8 +625,7 @@ public class Master {
 		}
 		final StringBuffer content = new StringBuffer(title);
 		content.append("\n已经运行时间：").append(runTime).append("分钟")
-				.append("\n设置最大运行时间：").append(maxTime).append("分钟")
-				.append("\n详情请登录zeus系统查看：http://zeus.taobao.com:9999");
+				.append("\n设置最大运行时间：").append(maxTime).append("分钟");
 		try {
 			if (type == 2) {
 				// 此处可以发送IM消息
@@ -603,10 +640,7 @@ public class Master {
 									.alarm(his.getId(),
 											title.toString(),
 											content.toString()
-													.replace("\n", "<br/>")
-													.replace(
-															"http://zeus.taobao.com:9999",
-															"<a href='http://zeus.taobao.com:9999'>http://zeus.taobao.com:9999</a>"));
+													.replace("\n", "<br/>"));
 						} catch (Exception e) {
 							log.error("send run timeover mail alarm failed", e);
 						}

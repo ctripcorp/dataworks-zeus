@@ -34,7 +34,7 @@ public class ConfUtil {
 		//2014-09-19增加配置文件的读取
 		if(dir==null || "".equals(dir.trim())){
 			dir=Environment.getHadoopConfDir();
-			System.out.println("from environment hadoop_conf_dir:"+dir);
+//			System.out.println("from environment hadoop_conf_dir:"+dir);
 		}
 		if(dir==null || "".equals(dir.trim())){
 			//hadoop2中，配置的默认地址已经修改
@@ -56,7 +56,7 @@ public class ConfUtil {
 		//2014-09-19增加配置文件的读取
 		if(dir==null || "".equals(dir.trim())){
 			dir=Environment.getHiveConfDir();
-			System.out.println("from environment hive_conf_dir:"+dir);
+//			System.out.println("from environment hive_conf_dir:"+dir);
 		}
 		if(dir==null || "".equals(dir.trim())){
 			dir=getHiveHome()+File.separator+"conf";

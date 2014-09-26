@@ -151,7 +151,11 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 //		       uid = req.getSession().getAttribute("user").toString();
 //		  }
 		//String uid = (String) request.getSession().getAttribute("user");
+
 		ZeusUser u= LoginUser.getUser();
+		if(null==u){
+			return "null";
+		}
 		String uid = u.getUid();
 		
 		return uid;

@@ -91,7 +91,7 @@ public class LoginFilter implements Filter {
 
 			LoginUser.user.set(zeusUser);
 		}else{//不存在user
-			httpResponse.sendRedirect("/zeus-web/login.do");
+			//httpResponse.sendRedirect("/zeus-web/login.do");
 		}
 		if(null!=uidfromlogin){
 			zeusUser=new ZeusUser();

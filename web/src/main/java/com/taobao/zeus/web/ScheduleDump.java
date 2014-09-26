@@ -163,5 +163,7 @@ public class ScheduleDump extends HttpServlet  {
 			e.printStackTrace();
 		}
 		resp.getWriter().close();
+//		req.getRequestDispatcher("/login.jsp").forward(req, resp);
+//		resp.sendRedirect("/login.jsp");
 	}
 }

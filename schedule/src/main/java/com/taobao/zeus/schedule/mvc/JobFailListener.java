@@ -100,6 +100,7 @@ public class JobFailListener extends DispatcherListener{
 									msg+="(根本原因:job "+causeJobId+"运行失败)";
 								}
 								mailAlarm.alarm(event.getHistory().getId(), msg, sb.toString());
+								//smsAlarm.alarm(event.getHistory().getId(), msg, sb.toString());
 							}
 						} catch (Exception e) {
 							log.error("邮件发送出现异常",e);
@@ -122,7 +123,7 @@ public class JobFailListener extends DispatcherListener{
 					int hour=now.get(Calendar.HOUR_OF_DAY);
 					int day=now.get(Calendar.DAY_OF_WEEK);
 					if(day==Calendar.SATURDAY || day==Calendar.SUNDAY || hour<9 || hour>18){
-						//smsAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
+						smsAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
 						mailAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
 					}
 				}

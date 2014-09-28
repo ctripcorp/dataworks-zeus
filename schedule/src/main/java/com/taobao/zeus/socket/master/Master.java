@@ -652,7 +652,7 @@ public class Master {
 					int day = now.get(Calendar.DAY_OF_WEEK);
 					if (day == Calendar.SATURDAY || day == Calendar.SUNDAY
 							|| hour < 9 || hour > 18) {
-						//smsAlarm.alarm(his.getId(), title.toString(),content.toString(), null);
+						smsAlarm.alarm(his.getId(), title.toString(),content.toString(), null);
 						mailAlarm.alarm(his.getId(), title.toString(),content.toString(), null);
 					}
 				}

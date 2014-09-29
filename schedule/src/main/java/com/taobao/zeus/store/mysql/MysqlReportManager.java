@@ -31,8 +31,8 @@ public class MysqlReportManager extends HibernateDaoSupport{
 					SQLException {
 				Map<String, Map<String, String>> result=new HashMap<String, Map<String,String>>();
 				
-				String success_sql="select count(*),h.gmt_create from zeus_job_history h " +
-						"left join zeus_job j on h.job_id=j.id " +
+				String success_sql="select count(*),h.gmt_create from zeus_action_history h " +
+						"left join zeus_action j on h.action_id=j.id " +
 						"where h.status='success' and trigger_type=1 and h.gmt_create between ? and ? group by to_days(h.gmt_create) order by h.gmt_create desc";
 				SQLQuery query=session.createSQLQuery(success_sql);
 				query.setParameter(0, start);
@@ -47,8 +47,8 @@ public class MysqlReportManager extends HibernateDaoSupport{
 					result.put(format.format(date), map);
 				}
 				
-				String fail_sql="select count(*),h.gmt_create from zeus_job_history h " +
-					"left join zeus_job j on h.job_id=j.id " +
+				String fail_sql="select count(*),h.gmt_create from zeus_action_history h " +
+					"left join zeus_action j on h.action_id=j.id " +
 					"where h.status='failed' and trigger_type=1 and h.gmt_create between ? and ? group by to_days(h.gmt_create) order by h.gmt_create desc";
 				query=session.createSQLQuery(fail_sql);
 				query.setDate(0, start);
@@ -79,8 +79,8 @@ public class MysqlReportManager extends HibernateDaoSupport{
 					SQLException {
 				List<Map<String, String>> result=new ArrayList<Map<String,String>>();
 				
-				String sql="select count(*) as cou,j.owner,u.name from zeus_job_history h " +
-						"left join zeus_job j on h.job_id=j.id " +
+				String sql="select count(*) as cou,j.owner,u.name from zeus_action_history h " +
+						"left join zeus_action j on h.action_id=j.id " +
 						"left join zeus_user u on j.owner=u.uid " +
 						"where h.status='failed' and h.trigger_type=1 " +
 						"and to_days(?)=to_days(h.gmt_create) group by j.owner order by cou desc limit 10";
@@ -107,8 +107,8 @@ public class MysqlReportManager extends HibernateDaoSupport{
 				@Override
 				public Object doInHibernate(Session session) throws HibernateException,
 						SQLException {
-					String sql="select h.id,h.job_id,j.name from zeus_job_history h " +
-							"left join zeus_job j on h.job_id=j.id where h.status='failed' " +
+					String sql="select h.id,h.action_id,j.name from zeus_action_history h " +
+							"left join zeus_action j on h.action_id=j.id where h.status='failed' " +
 							"and h.trigger_type=1 and to_days(?) =to_days(h.gmt_create) and j.owner=?";
 					SQLQuery query=session.createSQLQuery(sql);
 					query.setDate(0, date);

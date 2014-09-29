@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jboss.netty.channel.Channel;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -114,11 +115,14 @@ public class ScheduleDump extends HttpServlet  {
 							String currentDateStr = df.format(now)+"0000";
 							Dispatcher dispatcher=context.getDispatcher();
 							if(dispatcher!=null){
-								for(Controller c:dispatcher.getControllers()){
-									JobController jobc = (JobController)c;
-									String jobId = jobc.getJobId();
-									if(Long.parseLong(jobId)<Long.parseLong(currentDateStr)){
-										context.getScheduler().deleteJob(jobId, "zeus");
+								List<Controller> controllers = dispatcher.getControllers();
+								if(controllers != null && controllers.size()>0){
+									for(Controller c : controllers){
+										JobController jobc = (JobController)c;
+										String jobId = jobc.getJobId();
+										if(Long.parseLong(jobId)<Long.parseLong(currentDateStr)){
+											context.getScheduler().deleteJob(jobId, "zeus");
+										}
 									}
 								}
 							}
@@ -134,15 +138,35 @@ public class ScheduleDump extends HttpServlet  {
 							context.getMaster().runScheduleJobToAction(jobDetails, now, df2, actionDetails, currentDateStr);
 							context.getMaster().runDependencesJobToAction(jobDetails, actionDetails, currentDateStr, 0);
 							
-							if (actionDetails.size() > 0) {
-								for (Long id : actionDetails.keySet()) {
-									context.getDispatcher().addController(
-											new JobController(context, context.getMaster(),
-													id.toString()));
-									if (id > Long.parseLong(currentDateStr)) {
-										context.getDispatcher().forwardEvent(
-												new JobMaintenanceEvent(Events.UpdateJob,
+							Dispatcher dispatcher=context.getDispatcher();
+							if(dispatcher != null){
+								//增加controller，并修改event
+								if (actionDetails.size() > 0) {
+									for (Long id : actionDetails.keySet()) {
+										dispatcher.addController(
+												new JobController(context, context.getMaster(),
 														id.toString()));
+										if (id > Long.parseLong(currentDateStr)) {
+											context.getDispatcher().forwardEvent(
+													new JobMaintenanceEvent(Events.UpdateJob,
+															id.toString()));
+										}
+									}
+								}
+							
+								//清理schedule
+								List<Controller> controllers = dispatcher.getControllers();
+								if(controllers!=null && controllers.size()>0){
+									for(Controller c : controllers){
+										JobController jobc = (JobController)c;
+										String jobId = jobc.getJobId();
+										if(Long.parseLong(jobId)<Long.parseLong(currentDateStr)){
+											try {
+												context.getScheduler().deleteJob(jobId, "zeus");
+											} catch (SchedulerException e) {
+												e.printStackTrace();
+											}
+										}
 									}
 								}
 							}
@@ -163,5 +187,7 @@ public class ScheduleDump extends HttpServlet  {
 			e.printStackTrace();
 		}
 		resp.getWriter().close();
+//		req.getRequestDispatcher("/login.jsp").forward(req, resp);
+//		resp.sendRedirect("/login.jsp");
 	}
 }

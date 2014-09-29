@@ -198,7 +198,7 @@ public class PlatformEntry implements EntryPoint {
 		
 		p.add(bt);
 		vp.setButtonAlign(BoxLayoutPack.CENTER);
-		vp.setHeadingText("娆㈣繋鐧婚檰zeus");
+		vp.setHeadingText("zeus");
 		bt.addSelectHandler(sh);
 		
 		return vp;

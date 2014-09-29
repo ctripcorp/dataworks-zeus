@@ -140,18 +140,6 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
     }
 
 	public String checkUserSession() {
-		//System.out.println("get session");
-		//HttpSession httpSession = getThreadLocalRequest().getSession();
-		//HttpServletRequest request =  this.getThreadLocalRequest();
-		 //String uid = "null";
-		// System.out.println(RequestContextHolder.currentRequestAttributes());
-		 //ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-//		  if (requestAttributes != null) {
-//		       HttpServletRequest req = requestAttributes.getRequest();
-//		       uid = req.getSession().getAttribute("user").toString();
-//		  }
-		//String uid = (String) request.getSession().getAttribute("user");
-
 		ZeusUser u= LoginUser.getUser();
 		if(null==u){
 			return "null";

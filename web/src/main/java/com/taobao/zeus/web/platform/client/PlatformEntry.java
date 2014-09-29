@@ -77,108 +77,28 @@ public class PlatformEntry implements EntryPoint {
 	private Button addStockButton = new Button("Add"); 
 	private Label lastUpdatedLabel = new Label();
 	@Override
+
 	public void onModuleLoad() {
-		RPCS.getUserService().checkUserSession(new AsyncCallback<String>() {
-			@Override
-			public void onSuccess(String result) {
-				System.out.println(result);
-				if(null==result || result.equals("null")){
-					new PlatformEntry().loginhtml();
-				}else{
-					RootPanel.get().clear();
-					new PlatformEntry().init();
-				}
-				//Platform s=new Platform(result);
-				
-				
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {System.out.println(caught);
-				//com.google.gwt.user.client.Window.Location.reload();
-			}
-		});
-	    
-	    
-	}
-	public void loginhtml(){
-		HTML html = new HTML(
-				  "<form class=\"form-signin\" name=\"form1\" action=\"#\"  method=\"post\" autocomplete=\"off\">"+
-				  "    <h2 class=\"form-signin-heading\">Zeus登陆界面</h2>"+
-				  "    <div>"+
-				  "      <label for=\"username\">账号: </label>"+
-				  "      <input type=\"text\" class=\"input-block-level input_normal\" name=\"username\" id=\"username\" disableautocomplete=\"\" autocomplete=\"off\">"+
-				  "    </div>"+
-				  "    <div>"+
-				  "    <label for=\"password\"> 密码： </label>"+
-				  "    <input type=\"password\" class=\"input-block-level input_normal\" name=\"password\" id=\"password\" disableautocomplete=\"\" autocomplete=\"off\">"+
-				  "   </div>"+
-				  "    <button id=\"login\" class=\"ui-state-default\" type=\"button\">登陆</button>"+
-				  "  </form>", true);
-
-			    // Add them to the root panel.
-
-		  		//html.add;
-			    html.addStyleName("container");
-		// TODO Associate the Main panel with the HTML host page.  
-		// TODO Move cursor focus to the input box.
-			    RootPanel.get().add(html);
-			    /***EVENT LISTENER bind event***/
-			    Element  elem =   Document.get().getElementById("login");
-			   // Label l = Label.wrap(elem);
-			    
-			    Event.setEventListener(elem, new EventListener() {
-		            @Override
-		            public void onBrowserEvent(Event event) {
-		            	InputElement   usernameele =  (InputElement) Document.get().getElementById("username");
-		            	//TextBox usernamet = TextBox.wrap(username);
-		            	InputElement  passwordele =   (InputElement) Document.get().getElementById("password");
-		            	String username  = usernameele.getValue();
-			    		String password  = passwordele.getValue();
-			    		if(username.equals("")){
-			    			com.google.gwt.user.client.Window.alert("用户名不能为空");
-			    			return;
-			    		}
-			    		if(password.equals("")){
-			    			com.google.gwt.user.client.Window.alert("密码不能为空");
-			    			return;
-			    		}
-			    		checkUserValidate(username,password);
-			    		//RootPanel.get().clear();
-			    		//new PlatformEntry().init();
-		            	//System.out.println(username);
-		            }
-		        });
-		        Event.sinkEvents(elem, Event.ONCLICK);
-	 // Associate the Main panel with the HTML host page.
+//			RPCS.getUserService().checkUserSession(new AsyncCallback<String>() {
+//				@Override
+//				public void onSuccess(String result) {
+//					System.out.println(result);
+//					if(null==result || result.equals("null")){
+//						com.google.gwt.user.client.Window.Location.assign("/zeus-web/login.do");
+//					}else{
+						new PlatformEntry().init();
+//					}
+//				}
+//				
+//				@Override
+//				public void onFailure(Throwable caught) {
+//					System.out.println(caught);
+//					//com.google.gwt.user.client.Window.Location.reload();
+//				}
+//			});
+		    
 		
-	}
-	
-	protected void checkUserValidate(String username,String password) {
-		// TODO Auto-generated method stub
-		RPCS.getUserService().checkUser(username,password,new AsyncCallback<String>() {
-			@Override
-			public void onSuccess(String result) {
-				
-				if(result.equals("null")){
-					com.google.gwt.user.client.Window.alert("该用户名不存在");
-				}else if(result.equals("error")){
-					com.google.gwt.user.client.Window.alert("账号不正确");
-				}else{
-					
-					RootPanel.get().clear();
-					new PlatformEntry().init();
-				}
-				//Platform s=new Platform(result);
-				
-				
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {System.out.println(caught);
-				//com.google.gwt.user.client.Window.Location.reload();
-			}
-		});
+	    
 	}
 
 	public void init(){
@@ -232,7 +152,7 @@ public class PlatformEntry implements EntryPoint {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				com.google.gwt.user.client.Window.Location.reload();
+				com.google.gwt.user.client.Window.Location.assign("/zeus-web/login.do");
 			}
 		});
 		// 闃瞐rk璁よ瘉杩囨湡锛屼竴鍒嗛挓鍙戦�涓�rpc璇锋眰

@@ -1,7 +1,5 @@
 package com.taobao.zeus.web;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 
 public class LoginUser {
@@ -9,12 +7,12 @@ public class LoginUser {
 	
 	public static ZeusUser getUser(){
 	
-		 System.out.println(Thread. currentThread ().getName() + ":" + user.get().getUid());
+//		System.out.println(Thread. currentThread ().getName() + ":" + user.get().getUid());
 		return user.get();
 	}
 
 	public static void setUser(ZeusUser user) {
-		 System.out.println(user.toString());
+//		System.out.println(user.toString());
 		LoginUser.user.set(user);
 	}
 	

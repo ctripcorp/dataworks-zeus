@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login_out.do")
 public class login_out extends HttpServlet {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Override
     public void doGet(HttpServletRequest request,
             HttpServletResponse response)

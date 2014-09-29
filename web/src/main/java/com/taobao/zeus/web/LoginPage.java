@@ -22,7 +22,8 @@ import com.taobao.zeus.web.LoginUser;
 
 
 public class LoginPage  extends HttpServlet  {
-	
+
+	private static final long serialVersionUID = 1L;
 	private UserManager userManager;
 	
 	
@@ -55,9 +56,9 @@ public class LoginPage  extends HttpServlet  {
 			out.print("null");
 		}else{
 			String ps = u.getPassword();
-			System.out.println(password);
-			System.out.println(ps);
-			System.out.println(MD5(password));
+//			System.out.println(password);
+//			System.out.println(ps);
+//			System.out.println(MD5(password));
 			if(null !=ps){
 				if(!MD5(password).toUpperCase().equals(ps.toUpperCase())){
 					out.print("error");
@@ -86,7 +87,7 @@ public class LoginPage  extends HttpServlet  {
 //			   System.out.println( c.getName());// get the cookie name
 //			   System.out.println( c.getValue()); // get the cookie value
 //			}
-			System.out.println("ZeusUser.USER-----------------"+ZeusUser.USER.toString());
+//			System.out.println("ZeusUser.USER-----------------"+ZeusUser.USER.toString());
 			LoginUser.user.set(ZeusUser.USER);
 			out.print(uid);
 		}

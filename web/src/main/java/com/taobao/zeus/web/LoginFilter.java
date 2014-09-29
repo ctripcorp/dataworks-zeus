@@ -80,7 +80,7 @@ public class LoginFilter implements Filter {
 		}
 		
 		String uid=(String) httpRequest.getSession().getAttribute("user");//login.getUid(httpRequest);
-		System.out.println("getSession-----------"+uid);
+//		System.out.println("getSession-----------"+uid);
 		if(null!=uid){//如果存在session
 			Boolean check = false;
 			Cookie[] cookies = httpRequest.getCookies();

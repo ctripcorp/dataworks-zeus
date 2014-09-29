@@ -42,7 +42,7 @@ public class CacheMysqlGroupManager extends HibernateDaoSupport implements Group
 			@Override
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
-				Object[] o=(Object[]) session.createSQLQuery("select count(*),max(id),max(gmt_modified) from zeus_job").uniqueResult();
+				Object[] o=(Object[]) session.createSQLQuery("select count(*),max(id),max(gmt_modified) from zeus_action").uniqueResult();
 				if(o!=null){
 					Judge j=new Judge();
 					j.count=((Number) o[0]).intValue();

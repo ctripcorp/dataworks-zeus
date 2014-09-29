@@ -8,6 +8,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -62,57 +63,48 @@ public class LoginFilter implements Filter {
 		HttpServletRequest httpRequest=(HttpServletRequest) request;
 		HttpServletResponse httpResponse=(HttpServletResponse)response;
 		httpResponse.setCharacterEncoding("utf-8");
+		String uri=httpRequest.getRequestURI();
 		//线上服务器检测
-		if(httpRequest.getRequestURI().equals("/zeus.check")){
+
+		if(uri.equals("/zeus.check")){
 			response.getWriter().write("success");
 			return;
 		}
-	
+		
 		ZeusUser zeusUser=null;
-		String uri=httpRequest.getRequestURI();
-/*		if(uri.contains("zeus_platform.nocache.js")){
-			System.out.println(uri);
-		}*/
+
 		if(uri.endsWith(".taobao") || uri.endsWith(".js") || uri.endsWith(".css") || uri.endsWith(".gif") ||
-				uri.endsWith(".jpg") || uri.endsWith(".png") || uri.endsWith("dump.do")){
+				uri.endsWith(".jpg") || uri.endsWith(".png") || uri.endsWith(".do")|| uri.endsWith(".jsp")|| uri.endsWith("login.html")|| uri.endsWith(".ico")){
 			chain.doFilter(request, response);
 			return;
 		}
 		
 		String uid=(String) httpRequest.getSession().getAttribute("user");//login.getUid(httpRequest);
-		String uidfromlogin = login.getUid(httpRequest);
+		System.out.println("getSession-----------"+uid);
 		if(null!=uid){//如果存在session
+			Boolean check = false;
+			Cookie[] cookies = httpRequest.getCookies();
+            for(Cookie c :cookies ){
+            	if(c.getName().equals("LOGIN_USERNAME")){
+            		if(c.getValue().equals(uid)){
+            			zeusUser=new ZeusUser();
+            			zeusUser.setUid(uid);
+            			check = true;
+            			userManager.addOrUpdateUser(zeusUser);
+            			LoginUser.user.set(zeusUser);
+            		}
+            	}
+ 
+            }
+           if(!check){
+        	   httpResponse.sendRedirect("login.do");
+        	   return;  
+           }
 			
-			zeusUser=new ZeusUser();
-			//zeusUser.setEmail(login.getEmail(httpRequest));
-			zeusUser.setUid(login.getUid(httpRequest));
-			//zeusUser.setName(login.getName(httpRequest));
-			//zeusUser.setPhone(login.getPhone(httpRequest));
-
-			LoginUser.user.set(zeusUser);
 		}else{//不存在user
-			LoginUser.user.set(null);
-			//httpResponse.sendRedirect("/zeus-web/login.do");
+			 httpResponse.sendRedirect("login.do");
+			 return;  
 		}
-		if(null!=uidfromlogin){
-			zeusUser=new ZeusUser();
-			zeusUser.setEmail(login.getEmail(httpRequest));
-			zeusUser.setUid(login.getUid(httpRequest));
-			zeusUser.setName(login.getName(httpRequest));
-			zeusUser.setPhone(login.getPhone(httpRequest));
-			String sessionuser = (String) httpRequest.getSession().getAttribute("user");
-			if(!uidfromlogin.equals(httpRequest.getSession().getAttribute("user"))){
-				userManager.addOrUpdateUser(zeusUser);
-				System.out.println("set session");
-				httpRequest.getSession().setAttribute("user", zeusUser.getUid());
-			}
-			LoginUser.user.set(zeusUser);
-		}else{
-			LoginUser.user.set(zeusUser.USER);
-		}		
-
-		
-		//System.out.println(zeusUser.toString());
 		
 		chain.doFilter(request, response);
 	}

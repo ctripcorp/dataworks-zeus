@@ -40,7 +40,8 @@ public class JobDebugRpcImpl implements JobDebugService {
 		String uid = LoginUser.getUser().getUid();
 		FileDescriptor fd = fileManager.getFile(fileId);
 		if (!fd.getOwner().equals(uid)) {
-			throw new RuntimeException("您无权操作");
+			return "您无权操作";
+			//throw new RuntimeException("您无权操作");
 		}
 
 		DebugHistory history = new DebugHistory();

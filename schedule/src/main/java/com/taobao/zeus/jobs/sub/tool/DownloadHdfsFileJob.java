@@ -31,6 +31,7 @@ public class DownloadHdfsFileJob extends ProcessJob {
 		String hadoopCmd=JobUtils.getHadoopCmd(envMap);
 		List<String> commands = new ArrayList<String>();
 		commands.add(hadoopCmd+" fs -copyToLocal " + hdfsFilePath + " " + localPath);
+		commands.add("dos2unix " + localPath);
 		return commands;
 	}
 

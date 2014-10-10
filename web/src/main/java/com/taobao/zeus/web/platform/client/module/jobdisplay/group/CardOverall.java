@@ -92,9 +92,9 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 					for(String key:value.keySet()){
 						String time=value.get(key);
 						if(time==null){
-							sb.appendHtmlConstant("<span style='color:red'>依赖任务"+key+"未执行</span>").appendHtmlConstant("<br/>");
+							sb.appendHtmlConstant("<span style='color:red'>依赖任务:"+key+",未执行</span>").appendHtmlConstant("<br/>");
 						}else{
-							sb.appendHtmlConstant("依赖任务"+key+"运行时间").appendHtmlConstant(":")
+							sb.appendHtmlConstant("依赖任务:"+key+",运行时间").appendHtmlConstant(":")
 							.appendHtmlConstant(format.format(new Date(Long.valueOf(time)))).appendHtmlConstant("<br/>");
 						}
 					}
@@ -119,7 +119,7 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 			}
 		});
 		loader=new PagingLoader<PagingLoadConfig,PagingLoadResult<JobModelAction>>(proxy);
-		loader.setLimit(15);
+		loader.setLimit(50);
 		loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig,JobModelAction,PagingLoadResult<JobModelAction>>(store));
 
 		
@@ -148,7 +148,7 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 			}
 		});
 		
-		toolBar = new PagingToolBar(15);
+		toolBar = new PagingToolBar(50);
 		toolBar.bind(loader);
 		VerticalLayoutContainer con = new VerticalLayoutContainer();
 	    con.setBorders(true);

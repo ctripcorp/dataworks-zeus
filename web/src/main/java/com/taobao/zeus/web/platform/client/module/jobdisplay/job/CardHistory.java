@@ -319,7 +319,7 @@ public class CardHistory extends CenterTemplate implements
 		grid.getView().setForceFit(true);
 		grid.setLoader(loader);
 
-		toolBar = new PagingToolBar(15);
+		toolBar = new PagingToolBar(30);
 		toolBar.bind(loader);
 
 		VerticalLayoutContainer con = new VerticalLayoutContainer();

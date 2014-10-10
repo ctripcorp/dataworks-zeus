@@ -593,7 +593,13 @@ public class JobServiceImpl implements JobService {
 			Map<String, String> dep = new HashMap<String, String>();
 			for (String jobId : job.getX().getDependencies()) {
 				if (jobId != null && !"".equals(jobId)) {
-					dep.put(jobId, null);
+					//dep.put(jobId, null);
+					if(jobHisMap.get(jobId) != null){
+						//System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(jobHisMap.get(jobId).getEndTime()));
+						dep.put(jobId, String.valueOf(jobHisMap.get(jobId).getEndTime().getTime()));
+					}else{
+						dep.put(jobId, null);
+					}
 				}
 			}
 			dep.putAll(status.getReadyDependency());

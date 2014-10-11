@@ -53,7 +53,7 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 	public void refresh(GroupModel t) {
 		PagingLoadConfig config=new PagingLoadConfigBean();
 		config.setOffset(0);
-		config.setLimit(15);
+		config.setLimit(50);
 		loader.load(config);
 	}
 
@@ -68,7 +68,7 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 		this.presenter=p;
 		ColumnConfig<JobModelAction,String> jobId=new ColumnConfig<JobModelAction,String>(prop.id(), 60,"ActionId");
 		ColumnConfig<JobModelAction,String> toJobId=new ColumnConfig<JobModelAction,String>(prop.toJobId(), 20,"JobId");
-		ColumnConfig<JobModelAction,String> jobName=new ColumnConfig<JobModelAction,String>(prop.name(),100, "任务名称");
+		ColumnConfig<JobModelAction,String> jobName=new ColumnConfig<JobModelAction,String>(prop.name(),80, "任务名称");
 		jobName.setCell(new AbstractCell<String>(){
 			public void render(Context context,
 					String value, SafeHtmlBuilder sb) {
@@ -76,7 +76,7 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 			}
 		});
 		ColumnConfig<JobModelAction,String> status=new ColumnConfig<JobModelAction,String>(prop.status(), 30,"执行状态");
-		ColumnConfig<JobModelAction,String> lastStatus=new ColumnConfig<JobModelAction,String>(prop.lastStatus(),80, "上一次任务情况");
+		ColumnConfig<JobModelAction,String> lastStatus=new ColumnConfig<JobModelAction,String>(prop.lastStatus(),100, "上一次任务情况");
 		lastStatus.setCell(new AbstractCell<String>() {
 			public void render(com.google.gwt.cell.client.Cell.Context context,
 					String value, SafeHtmlBuilder sb) {

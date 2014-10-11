@@ -76,10 +76,13 @@ public class ShellJob extends ProcessJob{
 		//修改权限
 
 		String shellPrefix = "";
+		String user = "";
 		if (jobContext.getRunType() == 1 || jobContext.getRunType() == 2) {
-			shellPrefix = "sudo -u " + jobContext.getJobHistory().getOperator();
+			user = jobContext.getJobHistory().getOperator();
+			shellPrefix = "sudo -u " + user;
 		} else if (jobContext.getRunType() == 3) {
-			shellPrefix = "sudo -u " + jobContext.getDebugHistory().getOwner();
+			user = jobContext.getDebugHistory().getOwner();
+			shellPrefix = "sudo -u " + user;
 		} else if (jobContext.getRunType() == 4) {
 			shellPrefix = "";
 		}else{
@@ -87,10 +90,13 @@ public class ShellJob extends ProcessJob{
 		}
 		
 		//修改权限
-
 		list.add("chmod u+x " + shellFilePath);
 		//格式转换
 		list.add("dos2unix " + shellFilePath);
+		//账户赋权
+		if(user.trim().length()>0){
+			list.add("chown -R " + user + ":" + user + " " + jobContext.getWorkDir());
+		}
 		//执行shell
 		// run shell as current user
 		list.add(shellPrefix + " sh "+shellFilePath);

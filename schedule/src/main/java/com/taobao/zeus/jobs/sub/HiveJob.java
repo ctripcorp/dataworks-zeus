@@ -90,15 +90,26 @@ public class HiveJob extends ProcessJob {
 		
 		// get operator uid
 		String shellPrefix = "";
+		String user = "";
 		if (jobContext.getRunType() == 1 || jobContext.getRunType() == 2) {
-			shellPrefix = "sudo -u " + jobContext.getJobHistory().getOperator();
+			user = jobContext.getJobHistory().getOperator();
+			shellPrefix = "sudo -u " + user;
 		} else if (jobContext.getRunType() == 3) {
-			shellPrefix = "sudo -u " + jobContext.getDebugHistory().getOwner();
+			user = jobContext.getDebugHistory().getOwner();
+			shellPrefix = "sudo -u " + user;
 		} else if (jobContext.getRunType() == 4) {
 			shellPrefix = "";
 		}else{
 			log("没有RunType=" + jobContext.getRunType() + " 的执行类别");
 		}
+		
+		//格式转换
+		sb.append("dos2unix " + hiveFilePath);
+		//账户赋权
+		if(user.trim().length()>0){
+			sb.append("chown -R " + user + ":" + user + " " + jobContext.getWorkDir());
+		}
+		
 		sb.append(shellPrefix + " hive");
 		
 		// 引入常用udf函数

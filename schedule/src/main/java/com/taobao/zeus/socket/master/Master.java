@@ -830,7 +830,7 @@ public class Master {
 								//System.out.println("定时任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 								//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 									context.getGroupManager().saveJob(actionPer);
-									System.out.println("success");
+									//System.out.println("success");
 									actionDetails.put(actionPer.getId(),actionPer);
 								//}
 								
@@ -911,7 +911,7 @@ public class Master {
 								//System.out.println("周期任务（天）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 								//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 									context.getGroupManager().saveJob(actionPer);
-									System.out.println("success");
+									//System.out.println("success");
 									actionDetails.put(actionPer.getId(),actionPer);
 								//}
 								
@@ -972,7 +972,7 @@ public class Master {
 									//System.out.println("周期任务（时）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 									//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 										context.getGroupManager().saveJob(actionPer);
-										System.out.println("success");
+										//System.out.println("success");
 										actionDetails.put(actionPer.getId(),actionPer);
 									//}
 									
@@ -1115,7 +1115,7 @@ public class Master {
 										//System.out.println("依赖任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 										//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 											context.getGroupManager().saveJob(actionPer);
-											System.out.println("success");
+											//System.out.println("success");
 										//}
 										actionDetails.put(actionPer.getId(),actionPer);
 									} catch (ZeusException e) {

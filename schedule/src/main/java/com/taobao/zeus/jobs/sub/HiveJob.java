@@ -105,11 +105,6 @@ public class HiveJob extends ProcessJob {
 		
 		//格式转换
 		list.add("dos2unix " + hiveFilePath);
-		//账户赋权
-		if(user.trim().length()>0){
-			list.add("chmod -R 777 " + jobContext.getWorkDir());
-		}
-		
 		
 		// 引入常用udf函数
 		if (getUdfSql()) {
@@ -122,8 +117,10 @@ public class HiveJob extends ProcessJob {
 		if(shellPrefix.trim().length() > 0){
 			String envFilePath = this.getClass().getClassLoader().getResource("/").getPath()+"env.sh";
 			String tmpFilePath = jobContext.getWorkDir()+File.separator+"tmp.sh";
+			String localEnvFilePath = jobContext.getWorkDir()+File.separator+"env.sh";
 			File f=new File(envFilePath);
 			if(f.exists()){
+				list.add("cp " + envFilePath + " " + jobContext.getWorkDir());
 				File tmpFile = new File(tmpFilePath);
 				OutputStreamWriter tmpWriter=null;
 				try {
@@ -131,18 +128,20 @@ public class HiveJob extends ProcessJob {
 						tmpFile.createNewFile();
 					}
 					tmpWriter=new OutputStreamWriter(new FileOutputStream(tmpFile),Charset.forName(jobContext.getProperties().getProperty("zeus.fs.encode", "utf-8")));
-					tmpWriter.write("source " + envFilePath + "; hive"+ sb.toString());
+					tmpWriter.write("source " + localEnvFilePath + "; hive"+ sb.toString());
 				} catch (Exception e) {
 					jobContext.getJobHistory().getLog().appendZeusException(e);
 				} finally{
 					IOUtils.closeQuietly(tmpWriter);
 				}
+				list.add("chmod -R 755 " + jobContext.getWorkDir());
 				list.add(shellPrefix + " sh " + tmpFilePath);
 			}else{
+				list.add("chmod -R 755 " + jobContext.getWorkDir());
 				list.add(shellPrefix + " hive" + sb.toString());
 			}
 		}else{
-			list.add("hive");
+			list.add("hive" + sb.toString());
 		}
 		return list;
 	}

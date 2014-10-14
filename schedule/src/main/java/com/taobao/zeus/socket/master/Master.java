@@ -188,16 +188,16 @@ public class Master {
 		Float selectMemRate = null;
 		for (MasterWorkerHolder worker : context.getWorkers().values()) {
 			HeartBeatInfo heart = worker.getHeart();
-			System.out.println("worker a : heart :" + heart.memRate);
+			//System.out.println("worker a : heart :" + heart.memRate);
 			if (heart != null && heart.memRate != null && heart.memRate < 0.8) {
 				if (selectWorker == null) {
 					selectWorker = worker;
 					selectMemRate = heart.memRate;
-					System.out.println("worker b : heart :"+ selectMemRate);
+					//System.out.println("worker b : heart :"+ selectMemRate);
 				} else if (selectMemRate > heart.memRate) {
 					selectWorker = worker;
 					selectMemRate = heart.memRate;
-					System.out.println("worker c : heart :"+ selectMemRate);
+					//System.out.println("worker c : heart :"+ selectMemRate);
 				}
 			}
 		}
@@ -210,17 +210,17 @@ public class Master {
 		if (host != null && !"".equals(host)) {
 			for (MasterWorkerHolder worker : context.getWorkers().values()) {
 				HeartBeatInfo heart = worker.getHeart();
-				System.out.println("worker a : host :" + host + " heart :" + heart.memRate);
+				//System.out.println("worker a : host :" + host + " heart :" + heart.memRate);
 				if (heart != null && heart.memRate != null
 						&& heart.memRate < 0.8 && host.equals(heart.host)) {
 					if (selectWorker == null) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
-						System.out.println("worker b : host :" + host+ " heart :" + selectMemRate);
+						//System.out.println("worker b : host :" + host+ " heart :" + selectMemRate);
 					} else if (selectMemRate > heart.memRate) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
-						System.out.println("worker c : host :" + host+ " heart :" + selectMemRate);
+						//System.out.println("worker c : host :" + host+ " heart :" + selectMemRate);
 					}
 				}
 			}
@@ -237,10 +237,10 @@ public class Master {
 	private void scan() {
 
 		if (!context.getQueue().isEmpty()) {
-			System.out.println("schedule queue :" +context.getQueue().size());
+			//System.out.println("schedule queue :" +context.getQueue().size());
 			final JobElement e = context.getQueue().poll();
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
-			System.out.println("schedule selectWorker :" +selectWorker+" host :"+e.getHost());
+			//System.out.println("schedule selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
 				context.getQueue().offer(e);
 			} else {
@@ -249,10 +249,10 @@ public class Master {
 		}
 		
 		if (!context.getManualQueue().isEmpty()) {
-			System.out.println("manual queue :" +context.getManualQueue().size());
+			//System.out.println("manual queue :" +context.getManualQueue().size());
 			final JobElement e = context.getManualQueue().poll();
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
-			System.out.println("manual selectWorker :" +selectWorker+" host :"+e.getHost());
+			//System.out.println("manual selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
 				context.getManualQueue().offer(e);
 			} else {
@@ -261,10 +261,10 @@ public class Master {
 		}
 		
 		if (!context.getDebugQueue().isEmpty()) {
-			System.out.println("debug queue :" +context.getDebugQueue().size() );
+			//System.out.println("debug queue :" +context.getDebugQueue().size() );
 			final JobElement e = context.getDebugQueue().poll();
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
-			System.out.println("debug selectWorker :" +selectWorker+" host :"+e.getHost());
+			//System.out.println("debug selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
 				context.getDebugQueue().offer(e);
 			} else {
@@ -827,7 +827,7 @@ public class Master {
 							actionPer.setStatus(jobDetail.getStatus());
 							actionPer.setTimezone(jobDetail.getTimezone());
 							try {
-								System.out.println("定时任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
+								//System.out.println("定时任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 								//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 									context.getGroupManager().saveJob(actionPer);
 									System.out.println("success");
@@ -908,7 +908,7 @@ public class Master {
 							actionPer.setStatus(jobDetail.getStatus());
 							actionPer.setTimezone(jobDetail.getTimezone());
 							try {
-								System.out.println("周期任务（天）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
+								//System.out.println("周期任务（天）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 								//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 									context.getGroupManager().saveJob(actionPer);
 									System.out.println("success");
@@ -969,7 +969,7 @@ public class Master {
 								actionPer.setStatus(jobDetail.getStatus());
 								actionPer.setTimezone(jobDetail.getTimezone());
 								try {
-									System.out.println("周期任务（时）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
+									//System.out.println("周期任务（时）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 									//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 										context.getGroupManager().saveJob(actionPer);
 										System.out.println("success");
@@ -1112,7 +1112,7 @@ public class Master {
 									actionPer.setStatus(jobDetail.getStatus());
 									actionPer.setTimezone(jobDetail.getTimezone());
 									try {
-										System.out.println("依赖任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
+										//System.out.println("依赖任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 										//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 											context.getGroupManager().saveJob(actionPer);
 											System.out.println("success");

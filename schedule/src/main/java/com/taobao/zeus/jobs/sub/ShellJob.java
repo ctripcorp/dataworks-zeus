@@ -89,21 +89,18 @@ public class ShellJob extends ProcessJob{
 			log("没有RunType=" + jobContext.getRunType() + " 的执行类别");
 		}
 
-		//修改权限
-		//list.add("chmod u+x " + shellFilePath);
 		//格式转换
 		list.add("dos2unix " + shellFilePath);
-		//账户赋权
-		if(user.trim().length()>0){
-			list.add("chmod -R 777 " + jobContext.getWorkDir());
-		}
+
 		//执行shell
 		// run shell as current user
 		if(shellPrefix.trim().length() > 0){
 			String envFilePath = this.getClass().getClassLoader().getResource("/").getPath()+"env.sh";
 			String tmpFilePath = jobContext.getWorkDir()+File.separator+"tmp.sh";
+			String localEnvFilePath = jobContext.getWorkDir()+File.separator+"env.sh";
 			File f=new File(envFilePath);
 			if(f.exists()){
+				list.add("cp " + envFilePath + " " + jobContext.getWorkDir());
 				File tmpFile = new File(tmpFilePath);
 				OutputStreamWriter tmpWriter=null;
 				try {
@@ -111,14 +108,16 @@ public class ShellJob extends ProcessJob{
 						tmpFile.createNewFile();
 					}
 					tmpWriter=new OutputStreamWriter(new FileOutputStream(tmpFile),Charset.forName(jobContext.getProperties().getProperty("zeus.fs.encode", "utf-8")));
-					tmpWriter.write("source " + envFilePath + "; sh " + shellFilePath);
+					tmpWriter.write("source " + localEnvFilePath + "; sh " + shellFilePath);
 				} catch (Exception e) {
 					jobContext.getJobHistory().getLog().appendZeusException(e);
 				} finally{
 					IOUtils.closeQuietly(tmpWriter);
 				}
+				list.add("chmod -R 755 " + jobContext.getWorkDir());
 				list.add(shellPrefix + " sh " + tmpFilePath);
 			}else{
+				list.add("chmod -R 755 " + jobContext.getWorkDir());
 				list.add(shellPrefix + " sh " + shellFilePath);
 			}
 		}else{

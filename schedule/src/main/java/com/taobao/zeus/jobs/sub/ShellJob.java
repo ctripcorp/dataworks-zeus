@@ -108,7 +108,7 @@ public class ShellJob extends ProcessJob{
 						tmpFile.createNewFile();
 					}
 					tmpWriter=new OutputStreamWriter(new FileOutputStream(tmpFile),Charset.forName(jobContext.getProperties().getProperty("zeus.fs.encode", "utf-8")));
-					tmpWriter.write("source " + localEnvFilePath + "; sh " + shellFilePath);
+					tmpWriter.write("source " + localEnvFilePath + "; source " + shellFilePath);
 				} catch (Exception e) {
 					jobContext.getJobHistory().getLog().appendZeusException(e);
 				} finally{

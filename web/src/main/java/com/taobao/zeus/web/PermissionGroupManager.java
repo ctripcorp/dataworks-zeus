@@ -358,13 +358,21 @@ public class PermissionGroupManager implements GroupManager{
 	
 	@Override
 	public void saveJob(JobPersistence actionPer) throws ZeusException {
-		// TODO Auto-generated method stub
+		groupManager.saveJob(actionPer);
 		
 	}
 	@Override
 	public List<JobPersistence> getLastJobAction(String jobId) {
+		return groupManager.getLastJobAction(jobId);
+	}
+	@Override
+	public void updateAction(JobDescriptor actionPer) throws ZeusException {
+		groupManager.updateAction(actionPer);
+	}
+	@Override
+	public List<Tuple<JobDescriptor, JobStatus>> getActionList(String jobId) {
 		// TODO Auto-generated method stub
-		return null;
+		return groupManager.getActionList(jobId);
 	}
 	
 }

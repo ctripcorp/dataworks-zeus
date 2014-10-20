@@ -209,6 +209,7 @@ public class PersistenceAndBeanConvert {
 			object.put(key, jd.getProperties().get(key.toString()));
 		}
 		persist.setAuto(jd.getAuto() ? 1 : 0);
+		persist.setToJobId(Long.valueOf(jd.getToJobId()));
 		persist.setConfigs(object.toString());
 		persist.setCronExpression(jd.getCronExpression());
 		persist.setDependencies(StringUtils.join(jd.getDependencies()

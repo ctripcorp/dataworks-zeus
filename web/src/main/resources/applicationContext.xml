@@ -56,6 +56,12 @@
 		<constructor-arg index="11">
 			<value>${email.sendFrom}</value>
 		</constructor-arg>
+		<constructor-arg index="12">
+			<value>${noc.notifyUrl}</value>
+		</constructor-arg>
+		<constructor-arg index="13">
+			<value>${noc.accessToken}</value>
+		</constructor-arg>
 	</bean>
 	
 	<bean id="clientWorker" class="com.taobao.zeus.socket.worker.ClientWorker" >

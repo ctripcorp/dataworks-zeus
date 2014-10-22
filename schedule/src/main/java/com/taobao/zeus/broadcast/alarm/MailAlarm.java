@@ -37,7 +37,19 @@ public class MailAlarm extends AbstractZeusAlarm{
 		List<String> emails = new ArrayList<String>();
 		if(userList != null && userList.size()>0){
 			for(ZeusUser user : userList){
-				emails.add(user.getEmail());
+				String userEmail = user.getEmail();
+				if(userEmail!=null && !userEmail.isEmpty() && userEmail.contains("@")){
+					if(userEmail.contains(";")){
+						String[] userEmails = userEmail.split(";");
+						for(String ems : userEmails){
+							if(ems.contains("@")){
+								emails.add(ems);
+							}
+						}
+					} else{
+						emails.add(userEmail);
+					}
+				}
 			}
 			if(emails.size()>0){
 				System.out.println(emails.toString());

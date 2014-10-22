@@ -90,7 +90,7 @@ public class LoginFilter implements Filter {
             			zeusUser=new ZeusUser();
             			zeusUser.setUid(uid);
             			check = true;
-            			userManager.addOrUpdateUser(zeusUser);
+            			//userManager.addOrUpdateUser(zeusUser);
             			LoginUser.user.set(zeusUser);
             		}
             	}

@@ -42,7 +42,7 @@ public class MysqlUserManager extends HibernateDaoSupport implements UserManager
 		if(uids.isEmpty()){
 			return new ArrayList<ZeusUser>();
 		}
-		return (List<ZeusUser>) getHibernateTemplate().execute(new HibernateCallback() {
+		List<ZeusUser> list = (List<ZeusUser>) getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
 				Query query=session.createQuery("from com.taobao.zeus.store.mysql.persistence.ZeusUser where uid in (:idList)");
@@ -50,6 +50,7 @@ public class MysqlUserManager extends HibernateDaoSupport implements UserManager
 				return query.list();
 			}
 		});
+		return list;
 	} 
 	
 	public ZeusUser addOrUpdateUser(final ZeusUser user){

@@ -114,10 +114,10 @@ public class ShellJob extends ProcessJob{
 				} finally{
 					IOUtils.closeQuietly(tmpWriter);
 				}
-				list.add("chmod -R 755 " + jobContext.getWorkDir());
+				list.add("chmod -R 777 " + jobContext.getWorkDir());
 				list.add(shellPrefix + " sh " + tmpFilePath);
 			}else{
-				list.add("chmod -R 755 " + jobContext.getWorkDir());
+				list.add("chmod -R 777 " + jobContext.getWorkDir());
 				list.add(shellPrefix + " sh " + shellFilePath);
 			}
 		}else{

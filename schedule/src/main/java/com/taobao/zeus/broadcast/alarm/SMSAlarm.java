@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.taobao.zeus.store.UserManager;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.JsonUtil;
 
 
@@ -23,14 +24,12 @@ public class SMSAlarm extends AbstractZeusAlarm{
 	@Autowired
 	private UserManager userManager;
 	
+    private static String notifyUrl = Environment.getNotifyUrl();//Noc服务器
+	private static String accessToken = Environment.getAccessToken();//Noc access_token
 
 	@Override
 	public void alarm(List<String> uids, String title, String content)
 			throws Exception {
-//		String url = "http://osg.ops.ctripcorp.com/api/notify";		//生产服务器
-//		String accessToken = "152e0e9889a6d33c93710aeeb4030aba";	//生产access_token
-		String url = "http://192.168.83.240:8098/api/notify"; 		//测试服务器
-		String accessToken = "152e0e9889a6d33c93710aeeb4030aba"; 	//测试access_token
 		String srcId = "BI-Zeus调度系统";
 		String devId = InetAddress.getLocalHost().getHostName();
 		String itemId = title;
@@ -42,7 +41,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 				message += "<br/>负责人："+user.getName()+" 电话："+user.getPhone()+" 邮箱："+user.getEmail();
 			}
 		}
-		int code = sendNOCAlarm(url, accessToken, srcId, devId, itemId, level, message);
+		int code = sendNOCAlarm(notifyUrl, accessToken, srcId, devId, itemId, level, message);
 		System.out.println("send cats code:" + code);
 	}
 

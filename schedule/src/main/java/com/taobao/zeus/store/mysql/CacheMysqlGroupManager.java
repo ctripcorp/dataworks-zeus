@@ -292,5 +292,16 @@ public class CacheMysqlGroupManager extends HibernateDaoSupport implements Group
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public void updateAction(JobDescriptor actionPer) throws ZeusException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public List<Tuple<JobDescriptor, JobStatus>> getActionList(String jobId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

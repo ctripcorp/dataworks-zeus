@@ -173,4 +173,16 @@ public interface GroupManager {
 	 */
 	List<JobPersistence> getLastJobAction(String jobId);
 	
+	/**
+	 * 保存jobAction
+	 * @throws ZeusException
+	 */
+	void updateAction(JobDescriptor actionPer) throws ZeusException;
+	
+	/**
+	 * 获取jobAction列表
+	 * @throws ZeusException
+	 */
+	List<Tuple<JobDescriptor, JobStatus>> getActionList(String jobId);
+	
 }

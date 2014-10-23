@@ -43,6 +43,7 @@ public class HiveToolBar extends AbstractToolBar{
 		add(new SeparatorToolItem());
 		Menu menu=new Menu();
 		menu.add(upload);
+		menu.add(lingoes);
 		extend.setMenu(menu);
 		add(extend);
 		add(new SeparatorToolItem());

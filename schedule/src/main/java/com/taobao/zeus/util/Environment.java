@@ -29,9 +29,11 @@ public class Environment {
 	private static String username;
 	private static String password;
 	private static String sendFrom;
+	private static String notifyUrl;
+	private static String accessToken;
 	
 	public Environment(String env,String scheduleGroup,String downloadPath,String hadoopHome,String hadoopConfDir,String hiveHome,String hiveConfDir,
-			String host,String port,String username,String password,String sendFrom){
+			String host,String port,String username,String password,String sendFrom,String notifyUrl,String accessToken){
 		Environment.env=env.trim();
 		Environment.scheduleGroup=scheduleGroup.trim();
 		Environment.downloadPath=downloadPath.trim();
@@ -48,8 +50,18 @@ public class Environment {
 		Environment.username=username.trim();
 		Environment.password=password.trim();
 		Environment.sendFrom=sendFrom.trim();
+		Environment.notifyUrl=notifyUrl.trim();
+		Environment.accessToken=accessToken.trim();
 	}
 	
+	public static String getNotifyUrl() {
+		return notifyUrl;
+	}
+
+	public static String getAccessToken() {
+		return accessToken;
+	}
+
 	public static Boolean isOnline(){
 		return "online".equalsIgnoreCase(env);
 	}

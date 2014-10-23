@@ -33,7 +33,7 @@ public class MysqlReportManager extends HibernateDaoSupport{
 				
 				String success_sql="select count(*),h.gmt_create from zeus_action_history h " +
 						"left join zeus_action j on h.action_id=j.id " +
-						"where h.status='success' and trigger_type=1 and h.gmt_create between ? and ? group by to_days(h.gmt_create) order by h.gmt_create desc";
+						"where h.status='success' and trigger_type=1 and to_days(h.gmt_create) between to_days(?) and to_days(?) group by to_days(h.gmt_create) order by h.gmt_create desc";
 				SQLQuery query=session.createSQLQuery(success_sql);
 				query.setParameter(0, start);
 				query.setParameter(1, end);
@@ -49,7 +49,7 @@ public class MysqlReportManager extends HibernateDaoSupport{
 				
 				String fail_sql="select count(*),h.gmt_create from zeus_action_history h " +
 					"left join zeus_action j on h.action_id=j.id " +
-					"where h.status='failed' and trigger_type=1 and h.gmt_create between ? and ? group by to_days(h.gmt_create) order by h.gmt_create desc";
+					"where h.status='failed' and trigger_type=1 and to_days(h.gmt_create) between to_days(?) and to_days(?) group by to_days(h.gmt_create) order by h.gmt_create desc";
 				query=session.createSQLQuery(fail_sql);
 				query.setDate(0, start);
 				query.setDate(1, end);

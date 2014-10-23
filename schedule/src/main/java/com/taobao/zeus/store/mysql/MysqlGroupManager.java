@@ -565,4 +565,37 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 				"from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId='"+jobId+"' order by id desc");
 		return list;
 	}
+
+
+	@Override
+	public List<Tuple<JobDescriptor, JobStatus>> getActionList(String jobId) {
+		List<JobPersistence> list = getHibernateTemplate().find(
+				"from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId='"+jobId+"' order by id desc");
+		List<Tuple<JobDescriptor, JobStatus>> lst = new ArrayList<Tuple<JobDescriptor, JobStatus>>();
+		for(JobPersistence persist : list){
+			lst.add(PersistenceAndBeanConvert.convert(persist));
+		}
+		return lst;
+	}
+
+	@Override
+	public void updateAction(JobDescriptor actionTor) throws ZeusException {
+		try{
+			JobPersistence actionPer = PersistenceAndBeanConvert.convert(actionTor);
+			JobPersistence action = (JobPersistence)getHibernateTemplate().get(JobPersistence.class, actionPer.getId());
+			if(action != null){
+					if(action.getStatus() == null || !action.getStatus().equalsIgnoreCase("running")){
+						actionPer.setHistoryId(action.getHistoryId());
+						actionPer.setReadyDependency(action.getReadyDependency());
+						actionPer.setStatus(action.getStatus());
+					}else{
+						actionPer = action;
+					}
+			}
+			getHibernateTemplate().saveOrUpdate(actionPer);
+		}catch(DataAccessException e){
+			throw new ZeusException(e);
+		}
+		
+	}
 }

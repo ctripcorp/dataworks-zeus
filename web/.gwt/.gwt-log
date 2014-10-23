@@ -1918,6 +1918,7 @@ Compiling...
 Removing invalidated units
 Finding entry point classes
 Public resources found in...
+<<<<<<< HEAD
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
@@ -2147,6 +2148,26 @@ Public resources found in...
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
+=======
+Translatable source found in...
+Found 0 cached/archived units.  Used 0 / 2718 units from cache.
+Compiling...
+   10% complete (ETR: 22 seconds)
+   10% complete (ETR: 22 seconds)
+   20% complete (ETR: 20 seconds)
+   30% complete (ETR: 14 seconds)
+   40% complete (ETR: 11 seconds)
+   50% complete (ETR: 9 seconds)
+   60% complete (ETR: 6 seconds)
+   70% complete (ETR: 4 seconds)
+   80% complete (ETR: 3 seconds)
+   90% complete (ETR: 1 seconds)
+   100% complete (ETR: 0 seconds)
+   Compilation completed in 18.94 seconds
+Removing invalidated units
+Finding entry point classes
+Public resources found in...
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
 Translatable source found in...
 Found 2718 cached/archived units.  Used 2718 / 2718 units from cache.
 Compiling...
@@ -2154,6 +2175,7 @@ Compiling...
 Removing invalidated units
 Finding entry point classes
 Public resources found in...
+<<<<<<< HEAD
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
@@ -2198,6 +2220,8 @@ Public resources found in...
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
+=======
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
 Translatable source found in...
 Found 2718 cached/archived units.  Used 2718 / 2718 units from cache.
 Compiling...
@@ -2205,6 +2229,7 @@ Compiling...
 Removing invalidated units
 Finding entry point classes
 Public resources found in...
+<<<<<<< HEAD
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
@@ -2216,12 +2241,23 @@ Compiling...
    40% complete (ETR: 6 seconds)
    40% complete (ETR: 6 seconds)
    40% complete (ETR: 6 seconds)
+=======
+Translatable source found in...
+Found 0 cached/archived units.  Used 0 / 2718 units from cache.
+Compiling...
+   40% complete (ETR: 7 seconds)
+   40% complete (ETR: 7 seconds)
+   40% complete (ETR: 7 seconds)
+   40% complete (ETR: 7 seconds)
+   40% complete (ETR: 7 seconds)
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
    50% complete (ETR: 5 seconds)
    60% complete (ETR: 4 seconds)
    70% complete (ETR: 3 seconds)
    80% complete (ETR: 2 seconds)
    90% complete (ETR: 1 seconds)
    100% complete (ETR: 0 seconds)
+<<<<<<< HEAD
    Compilation completed in 34.11 seconds
 Removing invalidated units
 Finding entry point classes
@@ -2270,6 +2306,12 @@ Public resources found in...
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
+=======
+   Compilation completed in 12.04 seconds
+Removing invalidated units
+Finding entry point classes
+Public resources found in...
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
 Translatable source found in...
 Found 2718 cached/archived units.  Used 2718 / 2718 units from cache.
 Compiling...
@@ -2277,9 +2319,12 @@ Compiling...
 Removing invalidated units
 Finding entry point classes
 Public resources found in...
+<<<<<<< HEAD
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
+=======
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
 Translatable source found in...
 Found 2718 cached/archived units.  Used 2718 / 2718 units from cache.
 Compiling...
@@ -2287,6 +2332,7 @@ Compiling...
 Removing invalidated units
 Finding entry point classes
 Public resources found in...
+<<<<<<< HEAD
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
@@ -2382,10 +2428,23 @@ Compiling...
    40% complete (ETR: 8 seconds)
    50% complete (ETR: 6 seconds)
    60% complete (ETR: 5 seconds)
+=======
+Translatable source found in...
+Found 0 cached/archived units.  Used 0 / 2718 units from cache.
+Compiling...
+   30% complete (ETR: 8 seconds)
+   30% complete (ETR: 8 seconds)
+   30% complete (ETR: 8 seconds)
+   30% complete (ETR: 8 seconds)
+   40% complete (ETR: 8 seconds)
+   50% complete (ETR: 6 seconds)
+   60% complete (ETR: 4 seconds)
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
    70% complete (ETR: 3 seconds)
    80% complete (ETR: 2 seconds)
    90% complete (ETR: 1 seconds)
    100% complete (ETR: 0 seconds)
+<<<<<<< HEAD
    Compilation completed in 46.28 seconds
 Removing invalidated units
 Finding entry point classes
@@ -2393,6 +2452,12 @@ Public resources found in...
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
+=======
+   Compilation completed in 15.04 seconds
+Removing invalidated units
+Finding entry point classes
+Public resources found in...
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
 Translatable source found in...
 Found 2718 cached/archived units.  Used 2718 / 2718 units from cache.
 Compiling...
@@ -2400,6 +2465,7 @@ Compiling...
 Removing invalidated units
 Finding entry point classes
 Public resources found in...
+<<<<<<< HEAD
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
@@ -2545,11 +2611,30 @@ Compiling...
    40% complete (ETR: 6 seconds)
    40% complete (ETR: 6 seconds)
    50% complete (ETR: 5 seconds)
+=======
+Translatable source found in...
+Found 2718 cached/archived units.  Used 2718 / 2718 units from cache.
+Compiling...
+   Compilation completed in 0.03 seconds
+Removing invalidated units
+Finding entry point classes
+Public resources found in...
+Translatable source found in...
+Found 0 cached/archived units.  Used 0 / 2718 units from cache.
+Compiling...
+   30% complete (ETR: 8 seconds)
+   30% complete (ETR: 8 seconds)
+   30% complete (ETR: 8 seconds)
+   30% complete (ETR: 8 seconds)
+   40% complete (ETR: 8 seconds)
+   50% complete (ETR: 6 seconds)
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
    60% complete (ETR: 4 seconds)
    70% complete (ETR: 3 seconds)
    80% complete (ETR: 2 seconds)
    90% complete (ETR: 1 seconds)
    100% complete (ETR: 0 seconds)
+<<<<<<< HEAD
    Compilation completed in 52.26 seconds
 Removing invalidated units
 Finding entry point classes
@@ -2557,6 +2642,12 @@ Public resources found in...
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
+=======
+   Compilation completed in 14.86 seconds
+Removing invalidated units
+Finding entry point classes
+Public resources found in...
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
 Translatable source found in...
 Found 2718 cached/archived units.  Used 2718 / 2718 units from cache.
 Compiling...
@@ -2564,9 +2655,12 @@ Compiling...
 Removing invalidated units
 Finding entry point classes
 Public resources found in...
+<<<<<<< HEAD
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
+=======
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
 Translatable source found in...
 Found 2718 cached/archived units.  Used 2718 / 2718 units from cache.
 Compiling...
@@ -2574,6 +2668,7 @@ Compiling...
 Removing invalidated units
 Finding entry point classes
 Public resources found in...
+<<<<<<< HEAD
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
@@ -2625,6 +2720,15 @@ Compiling...
    30% complete (ETR: 10 seconds)
    30% complete (ETR: 10 seconds)
    30% complete (ETR: 10 seconds)
+=======
+Translatable source found in...
+Found 0 cached/archived units.  Used 0 / 2718 units from cache.
+Compiling...
+   30% complete (ETR: 11 seconds)
+   30% complete (ETR: 11 seconds)
+   30% complete (ETR: 11 seconds)
+   30% complete (ETR: 11 seconds)
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
    40% complete (ETR: 9 seconds)
    50% complete (ETR: 7 seconds)
    60% complete (ETR: 5 seconds)
@@ -2632,6 +2736,7 @@ Compiling...
    80% complete (ETR: 2 seconds)
    90% complete (ETR: 1 seconds)
    100% complete (ETR: 0 seconds)
+<<<<<<< HEAD
    Compilation completed in 23.49 seconds
 Removing invalidated units
 Finding entry point classes
@@ -2885,6 +2990,12 @@ Public resources found in...
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
+=======
+   Compilation completed in 25.98 seconds
+Removing invalidated units
+Finding entry point classes
+Public resources found in...
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
 Translatable source found in...
 Found 2718 cached/archived units.  Used 2718 / 2718 units from cache.
 Compiling...
@@ -2892,9 +3003,12 @@ Compiling...
 Removing invalidated units
 Finding entry point classes
 Public resources found in...
+<<<<<<< HEAD
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\web\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\client\src\test\java is neither a directory nor an archive (.jar or .zip)
    Unexpected entry in classpath; D:\Users\jinjb\prometheus\schedule\src\test\java is neither a directory nor an archive (.jar or .zip)
+=======
+>>>>>>> a8dda8bdf91e349732a74eb0305057cc3b19c57e
 Translatable source found in...
 Found 2718 cached/archived units.  Used 2718 / 2718 units from cache.
 Compiling...

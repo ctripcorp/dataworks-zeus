@@ -21,6 +21,11 @@ public class LogContent {
 		lines++;
 		content.append("ZEUS# ").append(log).append("\n");
 	}
+	
+	public void append(String log) {
+		lines++;
+		content.append(log).append("\n");
+	}
 
 	public void appendZeusException(Exception e) {
 		if (e == null) {

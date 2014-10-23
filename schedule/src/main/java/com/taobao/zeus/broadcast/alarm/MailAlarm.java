@@ -32,7 +32,7 @@ public class MailAlarm extends AbstractZeusAlarm{
 	@Override
 	public void alarm(List<String> users, String title, String content)
 			throws Exception {
-		System.out.println("send email: "+host+" | "+port+" | "+from+" | "+user+" | "+password);
+//		System.out.println("send email: "+host+" | "+port+" | "+from+" | "+user+" | "+password);
 		List<ZeusUser> userList = userManager.findListByUid(users);
 		List<String> emails = new ArrayList<String>();
 		if(userList != null && userList.size()>0){
@@ -52,12 +52,12 @@ public class MailAlarm extends AbstractZeusAlarm{
 				}
 			}
 			if(emails.size()>0){
+				content = content.replace("<br/>", "\r\n");
+				sendEmail(emails,title,content);
 				System.out.println(emails.toString());
 				System.out.println(title);
 				System.out.println(content);
 				System.out.println("send OK!");
-				content = content.replace("<br/>", "\r\n");
-				sendEmail(emails,title,content);
 			}
 		}
 	}

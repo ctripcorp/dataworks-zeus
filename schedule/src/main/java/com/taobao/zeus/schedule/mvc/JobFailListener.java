@@ -91,7 +91,7 @@ public class JobFailListener extends DispatcherListener{
 							}
 							sb.append("Job任务的触发类型为:"+type).append("<br/>");
 							if(event.getHistory()!=null){
-								sb.append("失败原因:"+jobHistoryManager.findJobHistory(event.getHistory().getId()).getLog().getContent().replaceAll("\\n", "<br/>"));
+								sb.append("失败原因:<br/>"+jobHistoryManager.findJobHistory(event.getHistory().getId()).getLog().getContent().replaceAll("\\n", "<br/>"));
 								String msg= "Zeus报警 JobId:"+jobId+" 任务运行失败";
 								if(!jobBean.getDepender().isEmpty()){
 									msg+=",影响范围:"+getDependencyJobs(jobBean);
@@ -124,7 +124,6 @@ public class JobFailListener extends DispatcherListener{
 					int day=now.get(Calendar.DAY_OF_WEEK);
 					if(day==Calendar.SATURDAY || day==Calendar.SUNDAY || hour<9 || hour>18){
 						smsAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
-						mailAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
 					}
 				}
 				

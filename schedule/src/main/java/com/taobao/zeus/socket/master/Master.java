@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +42,7 @@ import com.taobao.zeus.schedule.mvc.event.DebugFailEvent;
 import com.taobao.zeus.schedule.mvc.event.DebugSuccessEvent;
 import com.taobao.zeus.schedule.mvc.event.Events;
 import com.taobao.zeus.schedule.mvc.event.JobFailedEvent;
+import com.taobao.zeus.schedule.mvc.event.JobLostEvent;
 import com.taobao.zeus.schedule.mvc.event.JobMaintenanceEvent;
 import com.taobao.zeus.schedule.mvc.event.JobSuccessEvent;
 import com.taobao.zeus.socket.SocketLog;
@@ -52,7 +52,6 @@ import com.taobao.zeus.socket.protocol.Protocol.ExecuteKind;
 import com.taobao.zeus.socket.protocol.Protocol.Response;
 import com.taobao.zeus.socket.protocol.Protocol.Status;
 import com.taobao.zeus.store.GroupBean;
-import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
@@ -122,6 +121,10 @@ public class Master {
 								if (id > Long.parseLong(currentDateStr)) {
 									context.getDispatcher().forwardEvent(
 											new JobMaintenanceEvent(Events.UpdateJob,
+													id.toString()));
+								}else{
+									context.getDispatcher().forwardEvent(
+											new JobLostEvent(Events.UpdateJob,
 													id.toString()));
 								}
 							}
@@ -414,77 +417,125 @@ public class Master {
 		new Thread() {
 			@Override
 			public void run() {
-				// 先根据任务ID，查询出任务上次执行的历史记录（jobID->historyid->JobHistory)
-				JobHistory his = context.getJobHistoryManager().findJobHistory(
-						context.getGroupManager()
-								.getJobStatus(jobID).getHistoryId());
-				TriggerType type = his.getTriggerType();
-				ScheduleInfoLog.info("JobId:" + jobID + " run start");
-				his.getLog().appendZeus(
-						new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-								.format(new Date()) + " 开始运行");
-				context.getJobHistoryManager().updateJobHistoryLog(his.getId(),
-						his.getLog().getContent());
-				JobStatus jobstatus = context.getGroupManager().getJobStatus(his.getJobId());
-				jobstatus.setHistoryId(his.getId());
-				jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
-				context.getGroupManager().updateJobStatus(jobstatus);
-				
-				Exception exception = null;
-				Response resp = null;
-				try {
-					Future<Response> f = new MasterExecuteJob().executeJob(
-							context, w, ExecuteKind.ScheduleKind, his.getId());
-					resp = f.get();
-				} catch (Exception e) {
-					exception = e;
-					ScheduleInfoLog.error(
-							String.format("JobId:%s run failed", jobID), e);
-					jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
-					context.getGroupManager().updateJobStatus(jobstatus);
-				}
-				boolean success = resp.getStatus() == Status.OK ? true : false;
-				if (success
-						&& (his.getTriggerType() == TriggerType.SCHEDULE || his
-								.getTriggerType() == TriggerType.MANUAL_RECOVER)) {
-					ScheduleInfoLog.info("JobId:" + jobID
-							+ " clear ready dependency");
-					jobstatus.setReadyDependency(new HashMap<String, String>());
-				}
-				if (!success) {
-					// 运行失败，更新失败状态，发出失败消息
-					ZeusJobException jobException = null;
-					if (exception != null) {
-						jobException = new ZeusJobException(jobID,
-								String.format("JobId:%s run failed ",
-										jobID), exception);
-					} else {
-						jobException = new ZeusJobException(jobID,
-								String.format("JobId:%s run failed ",
-										jobID));
+				int runCount = 0;
+				int rollBackTimes = 0;
+				int rollBackWaitTime = 1;
+				try{				
+					JobDescriptor jobDes = context.getGroupManager().getJobDescriptor(jobID).getX();
+					Map<String,String> properties = jobDes.getProperties();
+					if(properties!=null && properties.size()>0){
+						rollBackTimes = Integer.parseInt(properties.get("roll.back.times")==null ? "0" : properties.get("roll.back.times"));
+						rollBackWaitTime = Integer.parseInt(properties.get("roll.back.wait.time")==null ? "1" : properties.get("roll.back.wait.time"));
 					}
-					ScheduleInfoLog.info("JobId:" + jobID
-							+ " run fail and dispatch the fail event");
-					jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
-					JobFailedEvent jfe = new JobFailedEvent(jobID,
-							type, context.getJobHistoryManager()
-									.findJobHistory(his.getId()), jobException);
-					context.getDispatcher().forwardEvent(jfe);
-				} else {
-					// 运行成功，发出成功消息
-					ScheduleInfoLog.info("JobId:" + jobID
-							+ " run success and dispatch the success event");
-					jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.SUCCESS);
-					JobSuccessEvent jse = new JobSuccessEvent(jobID,
-							his.getTriggerType(), his.getId());
-					jse.setStatisEndTime(his.getStatisEndTime());
-					context.getDispatcher().forwardEvent(jse);
+				}catch(Exception ex){
+					rollBackTimes = 0;
+					rollBackWaitTime = 1;
 				}
-				context.getGroupManager().updateJobStatus(jobstatus);
+				runScheduleJobContext(w, jobID, runCount, rollBackTimes, rollBackWaitTime);
 			}
 		}.start();
 	}
 
+	//schedule任务运行，失败后重试
+	private void runScheduleJobContext(MasterWorkerHolder w, final String jobID, int runCount, final int rollBackTimes, final int rollBackWaitTime){
+		runCount++;
+		if(runCount > 1){
+			try {
+				Thread.sleep(rollBackWaitTime*60*1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		// 先根据任务ID，查询出任务上次执行的历史记录（jobID->historyid->JobHistory)
+		JobHistory his = null;
+		TriggerType type = null;
+		if(runCount == 1){
+			his = context.getJobHistoryManager().findJobHistory(
+					context.getGroupManager()
+							.getJobStatus(jobID).getHistoryId());
+			type = his.getTriggerType();
+			ScheduleInfoLog.info("JobId:" + jobID + " run start");
+			his.getLog().appendZeus(
+					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+							.format(new Date()) + " 开始运行");
+		}else{
+			JobDescriptor jobDescriptor = context.getGroupManager().getJobDescriptor(jobID).getX();
+			his = new JobHistory();
+			his.setIllustrate("失败任务重试，开始执行");
+			his.setTriggerType(TriggerType.SCHEDULE);
+			type = his.getTriggerType();
+			his.setJobId(jobDescriptor.getId());
+			his.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
+			his.setToJobId(jobDescriptor.getToJobId() == null ? null : jobDescriptor.getToJobId());
+			his.setTimezone(jobDescriptor.getTimezone());
+			context.getJobHistoryManager().addJobHistory(his);
+			his.getLog().appendZeus(
+					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+							.format(new Date()) + " 第" + (runCount-1) + "次重试运行");
+		}
+		context.getJobHistoryManager().updateJobHistoryLog(his.getId(),
+				his.getLog().getContent());
+		JobStatus jobstatus = context.getGroupManager().getJobStatus(his.getJobId());
+		jobstatus.setHistoryId(his.getId());
+		jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
+		context.getGroupManager().updateJobStatus(jobstatus);
+		
+		Exception exception = null;
+		Response resp = null;
+		try {
+			Future<Response> f = new MasterExecuteJob().executeJob(
+					context, w, ExecuteKind.ScheduleKind, his.getId());
+			resp = f.get();
+		} catch (Exception e) {
+			exception = e;
+			ScheduleInfoLog.error(
+					String.format("JobId:%s run failed", jobID), e);
+			jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
+			context.getGroupManager().updateJobStatus(jobstatus);
+		}
+		boolean success = resp.getStatus() == Status.OK ? true : false;
+		if (success
+				&& (his.getTriggerType() == TriggerType.SCHEDULE || his
+						.getTriggerType() == TriggerType.MANUAL_RECOVER)) {
+			ScheduleInfoLog.info("JobId:" + jobID
+					+ " clear ready dependency");
+			jobstatus.setReadyDependency(new HashMap<String, String>());
+		}
+		if (!success) {
+			// 运行失败，更新失败状态，发出失败消息
+			ZeusJobException jobException = null;
+			if (exception != null) {
+				jobException = new ZeusJobException(jobID,
+						String.format("JobId:%s run failed ",
+								jobID), exception);
+			} else {
+				jobException = new ZeusJobException(jobID,
+						String.format("JobId:%s run failed ",
+								jobID));
+			}
+			ScheduleInfoLog.info("JobId:" + jobID
+					+ " run fail and dispatch the fail event");
+			jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
+			JobFailedEvent jfe = new JobFailedEvent(jobID,
+					type, context.getJobHistoryManager()
+							.findJobHistory(his.getId()), jobException);
+			context.getDispatcher().forwardEvent(jfe);
+		} else {
+			// 运行成功，发出成功消息
+			ScheduleInfoLog.info("JobId:" + jobID
+					+ " run success and dispatch the success event");
+			jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.SUCCESS);
+			JobSuccessEvent jse = new JobSuccessEvent(jobID,
+					his.getTriggerType(), his.getId());
+			jse.setStatisEndTime(his.getStatisEndTime());
+			context.getDispatcher().forwardEvent(jse);
+		}
+		context.getGroupManager().updateJobStatus(jobstatus);
+		if(runCount < (rollBackTimes + 1) && !success){
+			runScheduleJobContext(w, jobID, runCount, rollBackTimes, rollBackWaitTime);
+		}
+	}
+	
 	/**
 	 * 检查任务超时
 	 */

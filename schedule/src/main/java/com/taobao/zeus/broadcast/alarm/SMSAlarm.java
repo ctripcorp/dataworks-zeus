@@ -42,7 +42,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 			}
 		}
 		int code = sendNOCAlarm(notifyUrl, accessToken, srcId, devId, itemId, level, message);
-		System.out.println("send cats code:" + code);
+//		System.out.println("send cats code:" + code);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -74,7 +74,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 		param.put("level",   level);
 		param.put("message", message);
 		param.put("fields",  "[]");
-		System.out.println(JsonUtil.map2json(param).toString());
+//		System.out.println(JsonUtil.map2json(param).toString());
 		return URLEncoder.encode(JsonUtil.map2json(param).toString(), "utf-8");
 	}
 

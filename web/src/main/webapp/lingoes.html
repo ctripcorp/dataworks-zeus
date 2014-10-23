@@ -1,0 +1,282 @@
+
+<!doctype html>
+
+<head>
+
+	<!-- Basics -->
+	
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>宙斯云梯任务平台</title>
+
+	<link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+<style type="text/css">
+	.form-horizontal .control-label{text-align: left;}
+</style>
+	
+</head>
+
+	<!-- Main HTML -->
+	
+<body>
+	
+	<!-- Begin Page Content -->
+	
+	<div id="container">
+		<form class="form-horizontal" role="form" id="hiveform" name="hiveform">
+		  <div class="form-group">
+		    <label for="srcip" class="col-sm-1 control-label">源数据库IP</label>
+		    <div class="col-sm-2">
+		      <input type="text" class="form-control" id="srcip" name='srcip' placeholder="源数据库IP">
+		    </div>
+		    <label for="srcport" class="col-sm-1 control-label">源数据库端口</label>
+		    <div class="col-sm-2">
+		      <input type="text" class="form-control" id="srcport" name='srcport' placeholder="源数据库端口">
+		    </div>
+		    <label for="srcdb" class="col-sm-1 control-label">源数据库名</label>
+		    <div class="col-sm-2">
+		      <input type="text" class="form-control" id="srcdb" name='srcdb' placeholder="源数据库名">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="srcusername" class="col-sm-1 control-label">源数据库用户名</label>
+		    <div class="col-sm-2">
+		      <input type="text" class="form-control" id="srcusername" name='srcusername' placeholder="源数据库用户名">
+		    </div>
+		    <label for="srcpasswd" class="col-sm-1 control-label">源数据库密码</label>
+		    <div class="col-sm-2">
+		      <input type="text" class="form-control" id="srcpasswd" name="srcpasswd" placeholder="源数据库密码">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="srctblnames" class="col-sm-1 control-label">源数据库表名（逗号分隔）</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="srctblnames" name="srctblnames" placeholder="源数据库表名（逗号分隔）">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="tardb" class="col-sm-1 control-label">目标数据库名</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="tardb" name="tardb" placeholder="目标数据库名">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="tartblnames" class="col-sm-1 control-label">目标数据库表名（逗号分隔）</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="tartblnames" name="tartblnames" placeholder="目标数据库表名（逗号分隔）">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="src" class="col-sm-1 control-label">源（【sqlserver|mysql】）</label>
+		    <div class="col-sm-2">
+		    <select class="form-control" name="src" id="src">
+			  <option value="sqlserver">sqlserver</option>
+			  <option value="mysql">mysql</option>
+			  <option value="hive">hive</option>
+			</select>
+		    </div>
+		    <label for="tar" class="col-sm-1 control-label">目标</label>
+		    <div class="col-sm-2">
+		    <select class="form-control" name="tar" id="tar">
+			  <option value="sqlserver">sqlserver</option>
+			  <option value="mysql">mysql</option>
+			  <option value="hive">hive</option>
+			</select>
+		    </div>
+		  </div>
+		  
+		  <h1>高级选项</h1>
+		  <div class="form-group">
+		    <label for="querys" class="col-sm-1 control-label">源sql查询</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="querys" name="querys" placeholder="源sql查询">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="filetype" class="col-sm-1 control-label">hive文件类型</label>
+		    <div class="col-sm-2">
+		    <select class="form-control" name="filetype" id="filetype">
+			  <option value="TXT">TXT</option>
+			  <option value="SEQ">SEQ</option>
+			  <option value="TXT_COMP">TXT_COMP</option>
+			  <option value="SEQ_COMP">SEQ_COMP</option>
+			  <option value="RCF">RCF</option>
+			  <option value="RCF_COMP">RCF_COMP</option>
+			</select>
+		    </div>
+		    <label for="fieldsplit" class="col-sm-1 control-label">hive文化分隔符</label>
+		    <div class="col-sm-2">
+		      <input type="text" class="form-control" id="fieldsplit" name='fieldsplit' placeholder="hive文化分隔符" value='\t'>
+		    </div>
+		    <label for="prefixname" class="col-sm-1 control-label">hive文件前缀</label>
+		    <div class="col-sm-2">
+		      <input type="text" class="form-control" id="prefixname" name='prefixname' placeholder="hive文件前缀">
+		    </div>
+		    <label for="concurrency" class="col-sm-1 control-label">hive任务并发数</label>
+		    <div class="col-sm-2">
+		      <input type="text" class="form-control" id="concurrency" name='concurrency' placeholder="hive任务并发数" value=3>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="codecclass" class="col-sm-1 control-label">hive文件压缩编码类</label>
+		    <div class="col-sm-2">
+		    <select class="form-control" name="codecclass" id="codecclass">
+			  <option value="org.apache.hadoop.io.compress.BZip2Codec">org.apache.hadoop.io.compress.BZip2Codec</option>
+			  <option value="org.apache.hadoop.io.compress.DefaultCodec">org.apache.hadoop.io.compress.DefaultCodec</option>
+			  <option value="org.apache.hadoop.io.compress.GzipCodec">org.apache.hadoop.io.compress.GzipCodec</option>
+			  <option value="org.apache.hadoop.io.compress.SnappyCodec ">org.apache.hadoop.io.compress.SnappyCodec </option>
+			</select>
+		    </div>
+		    <label for="delmode" class="col-sm-1 control-label">hive删除模式</label>
+		    <div class="col-sm-2">
+		    <select class="form-control" name="delmode" id="delmode">
+			  <option value="0">覆盖写前缀名一致的文件</option>
+			  <option value="1">写之前存在相同文件名就报错</option>
+			  <option value="2">删除单个文件</option>
+			  <option value="3">删除前缀名一致的文件</option>
+			  <option value="4">删除所有文件</option>
+			</select>
+		    </div>
+		  </div>
+		  <button type="button" class="btn btn-info" id="secure">生成脚本</button>
+		</form>
+			
+		</div><!--/ container-->
+		<textarea id="response" class="form-control" rows="10" cols="5"></textarea>
+	
+	<!-- End Page Content -->
+	
+</body>
+
+</html>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+var serialize = function(form) {
+    var parts = {};
+    var field = null;
+    for (var i = 0,
+    len = form.elements.length; i < len; i++) {
+        field = form.elements[i];
+        switch (field.type) {
+        case "select-one":
+        case "select-multiple":
+            for (var j = 0,
+            optLen = field.options.length; j < optLen; j++) {
+                var option = field.options[j];
+                if (option.selected) {
+                    var optValue = "";
+                    if (option.hasAttribute) {
+                        optValue = (option.hasAttribute("value") ? option.value: option.text)
+                    } else {
+                        optValue = (option.attributes["value"].specified ? option.value: option.text)
+                    };
+                    parts[field.name] =optValue;// encodeURIComponent(optValue)
+                }
+            };
+            break;
+        case undefined:
+        case "file":
+        case "submit":
+        case "reset":
+        case "button":
+        case "fieldset":
+            break;
+        case "radio":
+        case "checkbox":
+            if (!field.checked) {
+                break
+            };
+        default:
+            //if (field.type === 'text' && field.value === '') break;
+        	if (field.name === '') break;
+            parts[field.name] = field.value;// != '' ? encodeURIComponent(field.value) : 1
+        }
+    };
+    return parts;
+}
+
+
+
+		     	function validate(event){
+	     		  var target =$(event.target),
+                  reg=target.attr("data-reg"),val = target.val(),status=true,disabled = false;
+	              if(reg){
+	                switch(reg){
+	                  case 'email':
+	                    if(!/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/.test(val)){
+	                      status = false;
+	                    }
+	                    break;
+	                    case 'noempty':
+	                    if(val=='' || /^\s+$/.test(val)){
+	                      status = false;
+	                    }
+	                    break;
+	                    case 'number':
+	                    if(val=='' || !/^\d+$/.test(val)){
+	                      status = false;
+	                    }
+	                    break;
+	                }
+                }
+                if(!status){
+                	target.removeClass('has-success').addClass('has-error');
+                }else{
+                	target.removeClass('has-error').addClass('has-success');
+                }
+               
+	     	}
+	$("#secure").click(function(){
+		//var username = $("#username").val();
+		//var password = $("#password").val();
+		//if(username==""){
+		//	 $("#username").addClass("has-error");
+		//	 return false;
+		//}
+		//if(password==""){
+		//	 $("#password").addClass("has-error");
+		//	 return false;
+		//}
+		
+		//$.ajax({url:"login.do",async:false,data:{
+		//		username:username,password:password
+		//	},type:"post",
+
+		//	error: function(response){ 
+		//		alert("请求发送失败");
+                      
+        //    },
+         //   success: function(response){ console.log(response);
+         //   	if(response=="null"){
+          //  		alert("用户名不存在");
+         //   	}else if(response=="error"){
+         //   		alert("账户错误");
+         //   	}else{
+         //   		window.location.href='/zeus-web';
+         //   	}
+         //   }
+		//});
+
+		var data  =  serialize(document.hiveform);
+		console.log(data);
+		var str = "sh datax_run.sh \\\r\n"+
+			"-srcip "+data.srcip+" -srcport "+data.srcport+" -srcdb "+data.srcdb+" -srcusername "+data.srcusername+" -srcpasswd "+data.srcpasswd+"\\\r\n"+
+			"-srctblnames "+data.srctblnames+" \\\r\n"+
+			"-tardb "+data.tardb+" \\\r\n"+
+			"-tartblnames "+data.tartblnames+" \\\r\n"+
+			"-src "+data.src+" -tar "+data.tar+"";
+		console.log(str);
+		$("#response").html(str);
+	});
+	$("#container input,textarea,select").on('input propertychange',function(event){
+        validate(event);
+    });
+</script>
+	
+	
+	
+	
+	
+		
+	

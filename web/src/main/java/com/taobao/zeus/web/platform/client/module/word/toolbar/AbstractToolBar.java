@@ -6,7 +6,9 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.History;
 import com.sencha.gxt.core.client.Style.LayoutRegion;
+import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.menu.MenuItem;
@@ -17,6 +19,7 @@ import com.taobao.zeus.web.platform.client.app.PlacePath.JobType;
 import com.taobao.zeus.web.platform.client.app.PlatformPlace;
 import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror;
 import com.taobao.zeus.web.platform.client.module.filemanager.FileModel;
+import com.taobao.zeus.web.platform.client.module.jobdisplay.job.DefaultPanel;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.FileUploadWidget;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.FileUploadWidget.UploadCallback;
 import com.taobao.zeus.web.platform.client.module.profile.QuickHadoopConfig;
@@ -84,6 +87,13 @@ public abstract class AbstractToolBar extends ToolBar{
 	
 	protected TextButton extend=new TextButton("扩展功能",ResourcesTool.iconResources.icon_extends());
 	
+	protected MenuItem lingoes=new MenuItem("生成脚本",new SelectionHandler<MenuItem>() {
+		@Override
+		public void onSelection(SelectionEvent<MenuItem> event) {
+
+			new DefaultPanel(getFileModel().getId()).show();
+		}
+	});
 	protected MenuItem upload=new MenuItem("上传资源",new SelectionHandler<MenuItem>() {
 		@Override
 		public void onSelection(SelectionEvent<MenuItem> event) {

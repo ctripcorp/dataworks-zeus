@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.quartz.CronTrigger;
@@ -20,9 +21,9 @@ import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.jobs.JobContext;
 import com.taobao.zeus.jobs.sub.tool.CancelHadoopJob;
 import com.taobao.zeus.model.JobDescriptor;
+import com.taobao.zeus.model.JobDescriptor.JobScheduleType;
 import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.model.JobStatus;
-import com.taobao.zeus.model.JobDescriptor.JobScheduleType;
 import com.taobao.zeus.model.JobStatus.Status;
 import com.taobao.zeus.model.JobStatus.TriggerType;
 import com.taobao.zeus.mvc.AppEvent;
@@ -31,6 +32,7 @@ import com.taobao.zeus.mvc.Dispatcher;
 import com.taobao.zeus.schedule.hsf.CacheJobDescriptor;
 import com.taobao.zeus.schedule.mvc.event.Events;
 import com.taobao.zeus.schedule.mvc.event.JobFailedEvent;
+import com.taobao.zeus.schedule.mvc.event.JobLostEvent;
 import com.taobao.zeus.schedule.mvc.event.JobMaintenanceEvent;
 import com.taobao.zeus.schedule.mvc.event.JobSuccessEvent;
 import com.taobao.zeus.schedule.mvc.event.ScheduleTriggerEvent;
@@ -96,6 +98,8 @@ public class JobController extends Controller {
 				triggerEventHandle((ScheduleTriggerEvent) event);
 			} else if (event instanceof JobMaintenanceEvent) {
 				maintenanceEventHandle((JobMaintenanceEvent) event);
+			} else if (event instanceof JobLostEvent) {
+				lostEventHandle((JobLostEvent) event);
 			} else if (event.getType() == Events.Initialize) {
 				initializeEventHandle();
 			}
@@ -266,7 +270,8 @@ public class JobController extends Controller {
 		}
 		if (event instanceof JobSuccessEvent || event instanceof JobFailedEvent
 				|| event instanceof ScheduleTriggerEvent
-				|| event instanceof JobMaintenanceEvent) {
+				|| event instanceof JobMaintenanceEvent
+				|| event instanceof JobLostEvent) {
 			return true;
 		}
 		return false;
@@ -281,6 +286,39 @@ public class JobController extends Controller {
 		if (event.getType() == Events.UpdateJob
 				&& jobId.equals(event.getJobId())) {
 			autofix();
+		}
+	}
+	
+	/**
+	 * 漏跑JOB，重新依赖调度
+	 * 
+	 * @param event
+	 */
+	private void lostEventHandle(JobLostEvent event) {
+		if (event.getType() == Events.UpdateJob
+				&& jobId.equals(event.getJobId())) {
+			cache.refresh();
+			JobDescriptor jd = cache.getJobDescriptor();
+			if(jd!=null && jd.getAuto()){
+				JobStatus jobStatus = groupManager.getJobStatus(jobId);
+				if(jobStatus.getStatus() == null || jobStatus.getStatus() == Status.WAIT){
+					Date now = new Date();
+					SimpleDateFormat df=new SimpleDateFormat("yyyyMMddHHmmss");
+					String currentDateStr = df.format(now)+"0000";
+					if(Long.parseLong(jobId) < Long.parseLong(currentDateStr)){
+						JobHistory history = new JobHistory();
+						history.setIllustrate("漏跑任务,自动恢复执行");
+						history.setTriggerType(TriggerType.MANUAL_RECOVER);
+						history.setJobId(jobId);
+						history.setToJobId(jd.getToJobId());
+						if(jd != null){
+							history.setOperator(jd.getOwner() == null ? null : jd.getOwner());
+						}
+						context.getJobHistoryManager().addJobHistory(history);
+						master.run(history);
+					}
+				}
+			}
 		}
 	}
 
@@ -650,7 +688,6 @@ public class JobController extends Controller {
 			}
 			return;
 		}
-
 		if (jd.getScheduleType() == JobScheduleType.Dependent) {// 如果是依赖任务
 			if (detail != null) {// 说明原来是独立任务，现在变成依赖任务，需要删除原来的定时调度
 				try {

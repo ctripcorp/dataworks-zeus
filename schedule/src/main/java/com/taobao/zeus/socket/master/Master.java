@@ -111,7 +111,7 @@ public class Master {
 					//其次，生成依赖任务action
 					runDependencesJobToAction(jobDetails, actionDetails, currentDateStr, 0);
 					
-					Dispatcher dispatcher=context.getDispatcher();
+					Dispatcher dispatcher=context.getDispatcher();  
 					if(dispatcher != null){
 						//增加controller，并修改event
 						if (actionDetails.size() > 0) {

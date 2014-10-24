@@ -95,12 +95,13 @@ public class Master {
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
-				Date now = new Date();
-				SimpleDateFormat df=new SimpleDateFormat("HH");
-				SimpleDateFormat df2=new SimpleDateFormat("yyyy-MM-dd");
-				SimpleDateFormat df3=new SimpleDateFormat("yyyyMMddHHmmss");
-				String currentDateStr = df3.format(now)+"0000";
-				System.out.println("生成Action，当前时间：" + currentDateStr);
+				try{
+					Date now = new Date();
+					SimpleDateFormat df=new SimpleDateFormat("HH");
+					SimpleDateFormat df2=new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat df3=new SimpleDateFormat("yyyyMMddHHmmss");
+					String currentDateStr = df3.format(now)+"0000";
+					System.out.println("生成Action，当前时间：" + currentDateStr);
 				//if(Integer.parseInt(df.format(now)) == 1){
 					List<JobPersistenceOld> jobDetails = context.getGroupManagerOld().getAllJobs();
 					Map<Long, JobPersistence> actionDetails = new HashMap<Long, JobPersistence>();
@@ -148,6 +149,9 @@ public class Master {
 					}
 					System.out.println("Action版本生成完毕！");
 				//}
+				}catch(Exception e){
+					log.error("job to action failed!", e);
+				}
 			}
 		}, 0, 60, TimeUnit.MINUTES);
 		
@@ -878,14 +882,14 @@ public class Master {
 							actionPer.setStatus(jobDetail.getStatus());
 							actionPer.setTimezone(jobDetail.getTimezone());
 							try {
-								//System.out.println("定时任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
+								System.out.println("定时任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 								//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 									context.getGroupManager().saveJob(actionPer);
-									//System.out.println("success");
+									System.out.println("success");
 									actionDetails.put(actionPer.getId(),actionPer);
 								//}
-								
 							} catch (ZeusException e) {
+								System.out.println("failed");
 								log.error("定时任务JobId:" + jobDetail.getId() + " 生成Action" +actionPer.getId() + "失败", e);
 							}
 						}
@@ -959,14 +963,15 @@ public class Master {
 							actionPer.setStatus(jobDetail.getStatus());
 							actionPer.setTimezone(jobDetail.getTimezone());
 							try {
-								//System.out.println("周期任务（天）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
+								System.out.println("周期任务（天）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 								//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 									context.getGroupManager().saveJob(actionPer);
-									//System.out.println("success");
+									System.out.println("success");
 									actionDetails.put(actionPer.getId(),actionPer);
 								//}
 								
 							} catch (ZeusException e) {
+								System.out.println("failed");
 								log.error("周期任务（天）JobId:" + jobDetail.getId() + " 生成Action" +actionPer.getId() + "失败", e);
 							}
 						}
@@ -1020,14 +1025,15 @@ public class Master {
 								actionPer.setStatus(jobDetail.getStatus());
 								actionPer.setTimezone(jobDetail.getTimezone());
 								try {
-									//System.out.println("周期任务（时）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
+									System.out.println("周期任务（时）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 									//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 										context.getGroupManager().saveJob(actionPer);
-										//System.out.println("success");
+										System.out.println("success");
 										actionDetails.put(actionPer.getId(),actionPer);
 									//}
 									
 								} catch (ZeusException e) {
+									System.out.println("failed");
 									log.error("周期任务（时）JobId:" + jobDetail.getId() + " 生成Action" +actionPer.getId() + "失败", e);
 								}
 							}
@@ -1066,7 +1072,7 @@ public class Master {
 								}
 							}
 							dependActionList.put(deps, dependActions);
-							if(loopCount>100){
+							if(loopCount > 100){
 								if(!jobDetail.getConfigs().contains("sameday")){
 									if(dependActionList.get(deps).size()==0){
 										List<JobPersistence> lastJobActions = context.getGroupManager().getLastJobAction(deps);
@@ -1099,7 +1105,7 @@ public class Master {
 							}
 						}
 						if(!isComplete){
-							break;
+							continue;
 						}else{
 							List<JobPersistence> actions = dependActionList.get(actionMostDeps);
 							if(actions != null && actions.size()>0){
@@ -1163,10 +1169,10 @@ public class Master {
 									actionPer.setStatus(jobDetail.getStatus());
 									actionPer.setTimezone(jobDetail.getTimezone());
 									try {
-										//System.out.println("依赖任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
+										System.out.println("依赖任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 										//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 											context.getGroupManager().saveJob(actionPer);
-											//System.out.println("success");
+											System.out.println("success");
 										//}
 										actionDetails.put(actionPer.getId(),actionPer);
 									} catch (ZeusException e) {
@@ -1181,7 +1187,7 @@ public class Master {
 				}
 			}
 		}
-		if(noCompleteCount>0){
+		if(noCompleteCount > 0 && loopCount < 1000){
 			runDependencesJobToAction(jobDetails, actionDetails, currentDateStr, loopCount);
 		}
 	}

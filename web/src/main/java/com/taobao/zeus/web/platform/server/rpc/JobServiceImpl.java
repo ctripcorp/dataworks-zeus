@@ -439,7 +439,7 @@ public class JobServiceImpl implements JobService {
 				
 			}
 		}
-		return false;
+		return changed;
 	}
 
 	private void ChangeAuto(Boolean auto, JobDescriptorOld jd)

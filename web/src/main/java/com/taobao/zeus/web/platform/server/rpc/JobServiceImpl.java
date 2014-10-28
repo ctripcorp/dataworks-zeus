@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import net.sf.json.JSONObject;
 
 import org.apache.hadoop.hive.ql.parse.HiveParser.booleanValue_return;
+import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -393,31 +394,42 @@ public class JobServiceImpl implements JobService {
 		}
 		if (!auto.equals(jd.getAuto())) {
 			if (!auto) {
-				//存在一个开，就不能关闭
+				//下游存在一个开，就不能关闭
 				boolean canChange = true;
 				List<String> depdidlst = permissionGroupManagerOld.getAllDependencied(jobId);
+				if(depdidlst != null && depdidlst.size() != 0){
 				Map<String, Tuple<JobDescriptorOld, JobStatus>> depdlst = permissionGroupManagerOld.getJobDescriptor(depdidlst);
-				for(Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry: depdlst.entrySet()){
-					if (entry.getValue().getX().getAuto()) {
-						canChange = false;
-						break;
+					for (Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry : depdlst
+							.entrySet()) {
+						if (entry.getValue().getX().getAuto()) {
+							canChange = false;
+							break;
+						}
 					}
+					if (canChange) {
+						ChangeAuto(auto, jd);
+					}
+				}else {
+					ChangeAuto(auto, jd);//该节点为尾节点
 				}
-				if (canChange) {
-					ChangeAuto(auto,jd);
-				}
+				
 			}else {
+				//上游全为开才能开
 				boolean canChange = true;
 				List<String> depidlst = permissionGroupManagerOld.getAllDependencies(jobId);
-				Map<String, Tuple<JobDescriptorOld, JobStatus>> deplst = permissionGroupManagerOld.getJobDescriptor(depidlst);
-				for(Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry: deplst.entrySet()){
-					if (!entry.getValue().getX().getAuto()) {
-						canChange = false;
-						break;
+				if (depidlst != null && depidlst.size() != 0) {
+					Map<String, Tuple<JobDescriptorOld, JobStatus>> deplst = permissionGroupManagerOld.getJobDescriptor(depidlst);
+					for(Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry: deplst.entrySet()){
+						if (!entry.getValue().getX().getAuto()) {
+							canChange = false;
+							break;
+						}
 					}
-				}
-				if (canChange) {
-					ChangeAuto(auto,jd);
+					if (canChange) {
+						ChangeAuto(auto,jd);
+					}
+				}else {
+					ChangeAuto(auto, jd);//该节点为首节点
 				}
 				
 			}

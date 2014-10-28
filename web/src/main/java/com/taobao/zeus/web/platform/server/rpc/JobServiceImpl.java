@@ -342,12 +342,13 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public void switchAuto(String jobId, Boolean auto) throws GwtException {
+	public Boolean switchAuto(String jobId, Boolean auto) throws GwtException {
 		Tuple<JobDescriptorOld, JobStatus> job = permissionGroupManagerOld
 				.getJobDescriptor(jobId);
 		JobDescriptorOld jd = job.getX();
 		// 如果是周期任务，在开启自动调度时，需要计算下一次任务执行时间
 		// 2 代表周期调度
+		Boolean changed = false;
 		if (auto
 				&& jd.getScheduleType() == JobDescriptorOld.JobScheduleTypeOld.CyleJob) {
 			String tz = jd.getTimezone();
@@ -408,9 +409,11 @@ public class JobServiceImpl implements JobService {
 					}
 					if (canChange) {
 						ChangeAuto(auto, jd);
+						changed = true;
 					}
 				}else {
 					ChangeAuto(auto, jd);//该节点为尾节点
+					changed = true;
 				}
 				
 			}else {
@@ -427,13 +430,16 @@ public class JobServiceImpl implements JobService {
 					}
 					if (canChange) {
 						ChangeAuto(auto,jd);
+						changed = true;
 					}
 				}else {
 					ChangeAuto(auto, jd);//该节点为首节点
+					changed = true;
 				}
 				
 			}
 		}
+		return false;
 	}
 
 	private void ChangeAuto(Boolean auto, JobDescriptorOld jd)

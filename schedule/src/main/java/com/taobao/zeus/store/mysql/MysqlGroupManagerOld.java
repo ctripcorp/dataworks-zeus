@@ -7,10 +7,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -551,6 +556,75 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		List<JobPersistenceOld> list = getHibernateTemplate().find(
 				"from com.taobao.zeus.store.mysql.persistence.JobPersistenceOld ");
 		return list;
+	}
+	
+	@Override
+	public List<String> getAllDependencied(String jobID) {
+		List<JobPersistenceOld> jobs = getAllJobs();
+		if( jobs == null || jobs.size() == 0) return null;
+		Map<String, List<String>> allJobDependencied = new HashMap<String, List<String>>();
+		for(JobPersistenceOld job : jobs){
+			JobDescriptorOld jobd = PersistenceAndBeanConvertOld.convert(job).getX();
+			if( jobd != null && jobd.hasDependencies()){
+				List<String> deps = jobd.getDependencies();
+				for(String dep : deps){
+					List<String> depds = allJobDependencied.get(dep);
+					if(depds == null){
+						depds = new ArrayList<String>();
+					}
+					depds.add(job.getId().toString());
+					allJobDependencied.put(dep, depds);
+				}
+			}
+		}
+		
+		List<String> dependencied = new ArrayList<String>();
+		Set<String> visited = new HashSet<String>();
+		Queue<String> idQueue = new LinkedList<String>();
+		idQueue.offer(jobID);
+		visited.add(jobID);
+		while (!idQueue.isEmpty()) {
+			String id = idQueue.poll();
+			List<String> depdList = allJobDependencied.get(id);
+			if(depdList !=null && depdList.size() != 0){
+				for (String depd : depdList) {
+					if (!visited.contains(depd)) {
+						visited.add(depd);
+						idQueue.offer(depd);
+						dependencied.add(depd);
+					}
+				}
+			}
+		}
+		return dependencied;
+	}
+
+	@Override
+	public List<String> getAllDependencies(String jobID) {
+		JobDescriptorOld job = getJobDescriptor(jobID).getX();
+		if(job == null || !job.hasDependencies()) return null;
+		List<String> dependencies = new ArrayList<String>();
+		Set<String> visited = new HashSet<String>();
+		Queue<String> idQueue = new LinkedList<String>();
+		idQueue.offer(jobID);
+		visited.add(jobID);
+		while (!idQueue.isEmpty()) {
+			String id = idQueue.poll();
+			JobDescriptorOld jb = getJobDescriptor(id).getX();
+			if (jb != null && jb.hasDependencies()) {
+				List<String> deps = jb.getDependencies();
+				if (deps != null && deps.size() != 0) {
+					for (String dep : deps) {
+						if (!visited.contains(dep)) {
+							visited.add(dep);
+							idQueue.offer(dep);
+							dependencies.add(dep);
+						}
+					}
+				}
+			}
+		}
+		return dependencies;
 	}
 
 }

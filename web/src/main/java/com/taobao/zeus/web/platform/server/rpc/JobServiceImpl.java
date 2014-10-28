@@ -12,9 +12,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import net.sf.json.JSONObject;
 
+import org.apache.hadoop.hive.ql.parse.HiveParser.booleanValue_return;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -390,23 +392,56 @@ public class JobServiceImpl implements JobService {
 
 		}
 		if (!auto.equals(jd.getAuto())) {
-			jd.setAuto(auto);
-			try {
-				permissionGroupManagerOld.updateJob(LoginUser.getUser()
-						.getUid(), jd);
-				List<Tuple<JobDescriptor, JobStatus>> actionlst = permissionGroupManager
-						.getActionList(jd.getId());
-				if (actionlst != null && actionlst.size() != 0) {
-					for (Tuple<JobDescriptor, JobStatus> actionPer : actionlst) {
-						if (!Status.RUNNING.equals(actionPer.getY().getStatus()))
-							actionPer.getX().setAuto(auto);
-						permissionGroupManager.updateAction(actionPer.getX());
+			if (!auto) {
+				//存在一个开，就不能关闭
+				boolean canChange = true;
+				List<String> depdidlst = permissionGroupManagerOld.getAllDependencied(jobId);
+				Map<String, Tuple<JobDescriptorOld, JobStatus>> depdlst = permissionGroupManagerOld.getJobDescriptor(depdidlst);
+				for(Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry: depdlst.entrySet()){
+					if (entry.getValue().getX().getAuto()) {
+						canChange = false;
+						break;
 					}
 				}
-			} catch (ZeusException e) {
-				log.error(e);
-				throw new GwtException(e.getMessage());
+				if (canChange) {
+					ChangeAuto(auto,jd);
+				}
+			}else {
+				boolean canChange = true;
+				List<String> depidlst = permissionGroupManagerOld.getAllDependencies(jobId);
+				Map<String, Tuple<JobDescriptorOld, JobStatus>> deplst = permissionGroupManagerOld.getJobDescriptor(depidlst);
+				for(Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry: deplst.entrySet()){
+					if (!entry.getValue().getX().getAuto()) {
+						canChange = false;
+						break;
+					}
+				}
+				if (canChange) {
+					ChangeAuto(auto,jd);
+				}
+				
 			}
+		}
+	}
+
+	private void ChangeAuto(Boolean auto, JobDescriptorOld jd)
+			throws GwtException {
+		jd.setAuto(auto);
+		try {
+			permissionGroupManagerOld.updateJob(LoginUser.getUser()
+					.getUid(), jd);
+			List<Tuple<JobDescriptor, JobStatus>> actionlst = permissionGroupManager
+					.getActionList(jd.getId());
+			if (actionlst != null && actionlst.size() != 0) {
+				for (Tuple<JobDescriptor, JobStatus> actionPer : actionlst) {
+					if (!Status.RUNNING.equals(actionPer.getY().getStatus()))
+						actionPer.getX().setAuto(auto);
+					permissionGroupManager.updateAction(actionPer.getX());
+				}
+			}
+		} catch (ZeusException e) {
+			log.error(e);
+			throw new GwtException(e.getMessage());
 		}
 	}
 

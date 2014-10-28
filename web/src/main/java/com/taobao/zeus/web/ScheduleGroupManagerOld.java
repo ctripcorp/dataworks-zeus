@@ -204,6 +204,18 @@ public class ScheduleGroupManagerOld implements GroupManagerOld{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<String> getAllDependencied(String jobID) {
+		// TODO Auto-generated method stub
+		return groupManager.getAllDependencied(jobID);
+	}
+
+	@Override
+	public List<String> getAllDependencies(String jobID) {
+		// TODO Auto-generated method stub
+		return groupManager.getAllDependencies(jobID);
+	}
 	
 
 

@@ -591,6 +591,16 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 		public List<JobPersistenceOld> getAllJobs() {
 			return null;
 		}
+		@Override
+		public List<String> getAllDependencied(String jobID) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		@Override
+		public List<String> getAllDependencies(String jobID) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 	
 	/**

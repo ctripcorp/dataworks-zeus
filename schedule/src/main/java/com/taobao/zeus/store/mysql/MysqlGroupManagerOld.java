@@ -315,7 +315,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		}
 
 		// 如果是周期任务，则许检查依赖周期是否正确
-		if (job.getScheduleType().equals(JobScheduleTypeOld.CyleJob)
+		if (JobScheduleTypeOld.CyleJob.equals(job.getScheduleType())
 				&& job.getDependencies() != null
 				&& job.getDependencies().size() != 0) {
 			List<JobDescriptorOld> list = this.getJobDescriptors(job

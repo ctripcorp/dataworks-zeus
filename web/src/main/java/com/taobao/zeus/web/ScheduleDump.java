@@ -150,6 +150,9 @@ public class ScheduleDump extends HttpServlet  {
 											context.getDispatcher().forwardEvent(
 													new JobMaintenanceEvent(Events.UpdateJob,
 															id.toString()));
+										}else{
+											int loopCount = 0;
+											context.getMaster().rollBackLostJob(id, actionDetails, loopCount);
 										}
 									}
 								}

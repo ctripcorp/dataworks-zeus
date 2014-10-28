@@ -61,6 +61,7 @@ import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.Tuple;
 import com.taobao.zeus.util.ZeusDateTool;
 
+
 public class Master {
 
 	private MasterContext context;
@@ -102,6 +103,7 @@ public class Master {
 					SimpleDateFormat df3=new SimpleDateFormat("yyyyMMddHHmmss");
 					String currentDateStr = df3.format(now)+"0000";
 					System.out.println("生成Action，当前时间：" + currentDateStr);
+					log.info("start to action, current date：" + currentDateStr);
 				//if(Integer.parseInt(df.format(now)) == 1){
 					List<JobPersistenceOld> jobDetails = context.getGroupManagerOld().getAllJobs();
 					Map<Long, JobPersistence> actionDetails = new HashMap<Long, JobPersistence>();
@@ -124,9 +126,8 @@ public class Master {
 											new JobMaintenanceEvent(Events.UpdateJob,
 													id.toString()));
 								}else{
-									context.getDispatcher().forwardEvent(
-											new JobLostEvent(Events.UpdateJob,
-													id.toString()));
+									int loopCount = 0;
+									rollBackLostJob(id, actionDetails, loopCount);
 								}
 							}
 						}
@@ -148,9 +149,10 @@ public class Master {
 						}
 					}
 					System.out.println("Action版本生成完毕！");
+					log.info("job to action ok !");
 				//}
 				}catch(Exception e){
-					log.error("job to action failed!", e);
+					log.error("job to action failed !", e);
 				}
 			}
 		}, 0, 60, TimeUnit.MINUTES);
@@ -162,9 +164,9 @@ public class Master {
 			@Override
 			public void run() {
 				try {
-					//System.out.println("start scan");
+//					log.info("start scan");
 					scan();
-					//System.out.println("end scan");
+//					log.info("end scan");
 				} catch (Exception e) {
 					log.error("get job from queue failed!", e);
 				}
@@ -177,34 +179,74 @@ public class Master {
 				Date now = new Date();
 				for (MasterWorkerHolder holder : new ArrayList<MasterWorkerHolder>(
 						context.getWorkers().values())) {
-//					System.out.println("schedule worker start:"+holder.getDebugRunnings().size());
+//					log.info("schedule worker start:"+holder.getDebugRunnings().size());
 					if (holder.getHeart().timestamp == null
 							|| (now.getTime() - holder.getHeart().timestamp
 									.getTime()) > 1000 * 60) {
 						holder.getChannel().close();
 					}
-//					System.out.println("schedule worker end:"+holder.getDebugRunnings().size());
+//					log.info("schedule worker end:"+holder.getDebugRunnings().size());
 				}
 			}
 		}, 30, 30, TimeUnit.SECONDS);
 	}
 
+	//重新调度漏跑的JOB
+	public void rollBackLostJob(Long id, final Map<Long,JobPersistence> actionDetails, int loopCount){
+		loopCount ++;
+		try {
+			JobPersistence lostJob = actionDetails.get(id);
+			if(lostJob != null){
+				String jobDependStr = lostJob.getDependencies();
+				if (jobDependStr != null && jobDependStr.trim().length() > 0) {
+					String[] jobDependencies = jobDependStr.split(",");
+					boolean isAllComplete = true;
+					for (String jobDepend : jobDependencies) {
+						if (actionDetails.get(Long.parseLong(jobDepend)).getStatus() == null
+								|| actionDetails.get(Long.parseLong(jobDepend)).getStatus().equals("wait")) {
+							isAllComplete = false;
+							// 递归查询
+							if (loopCount < 100) {
+								rollBackLostJob(Long.parseLong(jobDepend), actionDetails, loopCount);
+							}
+						} else if (actionDetails.get(Long.parseLong(jobDepend)).getStatus().equals("failed")) {
+							isAllComplete = false;
+						}
+					}
+					if(isAllComplete){
+						context.getDispatcher().forwardEvent(
+								new JobLostEvent(Events.UpdateJob, id.toString()));
+						System.out.println("roll back lost jobID :" + id.toString());
+						log.info("roll back lost jobID :" + id.toString());
+					}
+				} else {
+					context.getDispatcher().forwardEvent(
+							new JobLostEvent(Events.UpdateJob, id.toString()));
+					System.out.println("roll back lost jobID :" + id.toString());
+					log.info("roll back lost jobID :" + id.toString());
+				}
+			}
+		} catch (Exception e) {
+			log.error("roll back lost job failed !", e);
+		}
+	}
+	
 	//获取可用的worker
 	private MasterWorkerHolder getRunableWorker() {
 		MasterWorkerHolder selectWorker = null;
 		Float selectMemRate = null;
 		for (MasterWorkerHolder worker : context.getWorkers().values()) {
 			HeartBeatInfo heart = worker.getHeart();
-			//System.out.println("worker a : heart :" + heart.memRate);
+			log.info("worker a : heart :" + heart.memRate);
 			if (heart != null && heart.memRate != null && heart.memRate < 0.8) {
 				if (selectWorker == null) {
 					selectWorker = worker;
 					selectMemRate = heart.memRate;
-					//System.out.println("worker b : heart :"+ selectMemRate);
+					log.info("worker b : heart :"+ selectMemRate);
 				} else if (selectMemRate > heart.memRate) {
 					selectWorker = worker;
 					selectMemRate = heart.memRate;
-					//System.out.println("worker c : heart :"+ selectMemRate);
+					log.info("worker c : heart :"+ selectMemRate);
 				}
 			}
 		}
@@ -217,17 +259,17 @@ public class Master {
 		if (host != null && !"".equals(host)) {
 			for (MasterWorkerHolder worker : context.getWorkers().values()) {
 				HeartBeatInfo heart = worker.getHeart();
-				//System.out.println("worker a : host :" + host + " heart :" + heart.memRate);
+				log.info("worker a : host :" + host + " heart :" + heart.memRate);
 				if (heart != null && heart.memRate != null
 						&& heart.memRate < 0.8 && host.equals(heart.host)) {
 					if (selectWorker == null) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
-						//System.out.println("worker b : host :" + host+ " heart :" + selectMemRate);
+						log.info("worker b : host :" + host+ " heart :" + selectMemRate);
 					} else if (selectMemRate > heart.memRate) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
-						//System.out.println("worker c : host :" + host+ " heart :" + selectMemRate);
+						log.info("worker c : host :" + host+ " heart :" + selectMemRate);
 					}
 				}
 			}
@@ -244,10 +286,10 @@ public class Master {
 	private void scan() {
 
 		if (!context.getQueue().isEmpty()) {
-			//System.out.println("schedule queue :" +context.getQueue().size());
+			log.info("schedule queue :" +context.getQueue().size());
 			final JobElement e = context.getQueue().poll();
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
-			//System.out.println("schedule selectWorker :" +selectWorker+" host :"+e.getHost());
+			log.info("schedule selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
 				context.getQueue().offer(e);
 			} else {
@@ -256,10 +298,10 @@ public class Master {
 		}
 		
 		if (!context.getManualQueue().isEmpty()) {
-			//System.out.println("manual queue :" +context.getManualQueue().size());
+			log.info("manual queue :" +context.getManualQueue().size());
 			final JobElement e = context.getManualQueue().poll();
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
-			//System.out.println("manual selectWorker :" +selectWorker+" host :"+e.getHost());
+			log.info("manual selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
 				context.getManualQueue().offer(e);
 			} else {
@@ -268,10 +310,10 @@ public class Master {
 		}
 		
 		if (!context.getDebugQueue().isEmpty()) {
-			//System.out.println("debug queue :" +context.getDebugQueue().size() );
+			log.info("debug queue :" +context.getDebugQueue().size() );
 			final JobElement e = context.getDebugQueue().poll();
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
-			//System.out.println("debug selectWorker :" +selectWorker+" host :"+e.getHost());
+			log.info("debug selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
 				context.getDebugQueue().offer(e);
 			} else {
@@ -435,7 +477,11 @@ public class Master {
 					rollBackTimes = 0;
 					rollBackWaitTime = 1;
 				}
-				runScheduleJobContext(w, jobID, runCount, rollBackTimes, rollBackWaitTime);
+				try{
+					runScheduleJobContext(w, jobID, runCount, rollBackTimes, rollBackWaitTime);
+				}catch(Exception ex){
+					log.error("roll back failed job failed !",ex);
+				}
 			}
 		}.start();
 	}
@@ -883,9 +929,11 @@ public class Master {
 							actionPer.setTimezone(jobDetail.getTimezone());
 							try {
 								System.out.println("定时任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
+								log.info("定时任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 								//if(actionPer.getId()>Long.parseLong(currentDateStr)){
 									context.getGroupManager().saveJob(actionPer);
 									System.out.println("success");
+									log.info("success");
 									actionDetails.put(actionPer.getId(),actionPer);
 								//}
 							} catch (ZeusException e) {
@@ -1052,6 +1100,7 @@ public class Master {
 		loopCount ++;
 		for(JobPersistenceOld jobDetail : jobDetails){
 			//ScheduleType: 0 独立任务; 1依赖任务; 2周期任务
+			System.out.println(jobDetail.getId());
 			if((jobDetail.getScheduleType() != null && jobDetail.getScheduleType()==1) 
 					|| (jobDetail.getScheduleType() != null && jobDetail.getScheduleType()==2)){
 				try{
@@ -1089,7 +1138,6 @@ public class Master {
 						}
 						//判断是否有未完成的
 						boolean isComplete = true;
-	//					Long actionId = 0L;
 						String actionMostDeps = "";
 						for(String deps : dependStrs){
 							if(dependActionList.get(deps).size()==0){
@@ -1102,6 +1150,10 @@ public class Master {
 							}
 							if(dependActionList.get(deps).size()>dependActionList.get(actionMostDeps).size()){
 								actionMostDeps = deps;
+							}else if(dependActionList.get(deps).size()==dependActionList.get(actionMostDeps).size()){
+								if(dependActionList.get(deps).get(0).getId()<dependActionList.get(actionMostDeps).get(0).getId()){
+									actionMostDeps = deps;
+								}
 							}
 						}
 						if(!isComplete){
@@ -1110,22 +1162,14 @@ public class Master {
 							List<JobPersistence> actions = dependActionList.get(actionMostDeps);
 							if(actions != null && actions.size()>0){
 								for(JobPersistence actionModel : actions){
-									actionDependencies = String.valueOf((actionModel.getId()/10000)*10000 + actionModel.getToJobId());
+									actionDependencies = String.valueOf(actionModel.getId());
 									for(String deps : dependStrs){
 										if(!deps.equals(actionMostDeps)){
-											Long actionOtherId = actionModel.getId();
 											List<JobPersistence> actionOthers = dependActionList.get(deps);
-											int i = 0;
+											Long actionOtherId = actionOthers.get(0).getId();
 											for(JobPersistence actionOtherModel : actionOthers){
-												if(i==0){
-													if(actionOtherId<actionOtherModel.getId()){
-														actionOtherId = actionOtherModel.getId();
-														i++;
-													}
-												}else{
-													if(actionOtherModel.getId()<actionOtherId && actionOtherModel.getId()>actionModel.getId()){
-														actionOtherId = actionOtherModel.getId();
-													}
+												if(Math.abs((actionOtherModel.getId()-actionModel.getId()))<Math.abs((actionOtherId-actionModel.getId()))){
+													actionOtherId = actionOtherModel.getId();
 												}
 											}
 											if(actionDependencies.trim().length()>0){

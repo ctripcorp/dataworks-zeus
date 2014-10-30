@@ -25,6 +25,7 @@
 			<list>
 				<value>com.taobao.zeus.store.mysql.persistence.GroupPersistence</value>
 				<value>com.taobao.zeus.store.mysql.persistence.JobPersistence</value>
+				<value>com.taobao.zeus.store.mysql.persistence.JobPersistenceBackup</value>
 				<value>com.taobao.zeus.store.mysql.persistence.JobPersistenceOld</value>
 				<value>com.taobao.zeus.store.mysql.persistence.DistributeLock</value>
 				<value>com.taobao.zeus.store.mysql.persistence.JobHistoryPersistence</value>

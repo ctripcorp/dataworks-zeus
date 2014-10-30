@@ -107,7 +107,6 @@ public class Master {
 				//if(Integer.parseInt(df.format(now)) == 1){
 					List<JobPersistenceOld> jobDetails = context.getGroupManagerOld().getAllJobs();
 					Map<Long, JobPersistence> actionDetails = new HashMap<Long, JobPersistence>();
-					//
 					//首先，生成独立任务action
 					runScheduleJobToAction(jobDetails, now, df2, actionDetails, currentDateStr);
 					//其次，生成依赖任务action

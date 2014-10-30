@@ -2,9 +2,13 @@ package com.taobao.zeus.web;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -16,12 +20,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.antlr.grammar.v3.ANTLRParser.tree__return;
+import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.jboss.netty.channel.Channel;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.sun.tools.javah.Mangle;
+import com.taobao.zeus.model.JobDescriptor;
+import com.taobao.zeus.model.JobStatus;
+import com.taobao.zeus.model.JobStatus.Status;
 import com.taobao.zeus.mvc.Controller;
 import com.taobao.zeus.mvc.Dispatcher;
 import com.taobao.zeus.schedule.DistributeLocker;
@@ -33,8 +49,12 @@ import com.taobao.zeus.socket.master.JobElement;
 import com.taobao.zeus.socket.master.MasterContext;
 import com.taobao.zeus.socket.master.MasterWorkerHolder;
 import com.taobao.zeus.socket.master.MasterWorkerHolder.HeartBeatInfo;
+import com.taobao.zeus.store.mysql.MysqlGroupManager;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
+import com.taobao.zeus.store.mysql.persistence.JobPersistenceBackup;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
+import com.taobao.zeus.store.mysql.tool.PersistenceAndBeanConvert;
+import com.taobao.zeus.util.Tuple;
 /**
  * Dump调度系统内的Job状态，用来调试排查问题
  * @author zhoufang
@@ -171,12 +191,92 @@ public class ScheduleDump extends HttpServlet  {
 								}
 							}
 							resp.getWriter().println("Action生成完毕！");
-						}else{
+						}else if("clear".equals(op)){
+							 int beforeAmount = -1;
+							 int cnt = 0;
+							 Calendar cal = Calendar.getInstance();
+							 cal.add(Calendar.HOUR, beforeAmount);
+							 Date date = cal.getTime();
+							 SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+							 String dateStr = df.format(date)+"0000";
+							 Dispatcher dispatcher = context.getDispatcher();
+							 if (dispatcher != null) {
+								 List<Controller> controllers = dispatcher.getControllers();
+									if(controllers != null && controllers.size()>0){
+										List<JobDescriptor> toBeTransferred = new ArrayList<JobDescriptor>();
+										Iterator<Controller> iter = controllers.iterator();
+										while(iter.hasNext()){
+											JobController jobc = (JobController)iter.next();
+											String jobId = jobc.getJobId();
+											if (Long.parseLong(jobId) < Long.parseLong(dateStr)) {
+												Tuple<JobDescriptor, JobStatus> tuple = context.getGroupManager().getJobDescriptor(jobId);
+												JobStatus status = tuple.getY();
+												if (!Status.RUNNING.equals(status.getStatus())) {
+													toBeTransferred.add(tuple.getX());
+													iter.remove();
+													cnt++;	
+												}
+											}										
+										}
+										resp.getWriter().println("清理了内存中一个月前"+cnt+"个controllers");
+									if (toBeTransferred != null
+											&& toBeTransferred.size() != 0) {
+										MysqlGroupManager manager = (MysqlGroupManager) context
+												.getApplicationContext()
+												.getBean("groupManager");
+										HibernateTemplate template = manager
+												.getHibernateTemplate();
+										SessionFactory factory = template
+												.getSessionFactory();
+										Session session = factory.openSession();
+										Transaction tx = null;
+										tx = session.beginTransaction();
+										try {
+											for (JobDescriptor job : toBeTransferred) {
+												JobPersistence persist = PersistenceAndBeanConvert
+														.convert(job);
+												JobPersistenceBackup backup = new JobPersistenceBackup(
+														persist);
+												session.delete(persist);
+												session.save(backup);
+											}
+											tx.commit();
+										} catch (RuntimeException e) {
+											try {
+												tx.rollback();
+											} catch (Exception e2) {
+												resp.getWriter().println(
+														e2.getMessage());
+											}
+											resp.getWriter().println(
+													e.getMessage());
+										} finally {
+											try {
+												if (session != null){
+													session.close();
+												}
+												if (factory != null){
+													factory.close();
+												}
+											} catch (Exception e3) {
+												resp.getWriter().print(
+														e3.getMessage());
+											}
+										}
+									} 
+										resp.getWriter().println("已将备份一个月前的action列表");
+									}
+							}
+							
+						}
+						
+						else{
 							resp.getWriter().println("<a href='dump.do?op=jobstatus'>查看Job调度状态</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=clearschedule' >清理Job调度信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=workers'>查看master-worker 状态</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=queue' >等待队列任务</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=action' >生成Action版本</a>");
+							resp.getWriter().println("<a href='dump.do?op=clearcontroller' >清理和备份一个月前action</a>");
 							
 						}
 					}

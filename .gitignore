@@ -19,3 +19,4 @@ web/.settings
 /web/pom.xml
 zeus_platform
 .gwt
+/web/.gwt

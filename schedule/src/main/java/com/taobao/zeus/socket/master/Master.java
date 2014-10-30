@@ -627,7 +627,7 @@ public class Master {
 			long runTime = (System.currentTimeMillis() - his.getStartTime()
 					.getTime()) / 1000 / 60;
 			if (runTime > maxTime) {
-				if (timeOverAlarm(null, fd, runTime, maxTime, 2)) {
+				if (timeOverAlarm(null, fd, runTime, maxTime, 2, null)) {
 					w.getDebugRunnings().replace(historyId, false, true);
 				}
 			}
@@ -643,10 +643,10 @@ public class Master {
 			String historyId = entry.getKey();
 			JobHistory his = context.getJobHistoryManager().findJobHistory(
 					historyId);
+			JobDescriptor jd = context.getGroupManager()
+					.getJobDescriptor(his.getJobId()).getX();
 			long maxTime;
 			try {
-				JobDescriptor jd = context.getGroupManager()
-						.getJobDescriptor(his.getJobId()).getX();
 				String maxTimeString = jd.getProperties().get(
 						"zeus.job.maxtime");
 				if (maxTimeString == null || maxTimeString.trim().isEmpty()) {
@@ -663,7 +663,7 @@ public class Master {
 			long runTime = (System.currentTimeMillis() - his.getStartTime()
 					.getTime()) / 1000 / 60;
 			if (runTime > maxTime) {
-				if (timeOverAlarm(his, null, runTime, maxTime, 1)) {
+				if (timeOverAlarm(his, null, runTime, maxTime, 1, jd)) {
 					w.getManualRunnings().replace(historyId, false, true);
 				}
 			}
@@ -699,7 +699,7 @@ public class Master {
 			long runTime = (System.currentTimeMillis() - his.getStartTime()
 					.getTime()) / 1000 / 60;
 			if (runTime > maxTime) {
-				if (timeOverAlarm(his, null, runTime, maxTime, 0)) {
+				if (timeOverAlarm(his, null, runTime, maxTime, 0, jd)) {
 					w.getRunnings().replace(jobId, false, true);
 				}
 			}
@@ -707,7 +707,7 @@ public class Master {
 	}
 
 	private boolean timeOverAlarm(final JobHistory his, FileDescriptor fd,
-			long runTime, long maxTime, int type) {
+			long runTime, long maxTime, int type, JobDescriptor jd) {
 		final MailAlarm mailAlarm = (MailAlarm) context.getApplicationContext()
 				.getBean("mailAlarm");
 		SMSAlarm smsAlarm = (SMSAlarm) context.getApplicationContext().getBean(
@@ -748,14 +748,21 @@ public class Master {
 					}
 				}.start();
 				if (type == 0) {
-					Calendar now = Calendar.getInstance();
-					int hour = now.get(Calendar.HOUR_OF_DAY);
-					int day = now.get(Calendar.DAY_OF_WEEK);
-					if (day == Calendar.SATURDAY || day == Calendar.SUNDAY
-							|| hour < 9 || hour > 18) {
-						smsAlarm.alarm(his.getId(), title.toString(),content.toString(), null);
-						mailAlarm.alarm(his.getId(), title.toString(),content.toString(), null);
+					String priorityLevel = "high";
+					if(jd != null){
+						priorityLevel = jd.getProperties().get("run.priority.level");
 					}
+					if(priorityLevel == null || !priorityLevel.toLowerCase().equals("lower")){
+						Calendar now = Calendar.getInstance();
+						int hour = now.get(Calendar.HOUR_OF_DAY);
+						int day = now.get(Calendar.DAY_OF_WEEK);
+						if (day == Calendar.SATURDAY || day == Calendar.SUNDAY
+								|| hour < 9 || hour > 18) {
+							smsAlarm.alarm(his.getId(), title.toString(),content.toString(), null);
+							//mailAlarm.alarm(his.getId(), title.toString(),content.toString(), null);
+						}
+					}
+					
 				}
 			}
 			return true;

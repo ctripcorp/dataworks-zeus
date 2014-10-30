@@ -115,18 +115,20 @@ public class JobFailListener extends DispatcherListener{
 				if(!causeJobId.equalsIgnoreCase(event.getJobId())){
 					msg+="(根本原因:job "+causeJobId+"运行失败)";
 				}
-				
-				//手机报警
-				//只发送自动调度的报警  并且只在下班时间 或者周末发送
-				if(event.getHistory().getTriggerType()==TriggerType.SCHEDULE){
-					Calendar now=Calendar.getInstance();
-					int hour=now.get(Calendar.HOUR_OF_DAY);
-					int day=now.get(Calendar.DAY_OF_WEEK);
-					if(day==Calendar.SATURDAY || day==Calendar.SUNDAY || hour<9 || hour>18){
-						smsAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
+				//优先级低的不NOC告警
+				String priorityLevel = jobBean.getJobDescriptor().getProperties().get("run.priority.level");
+				if(priorityLevel == null || !priorityLevel.toLowerCase().equals("lower")){
+					//手机报警
+					//只发送自动调度的报警  并且只在下班时间 或者周末发送
+					if(event.getHistory().getTriggerType()==TriggerType.SCHEDULE){
+						Calendar now=Calendar.getInstance();
+						int hour=now.get(Calendar.HOUR_OF_DAY);
+						int day=now.get(Calendar.DAY_OF_WEEK);
+						if(day==Calendar.SATURDAY || day==Calendar.SUNDAY || hour<9 || hour>18){
+							smsAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
+						}
 					}
 				}
-				
 			}
 		} catch (Exception e) {
 			//处理异常，防止后续的依赖任务受此影响，无法正常执行

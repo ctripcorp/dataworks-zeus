@@ -10,7 +10,7 @@
 	<version>2.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<properties>
-		<warExplodedDirectory>target/exploded/${artifactId}.war</warExplodedDirectory>
+		<warExplodedDirectory>target/exploded/${project.artifactId}.war</warExplodedDirectory>
 		<java.version>1.7</java.version>
 		<springext-plugin-version>1.0</springext-plugin-version>
 		<java.encoding>UTF-8</java.encoding>
@@ -72,7 +72,6 @@
 			<artifactId>guice</artifactId>
 			<version>2.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.google.web.bindery</groupId>
 			<artifactId>requestfactory-server</artifactId>
@@ -86,7 +85,7 @@
 		</dependency>
 		<!-- <dependency> <groupId>com.google.gwt</groupId> <artifactId>gwt-dev</artifactId> 
 			<version>${gwt-version}</version> </dependency> -->
-		<dependency>
+	 	<dependency>
 			<groupId>com.sencha.gxt</groupId>
 			<artifactId>gxt</artifactId>
 			<version>3.0.1</version>

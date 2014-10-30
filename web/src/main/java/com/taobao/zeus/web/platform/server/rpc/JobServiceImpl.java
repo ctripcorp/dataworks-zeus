@@ -12,9 +12,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import net.sf.json.JSONObject;
 
+import org.apache.hadoop.hive.ql.parse.HiveParser.booleanValue_return;
+import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -339,12 +342,13 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public void switchAuto(String jobId, Boolean auto) throws GwtException {
+	public List<Long> switchAuto(String jobId, Boolean auto) throws GwtException {
 		Tuple<JobDescriptorOld, JobStatus> job = permissionGroupManagerOld
 				.getJobDescriptor(jobId);
 		JobDescriptorOld jd = job.getX();
 		// 如果是周期任务，在开启自动调度时，需要计算下一次任务执行时间
 		// 2 代表周期调度
+		List<Long> notSatisfied = new ArrayList<Long>();
 		if (auto
 				&& jd.getScheduleType() == JobDescriptorOld.JobScheduleTypeOld.CyleJob) {
 			String tz = jd.getTimezone();
@@ -390,23 +394,68 @@ public class JobServiceImpl implements JobService {
 
 		}
 		if (!auto.equals(jd.getAuto())) {
-			jd.setAuto(auto);
-			try {
-				permissionGroupManagerOld.updateJob(LoginUser.getUser()
-						.getUid(), jd);
-				List<Tuple<JobDescriptor, JobStatus>> actionlst = permissionGroupManager
-						.getActionList(jd.getId());
-				if (actionlst != null && actionlst.size() != 0) {
-					for (Tuple<JobDescriptor, JobStatus> actionPer : actionlst) {
-						if (!Status.RUNNING.equals(actionPer.getY().getStatus()))
-							actionPer.getX().setAuto(auto);
-						permissionGroupManager.updateAction(actionPer.getX());
+			if (!auto) {
+				//下游存在一个开，就不能关闭
+				boolean canChange = true;
+				List<String> depdidlst = permissionGroupManagerOld.getAllDependencied(jobId);
+				if(depdidlst != null && depdidlst.size() != 0){
+				Map<String, Tuple<JobDescriptorOld, JobStatus>> depdlst = permissionGroupManagerOld.getJobDescriptor(depdidlst);
+					for (Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry : depdlst
+							.entrySet()) {
+						if (entry.getValue().getX().getAuto()) {
+							notSatisfied.add(Long.parseLong(entry.getValue().getX().getId()));
+							canChange = false;
+						}
 					}
+					if (canChange) {
+						ChangeAuto(auto, jd);
+					}
+				}else {
+					ChangeAuto(auto, jd);//该节点为尾节点
 				}
-			} catch (ZeusException e) {
-				log.error(e);
-				throw new GwtException(e.getMessage());
+				
+			}else {
+				//上游全为开才能开
+				boolean canChange = true;
+				List<String> depidlst = permissionGroupManagerOld.getAllDependencies(jobId);
+				if (depidlst != null && depidlst.size() != 0) {
+					Map<String, Tuple<JobDescriptorOld, JobStatus>> deplst = permissionGroupManagerOld.getJobDescriptor(depidlst);
+					for(Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry: deplst.entrySet()){
+						if (!entry.getValue().getX().getAuto()) {
+							notSatisfied.add(Long.parseLong(entry.getValue().getX().getId()));
+							canChange = false;							
+						}
+					}
+					if (canChange) {
+						ChangeAuto(auto,jd);			
+					}
+				}else {
+					ChangeAuto(auto, jd);//该节点为首节点
+				}
+				
 			}
+		}
+		return notSatisfied;
+	}
+
+	private void ChangeAuto(Boolean auto, JobDescriptorOld jd)
+			throws GwtException {
+		jd.setAuto(auto);
+		try {
+			permissionGroupManagerOld.updateJob(LoginUser.getUser()
+					.getUid(), jd);
+			List<Tuple<JobDescriptor, JobStatus>> actionlst = permissionGroupManager
+					.getActionList(jd.getId());
+			if (actionlst != null && actionlst.size() != 0) {
+				for (Tuple<JobDescriptor, JobStatus> actionPer : actionlst) {
+					if (!Status.RUNNING.equals(actionPer.getY().getStatus()))
+						actionPer.getX().setAuto(auto);
+					permissionGroupManager.updateAction(actionPer.getX());
+				}
+			}
+		} catch (ZeusException e) {
+			log.error(e);
+			throw new GwtException(e.getMessage());
 		}
 	}
 

@@ -135,8 +135,8 @@
 			<version>${java.version}</version>
 			<scope>system</scope>
 			<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
-
 		</dependency>
+
 	</dependencies>
 
 	<dependencyManagement>

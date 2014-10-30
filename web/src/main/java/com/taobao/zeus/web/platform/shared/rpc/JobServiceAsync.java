@@ -55,7 +55,7 @@ public interface JobServiceAsync {
 
 	void run(String jobId, int type, AsyncCallback<Void> callback);
 
-	void switchAuto(String jobId, Boolean auto, AsyncCallback<Void> callback);
+	void switchAuto(String jobId, Boolean auto, AsyncCallback<List<Long>> callback);
 
 	void transferOwner(String jobId, String uid, AsyncCallback<Void> callback);
 

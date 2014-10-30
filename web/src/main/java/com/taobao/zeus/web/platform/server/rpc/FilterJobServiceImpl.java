@@ -72,11 +72,11 @@ public class FilterJobServiceImpl implements JobService{
 	}
 
 	@Override
-	public void switchAuto(String jobId, Boolean auto) throws GwtException {
+	public List<Long> switchAuto(String jobId, Boolean auto) throws GwtException {
 		if(Environment.isPrePub()){
 			throw new GwtException("预发环境无法修改状态");
 		}
-		jobService.switchAuto(jobId, auto);
+		return jobService.switchAuto(jobId, auto);
 	}
 
 	@Override

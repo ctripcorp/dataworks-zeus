@@ -36,7 +36,7 @@ public interface JobService extends RemoteService {
 	 * @param auto
 	 * @throws GwtException
 	 */
-	void switchAuto(String jobId,Boolean auto) throws GwtException;
+	Boolean switchAuto(String jobId,Boolean auto) throws GwtException;
 	/**
 	 * 运行程序
 	 * 1：手动运行

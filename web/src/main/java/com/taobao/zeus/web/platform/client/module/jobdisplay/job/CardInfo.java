@@ -114,9 +114,9 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		@Override
 		public void onSelect(SelectEvent event) {
 			Boolean auto=presenter.getJobModel().getAuto();
-			RPCS.getJobService().switchAuto(presenter.getJobModel().getId(), !auto, new AbstractAsyncCallback<Void>() {
+			RPCS.getJobService().switchAuto(presenter.getJobModel().getId(), !auto, new AbstractAsyncCallback<Boolean>() {
 				@Override
-				public void onSuccess(Void result) {
+				public void onSuccess(Boolean result) {
 					final ProgressMessageBox box=new ProgressMessageBox("开关 自动调度", "正在配置自动调度");
 					box.setProgressText("doing...");
 					box.show();
@@ -132,7 +132,12 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 							super.onFailure(caught);
 						};
 					});
-					Info.display("成功", "开启/关闭 自动调度 成功");
+					if (result) {
+						Info.display("成功", "开启/关闭 自动调度 成功");
+					}else {
+						Info.display("失败", "请检查上下游依赖关系");
+					}
+					
 				}
 			});
 		}
@@ -220,10 +225,10 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		((Label)timezone.getWidget()).setText(model.getDefaultTZ());
 		((Label)host.getWidget()).setText(model.getHost());
 		((Label)offRaw.getWidget()).setText(model.getOffRaw());
-		if(model.getJobCycle().equals("day")){
+		if("day".equals(model.getJobCycle())){
 			((Label)jobCycle.getWidget()).setText("天任务");
 		}
-		if(model.getJobCycle().equals("hour")){
+		if("hour".equals(model.getJobCycle())){
 			((Label)jobCycle.getWidget()).setText("小时任务");
 		}
 		

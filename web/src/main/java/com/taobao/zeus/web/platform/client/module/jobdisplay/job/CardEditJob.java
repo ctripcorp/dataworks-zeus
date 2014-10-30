@@ -496,7 +496,7 @@ public class CardEditJob extends CenterTemplate implements
 					});
 			scheduleTypeStore.add(JobModel.INDEPEN_JOB);
 			scheduleTypeStore.add(JobModel.DEPEND_JOB);
-			scheduleTypeStore.add(JobModel.CYCLE_JOB);
+//			scheduleTypeStore.add(JobModel.CYCLE_JOB);
 
 			baseScheduleType = new ComboBox<String>(scheduleTypeStore,
 					new LabelProvider<String>() {

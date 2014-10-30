@@ -342,13 +342,13 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public Boolean switchAuto(String jobId, Boolean auto) throws GwtException {
+	public List<Long> switchAuto(String jobId, Boolean auto) throws GwtException {
 		Tuple<JobDescriptorOld, JobStatus> job = permissionGroupManagerOld
 				.getJobDescriptor(jobId);
 		JobDescriptorOld jd = job.getX();
 		// 如果是周期任务，在开启自动调度时，需要计算下一次任务执行时间
 		// 2 代表周期调度
-		Boolean changed = false;
+		List<Long> notSatisfied = new ArrayList<Long>();
 		if (auto
 				&& jd.getScheduleType() == JobDescriptorOld.JobScheduleTypeOld.CyleJob) {
 			String tz = jd.getTimezone();
@@ -403,17 +403,15 @@ public class JobServiceImpl implements JobService {
 					for (Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry : depdlst
 							.entrySet()) {
 						if (entry.getValue().getX().getAuto()) {
+							notSatisfied.add(Long.parseLong(entry.getValue().getX().getId()));
 							canChange = false;
-							break;
 						}
 					}
 					if (canChange) {
 						ChangeAuto(auto, jd);
-						changed = true;
 					}
 				}else {
 					ChangeAuto(auto, jd);//该节点为尾节点
-					changed = true;
 				}
 				
 			}else {
@@ -424,22 +422,20 @@ public class JobServiceImpl implements JobService {
 					Map<String, Tuple<JobDescriptorOld, JobStatus>> deplst = permissionGroupManagerOld.getJobDescriptor(depidlst);
 					for(Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry: deplst.entrySet()){
 						if (!entry.getValue().getX().getAuto()) {
-							canChange = false;
-							break;
+							notSatisfied.add(Long.parseLong(entry.getValue().getX().getId()));
+							canChange = false;							
 						}
 					}
 					if (canChange) {
-						ChangeAuto(auto,jd);
-						changed = true;
+						ChangeAuto(auto,jd);			
 					}
 				}else {
 					ChangeAuto(auto, jd);//该节点为首节点
-					changed = true;
 				}
 				
 			}
 		}
-		return changed;
+		return notSatisfied;
 	}
 
 	private void ChangeAuto(Boolean auto, JobDescriptorOld jd)

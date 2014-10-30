@@ -1,6 +1,11 @@
 package com.taobao.zeus.web.platform.client.module.jobdisplay.job;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.History;
@@ -114,9 +119,9 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		@Override
 		public void onSelect(SelectEvent event) {
 			Boolean auto=presenter.getJobModel().getAuto();
-			RPCS.getJobService().switchAuto(presenter.getJobModel().getId(), !auto, new AbstractAsyncCallback<Boolean>() {
+			RPCS.getJobService().switchAuto(presenter.getJobModel().getId(), !auto, new AbstractAsyncCallback<List<Long>>() {
 				@Override
-				public void onSuccess(Boolean result) {
+				public void onSuccess(List<Long> result) {
 					final ProgressMessageBox box=new ProgressMessageBox("开关 自动调度", "正在配置自动调度");
 					box.setProgressText("doing...");
 					box.show();
@@ -132,10 +137,20 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 							super.onFailure(caught);
 						};
 					});
-					if (result) {
+					if (result == null || result.size() == 0) {
 						Info.display("成功", "开启/关闭 自动调度 成功");
 					}else {
-						Info.display("失败", "请检查上下游依赖关系");
+						StringBuffer display = new StringBuffer("请检查JobID为");
+						Collections.sort(result);
+						Iterator<Long> iter = result.iterator();
+						Long id = iter.next();
+						display.append(id);
+						while(iter.hasNext()){
+							id = iter.next();
+							display.append(","+id);
+						}
+						display.append("的依赖关系");
+						Info.display("失败", display.toString());
 					}
 					
 				}

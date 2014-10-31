@@ -21,10 +21,10 @@ import javax.persistence.Query;
 public class ZeusUser{
 	
 	public static final ZeusUser ADMIN=new ZeusUser(){
-		public String getEmail() {return "yangfei@Ctrip.com";};
-		public String getName() {return "杨飞";};
+		public String getEmail() {return "DataInfrastructure@Ctrip.com";};
+		public String getName() {return "biadmin";};
 		public String getPhone() {return "";};
-		public String getUid() {return "yangfei";};
+		public String getUid() {return "biadmin";};
 	};
 	public static ZeusUser USER=new ZeusUser(null,null,null,null);
 

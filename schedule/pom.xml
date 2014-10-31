@@ -64,8 +64,6 @@
 <!-- 			</exclusions> -->
 <!-- 		</dependency> -->
 
-
-<!-- yangfei -->
 		<!-- <dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-core</artifactId>

@@ -247,7 +247,11 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		((Label)host.getWidget()).setText(model.getHost());
 		((Label)offRaw.getWidget()).setText(model.getOffRaw());
 		((Label)rollTime.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_TIMES));
-		((Label)rollInterval.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_INTERVAL)+"分钟");
+		if(model.getAllProperties().get(CardInfo.ROLL_INTERVAL) != null){
+		((Label)rollInterval.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_INTERVAL)+"分钟");}
+		else {
+			((Label)rollInterval.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_INTERVAL));
+		}
 		String level = model.getAllProperties().get(CardInfo.PRIORITY_LEVEL);
 		if ("1".equals(level)) {
 			((Label)jobPriority.getWidget()).setText("low");

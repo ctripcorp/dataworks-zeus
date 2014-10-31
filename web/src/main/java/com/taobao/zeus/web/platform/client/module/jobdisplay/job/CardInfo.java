@@ -194,6 +194,9 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 	private FieldLabel offRaw;
 	private FieldLabel jobCycle;
 	private FieldLabel host;
+	private FieldLabel rollTime;
+	private FieldLabel rollInterval;
+	private FieldLabel jobPriority;
 	
 	private HTMLPanel configContent;
 	private HTMLPanel configParentContent;
@@ -229,6 +232,9 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 	}
 	public static final String JAVA_MAIN_KEY="java.main.class";
 	public static final String DEPENDENCY_CYCLE="zeus.dependency.cycle";
+	public static final String PRIORITY_LEVEL = "run.priority.level";
+	public static final String ROLL_TIMES = "roll.back.times";
+	public static final String ROLL_INTERVAL = "roll.back.wait.time";
 	private void display(final JobModel model){
 		((Label)baseId.getWidget()).setText(model.getId());
 		((Label)baseName.getWidget()).setText(model.getName());
@@ -240,6 +246,19 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		((Label)timezone.getWidget()).setText(model.getDefaultTZ());
 		((Label)host.getWidget()).setText(model.getHost());
 		((Label)offRaw.getWidget()).setText(model.getOffRaw());
+		((Label)rollTime.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_TIMES));
+		((Label)rollInterval.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_INTERVAL)+"分钟");
+		String level = model.getAllProperties().get(CardInfo.PRIORITY_LEVEL);
+		if ("1".equals(level)) {
+			((Label)jobPriority.getWidget()).setText("low");
+		}
+		if ("2".equals(level)) {
+			((Label)jobPriority.getWidget()).setText("middle");
+		}
+		if ("3".equals(level)) {
+			((Label)jobPriority.getWidget()).setText("high");
+		}
+
 		if("day".equals(model.getJobCycle())){
 			((Label)jobCycle.getWidget()).setText("天任务");
 		}
@@ -431,6 +450,9 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			baseFollers=new FieldLabel(getLabel(),"关注人员");
 			baseAdmins=new FieldLabel(getLabel(),"管理员");
 			host=new FieldLabel(getLabel(),"Host");
+			rollTime = new FieldLabel(getLabel(),"失败重试次数");
+			rollInterval = new FieldLabel(getLabel(),"重试时间间隔");
+			jobPriority = new FieldLabel(getLabel(),"任务优先级");
 			
 			leftContainer.add(baseId,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(baseName,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
@@ -448,6 +470,10 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			rightContainer.add(host,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(baseFollers,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(baseAdmins,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			rightContainer.add(rollTime,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			rightContainer.add(rollInterval,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			leftContainer.add(jobPriority,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+		
 			//leftContainer.add(host,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 
 		}

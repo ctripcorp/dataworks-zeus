@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
+
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -141,7 +143,10 @@ public class CardEditJob extends CenterTemplate implements
 			}
 			model.setJobCycle(jobCycle.getValue().get("value"));
 			model.getPreProcessers().clear();
-
+			model.getLocalProperties().put(CardInfo.ROLL_INTERVAL, rollIntervalField.getValue());
+			model.getLocalProperties().put(CardInfo.ROLL_TIMES, rollTimeBox.getValue().toString());
+			model.getLocalProperties().put(CardInfo.PRIORITY_LEVEL,jobPriorityBox.getValue().get("value"));
+			
 			model.getPostProcessers().clear();
 			// Hive处理器配置
 			/*if (notNullOrEmpty(outputTableField.getValue())
@@ -211,11 +216,20 @@ public class CardEditJob extends CenterTemplate implements
 	private TextField baseDepJobs;
 	private ComboBox<Map<String, String>> baseDepCycle;
 	private TextField baseMain;
+	
+	private ComboBox<Integer> rollTimeBox;
+	private TextField rollIntervalField;
+	private ComboBox<Map<String, String>> jobPriorityBox;
+	
 
 	private FieldLabel depCycleWapper;
 	private FieldLabel depJobsWapper;
 	private FieldLabel cronWapper;
 	private FieldLabel mainWapper;
+	private FieldLabel rollTimeWapper;
+	private FieldLabel rollIntervalWapper;
+	private FieldLabel jobPriorityWapper;
+	
 
 	// add by gufei.wzy 辅助功能
 	/*private TextField outputTableField;
@@ -382,6 +396,37 @@ public class CardEditJob extends CenterTemplate implements
 				}
 			}
 		}
+		
+		String rollInterval = t.getAllProperties().get(CardInfo.ROLL_INTERVAL);
+		if (rollInterval != null) {
+			rollIntervalField.setValue(rollInterval);
+		}else {
+			rollIntervalField.setValue("1");
+		}
+		
+		String rolltime = t.getAllProperties().get(CardInfo.ROLL_TIMES);
+		if (rolltime == null) {
+			rollTimeBox.setValue(rollTimeBox.getStore().get(0), true);
+		}else {
+			for (Integer data : rollTimeBox.getStore().getAll()) {
+				if (Integer.valueOf(rolltime.trim()).equals(data)) {
+					rollTimeBox.setValue(data, true);
+					break;
+				}
+			}
+		}
+		
+		String priorities = t.getAllProperties().get(CardInfo.PRIORITY_LEVEL);
+		if(priorities == null){
+			jobPriorityBox.setValue(jobPriorityBox.getStore().get(0),true);
+		}else {
+			for(Map<String, String> data : jobPriorityBox.getStore().getAll()){
+				if (data.get("value").equals(priorities)) {
+					jobPriorityBox.setValue(data,true);
+					break;
+				}
+			}
+		}
 
 		if (t.getJobScheduleType() == null) {
 			baseScheduleType.setValue(baseScheduleType.getStore().get(0), true);
@@ -392,6 +437,7 @@ public class CardEditJob extends CenterTemplate implements
 				}
 			}
 		}
+		
 
 		if (t.getJobCycle() == null) {
 			jobCycle.setValue(jobCycle.getStore().get(0), true);
@@ -461,7 +507,7 @@ public class CardEditJob extends CenterTemplate implements
 		if (baseFieldSet == null) {
 			baseFieldSet = new FieldSet();
 			baseFieldSet.setHeadingText("基本信息");
-			baseFieldSet.setHeight(150);
+			baseFieldSet.setHeight(200);
 
 			HorizontalLayoutContainer layoutContainer = new HorizontalLayoutContainer();
 			baseFieldSet.add(layoutContainer);
@@ -520,6 +566,7 @@ public class CardEditJob extends CenterTemplate implements
 								depCycleWapper.hide();
 								depJobsWapper.hide();
 								baseDepJobs.setAllowBlank(true);
+								rollIntervalField.setAllowBlank(false);
 								tzWapper.hide();
 								offWapper.hide();
 								cycleWapper.hide();
@@ -534,6 +581,7 @@ public class CardEditJob extends CenterTemplate implements
 								depCycleWapper.show();
 								depJobsWapper.show();
 								baseDepJobs.setAllowBlank(false);
+								rollIntervalField.setAllowBlank(false);
 								hostField.show();
 							}
 							if (event.getValue().equals(JobModel.CYCLE_JOB)) {
@@ -545,6 +593,7 @@ public class CardEditJob extends CenterTemplate implements
 								baseCron.setAllowBlank(true);
 								depJobsWapper.show();
 								baseDepJobs.setAllowBlank(true);
+								rollIntervalField.setAllowBlank(false);
 								hostField.show();
 							}
 						}
@@ -656,11 +705,94 @@ public class CardEditJob extends CenterTemplate implements
 						}
 
 					});
+			
+			ListStore<Map<String, String>> levelStore = new ListStore<Map<String, String>>(
+					new ModelKeyProvider<Map<String,String>>() {
+						@Override
+						public String getKey(final Map<String, String> item) {
+							return item.get("key");
+						}
+					}
+					);
+			
+			Map<String, String> highmap = new HashMap<String,String>();
+			highmap.put("key", "high");
+			highmap.put("value", "3");
+			Map<String, String> midmap = new HashMap<String,String>();
+			midmap.put("key", "middle");
+			midmap.put("value", "2");
+			Map<String, String> lowmap = new HashMap<String,String>();
+			lowmap.put("key", "low");
+			lowmap.put("value", "1");
+			levelStore.add(highmap);
+			levelStore.add(midmap);
+			levelStore.add(lowmap);
+			jobPriorityBox = new ComboBox<Map<String, String>>(levelStore, 
+				new LabelProvider<Map<String, String>>() {
+
+					@Override
+					public String getLabel(Map<String, String> item) {
+						// TODO Auto-generated method stub
+						return item.get("key");
+					}
+				},new AbstractSafeHtmlRenderer<Map<String, String>>() {
+
+					@Override
+					public SafeHtml render(Map<String, String> object) {
+						ComboBoxTemplates t = GWT
+								.create(ComboBoxTemplates.class);
+						return t.display(object.get("key"));
+					}
+				}
+				);
+			ListStore<Integer> rollTimeStore = new ListStore<Integer>(new ModelKeyProvider<Integer>() {
+				@Override
+				public String getKey(Integer item) {
+					return item.toString();
+				}
+			});
+			rollTimeStore.add(0);
+			rollTimeStore.add(1);
+			rollTimeStore.add(2);
+			rollTimeStore.add(3);
+			rollTimeStore.add(4);
+			rollTimeBox = new ComboBox<Integer>(rollTimeStore,
+					new LabelProvider<Integer>() {
+						public String getLabel(Integer item) {
+							return item.toString();
+						}
+					},
+					new AbstractSafeHtmlRenderer<Integer>() {
+						@Override
+						public SafeHtml render(Integer object) {
+							ComboBoxTemplates t = GWT
+									.create(ComboBoxTemplates.class);
+							return t.display(object.toString());
+						}
+					}
+					);
+			rollIntervalField = new TextField();
+			rollIntervalField.setWidth(150);
+			rollIntervalField.setToolTip("单位分钟");
+			
 			baseDepCycle.setWidth(150);
 			baseDepCycle.setTriggerAction(TriggerAction.ALL);
 			baseDepCycle.setEditable(false);
 			baseMain = new TextField();
 			baseMain.setWidth(150);
+			
+			jobPriorityBox.setWidth(150);
+			jobPriorityBox.setTriggerAction(TriggerAction.ALL);
+			jobPriorityBox.setEditable(false);
+			
+			rollTimeBox.setWidth(150);
+			rollTimeBox.setTriggerAction(TriggerAction.ALL);
+			rollTimeBox.setEditable(false);
+			
+			rollTimeWapper = new FieldLabel(rollTimeBox, "失败重试次数");
+			rollIntervalWapper = new FieldLabel(rollIntervalField, "重试时间间隔");
+			jobPriorityWapper = new FieldLabel(jobPriorityBox, "任务优先级");
+			
 
 			depCycleWapper = new FieldLabel(baseDepCycle, "依赖周期");
 			depJobsWapper = new FieldLabel(baseDepJobs, "依赖任务");
@@ -671,10 +803,14 @@ public class CardEditJob extends CenterTemplate implements
 			mainWapper = new FieldLabel(baseMain, "Main类");
 			leftContainer.add(new FieldLabel(baseName, "名称"),
 					new VerticalLayoutData(1, -1));
+			leftContainer.add(rollTimeWapper, new VerticalLayoutData(1,-1));
+			leftContainer.add(rollIntervalWapper,new VerticalLayoutData(1, -1));
+			leftContainer.add(jobPriorityWapper,new VerticalLayoutData(1,-1));
 			leftContainer.add(tzWapper, new VerticalLayoutData(1, -1));
 			leftContainer.add(cycleWapper, new VerticalLayoutData(1, -1));
 			leftContainer.add(new FieldLabel(baseDesc, "描述"),
 					new VerticalLayoutData(1, -1));
+
 			rightContainer.add(new FieldLabel(baseScheduleType, "调度类型"),
 					new VerticalLayoutData(1, -1));
 			rightContainer.add(cronWapper, new VerticalLayoutData(1, -1));
@@ -682,6 +818,7 @@ public class CardEditJob extends CenterTemplate implements
 			rightContainer.add(depCycleWapper, new VerticalLayoutData(1, -1));
 			rightContainer.add(offWapper, new VerticalLayoutData(1, -1));
 			rightContainer.add(new FieldLabel(hostField, "Host"), new VerticalLayoutData(1, -1));
+
 			leftContainer.add(mainWapper, new VerticalLayoutData(1, -1));
 
 		}

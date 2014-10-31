@@ -107,7 +107,6 @@ public class Master {
 				//if(Integer.parseInt(df.format(now)) == 1){
 					List<JobPersistenceOld> jobDetails = context.getGroupManagerOld().getAllJobs();
 					Map<Long, JobPersistence> actionDetails = new HashMap<Long, JobPersistence>();
-					//
 					//首先，生成独立任务action
 					runScheduleJobToAction(jobDetails, now, df2, actionDetails, currentDateStr);
 					//其次，生成依赖任务action
@@ -288,6 +287,7 @@ public class Master {
 		if (!context.getQueue().isEmpty()) {
 			log.info("schedule queue :" +context.getQueue().size());
 			final JobElement e = context.getQueue().poll();
+			log.info("priority level :"+e.getPriorityLevel()+"; JobID :"+e.getJobID());
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
 			log.info("schedule selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
@@ -300,6 +300,7 @@ public class Master {
 		if (!context.getManualQueue().isEmpty()) {
 			log.info("manual queue :" +context.getManualQueue().size());
 			final JobElement e = context.getManualQueue().poll();
+			log.info("priority level: "+e.getPriorityLevel()+"; JobID:"+e.getJobID());
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
 			log.info("manual selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
@@ -312,6 +313,7 @@ public class Master {
 		if (!context.getDebugQueue().isEmpty()) {
 			log.info("debug queue :" +context.getDebugQueue().size() );
 			final JobElement e = context.getDebugQueue().poll();
+			log.info("priority level:null; JobID:"+e.getJobID());
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
 			log.info("debug selectWorker :" +selectWorker+" host :"+e.getHost());
 			if (selectWorker == null) {
@@ -748,11 +750,11 @@ public class Master {
 					}
 				}.start();
 				if (type == 0) {
-					String priorityLevel = "high";
+					String priorityLevel = "3";
 					if(jd != null){
 						priorityLevel = jd.getProperties().get("run.priority.level");
 					}
-					if(priorityLevel == null || !priorityLevel.toLowerCase().equals("lower")){
+					if(priorityLevel == null || !priorityLevel.trim().equals("1")){
 						Calendar now = Calendar.getInstance();
 						int hour = now.get(Calendar.HOUR_OF_DAY);
 						int day = now.get(Calendar.DAY_OF_WEEK);
@@ -828,7 +830,17 @@ public class Master {
 
 	public JobHistory run(JobHistory history) {
 		String jobId = history.getJobId();
-		JobElement element = new JobElement(jobId, history.getExecuteHost());
+		int priorityLevel = 3;
+		try{
+			JobDescriptor jd = context.getGroupManager().getJobDescriptor(jobId).getX();
+			String priorityLevelStr = jd.getProperties().get("run.priority.level");
+			if(priorityLevelStr!=null){
+				priorityLevel = Integer.parseInt(priorityLevelStr);
+			}
+		}catch(Exception ex){
+			priorityLevel = 3;
+		}
+		JobElement element = new JobElement(jobId, history.getExecuteHost(), priorityLevel);
 		history.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
 		if (history.getTriggerType() == TriggerType.MANUAL_RECOVER) {
 			for (JobElement e : new ArrayList<JobElement>(context.getQueue())) {
@@ -1107,7 +1119,6 @@ public class Master {
 		loopCount ++;
 		for(JobPersistenceOld jobDetail : jobDetails){
 			//ScheduleType: 0 独立任务; 1依赖任务; 2周期任务
-			System.out.println(jobDetail.getId());
 			if((jobDetail.getScheduleType() != null && jobDetail.getScheduleType()==1) 
 					|| (jobDetail.getScheduleType() != null && jobDetail.getScheduleType()==2)){
 				try{

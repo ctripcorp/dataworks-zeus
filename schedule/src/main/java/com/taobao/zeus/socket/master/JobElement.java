@@ -3,6 +3,7 @@ package com.taobao.zeus.socket.master;
 public class JobElement {
 	private String jobID;
 	private String host;
+	private int priorityLevel;
 
 	/**
 	 * @return
@@ -14,6 +15,12 @@ public class JobElement {
 	public JobElement(String jobID, String host) {
 		this.jobID = jobID;
 		this.host = host;
+	}
+	
+	public JobElement(String jobID, String host, int priorityLevel) {
+		this.jobID = jobID;
+		this.host = host;
+		this.priorityLevel = priorityLevel;
 	}
 
 	public String getJobID() {
@@ -30,6 +37,14 @@ public class JobElement {
 
 	public void setHost(String host) {
 		this.host = host;
+	}
+
+	public int getPriorityLevel() {
+		return priorityLevel;
+	}
+
+	public void setPriorityLevel(int priorityLevel) {
+		this.priorityLevel = priorityLevel;
 	}
 
 	@Override

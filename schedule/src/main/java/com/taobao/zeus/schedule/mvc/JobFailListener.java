@@ -117,7 +117,7 @@ public class JobFailListener extends DispatcherListener{
 				}
 				//优先级低的不NOC告警
 				String priorityLevel = jobBean.getJobDescriptor().getProperties().get("run.priority.level");
-				if(priorityLevel == null || !priorityLevel.toLowerCase().equals("lower")){
+				if(priorityLevel == null || !priorityLevel.trim().equals("1")){
 					//手机报警
 					//只发送自动调度的报警  并且只在下班时间 或者周末发送
 					if(event.getHistory().getTriggerType()==TriggerType.SCHEDULE){

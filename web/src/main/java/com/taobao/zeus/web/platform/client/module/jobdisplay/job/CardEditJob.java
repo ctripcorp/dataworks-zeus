@@ -143,7 +143,7 @@ public class CardEditJob extends CenterTemplate implements
 			}
 			model.setJobCycle(jobCycle.getValue().get("value"));
 			model.getPreProcessers().clear();
-			model.getLocalProperties().put(CardInfo.ROLL_INTERVAL, rollIntervalField.getValue());
+			model.getLocalProperties().put(CardInfo.ROLL_INTERVAL, rollIntervalBox.getValue());
 			model.getLocalProperties().put(CardInfo.ROLL_TIMES, rollTimeBox.getValue().toString());
 			model.getLocalProperties().put(CardInfo.PRIORITY_LEVEL,jobPriorityBox.getValue().get("value"));
 			
@@ -218,7 +218,7 @@ public class CardEditJob extends CenterTemplate implements
 	private TextField baseMain;
 	
 	private ComboBox<Integer> rollTimeBox;
-	private TextField rollIntervalField;
+	private ComboBox<String> rollIntervalBox;
 	private ComboBox<Map<String, String>> jobPriorityBox;
 	
 
@@ -398,10 +398,15 @@ public class CardEditJob extends CenterTemplate implements
 		}
 		
 		String rollInterval = t.getAllProperties().get(CardInfo.ROLL_INTERVAL);
-		if (rollInterval != null) {
-			rollIntervalField.setValue(rollInterval);
+		if (rollInterval == null) {
+			rollIntervalBox.setValue(rollIntervalBox.getStore().get(0),true);
 		}else {
-			rollIntervalField.setValue("1");
+			for (String data : rollIntervalBox.getStore().getAll()){
+				if (rollInterval.equals(data)) {
+					rollIntervalBox.setValue(data,true);
+					break;
+				}
+			}
 		}
 		
 		String rolltime = t.getAllProperties().get(CardInfo.ROLL_TIMES);
@@ -566,7 +571,6 @@ public class CardEditJob extends CenterTemplate implements
 								depCycleWapper.hide();
 								depJobsWapper.hide();
 								baseDepJobs.setAllowBlank(true);
-								rollIntervalField.setAllowBlank(false);
 								tzWapper.hide();
 								offWapper.hide();
 								cycleWapper.hide();
@@ -581,7 +585,6 @@ public class CardEditJob extends CenterTemplate implements
 								depCycleWapper.show();
 								depJobsWapper.show();
 								baseDepJobs.setAllowBlank(false);
-								rollIntervalField.setAllowBlank(false);
 								hostField.show();
 							}
 							if (event.getValue().equals(JobModel.CYCLE_JOB)) {
@@ -593,7 +596,6 @@ public class CardEditJob extends CenterTemplate implements
 								baseCron.setAllowBlank(true);
 								depJobsWapper.show();
 								baseDepJobs.setAllowBlank(true);
-								rollIntervalField.setAllowBlank(false);
 								hostField.show();
 							}
 						}
@@ -771,9 +773,33 @@ public class CardEditJob extends CenterTemplate implements
 						}
 					}
 					);
-			rollIntervalField = new TextField();
-			rollIntervalField.setWidth(150);
-			rollIntervalField.setToolTip("单位分钟");
+			ListStore<String> rollIntervalStore = new ListStore<String>(new ModelKeyProvider<String>() {
+				@Override
+				public String getKey(String item) {
+					return item.toString();
+				}
+			});
+			rollIntervalStore.add("1");
+			rollIntervalStore.add("10");
+			rollIntervalStore.add("30");
+			rollIntervalStore.add("60");
+			rollIntervalStore.add("120");
+			rollIntervalBox = new ComboBox<String>(rollIntervalStore,
+					new LabelProvider<String>() {
+						public String getLabel(String item) {
+							return item;
+						}
+					},
+					new AbstractSafeHtmlRenderer<String>() {
+						@Override
+						public SafeHtml render(String object) {
+							ComboBoxTemplates t = GWT
+									.create(ComboBoxTemplates.class);
+							return t.display(object);
+						}
+					}
+					);
+
 			
 			baseDepCycle.setWidth(150);
 			baseDepCycle.setTriggerAction(TriggerAction.ALL);
@@ -789,8 +815,12 @@ public class CardEditJob extends CenterTemplate implements
 			rollTimeBox.setTriggerAction(TriggerAction.ALL);
 			rollTimeBox.setEditable(false);
 			
+			rollIntervalBox.setWidth(150);
+			rollIntervalBox.setTriggerAction(TriggerAction.ALL);
+			rollIntervalBox.setEditable(false);
+			
 			rollTimeWapper = new FieldLabel(rollTimeBox, "失败重试次数");
-			rollIntervalWapper = new FieldLabel(rollIntervalField, "重试时间间隔");
+			rollIntervalWapper = new FieldLabel(rollIntervalBox, "重试间隔（分）");
 			jobPriorityWapper = new FieldLabel(jobPriorityBox, "任务优先级");
 			
 

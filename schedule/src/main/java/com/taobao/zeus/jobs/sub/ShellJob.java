@@ -100,11 +100,11 @@ public class ShellJob extends ProcessJob{
 					break;
 				}
 			}
-			System.out.println(Environment.getExcludeFile());
+//			System.out.println(Environment.getExcludeFile());
 		}
 		if(isDos2unix){
 			list.add("dos2unix " + shellFilePath);
-			System.out.println("dos2unix file: " + shellFilePath);
+//			System.out.println("dos2unix file: " + shellFilePath);
 			log("dos2unix file: " + shellFilePath);
 		}
 

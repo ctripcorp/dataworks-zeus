@@ -114,11 +114,11 @@ public class HiveJob extends ProcessJob {
 					break;
 				}
 			}
-			System.out.println(Environment.getExcludeFile());
+//			System.out.println(Environment.getExcludeFile());
 		}
 		if(isDos2unix){
 			list.add("dos2unix " + hiveFilePath);
-			System.out.println("dos2unix file: " + hiveFilePath);
+//			System.out.println("dos2unix file: " + hiveFilePath);
 			log("dos2unix file: " + hiveFilePath);
 		}
 		

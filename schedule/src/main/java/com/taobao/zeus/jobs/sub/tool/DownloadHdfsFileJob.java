@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.taobao.zeus.jobs.JobContext;
 import com.taobao.zeus.jobs.ProcessJob;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.JobUtils;
 
 /**
@@ -32,7 +33,23 @@ public class DownloadHdfsFileJob extends ProcessJob {
 		List<String> commands = new ArrayList<String>();
 		commands.add(hadoopCmd+" fs -copyToLocal " + hdfsFilePath + " " + localPath);
 		//格式转换
-		commands.add("dos2unix " + localPath);
+		String[] excludeFiles = Environment.getExcludeFile().split(";");
+		boolean isDos2unix = true;
+		if(excludeFiles!=null && excludeFiles.length>0){
+			for(String excludeFile : excludeFiles){
+				if(localPath.toLowerCase().endsWith("."+excludeFile.toLowerCase())){
+					isDos2unix = false;
+					break;
+				}
+			}
+//			System.out.println(Environment.getExcludeFile());
+		}
+		if(isDos2unix){
+			commands.add("dos2unix " + localPath);
+//			System.out.println("dos2unix file: " + localPath);
+			log("dos2unix file: " + localPath);
+		}
+		//commands.add("dos2unix " + localPath);
 		return commands;
 	}
 

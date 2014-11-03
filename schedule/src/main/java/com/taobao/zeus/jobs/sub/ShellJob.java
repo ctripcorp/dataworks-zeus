@@ -18,6 +18,7 @@ import com.taobao.zeus.jobs.JobContext;
 import com.taobao.zeus.jobs.ProcessJob;
 import com.taobao.zeus.store.Super;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.PropertyKeys;
 
 
@@ -90,7 +91,22 @@ public class ShellJob extends ProcessJob{
 		}
 
 		//格式转换
-		list.add("dos2unix " + shellFilePath);
+		String[] excludeFiles = Environment.getExcludeFile().split(";");
+		boolean isDos2unix = true;
+		if(excludeFiles!=null && excludeFiles.length>0){
+			for(String excludeFile : excludeFiles){
+				if(shellFilePath.toLowerCase().endsWith("."+excludeFile.toLowerCase())){
+					isDos2unix = false;
+					break;
+				}
+			}
+			System.out.println(Environment.getExcludeFile());
+		}
+		if(isDos2unix){
+			list.add("dos2unix " + shellFilePath);
+			System.out.println("dos2unix file: " + shellFilePath);
+			log("dos2unix file: " + shellFilePath);
+		}
 
 		//执行shell
 		// run shell as current user

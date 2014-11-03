@@ -31,9 +31,10 @@ public class Environment {
 	private static String sendFrom;
 	private static String notifyUrl;
 	private static String accessToken;
+	private static String excludeFile;
 	
 	public Environment(String env,String scheduleGroup,String downloadPath,String hadoopHome,String hadoopConfDir,String hiveHome,String hiveConfDir,
-			String host,String port,String username,String password,String sendFrom,String notifyUrl,String accessToken){
+			String host,String port,String username,String password,String sendFrom,String notifyUrl,String accessToken,String excludeFile){
 		Environment.env=env.trim();
 		Environment.scheduleGroup=scheduleGroup.trim();
 		Environment.downloadPath=downloadPath.trim();
@@ -52,6 +53,7 @@ public class Environment {
 		Environment.sendFrom=sendFrom.trim();
 		Environment.notifyUrl=notifyUrl.trim();
 		Environment.accessToken=accessToken.trim();
+		Environment.excludeFile=excludeFile.trim();
 	}
 	
 	public static String getNotifyUrl() {
@@ -60,6 +62,10 @@ public class Environment {
 
 	public static String getAccessToken() {
 		return accessToken;
+	}
+
+	public static String getExcludeFile() {
+		return excludeFile;
 	}
 
 	public static Boolean isOnline(){

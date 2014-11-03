@@ -62,6 +62,9 @@
 		<constructor-arg index="13">
 			<value>${noc.accessToken}</value>
 		</constructor-arg>
+		<constructor-arg index="14">
+			<value>${dos2unix.exclude.file}</value>
+		</constructor-arg>
 	</bean>
 	
 	<bean id="clientWorker" class="com.taobao.zeus.socket.worker.ClientWorker" >

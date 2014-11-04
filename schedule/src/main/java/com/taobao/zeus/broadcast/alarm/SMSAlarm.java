@@ -41,6 +41,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 				message += "<br/>负责人："+user.getName()+" 电话："+user.getPhone()+" 邮箱："+user.getEmail();
 			}
 		}
+		message += "<br/>" + content;
 		int code = sendNOCAlarm(notifyUrl, accessToken, srcId, devId, itemId, level, message);
 //		System.out.println("send cats code:" + code);
 	}

@@ -690,8 +690,9 @@ public class CardEditJob extends CenterTemplate implements
 			Map<String, String> nolimit = new HashMap<String, String>();
 			nolimit.put("key", "无限制");
 			nolimit.put("value", " ");
-			cycleStore.add(nolimit);
+
 			cycleStore.add(sameday);
+			cycleStore.add(nolimit);
 			baseDepCycle = new ComboBox<Map<String, String>>(cycleStore,
 					new LabelProvider<Map<String, String>>() {
 						@Override

@@ -171,8 +171,16 @@ public interface GroupManagerOld {
 	void removeWorker(String host) throws ZeusException;
 	
 	List<JobPersistenceOld> getAllJobs();
-	//得到所有下游依赖于jobID的JobID列表
+	/**
+	 * 得到所有下游依赖于jobID的JobID列表
+	 * @param jobID
+	 * @return
+	 */
 	List<String> getAllDependencied(String jobID);
-	//得到所有上游需要依赖的jobID列表
+	/**
+	 * 得到所有上游需要依赖的jobID列表
+	 * @param jobID
+	 * @return
+	 */
 	List<String> getAllDependencies(String jobID);
 }

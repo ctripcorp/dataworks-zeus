@@ -432,7 +432,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			baseFieldSet.add(layoutContainer);
 			
 			VerticalLayoutContainer leftContainer = new VerticalLayoutContainer();
-			leftContainer.setWidth(300);
+			leftContainer.setWidth(400);
 			VerticalLayoutContainer rightContainer=new VerticalLayoutContainer();
 			rightContainer.setWidth(300);
 			layoutContainer.add(leftContainer,new HorizontalLayoutData(-1,1));

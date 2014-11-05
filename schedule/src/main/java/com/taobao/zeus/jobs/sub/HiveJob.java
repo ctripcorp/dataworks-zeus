@@ -18,6 +18,7 @@ import com.taobao.zeus.jobs.JobContext;
 import com.taobao.zeus.jobs.ProcessJob;
 import com.taobao.zeus.model.FileDescriptor;
 import com.taobao.zeus.store.FileManager;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.PropertyKeys;
 import com.taobao.zeus.util.RunningJobKeys;
 
@@ -104,7 +105,22 @@ public class HiveJob extends ProcessJob {
 		}
 		
 		//格式转换
-		list.add("dos2unix " + hiveFilePath);
+		String[] excludeFiles = Environment.getExcludeFile().split(";");
+		boolean isDos2unix = true;
+		if(excludeFiles!=null && excludeFiles.length>0){
+			for(String excludeFile : excludeFiles){
+				if(hiveFilePath.toLowerCase().endsWith("."+excludeFile.toLowerCase())){
+					isDos2unix = false;
+					break;
+				}
+			}
+//			System.out.println(Environment.getExcludeFile());
+		}
+		if(isDos2unix){
+			list.add("dos2unix " + hiveFilePath);
+//			System.out.println("dos2unix file: " + hiveFilePath);
+			log("dos2unix file: " + hiveFilePath);
+		}
 		
 		// 引入常用udf函数
 		if (getUdfSql()) {

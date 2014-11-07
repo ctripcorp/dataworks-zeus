@@ -1,5 +1,6 @@
 package com.taobao.zeus.web.platform.shared.rpc;
 
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -39,9 +40,6 @@ public interface JobServiceAsync {
 
 //	void getRunningJobs(String groupId,
 //			AsyncCallback<List<JobHistoryModel>> callback);
-
-	void getSubJobStatus(String groupId, PagingLoadConfig config,
-			AsyncCallback<PagingLoadResult<JobModelAction>> callback);
 	
 /*	void getSubJobStatusAction(String groupId, PagingLoadConfig config,
 			AsyncCallback<PagingLoadResult<JobModelAction>> callback);*/
@@ -67,5 +65,8 @@ public interface JobServiceAsync {
 
 	void getJobACtion(String id,
 			AsyncCallback<List<Long>> callback);
+
+	void getSubJobStatus(String groupId, PagingLoadConfig config, Date startDate,
+			Date endDate, AsyncCallback<PagingLoadResult<JobModelAction>> callback);
 
 }

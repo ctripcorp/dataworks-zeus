@@ -1,5 +1,6 @@
 package com.taobao.zeus.web.platform.server.rpc;
 
+import java.util.Date;
 import java.util.List;
 
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
@@ -40,11 +41,6 @@ public class FilterJobServiceImpl implements JobService{
 	@Override
 	public JobModel getJobStatus(String jobId) {
 		return jobService.getJobStatus(jobId);
-	}
-
-	@Override
-	public PagingLoadResult<JobModelAction> getSubJobStatus(String jobId,PagingLoadConfig config) {
-		return jobService.getSubJobStatus(jobId,config);
 	}
 
 	@Override
@@ -147,6 +143,12 @@ public class FilterJobServiceImpl implements JobService{
 	@Override
 	public void syncScript(String jobId, String script) throws GwtException {
 		jobService.syncScript(jobId, script);
+	}
+
+	@Override
+	public PagingLoadResult<JobModelAction> getSubJobStatus(String groupId,
+			PagingLoadConfig config, Date startDate, Date endDate) {
+		return jobService.getSubJobStatus(groupId,config,startDate,endDate);
 	}
 
 }

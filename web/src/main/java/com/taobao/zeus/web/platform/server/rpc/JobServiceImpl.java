@@ -342,7 +342,8 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public List<Long> switchAuto(String jobId, Boolean auto) throws GwtException {
+	public List<Long> switchAuto(String jobId, Boolean auto)
+			throws GwtException {
 		Tuple<JobDescriptorOld, JobStatus> job = permissionGroupManagerOld
 				.getJobDescriptor(jobId);
 		JobDescriptorOld jd = job.getX();
@@ -395,44 +396,51 @@ public class JobServiceImpl implements JobService {
 		}
 		if (!auto.equals(jd.getAuto())) {
 			if (!auto) {
-				//下游存在一个开，就不能关闭
+				// 下游存在一个开，就不能关闭
 				boolean canChange = true;
-				List<String> depdidlst = permissionGroupManagerOld.getAllDependencied(jobId);
-				if(depdidlst != null && depdidlst.size() != 0){
-				Map<String, Tuple<JobDescriptorOld, JobStatus>> depdlst = permissionGroupManagerOld.getJobDescriptor(depdidlst);
+				List<String> depdidlst = permissionGroupManagerOld
+						.getAllDependencied(jobId);
+				if (depdidlst != null && depdidlst.size() != 0) {
+					Map<String, Tuple<JobDescriptorOld, JobStatus>> depdlst = permissionGroupManagerOld
+							.getJobDescriptor(depdidlst);
 					for (Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry : depdlst
 							.entrySet()) {
 						if (entry.getValue().getX().getAuto()) {
-							notSatisfied.add(Long.parseLong(entry.getValue().getX().getId()));
+							notSatisfied.add(Long.parseLong(entry.getValue()
+									.getX().getId()));
 							canChange = false;
 						}
 					}
 					if (canChange) {
 						ChangeAuto(auto, jd);
 					}
-				}else {
-					ChangeAuto(auto, jd);//该节点为尾节点
+				} else {
+					ChangeAuto(auto, jd);// 该节点为尾节点
 				}
-				
-			}else {
-				//上游全为开才能开
+
+			} else {
+				// 上游全为开才能开
 				boolean canChange = true;
-				List<String> depidlst = permissionGroupManagerOld.getAllDependencies(jobId);
+				List<String> depidlst = permissionGroupManagerOld
+						.getAllDependencies(jobId);
 				if (depidlst != null && depidlst.size() != 0) {
-					Map<String, Tuple<JobDescriptorOld, JobStatus>> deplst = permissionGroupManagerOld.getJobDescriptor(depidlst);
-					for(Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry: deplst.entrySet()){
+					Map<String, Tuple<JobDescriptorOld, JobStatus>> deplst = permissionGroupManagerOld
+							.getJobDescriptor(depidlst);
+					for (Entry<String, Tuple<JobDescriptorOld, JobStatus>> entry : deplst
+							.entrySet()) {
 						if (!entry.getValue().getX().getAuto()) {
-							notSatisfied.add(Long.parseLong(entry.getValue().getX().getId()));
-							canChange = false;							
+							notSatisfied.add(Long.parseLong(entry.getValue()
+									.getX().getId()));
+							canChange = false;
 						}
 					}
 					if (canChange) {
-						ChangeAuto(auto,jd);			
+						ChangeAuto(auto, jd);
 					}
-				}else {
-					ChangeAuto(auto, jd);//该节点为首节点
+				} else {
+					ChangeAuto(auto, jd);// 该节点为首节点
 				}
-				
+
 			}
 		}
 		return notSatisfied;
@@ -442,8 +450,8 @@ public class JobServiceImpl implements JobService {
 			throws GwtException {
 		jd.setAuto(auto);
 		try {
-			permissionGroupManagerOld.updateJob(LoginUser.getUser()
-					.getUid(), jd);
+			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
+					jd);
 			List<Tuple<JobDescriptor, JobStatus>> actionlst = permissionGroupManager
 					.getActionList(jd.getId());
 			if (actionlst != null && actionlst.size() != 0) {
@@ -607,84 +615,94 @@ public class JobServiceImpl implements JobService {
 		return model;
 	}
 
+	// FIXME lky getSubJobStatus
+
 	@Override
 	public PagingLoadResult<JobModelAction> getSubJobStatus(String groupId,
-			PagingLoadConfig config) {
+			PagingLoadConfig config, Date startDate,Date endDate) {
 		int start = config.getOffset();
 		int limit = config.getLimit();
 		GroupBean gb = permissionGroupManager.getDownstreamGroupBean(groupId);
 		Map<String, JobBean> map = gb.getAllSubJobBeans();
 		List<Tuple<JobDescriptor, JobStatus>> allJobs = new ArrayList<Tuple<JobDescriptor, JobStatus>>();
-		for (String key : map.keySet()) {
-			Tuple<JobDescriptor, JobStatus> tuple = new Tuple<JobDescriptor, JobStatus>(
-					map.get(key).getJobDescriptor(), map.get(key)
-							.getJobStatus());
-			allJobs.add(tuple);
-		}
-		// 按名次排序
-		Collections.sort(allJobs,
-				new Comparator<Tuple<JobDescriptor, JobStatus>>() {
-					@Override
-					public int compare(Tuple<JobDescriptor, JobStatus> o1,
-							Tuple<JobDescriptor, JobStatus> o2) {
-						return o1.getX().getName()
-								.compareToIgnoreCase(o2.getX().getName());
-					}
-				});
-
-		int total = allJobs.size();
-		if (start >= allJobs.size()) {
-			start = 0;
-		}
-		allJobs = allJobs.subList(start,
-				Math.min(start + limit, allJobs.size()));
-
-		List<String> jobIds = new ArrayList<String>();
-		for (Tuple<JobDescriptor, JobStatus> tuple : allJobs) {
-			jobIds.add(tuple.getX().getId());
-		}
-		Map<String, JobHistory> jobHisMap = jobHistoryManager
-				.findLastHistoryByList(jobIds);
-		List<JobModelAction> result = new ArrayList<JobModelAction>();
-		for (Tuple<JobDescriptor, JobStatus> job : allJobs) {
-			JobStatus status = job.getY();
-			JobDescriptor jd = job.getX();
-			JobModelAction model = new JobModelAction();
-			model.setId(status.getJobId());
-			Map<String, String> dep = new HashMap<String, String>();
-			for (String jobId : job.getX().getDependencies()) {
-				if (jobId != null && !"".equals(jobId)) {
-					// dep.put(jobId, null);
-					if (jobHisMap.get(jobId) != null) {
-						// System.out.println(new
-						// SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(jobHisMap.get(jobId).getEndTime()));
-						dep.put(jobId,
-								String.valueOf(jobHisMap.get(jobId)
-										.getEndTime().getTime()));
-					} else {
-						dep.put(jobId, null);
-					}
+		if (startDate != null && endDate !=null) {
+			Date today = new Date();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+			Integer startInt = Integer.parseInt(dateFormat.format(startDate));
+			Integer endInt = Integer.parseInt(dateFormat.format(endDate)) + 1;
+			for (String key : map.keySet()) {
+				Integer subkeyInt = Integer.parseInt(key.substring(0, 8));
+				if (subkeyInt < endInt && subkeyInt >= startInt) {
+					Tuple<JobDescriptor, JobStatus> tuple = new Tuple<JobDescriptor, JobStatus>(
+							map.get(key).getJobDescriptor(), map.get(key)
+									.getJobStatus());
+					allJobs.add(tuple);
 				}
 			}
-			dep.putAll(status.getReadyDependency());
-			model.setReadyDependencies(dep);
-			model.setStatus(status.getStatus() == null ? null : status
-					.getStatus().getId());
-			model.setName(jd.getName());
-			model.setAuto(jd.getAuto());
-			model.setToJobId(jd.getToJobId());
-			JobHistory his = jobHisMap.get(jd.getId());
-			if (his != null && his.getStartTime() != null) {
-				SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm:ss");
-				model.setLastStatus(format.format(his.getStartTime())
-						+ " "
-						+ (his.getStatus() == null ? "" : his.getStatus()
-								.getId()));
-			}
-			result.add(model);
 		}
+			// 按名次排序
+			Collections.sort(allJobs,
+					new Comparator<Tuple<JobDescriptor, JobStatus>>() {
+						@Override
+						public int compare(Tuple<JobDescriptor, JobStatus> o1,
+								Tuple<JobDescriptor, JobStatus> o2) {
+							return o1.getX().getName()
+									.compareToIgnoreCase(o2.getX().getName());
+						}
+					});
 
-		return new PagingLoadResultBean<JobModelAction>(result, total, start);
+			int total = allJobs.size();
+			if (start >= allJobs.size()) {
+				start = 0;
+			}
+			allJobs = allJobs.subList(start,
+					Math.min(start + limit, allJobs.size()));
+
+			List<String> jobIds = new ArrayList<String>();
+			for (Tuple<JobDescriptor, JobStatus> tuple : allJobs) {
+				jobIds.add(tuple.getX().getId());
+			}
+			Map<String, JobHistory> jobHisMap = jobHistoryManager
+					.findLastHistoryByList(jobIds);
+			List<JobModelAction> result = new ArrayList<JobModelAction>();
+			for (Tuple<JobDescriptor, JobStatus> job : allJobs) {
+				JobStatus status = job.getY();
+				JobDescriptor jd = job.getX();
+				JobModelAction model = new JobModelAction();
+				model.setId(status.getJobId());
+				Map<String, String> dep = new HashMap<String, String>();
+				for (String jobId : job.getX().getDependencies()) {
+					if (jobId != null && !"".equals(jobId)) {
+						// dep.put(jobId, null);
+						if (jobHisMap.get(jobId) != null) {
+							// System.out.println(new
+							// SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(jobHisMap.get(jobId).getEndTime()));
+							dep.put(jobId,
+									String.valueOf(jobHisMap.get(jobId)
+											.getEndTime().getTime()));
+						} else {
+							dep.put(jobId, null);
+						}
+					}
+				}
+				dep.putAll(status.getReadyDependency());
+				model.setReadyDependencies(dep);
+				model.setStatus(status.getStatus() == null ? null : status
+						.getStatus().getId());
+				model.setName(jd.getName());
+				model.setAuto(jd.getAuto());
+				model.setToJobId(jd.getToJobId());
+				JobHistory his = jobHisMap.get(jd.getId());
+				if (his != null && his.getStartTime() != null) {
+					SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm:ss");
+					model.setLastStatus(format.format(his.getStartTime())
+							+ " "
+							+ (his.getStatus() == null ? "" : his.getStatus()
+									.getId()));
+				}
+				result.add(model);
+			}
+			return new PagingLoadResultBean<JobModelAction>(result, total, start);
 	}
 
 	@Override
@@ -994,5 +1012,11 @@ public class JobServiceImpl implements JobService {
 		List<Long> result = permissionGroupManager.getJobACtion(jobId);
 
 		return result;
+	}
+
+	public static void main(String[] args) {
+		String s = "20140302001032";
+		System.out.println(new Date());
+		
 	}
 }

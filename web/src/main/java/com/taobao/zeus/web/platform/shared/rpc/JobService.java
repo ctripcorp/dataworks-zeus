@@ -1,12 +1,14 @@
 package com.taobao.zeus.web.platform.shared.rpc;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
+import com.sencha.gxt.widget.core.client.form.DateField;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
@@ -75,7 +77,7 @@ public interface JobService extends RemoteService {
 	 * @param groupId
 	 * @return
 	 */
-	PagingLoadResult<JobModelAction> getSubJobStatus(String groupId,PagingLoadConfig config);
+	PagingLoadResult<JobModelAction> getSubJobStatus(String groupId,PagingLoadConfig config,Date startDate, Date endDate);
 
 	/**
 	 * 获取组下正在运行的自动job

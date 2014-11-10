@@ -78,10 +78,7 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 	
 	private static JobModelPropertiesAction prop=GWT.create(JobModelPropertiesAction.class);
 	
-	public CardOverall(GroupPresenter p){
-		//FIXME lky
-
-		
+	public CardOverall(GroupPresenter p){	
 		start = new DateField();
 		start = new DateField();
 		start.setEditable(false);
@@ -169,7 +166,7 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 			public void load(PagingLoadConfig loadConfig,
 					AsyncCallback<PagingLoadResult<JobModelAction>> callback) {
 				PagingLoadConfig config=(PagingLoadConfig)loadConfig;
-				RPCS.getJobService().getSubJobStatus(presenter.getGroupModel().getId(),config, start.getValue(),end.getValue(), callback);				
+				RPCS.getJobService().getSubJobStatus(presenter.getGroupModel().getId(),config, start.getValue(), end.getValue(), callback);				
 			}
 		};
 		store=new ListStore<JobModelAction>(new ModelKeyProvider<JobModelAction>() {

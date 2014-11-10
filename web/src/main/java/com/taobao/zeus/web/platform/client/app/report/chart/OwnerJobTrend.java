@@ -36,7 +36,6 @@ import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
  *
  */
 public class OwnerJobTrend implements IsWidget{
-	//FIXME 标记日历组件
 	private DateField date;
 	private TextButton submit=new TextButton("查询",new SelectHandler(){
 		public void onSelect(SelectEvent event) {

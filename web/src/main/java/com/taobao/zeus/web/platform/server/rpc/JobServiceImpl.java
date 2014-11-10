@@ -615,8 +615,6 @@ public class JobServiceImpl implements JobService {
 		return model;
 	}
 
-	// FIXME lky getSubJobStatus
-
 	@Override
 	public PagingLoadResult<JobModelAction> getSubJobStatus(String groupId,
 			PagingLoadConfig config, Date startDate,Date endDate) {
@@ -633,6 +631,7 @@ public class JobServiceImpl implements JobService {
 			for (String key : map.keySet()) {
 				Integer subkeyInt = Integer.parseInt(key.substring(0, 8));
 				if (subkeyInt < endInt && subkeyInt >= startInt) {
+					JobStatus status = map.get(key).getJobStatus();
 					Tuple<JobDescriptor, JobStatus> tuple = new Tuple<JobDescriptor, JobStatus>(
 							map.get(key).getJobDescriptor(), map.get(key)
 									.getJobStatus());
@@ -674,7 +673,7 @@ public class JobServiceImpl implements JobService {
 				for (String jobId : job.getX().getDependencies()) {
 					if (jobId != null && !"".equals(jobId)) {
 						// dep.put(jobId, null);
-						if (jobHisMap.get(jobId) != null) {
+						if (jobHisMap.get(jobId) != null && jobHisMap.get(jobId).getEndTime() != null) {
 							// System.out.println(new
 							// SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(jobHisMap.get(jobId).getEndTime()));
 							dep.put(jobId,

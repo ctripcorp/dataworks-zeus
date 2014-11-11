@@ -1117,6 +1117,7 @@ public class Master {
 	public void runDependencesJobToAction(List<JobPersistenceOld> jobDetails, Map<Long, JobPersistence> actionDetails,String currentDateStr, int loopCount){
 		int noCompleteCount = 0;
 		loopCount ++;
+		System.out.println("loopCount："+loopCount);
 		for(JobPersistenceOld jobDetail : jobDetails){
 			//ScheduleType: 0 独立任务; 1依赖任务; 2周期任务
 			if((jobDetail.getScheduleType() != null && jobDetail.getScheduleType()==1) 
@@ -1139,7 +1140,7 @@ public class Master {
 								}
 							}
 							dependActionList.put(deps, dependActions);
-							if(loopCount > 100){
+							if(loopCount > 40){
 								if(!jobDetail.getConfigs().contains("sameday")){
 									if(dependActionList.get(deps).size()==0){
 										List<JobPersistence> lastJobActions = context.getGroupManager().getLastJobAction(deps);
@@ -1231,12 +1232,14 @@ public class Master {
 									actionPer.setStatus(jobDetail.getStatus());
 									actionPer.setTimezone(jobDetail.getTimezone());
 									try {
-										System.out.println("依赖任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
-										//if(actionPer.getId()>Long.parseLong(currentDateStr)){
-											context.getGroupManager().saveJob(actionPer);
-											System.out.println("success");
-										//}
-										actionDetails.put(actionPer.getId(),actionPer);
+										if(!actionDetails.containsKey(actionPer.getId())){
+											System.out.println("依赖任务JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
+											//if(actionPer.getId()>Long.parseLong(currentDateStr)){
+												context.getGroupManager().saveJob(actionPer);
+												System.out.println("success");
+											//}
+											actionDetails.put(actionPer.getId(),actionPer);
+										}
 									} catch (ZeusException e) {
 										log.error("依赖任务JobId:" + jobDetail.getId() + " 生成Action" +actionPer.getId() + "失败", e);
 									}
@@ -1249,7 +1252,8 @@ public class Master {
 				}
 			}
 		}
-		if(noCompleteCount > 0 && loopCount < 1000){
+
+		if(noCompleteCount > 0 && loopCount < 60){
 			runDependencesJobToAction(jobDetails, actionDetails, currentDateStr, loopCount);
 		}
 	}

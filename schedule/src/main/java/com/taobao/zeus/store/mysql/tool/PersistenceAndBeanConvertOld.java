@@ -380,7 +380,7 @@ public class PersistenceAndBeanConvertOld {
 		persist.setId(history.getId() == null ? null : Long.valueOf(history
 				.getId()));
 		persist.setJobId(Long.valueOf(history.getJobId()));
-		persist.setToJobId(Long.valueOf(history.getToJobId()==null ? null : history.getToJobId()));
+		persist.setToJobId(history.getToJobId()==null ? null : Long.valueOf(history.getToJobId()));
 		persist.setLog(history.getLog().getContent());
 		persist.setStartTime(history.getStartTime());
 		persist.setStatus(history.getStatus() == null ? null : history

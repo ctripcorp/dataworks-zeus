@@ -235,6 +235,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 	public static final String PRIORITY_LEVEL = "run.priority.level";
 	public static final String ROLL_TIMES = "roll.back.times";
 	public static final String ROLL_INTERVAL = "roll.back.wait.time";
+	public static final String Encryption = "zeus.secret.script";
 	private void display(final JobModel model){
 		((Label)baseId.getWidget()).setText(model.getId());
 		((Label)baseName.getWidget()).setText(model.getName());

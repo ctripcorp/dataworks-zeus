@@ -146,8 +146,12 @@ public class CardEditJob extends CenterTemplate implements
 			model.getLocalProperties().put(CardInfo.ROLL_INTERVAL, rollIntervalBox.getValue());
 			model.getLocalProperties().put(CardInfo.ROLL_TIMES, rollTimeBox.getValue().toString());
 			model.getLocalProperties().put(CardInfo.PRIORITY_LEVEL,jobPriorityBox.getValue().get("value"));
-			
-			model.getPostProcessers().clear();
+			String isEncryptionText = isEncryptionBox.getValue();
+			if ("no".equals(isEncryptionText)) {
+				model.getLocalProperties().put(CardInfo.Encryption,"true");
+			}else {
+				model.getLocalProperties().remove(CardInfo.Encryption);
+			}
 			// Hive处理器配置
 			/*if (notNullOrEmpty(outputTableField.getValue())
 					|| notNullOrEmpty(syncTableField.getValue())) {
@@ -221,6 +225,7 @@ public class CardEditJob extends CenterTemplate implements
 	private ComboBox<String> rollIntervalBox;
 	private ComboBox<Map<String, String>> jobPriorityBox;
 	
+	private ComboBox<String> isEncryptionBox;
 
 	private FieldLabel depCycleWapper;
 	private FieldLabel depJobsWapper;
@@ -229,6 +234,8 @@ public class CardEditJob extends CenterTemplate implements
 	private FieldLabel rollTimeWapper;
 	private FieldLabel rollIntervalWapper;
 	private FieldLabel jobPriorityWapper;
+	
+	private FieldLabel isEncryptionWapper;
 	
 
 	// add by gufei.wzy 辅助功能
@@ -418,6 +425,17 @@ public class CardEditJob extends CenterTemplate implements
 					rollTimeBox.setValue(data, true);
 					break;
 				}
+			}
+		}
+		
+		String isEncryptionStr = t.getAllProperties().get(CardInfo.Encryption);
+		if (isEncryptionStr == null) {
+			isEncryptionBox.setValue("yes",true);
+		}else {
+			if ("true".equals(isEncryptionStr)) {
+				isEncryptionBox.setValue("no",true);
+			}else {
+				isEncryptionBox.setValue("yes", true);
 			}
 		}
 		
@@ -800,6 +818,30 @@ public class CardEditJob extends CenterTemplate implements
 						}
 					}
 					);
+			
+			ListStore<String> isEncryptionStore = new ListStore<String>(new ModelKeyProvider<String>() {
+				@Override
+				public String getKey(String item) {
+					return item.toString();
+				}
+			});
+			isEncryptionStore.add("yes");
+			isEncryptionStore.add("no");
+			isEncryptionBox = new ComboBox<String>(isEncryptionStore,
+					new LabelProvider<String>() {
+						public String getLabel(String item) {
+							return item;
+						}
+					},
+					new AbstractSafeHtmlRenderer<String>() {
+						@Override
+						public SafeHtml render(String object) {
+							ComboBoxTemplates t = GWT
+									.create(ComboBoxTemplates.class);
+							return t.display(object);
+						}
+					}
+					);
 
 			
 			baseDepCycle.setWidth(150);
@@ -820,9 +862,14 @@ public class CardEditJob extends CenterTemplate implements
 			rollIntervalBox.setTriggerAction(TriggerAction.ALL);
 			rollIntervalBox.setEditable(false);
 			
+			isEncryptionBox.setWidth(150);
+			isEncryptionBox.setTriggerAction(TriggerAction.ALL);
+			isEncryptionBox.setEditable(false);
+			
 			rollTimeWapper = new FieldLabel(rollTimeBox, "失败重试次数");
 			rollIntervalWapper = new FieldLabel(rollIntervalBox, "重试间隔（分）");
 			jobPriorityWapper = new FieldLabel(jobPriorityBox, "任务优先级");
+			isEncryptionWapper = new FieldLabel(isEncryptionBox, "脚本可见");
 			
 
 			depCycleWapper = new FieldLabel(baseDepCycle, "依赖周期");
@@ -849,7 +896,7 @@ public class CardEditJob extends CenterTemplate implements
 			rightContainer.add(depCycleWapper, new VerticalLayoutData(1, -1));
 			rightContainer.add(offWapper, new VerticalLayoutData(1, -1));
 			rightContainer.add(new FieldLabel(hostField, "Host"), new VerticalLayoutData(1, -1));
-
+			rightContainer.add(isEncryptionWapper,new VerticalLayoutData(1,-1));
 			leftContainer.add(mainWapper, new VerticalLayoutData(1, -1));
 
 		}

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.hadoop.hive.ql.parse.HiveParser.booleanValue_return;
 import org.jboss.netty.channel.Channel;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
@@ -256,11 +257,13 @@ public class Master {
 		MasterWorkerHolder selectWorker = null;
 		Float selectMemRate = null;
 		if (host != null && !"".equals(host)) {
+			boolean isWorkerHost = false;
 			for (MasterWorkerHolder worker : context.getWorkers().values()) {
 				HeartBeatInfo heart = worker.getHeart();
 				log.info("worker a : host :" + host + " heart :" + heart.memRate);
 				if (heart != null && heart.memRate != null
 						&& heart.memRate < 0.8 && host.equals(heart.host)) {
+					isWorkerHost = true;
 					if (selectWorker == null) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
@@ -271,6 +274,9 @@ public class Master {
 						log.info("worker c : host :" + host+ " heart :" + selectMemRate);
 					}
 				}
+			}
+			if(!isWorkerHost){
+				return this.getRunableWorker();
 			}
 			return selectWorker;
 		}
@@ -802,6 +808,7 @@ public class Master {
 						String jobId = his.getJobId();
 						JobHistory history = new JobHistory();
 						history.setJobId(jobId);
+						history.setToJobId(his.getToJobId());
 						history.setTriggerType(his.getTriggerType());
 						history.setIllustrate("worker断线，重新跑任务");
 						history.setOperator(his.getOperator());

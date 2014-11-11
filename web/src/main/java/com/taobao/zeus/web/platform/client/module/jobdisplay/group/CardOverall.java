@@ -98,10 +98,7 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 				if (!start.validate() || !end.validate()) {
 					return;
 				}else {
-					PagingLoadConfig config=new PagingLoadConfigBean();
-					config.setOffset(0);
-					config.setLimit(50);
-					loader.load(config);
+					toolBar.refresh();
 				}
 				
 			}
@@ -112,15 +109,7 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 		toolArea.add(new FieldLabel(start,"开始日期"),new HorizontalLayoutData(-1,-1,new Margins(5)));
 		toolArea.add(new FieldLabel(end,"结束日期"),new HorizontalLayoutData(-1,-1,new Margins(5)));
 		toolArea.add(queryButton,new HorizontalLayoutData(-1,-1,new Margins(5)));
-		toolArea.addAttachHandler(new Handler(){
 
-			@Override
-			public void onAttachOrDetach(AttachEvent event) {
-				queryButton.fireEvent(new SelectEvent());
-			}}			
-		);
-		
-		
 		this.presenter=p;
 		ColumnConfig<JobModelAction,String> jobId=new ColumnConfig<JobModelAction,String>(prop.id(), 60,"ActionId");
 		ColumnConfig<JobModelAction,String> toJobId=new ColumnConfig<JobModelAction,String>(prop.toJobId(), 20,"JobId");
@@ -211,9 +200,7 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 	    con.add(toolArea,new VerticalLayoutData(1,30));
 	    con.add(grid, new VerticalLayoutData(1, 1));
 	    con.add(toolBar, new VerticalLayoutData(1, 30));
-
 		setCenter(con);
-		
 		addButton(new TextButton("返回",new SelectHandler() {
 			public void onSelect(SelectEvent event) {
 				presenter.display(presenter.getGroupModel());
@@ -230,12 +217,7 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 			public void onSelect(SelectEvent event) {
 				presenter.displayManual();
 			}
-		}));
-
-		
-		
-
-		
+		}));		
 	}
 	
 }

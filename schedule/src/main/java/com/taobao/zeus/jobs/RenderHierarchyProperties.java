@@ -112,7 +112,7 @@ public class RenderHierarchyProperties extends HierarchyProperties{
 		s=s.replace("${yesterday}",new ZeusDateTool(new Date()).addDay(-1).format("yyyyMMdd"));
 		System.out.println("result:"+s);*/
 		String s="abc${zdt.addDay(-2).format(\"yyyy-MM-dd HH:mm:ss\")} ${zdt.addDay(-2).format(\"yyyyMMddHHmmss\")} ${yesterday}";
-		s=render(s,"20140924112200");
+		s=render(s,"20140924162200");
 		//render(s);
 		System.out.println("render result:"+s);
 	}

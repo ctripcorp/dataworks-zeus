@@ -415,6 +415,7 @@ public class JobController extends Controller {
 		System.out.println("依赖任务执行的operator ："+jobDescriptor.getOwner());
 		history.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
 		history.setToJobId(jobDescriptor.getToJobId() == null ? null : jobDescriptor.getToJobId());
+		history.setExecuteHost(jobDescriptor.getHost());
 		context.getJobHistoryManager().addJobHistory(history);
 		history = master.run(history);
 		if (history.getStatus() == Status.FAILED) {

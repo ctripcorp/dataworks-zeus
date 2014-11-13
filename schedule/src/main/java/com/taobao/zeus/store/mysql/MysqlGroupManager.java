@@ -14,9 +14,12 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.taobao.zeus.client.ZeusException;
@@ -24,6 +27,7 @@ import com.taobao.zeus.model.GroupDescriptor;
 import com.taobao.zeus.model.JobDescriptor;
 import com.taobao.zeus.model.JobDescriptor.JobRunType;
 import com.taobao.zeus.model.JobDescriptor.JobScheduleType;
+import com.taobao.zeus.model.JobDescriptorOld;
 import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.model.processer.DownloadProcesser;
 import com.taobao.zeus.model.processer.Processer;
@@ -39,6 +43,7 @@ import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.store.mysql.tool.GroupValidate;
 import com.taobao.zeus.store.mysql.tool.JobValidate;
 import com.taobao.zeus.store.mysql.tool.PersistenceAndBeanConvert;
+import com.taobao.zeus.store.mysql.tool.PersistenceAndBeanConvertOld;
 import com.taobao.zeus.util.Tuple;
 
 @SuppressWarnings("unchecked")
@@ -597,4 +602,5 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 		}
 		
 	}
+
 }

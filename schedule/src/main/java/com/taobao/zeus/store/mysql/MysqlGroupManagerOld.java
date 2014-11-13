@@ -22,6 +22,7 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.taobao.zeus.client.ZeusException;
@@ -38,6 +39,7 @@ import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.GroupManagerToolOld;
 import com.taobao.zeus.store.JobBeanOld;
 import com.taobao.zeus.store.mysql.persistence.GroupPersistence;
+import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.store.mysql.persistence.Worker;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
@@ -625,5 +627,29 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		}
 		return dependencies;
 	}
-
+	
+	@Override
+	public void updateActionList(JobDescriptorOld job) {
+		JobPersistenceOld persist = PersistenceAndBeanConvertOld.convert(job);
+		Long jobId = persist.getId();
+		String script = persist.getScript();
+		String resources = persist.getResources();
+		String configs = persist.getConfigs();
+		logger.info("begin updateActionList.");
+		HibernateTemplate template = getHibernateTemplate();
+		List<JobPersistence> actionList = template.find("from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId="+ jobId +" order by id desc");
+		logger.info("finish query.");
+		if (actionList != null && actionList.size() > 0 ){
+			for(JobPersistence actionPer : actionList){
+				if(!"running".equalsIgnoreCase(actionPer.getStatus())){
+					actionPer.setScript(script);
+					actionPer.setResources(resources);
+					actionPer.setConfigs(configs);
+					actionPer.setGmtModified(new Date());
+					template.saveOrUpdate(actionPer);
+				}
+			}
+			logger.info("finish update " + actionList.size() + ".");
+		}
+	}
 }

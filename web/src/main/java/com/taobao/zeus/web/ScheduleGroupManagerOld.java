@@ -216,6 +216,13 @@ public class ScheduleGroupManagerOld implements GroupManagerOld{
 		// TODO Auto-generated method stub
 		return groupManager.getAllDependencies(jobID);
 	}
+
+	@Override
+	public void updateActionList(JobDescriptorOld job) {
+		groupManager.updateActionList(job);
+	}
+	
+	
 	
 
 

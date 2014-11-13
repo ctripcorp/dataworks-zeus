@@ -14,6 +14,7 @@ import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.model.GroupDescriptor;
 import com.taobao.zeus.model.JobDescriptor;
 import com.taobao.zeus.model.JobDescriptor.JobRunType;
+import com.taobao.zeus.model.JobDescriptorOld;
 import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.model.processer.JobProcesser;
 import com.taobao.zeus.model.processer.Processer;
@@ -23,6 +24,7 @@ import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.UserManager;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
+import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.store.mysql.persistence.Worker;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.util.Tuple;
@@ -371,7 +373,6 @@ public class PermissionGroupManager implements GroupManager{
 	}
 	@Override
 	public List<Tuple<JobDescriptor, JobStatus>> getActionList(String jobId) {
-		// TODO Auto-generated method stub
 		return groupManager.getActionList(jobId);
 	}
 	

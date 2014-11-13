@@ -8,8 +8,10 @@ import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.model.GroupDescriptor;
 import com.taobao.zeus.model.JobDescriptor;
 import com.taobao.zeus.model.JobDescriptor.JobRunType;
+import com.taobao.zeus.model.JobDescriptorOld;
 import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
+import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.store.mysql.persistence.Worker;
 import com.taobao.zeus.util.Tuple;
 
@@ -184,5 +186,6 @@ public interface GroupManager {
 	 * @throws ZeusException
 	 */
 	List<Tuple<JobDescriptor, JobStatus>> getActionList(String jobId);
+	
 	
 }

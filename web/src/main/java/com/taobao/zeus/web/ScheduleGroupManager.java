@@ -18,6 +18,7 @@ import com.taobao.zeus.store.GroupBean;
 import com.taobao.zeus.store.GroupManager;
 import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
+import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.store.mysql.persistence.Worker;
 import com.taobao.zeus.util.Tuple;
 /**
@@ -218,5 +219,6 @@ public class ScheduleGroupManager implements GroupManager{
 	public List<Tuple<JobDescriptor, JobStatus>> getActionList(String jobId) {
 		return groupManager.getActionList(jobId);
 	}
+
 
 }

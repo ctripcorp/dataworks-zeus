@@ -32,3 +32,9 @@ v0.19
 zeus密码显示加密
 修复work断线任务重新分配bug
 修复指定不存在host导致队列阻塞bug
+修复了依赖host不能指定的bug
+修复了时间截取的bug
+
+v0.20
+添加按时间关闭action功能
+增加job和action资源，脚本和目录同步更新功能

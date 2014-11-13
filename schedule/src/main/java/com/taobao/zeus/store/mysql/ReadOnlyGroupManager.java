@@ -37,6 +37,7 @@ import com.taobao.zeus.store.GroupManagerTool;
 import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.mysql.persistence.GroupPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
+import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.store.mysql.persistence.Worker;
 import com.taobao.zeus.store.mysql.tool.Judge;
 import com.taobao.zeus.store.mysql.tool.PersistenceAndBeanConvert;
@@ -605,6 +606,7 @@ public class ReadOnlyGroupManager extends HibernateDaoSupport{
 			// TODO Auto-generated method stub
 			return null;
 		}
+
 	}
 	
 	/**

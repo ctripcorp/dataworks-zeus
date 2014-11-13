@@ -183,4 +183,10 @@ public interface GroupManagerOld {
 	 * @return
 	 */
 	List<String> getAllDependencies(String jobID);
+	
+	/**
+	 * 根据界面job信息批量更新anction列表
+	 * @param job
+	 */
+	void updateActionList(JobDescriptorOld job);
 }

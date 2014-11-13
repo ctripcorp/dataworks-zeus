@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.Map.Entry;
 
 import net.sf.json.JSONObject;
 
+import org.apache.bcel.generic.NEW;
 import org.apache.hadoop.hive.ql.parse.HiveParser.booleanValue_return;
 import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
 import org.apache.log4j.LogManager;
@@ -323,6 +325,7 @@ public class JobServiceImpl implements JobService {
 		try {
 			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
 					jd);
+			permissionGroupManagerOld.updateActionList(jd);
 			return getUpstreamJob(jd.getId());
 		} catch (ZeusException e) {
 			log.error(e);
@@ -419,7 +422,7 @@ public class JobServiceImpl implements JobService {
 				}
 
 			} else {
-				// 上游全为开才能开
+				// 上游全为开才能开,并且开启最近一周的状态
 				boolean canChange = true;
 				List<String> depidlst = permissionGroupManagerOld
 						.getAllDependencies(jobId);
@@ -449,6 +452,8 @@ public class JobServiceImpl implements JobService {
 	private void ChangeAuto(Boolean auto, JobDescriptorOld jd)
 			throws GwtException {
 		jd.setAuto(auto);
+		Date now = new Date();
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 		try {
 			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
 					jd);
@@ -456,9 +461,24 @@ public class JobServiceImpl implements JobService {
 					.getActionList(jd.getId());
 			if (actionlst != null && actionlst.size() != 0) {
 				for (Tuple<JobDescriptor, JobStatus> actionPer : actionlst) {
-					if (!Status.RUNNING.equals(actionPer.getY().getStatus()))
-						actionPer.getX().setAuto(auto);
-					permissionGroupManager.updateAction(actionPer.getX());
+					if (!Status.RUNNING.equals(actionPer.getY().getStatus())){
+						if (auto == false) {
+							actionPer.getX().setAuto(auto);
+							permissionGroupManager.updateAction(actionPer.getX());
+							log.info("Change the action " + actionPer.getX().getId() + " auto " + auto + ".");
+						}else {
+							String actionTimeStr = actionPer.getX().getId().substring(0,14);
+							Long actionTimeLong = Long.valueOf(actionTimeStr);
+							Long nowTimeLong = Long.valueOf(df.format(now));
+							if (actionTimeLong >= nowTimeLong) {
+								actionPer.getX().setAuto(auto);
+								permissionGroupManager.updateAction(actionPer.getX());
+								log.info("Change the action " + actionPer.getX().getId() + " auto " + auto + " " + "which is after " + now.toString());
+							}
+						}
+					}else {
+						log.warn("The job is running, and cannnot switchauto.");
+					}
 				}
 			}
 		} catch (ZeusException e) {
@@ -1014,8 +1034,12 @@ public class JobServiceImpl implements JobService {
 	}
 
 	public static void main(String[] args) {
-		String s = "20140302001032";
-		System.out.println(new Date());
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+		String actionTimeStr = "201411131356230000".substring(0,14);
+		Long actionTimeInt = Long.valueOf(actionTimeStr);
+		Long nowTimeInt = Long.valueOf(df.format(new Date()));
+		System.out.println(actionTimeInt);
+		System.out.println(nowTimeInt);
 		
 	}
 }

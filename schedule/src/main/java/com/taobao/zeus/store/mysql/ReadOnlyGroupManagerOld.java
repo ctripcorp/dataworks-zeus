@@ -601,6 +601,11 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 			// TODO Auto-generated method stub
 			return null;
 		}
+		@Override
+		public void updateActionList(JobDescriptorOld job) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	
 	/**

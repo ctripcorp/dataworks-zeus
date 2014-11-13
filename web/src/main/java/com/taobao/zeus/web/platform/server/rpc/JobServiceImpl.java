@@ -452,8 +452,6 @@ public class JobServiceImpl implements JobService {
 	private void ChangeAuto(Boolean auto, JobDescriptorOld jd)
 			throws GwtException {
 		jd.setAuto(auto);
-		Date now = new Date();
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 		try {
 			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
 					jd);
@@ -462,20 +460,9 @@ public class JobServiceImpl implements JobService {
 			if (actionlst != null && actionlst.size() != 0) {
 				for (Tuple<JobDescriptor, JobStatus> actionPer : actionlst) {
 					if (!Status.RUNNING.equals(actionPer.getY().getStatus())){
-						if (auto == false) {
-							actionPer.getX().setAuto(auto);
-							permissionGroupManager.updateAction(actionPer.getX());
-							log.info("Change the action " + actionPer.getX().getId() + " auto " + auto + ".");
-						}else {
-							String actionTimeStr = actionPer.getX().getId().substring(0,14);
-							Long actionTimeLong = Long.valueOf(actionTimeStr);
-							Long nowTimeLong = Long.valueOf(df.format(now));
-							if (actionTimeLong >= nowTimeLong) {
-								actionPer.getX().setAuto(auto);
-								permissionGroupManager.updateAction(actionPer.getX());
-								log.info("Change the action " + actionPer.getX().getId() + " auto " + auto + " " + "which is after " + now.toString());
-							}
-						}
+						actionPer.getX().setAuto(auto);
+						permissionGroupManager.updateAction(actionPer.getX());
+						log.info("Change the action " + actionPer.getX().getId() + " auto " + auto + ".");
 					}else {
 						log.warn("The job is running, and cannnot switchauto.");
 					}

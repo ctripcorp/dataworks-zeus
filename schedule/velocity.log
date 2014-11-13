@@ -1077,3 +1077,48 @@ Caused by: java.lang.ClassNotFoundException: org.apache.log.format.Formatter
 2014-11-12 17:33:36,433 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
 2014-11-12 17:33:36,433 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
 2014-11-12 17:33:36,434 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2014-11-13 15:52:52,561 - Log4JLogChute initialized using file 'velocity.log'
+2014-11-13 15:52:52,561 - Starting Apache Velocity v1.5 (compiled: 2007-02-22 08:52:29)
+2014-11-13 15:52:52,561 - Default Properties File: org\apache\velocity\runtime\defaults\velocity.properties
+2014-11-13 15:52:52,561 - Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+2014-11-13 15:52:52,562 - Couldn't find class org.apache.velocity.runtime.log.AvalonLogChute or necessary supporting classes in classpath.
+java.lang.NoClassDefFoundError: org/apache/log/format/Formatter
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:274)
+	at org.apache.velocity.util.ClassUtils.getClass(ClassUtils.java:63)
+	at org.apache.velocity.util.ClassUtils.getNewInstance(ClassUtils.java:95)
+	at org.apache.velocity.runtime.log.LogManager.createLogChute(LogManager.java:147)
+	at org.apache.velocity.runtime.log.LogManager.updateLog(LogManager.java:208)
+	at org.apache.velocity.runtime.RuntimeInstance.initializeLog(RuntimeInstance.java:728)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:240)
+	at org.apache.velocity.runtime.RuntimeSingleton.init(RuntimeSingleton.java:113)
+	at org.apache.velocity.app.Velocity.init(Velocity.java:83)
+	at com.taobao.zeus.jobs.RenderHierarchyProperties.<clinit>(RenderHierarchyProperties.java:29)
+Caused by: java.lang.ClassNotFoundException: org.apache.log.format.Formatter
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:425)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:358)
+	... 11 more
+2014-11-13 15:52:52,565 - Trying to use logger class org.apache.velocity.runtime.log.Log4JLogChute
+2014-11-13 15:52:52,565 - Using logger class org.apache.velocity.runtime.log.Log4JLogChute
+2014-11-13 15:52:52,567 - Default ResourceManager initializing. (class org.apache.velocity.runtime.resource.ResourceManagerImpl)
+2014-11-13 15:52:52,570 - ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2014-11-13 15:52:52,571 - Do unicode file recognition:  false
+2014-11-13 15:52:52,571 - FileResourceLoader : adding path '.'
+2014-11-13 15:52:52,589 - ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl)
+2014-11-13 15:52:52,590 - Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+2014-11-13 15:52:52,592 - Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2014-11-13 15:52:52,593 - Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2014-11-13 15:52:52,594 - Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2014-11-13 15:52:52,595 - Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2014-11-13 15:52:52,615 - Created '20' parsers.
+2014-11-13 15:52:52,622 - Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+2014-11-13 15:52:52,622 - Velocimacro : Default library not found.
+2014-11-13 15:52:52,622 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2014-11-13 15:52:52,622 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2014-11-13 15:52:52,622 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2014-11-13 15:52:52,622 - Velocimacro : autoload off : VM system will not automatically reload global library macros

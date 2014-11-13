@@ -637,7 +637,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		String configs = persist.getConfigs();
 		logger.info("begin updateActionList.");
 		HibernateTemplate template = getHibernateTemplate();
-		List<JobPersistence> actionList = template.find("from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId="+ jobId +" order by id desc");
+		List<JobPersistence> actionList = template.find("from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId='"+ jobId +"' order by id desc");
 		logger.info("finish query.");
 		if (actionList != null && actionList.size() > 0 ){
 			for(JobPersistence actionPer : actionList){

@@ -374,5 +374,9 @@ public class PermissionGroupManager implements GroupManager{
 		// TODO Auto-generated method stub
 		return groupManager.getActionList(jobId);
 	}
-	
+	@Override
+	public void removeJob(Long actionId) throws ZeusException {
+		groupManager.removeJob(actionId);
+		
+	}
 }

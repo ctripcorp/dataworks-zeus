@@ -1,6 +1,7 @@
 package com.taobao.zeus.store.mysql;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -551,8 +552,14 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 					}else{
 						actionPer = action;
 					}
+			}else{
+				SimpleDateFormat df=new SimpleDateFormat("yyyyMMddHHmmss");
+				String currentDateStr = df.format(new Date())+"0000";
+				if (actionPer.getId() < Long.parseLong(currentDateStr)) {
+					actionPer.setStatus("failed");
+				}
 			}
-			getHibernateTemplate().saveOrUpdate(actionPer);
+			getHibernateTemplate().saveOrUpdate(actionPer);			
 		}catch(DataAccessException e){
 			throw new ZeusException(e);
 		}
@@ -596,5 +603,17 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 			throw new ZeusException(e);
 		}
 		
+	}
+	
+	@Override
+	public void removeJob(Long actionId) throws ZeusException{
+		try{
+			JobPersistence action = (JobPersistence)getHibernateTemplate().get(JobPersistence.class, actionId);
+			if(action != null){
+				getHibernateTemplate().delete(action);
+			}
+		}catch(DataAccessException e){
+			throw new ZeusException(e);
+		}
 	}
 }

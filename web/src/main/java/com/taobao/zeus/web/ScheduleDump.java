@@ -175,7 +175,7 @@ public class ScheduleDump extends HttpServlet {
 											"<br>" + c.toString());
 								}
 							}
-						} else if ("clearschedule".equals(op)) {
+						}/* else if ("clearschedule".equals(op)) {
 							Date now = new Date();
 							SimpleDateFormat df = new SimpleDateFormat(
 									"yyyyMMddHHmmss");
@@ -199,7 +199,7 @@ public class ScheduleDump extends HttpServlet {
 							}
 							resp.getWriter().println("清理完毕！");
 
-						} else if ("action".equals(op)) {
+						}*/ else if ("action".equals(op)) {
 							Date now = new Date();
 							SimpleDateFormat df2 = new SimpleDateFormat(
 									"yyyy-MM-dd");
@@ -220,6 +220,7 @@ public class ScheduleDump extends HttpServlet {
 							if (dispatcher != null) {
 								// 增加controller，并修改event
 								if (actionDetails.size() > 0) {
+									List<Long> rollBackActionId = new ArrayList<Long>();
 									for (Long id : actionDetails.keySet()) {
 										dispatcher
 												.addController(new JobController(
@@ -232,7 +233,7 @@ public class ScheduleDump extends HttpServlet {
 															id.toString()));
 										}else{
 											int loopCount = 0;
-											context.getMaster().rollBackLostJob(id, actionDetails, loopCount);
+											context.getMaster().rollBackLostJob(id, actionDetails, loopCount, rollBackActionId);
 
 										}
 									}
@@ -243,8 +244,9 @@ public class ScheduleDump extends HttpServlet {
 										.getControllers();
 								if (controllers != null
 										&& controllers.size() > 0) {
-									for (Controller c : controllers) {
-										JobController jobc = (JobController) c;
+									Iterator<Controller> itController = controllers.iterator();
+									while(itController.hasNext()){
+										JobController jobc = (JobController) itController.next();
 										String jobId = jobc.getJobId();
 										if (Long.parseLong(jobId) < Long
 												.parseLong(currentDateStr)) {
@@ -253,6 +255,16 @@ public class ScheduleDump extends HttpServlet {
 														.deleteJob(jobId,
 																"zeus");
 											} catch (SchedulerException e) {
+												e.printStackTrace();
+											}
+										}else{
+											try {
+												if(!actionDetails.containsKey(Long.valueOf(jobId))){
+													context.getScheduler().deleteJob(jobId, "zeus");
+													context.getGroupManager().removeJob(Long.valueOf(jobId));
+													itController.remove();
+												}
+											} catch (Exception e) {
 												e.printStackTrace();
 											}
 										}
@@ -339,7 +351,7 @@ public class ScheduleDump extends HttpServlet {
 
 						else {
 							resp.getWriter().println("<a href='dump.do?op=jobstatus'>查看Job调度状态</a>&nbsp;&nbsp;&nbsp;&nbsp;");
-							resp.getWriter().println("<a href='dump.do?op=clearschedule' >清理Job调度信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
+//							resp.getWriter().println("<a href='dump.do?op=clearschedule' >清理Job调度信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=workers'>查看master-worker 状态</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=queue' >等待队列任务</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=action' >生成Action版本</a>&nbsp;&nbsp;&nbsp;&nbsp;");

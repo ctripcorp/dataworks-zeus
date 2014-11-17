@@ -103,7 +103,8 @@ public class Master {
 					SimpleDateFormat df2=new SimpleDateFormat("yyyy-MM-dd");
 					SimpleDateFormat df3=new SimpleDateFormat("yyyyMMddHHmmss");
 					String currentDateStr = df3.format(now)+"0000";
-					if(Integer.parseInt(df.format(now)) == 0){
+					int execMinute = Integer.parseInt(df.format(now));
+					if(execMinute == 0 || execMinute == 30){
 						System.out.println("生成Action，当前时间：" + currentDateStr);
 						log.info("start to action, current date：" + currentDateStr);
 						List<JobPersistenceOld> jobDetails = context.getGroupManagerOld().getAllJobs();

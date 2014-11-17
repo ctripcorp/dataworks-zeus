@@ -9,6 +9,7 @@ schedule/bin
 schedule/.classpath
 schedule/.project
 schedule/.settings
+schedule/velocity.log*
 web/bin
 web/target
 web/.classpath

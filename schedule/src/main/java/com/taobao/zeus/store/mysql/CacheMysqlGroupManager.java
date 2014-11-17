@@ -303,6 +303,10 @@ public class CacheMysqlGroupManager extends HibernateDaoSupport implements Group
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	@Override
+	public void removeJob(Long actionId) throws ZeusException {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

@@ -99,63 +99,75 @@ public class Master {
 			public void run() {
 				try{
 					Date now = new Date();
-					SimpleDateFormat df=new SimpleDateFormat("HH");
+					SimpleDateFormat df=new SimpleDateFormat("mm");
 					SimpleDateFormat df2=new SimpleDateFormat("yyyy-MM-dd");
 					SimpleDateFormat df3=new SimpleDateFormat("yyyyMMddHHmmss");
 					String currentDateStr = df3.format(now)+"0000";
-					System.out.println("生成Action，当前时间：" + currentDateStr);
-					log.info("start to action, current date：" + currentDateStr);
-				//if(Integer.parseInt(df.format(now)) == 1){
-					List<JobPersistenceOld> jobDetails = context.getGroupManagerOld().getAllJobs();
-					Map<Long, JobPersistence> actionDetails = new HashMap<Long, JobPersistence>();
-					//首先，生成独立任务action
-					runScheduleJobToAction(jobDetails, now, df2, actionDetails, currentDateStr);
-					//其次，生成依赖任务action
-					runDependencesJobToAction(jobDetails, actionDetails, currentDateStr, 0);
-					
-					Dispatcher dispatcher=context.getDispatcher();  
-					if(dispatcher != null){
-						//增加controller，并修改event
-						if (actionDetails.size() > 0) {
-							for (Long id : actionDetails.keySet()) {
-								dispatcher.addController(
-										new JobController(context, context.getMaster(),
-												id.toString()));
-								if (id > Long.parseLong(currentDateStr)) {
-									context.getDispatcher().forwardEvent(
-											new JobMaintenanceEvent(Events.UpdateJob,
+					if(Integer.parseInt(df.format(now)) == 0){
+						System.out.println("生成Action，当前时间：" + currentDateStr);
+						log.info("start to action, current date：" + currentDateStr);
+						List<JobPersistenceOld> jobDetails = context.getGroupManagerOld().getAllJobs();
+						Map<Long, JobPersistence> actionDetails = new HashMap<Long, JobPersistence>();
+						//首先，生成独立任务action
+						runScheduleJobToAction(jobDetails, now, df2, actionDetails, currentDateStr);
+						//其次，生成依赖任务action
+						runDependencesJobToAction(jobDetails, actionDetails, currentDateStr, 0);
+						
+						Dispatcher dispatcher=context.getDispatcher();  
+						if(dispatcher != null){
+							//增加controller，并修改event
+							if (actionDetails.size() > 0) {
+								List<Long> rollBackActionId = new ArrayList<Long>();
+								for (Long id : actionDetails.keySet()) {
+									dispatcher.addController(
+											new JobController(context, context.getMaster(),
 													id.toString()));
-								}else{
-									int loopCount = 0;
-									rollBackLostJob(id, actionDetails, loopCount);
+									if (id > Long.parseLong(currentDateStr)) {
+										context.getDispatcher().forwardEvent(
+												new JobMaintenanceEvent(Events.UpdateJob,
+														id.toString()));
+									}else{
+										int loopCount = 0;
+										rollBackLostJob(id, actionDetails, loopCount, rollBackActionId);
+									}
 								}
 							}
-						}
-					
-						//清理schedule
-						List<Controller> controllers = dispatcher.getControllers();
-						if(controllers!=null && controllers.size()>0){
-							for(Controller c : controllers){
-								JobController jobc = (JobController)c;
-								String jobId = jobc.getJobId();
-								if(Long.parseLong(jobId)<Long.parseLong(currentDateStr)){
-									try {
-										context.getScheduler().deleteJob(jobId, "zeus");
-									} catch (SchedulerException e) {
-										e.printStackTrace();
+						
+							//清理schedule
+							List<Controller> controllers = dispatcher.getControllers();
+							if(controllers!=null && controllers.size()>0){
+								Iterator<Controller> itController = controllers.iterator();
+								while(itController.hasNext()){
+									JobController jobc = (JobController)itController.next();
+									String jobId = jobc.getJobId();
+									if(Long.parseLong(jobId)<Long.parseLong(currentDateStr)){
+										try {
+											context.getScheduler().deleteJob(jobId, "zeus");
+										} catch (SchedulerException e) {
+											e.printStackTrace();
+										}
+									}else{
+										try {
+											if(!actionDetails.containsKey(Long.valueOf(jobId))){
+												context.getScheduler().deleteJob(jobId, "zeus");
+												context.getGroupManager().removeJob(Long.valueOf(jobId));
+												itController.remove();
+											}
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
 									}
 								}
 							}
 						}
+						System.out.println("Action版本生成完毕！");
+						log.info("job to action ok !");
 					}
-					System.out.println("Action版本生成完毕！");
-					log.info("job to action ok !");
-				//}
 				}catch(Exception e){
 					log.error("job to action failed !", e);
 				}
 			}
-		}, 0, 60, TimeUnit.MINUTES);
+		}, 0, 60, TimeUnit.SECONDS);
 		
 		//*********************************************************************
 		
@@ -192,7 +204,7 @@ public class Master {
 	}
 
 	//重新调度漏跑的JOB
-	public void rollBackLostJob(Long id, final Map<Long,JobPersistence> actionDetails, int loopCount){
+	public void rollBackLostJob(Long id, final Map<Long,JobPersistence> actionDetails, int loopCount, List<Long> rollBackActionId){
 		loopCount ++;
 		try {
 			JobPersistence lostJob = actionDetails.get(id);
@@ -206,24 +218,30 @@ public class Master {
 								|| actionDetails.get(Long.parseLong(jobDepend)).getStatus().equals("wait")) {
 							isAllComplete = false;
 							// 递归查询
-							if (loopCount < 100) {
-								rollBackLostJob(Long.parseLong(jobDepend), actionDetails, loopCount);
+							if (loopCount < 100 && rollBackActionId.contains(Long.parseLong(jobDepend))) {
+								rollBackLostJob(Long.parseLong(jobDepend), actionDetails, loopCount, rollBackActionId);
 							}
 						} else if (actionDetails.get(Long.parseLong(jobDepend)).getStatus().equals("failed")) {
 							isAllComplete = false;
 						}
 					}
 					if(isAllComplete){
-						context.getDispatcher().forwardEvent(
-								new JobLostEvent(Events.UpdateJob, id.toString()));
-						System.out.println("roll back lost jobID :" + id.toString());
-						log.info("roll back lost jobID :" + id.toString());
+						if(!rollBackActionId.contains(id)){
+							context.getDispatcher().forwardEvent(
+									new JobLostEvent(Events.UpdateJob, id.toString()));
+							rollBackActionId.add(id);
+//							System.out.println("roll back lost jobID :" + id.toString());
+//							log.info("roll back lost jobID :" + id.toString());
+						}
 					}
 				} else {
-					context.getDispatcher().forwardEvent(
-							new JobLostEvent(Events.UpdateJob, id.toString()));
-					System.out.println("roll back lost jobID :" + id.toString());
-					log.info("roll back lost jobID :" + id.toString());
+					if(!rollBackActionId.contains(id)){
+						context.getDispatcher().forwardEvent(
+								new JobLostEvent(Events.UpdateJob, id.toString()));
+						rollBackActionId.add(id);
+//						System.out.println("roll back lost jobID :" + id.toString());
+//						log.info("roll back lost jobID :" + id.toString());
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -1124,7 +1142,7 @@ public class Master {
 	public void runDependencesJobToAction(List<JobPersistenceOld> jobDetails, Map<Long, JobPersistence> actionDetails,String currentDateStr, int loopCount){
 		int noCompleteCount = 0;
 		loopCount ++;
-		System.out.println("loopCount："+loopCount);
+//		System.out.println("loopCount："+loopCount);
 		for(JobPersistenceOld jobDetail : jobDetails){
 			//ScheduleType: 0 独立任务; 1依赖任务; 2周期任务
 			if((jobDetail.getScheduleType() != null && jobDetail.getScheduleType()==1) 

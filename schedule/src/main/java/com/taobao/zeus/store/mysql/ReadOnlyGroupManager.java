@@ -607,6 +607,11 @@ public class ReadOnlyGroupManager extends HibernateDaoSupport{
 			return null;
 		}
 
+		@Override
+		public void removeJob(Long actionId) throws ZeusException {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	
 	/**

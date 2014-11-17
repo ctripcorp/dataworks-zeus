@@ -375,5 +375,9 @@ public class PermissionGroupManager implements GroupManager{
 	public List<Tuple<JobDescriptor, JobStatus>> getActionList(String jobId) {
 		return groupManager.getActionList(jobId);
 	}
-	
+	@Override
+	public void removeJob(Long actionId) throws ZeusException {
+		groupManager.removeJob(actionId);
+		
+	}
 }

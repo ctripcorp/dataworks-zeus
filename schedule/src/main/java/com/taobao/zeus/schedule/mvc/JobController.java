@@ -316,6 +316,7 @@ public class JobController extends Controller {
 						}
 						context.getJobHistoryManager().addJobHistory(history);
 						master.run(history);
+						ScheduleInfoLog.info("JobId:" + jobId + " roll lost back lost ");
 					}
 				}
 			}

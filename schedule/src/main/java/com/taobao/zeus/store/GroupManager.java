@@ -187,5 +187,10 @@ public interface GroupManager {
 	 */
 	List<Tuple<JobDescriptor, JobStatus>> getActionList(String jobId);
 	
+	/**
+	 * 移除jobAction
+	 * @throws ZeusException
+	 */
+	void removeJob(Long actionId) throws ZeusException;
 	
 }

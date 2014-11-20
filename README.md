@@ -48,3 +48,4 @@ v0.21
 增加host修改即时生效功能
 增加hive元数据展示功能
 修复hive分区数据下载bug，改为访问hdfs api之前同时加载core-site.xml和hdfs-site.xml
+屏蔽系统配置项

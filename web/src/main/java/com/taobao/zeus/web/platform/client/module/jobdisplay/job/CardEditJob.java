@@ -148,9 +148,9 @@ public class CardEditJob extends CenterTemplate implements
 			model.getLocalProperties().put(CardInfo.PRIORITY_LEVEL,jobPriorityBox.getValue().get("value"));
 			String isEncryptionText = isEncryptionBox.getValue();
 			if ("no".equals(isEncryptionText)) {
-				model.getLocalProperties().put(CardInfo.Encryption,"true");
+				model.getLocalProperties().put(CardInfo.ENCRYPTION,"true");
 			}else {
-				model.getLocalProperties().remove(CardInfo.Encryption);
+				model.getLocalProperties().remove(CardInfo.ENCRYPTION);
 			}
 			// Hive处理器配置
 			/*if (notNullOrEmpty(outputTableField.getValue())
@@ -428,7 +428,7 @@ public class CardEditJob extends CenterTemplate implements
 			}
 		}
 		
-		String isEncryptionStr = t.getAllProperties().get(CardInfo.Encryption);
+		String isEncryptionStr = t.getAllProperties().get(CardInfo.ENCRYPTION);
 		if (isEncryptionStr == null) {
 			isEncryptionBox.setValue("yes",true);
 		}else {
@@ -512,8 +512,24 @@ public class CardEditJob extends CenterTemplate implements
 			scriptFieldSet.show();
 			//hiveProcesserFieldSet.show();
 		}
-		configs.setValue(FormatUtil.convertPropertiesToEditString(t
-				.getLocalProperties()));
+		Map<String, String> conf = new HashMap<String, String>(
+				t.getLocalProperties());
+		if (conf.containsKey(CardInfo.DEPENDENCY_CYCLE)) {
+			conf.remove(CardInfo.DEPENDENCY_CYCLE);
+		}
+		if (conf.containsKey(CardInfo.ENCRYPTION)) {
+			conf.remove(CardInfo.ENCRYPTION);
+		}
+		if (conf.containsKey(CardInfo.PRIORITY_LEVEL)) {
+			conf.remove(CardInfo.PRIORITY_LEVEL);
+		}
+		if (conf.containsKey(CardInfo.ROLL_INTERVAL)) {
+			conf.remove(CardInfo.ROLL_INTERVAL);
+		}
+		if (conf.containsKey(CardInfo.ROLL_TIMES)) {
+			conf.remove(CardInfo.ROLL_TIMES);
+		}
+		configs.setValue(FormatUtil.convertPropertiesToEditString(conf));
 		resources.setValue(FormatUtil.convertResourcesToEditString(t
 				.getLocalResources()));
 

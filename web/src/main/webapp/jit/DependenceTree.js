@@ -40,7 +40,7 @@ function createTree(injectInto,orientation){
         //your node.
         onCreateLabel: function(label, node){
             label.id = node.id;            
-            label.innerHTML ="("+node.data.jobId+")"+ node.name;
+            label.innerHTML ="("+node.data.jobId+")<br>"+node.name;
 			
             label.onclick = function(){
             	  st.onClick(node.id);

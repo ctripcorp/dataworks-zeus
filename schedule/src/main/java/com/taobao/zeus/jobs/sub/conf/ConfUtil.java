@@ -121,6 +121,27 @@ public class ConfUtil {
 		}
 		return null;
 	}
+	
+	public static Configuration getDefaultCoreAndHdfsSite(){
+		try{
+			File core_site=new File(getHadoopConfDir()+File.separator+"core-site.xml");
+			File hdfs_site=new File(getHadoopConfDir()+File.separator+"hdfs-site.xml");
+			Configuration conf=new Configuration(false);
+			if(core_site.exists()){
+				conf.addResource(core_site.toURI().toURL());
+				log.info("load core site succcessfully");
+			}
+			if (hdfs_site.exists()) {
+				conf.addResource(hdfs_site.toURI().toURL());
+				log.info("load hdfs site succcessfully");
+			}
+			return conf;
+		} catch (IOException e) {
+			log.error("load $HADOOP_CONF_DIR/core-site.xml and $HADOOP_CONF_DIR/hdfs-site.xml error",e);
+		}
+		return null;
+	}
+	
 
 	public static Configuration getDefaultYarnSite(){
 		try{

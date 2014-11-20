@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
@@ -64,16 +65,16 @@ public class CliTableManager implements TableManager {
 	 * @see com.taobao.zeus.store.TableManager#getAllTables()
 	 */
 	@Override
-	public List<String> getAllTables() throws ZeusException {
+	public List<String> getAllTables(String dbName) throws ZeusException {
 		try {
-			return client.getAllTables(DEFAULT_DB);
+			return client.getAllTables(dbName);
 		} catch (Exception e) {
 			throw new ZeusException("获取所有表信息失败", e);
 		}
 	}
 
 	@Override
-	public List<Table> getPagingTables(String pattern, int offset, int limit)
+	public List<Table> getPagingTables(String dbName, String pattern, int offset, int limit)
 			throws ZeusException {
 		if (offset < 0 || limit < 0) {
 			throw new ZeusException("获取分页表信息失败,参数不正确");
@@ -81,14 +82,19 @@ public class CliTableManager implements TableManager {
 		if (pattern == null) {
 			pattern = "";
 		}
-
 		List<Table> tables = new ArrayList<Table>();
 		try {
-			List<String> tbs = client.getTables(DEFAULT_DB,
-					getPatternFromQuery(pattern));
+			List<String> tbs = null;
+			if (dbName == null) {
+				tbs = client.getTables(DEFAULT_DB,
+						getPatternFromQuery(pattern));
+			}else {
+				tbs = client.getTables(dbName,
+						getPatternFromQuery(pattern));
+			}
 			limit = offset + limit > tbs.size() ? tbs.size() - offset : limit;
 			for (String t : tbs.subList(offset, offset + limit)) {
-				tables.add(client.getTable(DEFAULT_DB, t));
+				tables.add(client.getTable(dbName, t));
 			}
 		} catch (Exception e) {
 			log.error("获取分页表信息失败", e);
@@ -103,23 +109,27 @@ public class CliTableManager implements TableManager {
 	 * @see com.taobao.zeus.store.TableManager#getTable(java.lang.String)
 	 */
 	@Override
-	public Table getTable(String tableName) {
-
+	public Table getTable(String dbName, String tableName) {
 		try {
-			return client.getTable(DEFAULT_DB, tableName);
+			if(dbName == null) return client.getTable(DEFAULT_DB, tableName);
+			else return client.getTable(dbName, tableName);
 		} catch (Exception e) {
-			log.warn("找不到该表:" + tableName, e);
+			log.warn("找不到该表:" + dbName+":" + tableName, e);
 		}
 
 		return null;
 	}
 
 	@Override
-	public List<Partition> getPartitions(String tableName, Integer limit)
+	public List<Partition> getPartitions(String dbName, String tableName, Integer limit)
 			throws ZeusException {
 		List<Partition> l = null;
 		try {
-			l = client.listPartitions(DEFAULT_DB, tableName, (short) -1);
+			if (dbName == null) {
+				l = client.listPartitions(DEFAULT_DB, tableName, (short) -1);
+			}else{
+				l = client.listPartitions(dbName, tableName, (short) -1);
+			}
 			if (limit != null && limit > 0) {
 				limit = limit > l.size() ? l.size() : limit;
 				l = l.subList(l.size() - limit, l.size());
@@ -136,13 +146,18 @@ public class CliTableManager implements TableManager {
 	}
 
 	@Override
-	public Integer getTotalNumber(String pattern) throws ZeusException {
+	public Integer getTotalNumber(String dbName, String pattern) throws ZeusException {
 		if (pattern == null) {
 			throw new ZeusException("参数不正确");
 		}
 		try {
-			return client.getTables(DEFAULT_DB, getPatternFromQuery(pattern))
-					.size();
+			int size = 0;
+			if (dbName == null) {
+				size = client.getTables(DEFAULT_DB, getPatternFromQuery(pattern)).size();
+			}else {
+				size = client.getTables(dbName, getPatternFromQuery(pattern)).size();
+			}
+			return size;
 		} catch (Exception e) {
 			throw new ZeusException("获取表数量信息失败", e);
 		}
@@ -194,6 +209,8 @@ public class CliTableManager implements TableManager {
 	public HiveMetaStoreClient getClient() {
 		return client;
 	}
+	
+	
 
 	/**
 	 * 指定HiveMetaStoreClient
@@ -203,5 +220,16 @@ public class CliTableManager implements TableManager {
 	public void setClient(HiveMetaStoreClient client) {
 		this.client = client;
 	}
+
+	@Override
+	public List<String> getAllDataBases() throws ZeusException {
+		try {
+			return client.getAllDatabases();
+		} catch (Exception e) {
+			throw new ZeusException("获取所有数据库名称失败", e);
+		}
+	}
+	
+
 
 }

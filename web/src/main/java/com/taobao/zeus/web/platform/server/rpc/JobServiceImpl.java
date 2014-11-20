@@ -17,9 +17,6 @@ import java.util.Map.Entry;
 
 import net.sf.json.JSONObject;
 
-import org.apache.bcel.generic.NEW;
-import org.apache.hadoop.hive.ql.parse.HiveParser.booleanValue_return;
-import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

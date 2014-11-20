@@ -12,7 +12,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.Style.LayoutRegion;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ListStore;
@@ -28,6 +27,7 @@ import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
+import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
@@ -35,6 +35,7 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.GridSelectionModel;
 import com.sencha.gxt.widget.core.client.grid.filters.GridFilters;
 import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
+import com.taobao.zeus.web.login_out;
 import com.taobao.zeus.web.platform.client.module.tablemanager.component.DataPreviewGrid;
 import com.taobao.zeus.web.platform.client.module.tablemanager.component.TableInfoPanel;
 import com.taobao.zeus.web.platform.client.module.tablemanager.model.PartitionModel;
@@ -64,6 +65,7 @@ public class TableManagerViewImpl implements TableManagerView {
 	ContentPanel dataPreviewPanel;
 	private Grid<TableModel> commonGrid;
 	private TableInfoPanel commonTableInfoPanel;
+	private final TextField dbNameText;
 	private PagingLoader<FilterPagingLoadConfig, PagingLoadResult<TableModel>> loader;
 	private static TableManagerViewImplUiBinder uiBinder = GWT
 			.create(TableManagerViewImplUiBinder.class);
@@ -79,7 +81,9 @@ public class TableManagerViewImpl implements TableManagerView {
 			TableManagerPresenter presenter) {
 		this.tableManagerPresenter = presenter;
 		this.context = context;
-
+		dbNameText = new TextField();
+		dbNameText.setWidth(280);
+		dbNameText.setEmptyText("数据库名称");
 		container = uiBinder.createAndBindUi(this);
 
 		commonTableContainer.add(getCommonGrid(), new VerticalLayoutData(1, 1));
@@ -161,7 +165,10 @@ public class TableManagerViewImpl implements TableManagerView {
 			filters.addFilter(myFilter);
 			final TextField filterText = myFilter.getField();
 			filterText.setWidth(280);
-			filterText.setEmptyText("关键词用空格隔开,'*'代表任意一个或多个字符");
+			filterText.setEmptyText("表名，关键词用空格隔开,'*'代表任意一个或多个字符");
+
+			commonTableContainer.add(dbNameText, new VerticalLayoutData(1, 30,
+					new Margins(3)));
 			commonTableContainer.add(filterText, new VerticalLayoutData(1, 30,
 					new Margins(3)));
 			GridSelectionModel<TableModel> gs = new GridSelectionModel<TableModel>();
@@ -196,7 +203,8 @@ public class TableManagerViewImpl implements TableManagerView {
 				@Override
 				public void load(FilterPagingLoadConfig loadConfig,
 						AsyncCallback<PagingLoadResult<TableModel>> callback) {
-					tableService.getPagingTables(loadConfig, null, callback);
+					String dbname = dbNameText.getValue();
+					tableService.getPagingTables(loadConfig, null, dbname, callback);
 				}
 			};
 			loader = new PagingLoader<FilterPagingLoadConfig, PagingLoadResult<TableModel>>(

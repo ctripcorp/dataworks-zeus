@@ -24,7 +24,7 @@ public class HDFSManager {
 
 	static {
 		try {
-			fs = FileSystem.get(ConfUtil.getDefaultCoreSite());
+			fs = FileSystem.get(ConfUtil.getDefaultCoreAndHdfsSite());
 		} catch (IOException e) {
 			log.error("Open HDFS FileSystem失败！", e);
 		}
@@ -53,12 +53,13 @@ public class HDFSManager {
 			return getPathSize(path);
 		}
 		try {
-			Configuration conf = ConfUtil.getDefaultCoreSite();
+			Configuration conf = ConfUtil.getDefaultCoreAndHdfsSite();
 			conf.set("hadoop.job.ugi", ugi);
 			FileSystem fs = FileSystem.get(conf);
+		
 			return fs.getContentSummary(new Path(path)).getLength();
-		} catch (IOException e) {
-			log.warn("查询路径大小失败！", e);
+		} catch (Exception e) {
+			log.warn("find path size error!", e);
 		}
 		return -1L;
 	}

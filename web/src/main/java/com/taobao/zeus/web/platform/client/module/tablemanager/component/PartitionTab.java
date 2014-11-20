@@ -3,6 +3,8 @@ package com.taobao.zeus.web.platform.client.module.tablemanager.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.hadoop.yarn.webapp.hamlet.Hamlet.THEAD;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -141,7 +143,7 @@ public class PartitionTab implements IsWidget {
         }
         Frame frame = new Frame(GWT.getHostPageBaseURL()
                 + "partition_download.do" + "?path=" + pm.getPath()
-                + "&table=" + panel.getTable().getName());
+                + "&table=" + panel.getTable().getName() + "&dbname=" + panel.getTable().getDbName());
         frame.setVisible(false);
         frame.setSize("0px", "0px");
         RootPanel.get().add(frame);

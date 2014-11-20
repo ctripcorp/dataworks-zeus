@@ -11,10 +11,10 @@ import com.taobao.zeus.web.platform.client.module.tablemanager.TablePreviewModel
 
 public interface TableManagerServiceAsync {
 
-	void getPagingTables(FilterPagingLoadConfig loadConfigString, String uid,
+	void getPagingTables(FilterPagingLoadConfig loadConfigString, String uid, String dbName,
 			AsyncCallback<PagingLoadResult<TableModel>> callback);
 
-	void getTableModel(String tableName, AsyncCallback<TableModel> callback);
+	void getTableModel(String dataBaseName, String tableName, AsyncCallback<TableModel> callback);
 
 	void getPreviewData(PartitionModel model,
 			AsyncCallback<TablePreviewModel> callback);

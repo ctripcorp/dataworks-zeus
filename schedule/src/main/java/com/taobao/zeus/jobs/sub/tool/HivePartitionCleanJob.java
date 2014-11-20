@@ -46,7 +46,8 @@ public class HivePartitionCleanJob extends AbstractJob {
 		cal.add(Calendar.DAY_OF_YEAR, keepDays * (-1));
 		Date limit = format.parse(format.format(cal.getTime()));
 		for (String tableName : tables) {
-			Table t = tableManager.getTable(tableName);
+			//FIXME hive
+			Table t = tableManager.getTable("default",tableName);
 			int ptIndex = -1;
 			for (FieldSchema fs : t.getPartitionKeys()) {
 				ptIndex++;
@@ -58,7 +59,8 @@ public class HivePartitionCleanJob extends AbstractJob {
 				log("表" + tableName + "不含pt分区字段，不进行历史分区清理");
 				continue;
 			}
-			List<Partition> parts = tableManager.getPartitions(tableName, null);
+			//FIXME hive
+			List<Partition> parts = tableManager.getPartitions("default",tableName, null);
 			for (Partition p : parts) {
 				Date ptDate = null;
 				try {

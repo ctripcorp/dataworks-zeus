@@ -257,7 +257,7 @@ public class Master {
 		for (MasterWorkerHolder worker : context.getWorkers().values()) {
 			HeartBeatInfo heart = worker.getHeart();
 			log.info("worker a : heart :" + heart.memRate);
-			if (heart != null && heart.memRate != null && heart.memRate < 0.8) {
+			if (heart != null && heart.memRate != null && heart.memRate < 0.95) {
 				if (selectWorker == null) {
 					selectWorker = worker;
 					selectMemRate = heart.memRate;

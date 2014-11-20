@@ -9,10 +9,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.Partition;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.yarn.webapp.hamlet.Hamlet.THEAD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.jobs.JobContext;
+import com.taobao.zeus.jobs.sub.conf.ConfUtil;
 import com.taobao.zeus.jobs.sub.tool.DataPreviewJob;
 import com.taobao.zeus.model.Profile;
 import com.taobao.zeus.store.HDFSManager;
@@ -64,8 +69,8 @@ public class TableManagerRpcImpl implements TableManagerService {
 	 * (java.lang.String)
 	 */
 	@Override
-	public TableModel getTableModel(String tableName) {
-		return convert(tableManager.getTable(tableName));
+	public TableModel getTableModel(String dbName, String tableName) {
+		return convert(tableManager.getTable(dbName, tableName));
 	}
 
 	/*
@@ -77,7 +82,7 @@ public class TableManagerRpcImpl implements TableManagerService {
 	 */
 	@Override
 	public PagingLoadResult<TableModel> getPagingTables(
-			FilterPagingLoadConfig loadConfig, String uid) throws GwtException {
+			FilterPagingLoadConfig loadConfig, String uid, String dbName) throws GwtException {
 		List<TableModel> tl;
 		int offset = loadConfig.getOffset();
 		int limit = loadConfig.getLimit();
@@ -94,8 +99,8 @@ public class TableManagerRpcImpl implements TableManagerService {
 		if (name.replace(" ", "").length() >= 3) {
 			int totalNum = 0;
 			try {
-				totalNum = tableManager.getTotalNumber(name);
-				tl = convertList(tableManager.getPagingTables(name, offset,
+				totalNum = tableManager.getTotalNumber(dbName, name);
+				tl = convertList(tableManager.getPagingTables(dbName, name, offset,
 						limit));
 			} catch (ZeusException e) {
 				throw new GwtException("获取分页表失败！", e);
@@ -186,7 +191,7 @@ public class TableManagerRpcImpl implements TableManagerService {
 	public List<PartitionModel> getPartitions(TableModel t) throws GwtException {
 		List<PartitionModel> pml = null;
 		try {
-			Table tb = tableManager.getTable(t.getName());
+			Table tb = tableManager.getTable(t.getDbName(), t.getName());
 			if(tb.getPartitionKeysSize()<=0){
 				//非分区表，添加一个默认分区
 				PartitionModel pm = new PartitionModel();
@@ -202,7 +207,7 @@ public class TableManagerRpcImpl implements TableManagerService {
 				pml.add(pm);
 				return pml;
 			}
-			List<Partition> pl = tableManager.getPartitions(t.getName(), 40);
+			List<Partition> pl = tableManager.getPartitions(t.getDbName(), t.getName(), 40);
 			pml = new ArrayList<PartitionModel>(pl.size());
 
 			for (Partition p : pl) {
@@ -228,7 +233,7 @@ public class TableManagerRpcImpl implements TableManagerService {
 						.getParameters().get(LINE_DELIMITER_KEY));
 				pm.setFieldDelim(fieldDelim);
 				pm.setLineDelim(lineDelim);
-
+				
 				pm.setCols(convert(sd.getCols()));
 				pm.setInputFormat(sd.getInputFormat());
 				pm.setCompressed(sd.isCompressed());
@@ -334,21 +339,21 @@ public class TableManagerRpcImpl implements TableManagerService {
 
 	@Override
 	public PartitionModel fillPartitionSize(PartitionModel p) {
+		try{
 		DecimalFormat df1 = new DecimalFormat("0 B");
 		DecimalFormat df2 = new DecimalFormat("0.000 KB");
 		DecimalFormat df3 = new DecimalFormat("0.000 MB");
 		DecimalFormat df4 = new DecimalFormat("0.000 GB");
-
 		Profile profile = profileManager.findByUid(LoginUser.getUser()
 				.getUid());
 		String ugi = null;
 		if (profile != null) {
 			ugi = profile.getHadoopConf().get(
 					"hadoop.hadoop.job.ugi");
-		}
+		}		
 		long size = HDFSManager.getPathSize(p.getPath(), ugi);
 		String sizeString = "";
-
+		log.info("file size: " + size);
 		if (size < 0) {
 			sizeString = "没有权限或路径不存在";
 		} else if (size < 1024) {
@@ -363,5 +368,10 @@ public class TableManagerRpcImpl implements TableManagerService {
 
 		p.setSize(sizeString);
 		return p;
+		}catch(Exception e){
+			log.error("fillPartitionSize error is ",e);
+			throw e;
+		}
+		
 	}
 }

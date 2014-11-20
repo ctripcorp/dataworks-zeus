@@ -235,7 +235,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 	public static final String PRIORITY_LEVEL = "run.priority.level";
 	public static final String ROLL_TIMES = "roll.back.times";
 	public static final String ROLL_INTERVAL = "roll.back.wait.time";
-	public static final String Encryption = "zeus.secret.script";
+	public static final String ENCRYPTION = "zeus.secret.script";
 	private void display(final JobModel model){
 		((Label)baseId.getWidget()).setText(model.getId());
 		((Label)baseName.getWidget()).setText(model.getName());
@@ -372,7 +372,16 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 					value=value.substring(0, value.indexOf("#"))+"*";
 				}
 				sb.append(key+"="+value+"<br/>");
-			}else{
+			}else if(key.equals(DEPENDENCY_CYCLE)||
+					key.equals(ENCRYPTION)||
+					key.equals(PRIORITY_LEVEL)||
+					key.equals(ROLL_TIMES)||
+					key.equals(ROLL_INTERVAL)
+					
+					)
+			{
+			}
+			else{
 				sb.append(key+"="+config.get(key)+"<br/>");
 			}
 		}

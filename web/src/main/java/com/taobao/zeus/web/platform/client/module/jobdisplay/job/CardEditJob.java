@@ -2,6 +2,7 @@ package com.taobao.zeus.web.platform.client.module.jobdisplay.job;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -143,40 +144,38 @@ public class CardEditJob extends CenterTemplate implements
 			}
 			model.setJobCycle(jobCycle.getValue().get("value"));
 			model.getPreProcessers().clear();
-			model.getLocalProperties().put(CardInfo.ROLL_INTERVAL, rollIntervalBox.getValue());
-			model.getLocalProperties().put(CardInfo.ROLL_TIMES, rollTimeBox.getValue().toString());
-			model.getLocalProperties().put(CardInfo.PRIORITY_LEVEL,jobPriorityBox.getValue().get("value"));
+			model.getLocalProperties().put(CardInfo.ROLL_INTERVAL,
+					rollIntervalBox.getValue());
+			model.getLocalProperties().put(CardInfo.ROLL_TIMES,
+					rollTimeBox.getValue().toString());
+			model.getLocalProperties().put(CardInfo.PRIORITY_LEVEL,
+					jobPriorityBox.getValue().get("value"));
 			String isEncryptionText = isEncryptionBox.getValue();
 			if ("no".equals(isEncryptionText)) {
-				model.getLocalProperties().put(CardInfo.Encryption,"true");
+				model.getLocalProperties().put(CardInfo.ENCRYPTION,"true");
 			}else {
-				model.getLocalProperties().remove(CardInfo.Encryption);
+				model.getLocalProperties().remove(CardInfo.ENCRYPTION);
 			}
 			// Hive处理器配置
-			/*if (notNullOrEmpty(outputTableField.getValue())
-					|| notNullOrEmpty(syncTableField.getValue())) {
-				HiveP p = new HiveP();
-				if (notNullOrEmpty(outputTableField.getValue())) {
-					p.setOutputTables(outputTableField.getValue());
-					if (keepDaysField.getValue() != null) {
-						p.setKeepDays(keepDaysField.getValue().toString());
-					}
-					if (driftPercentField.getValue() != null) {
-						p.setDriftPercent(driftPercentField.getValue()
-								.toString());
-					}
-				}
-				if (notNullOrEmpty(syncTableField.getValue())) {
-					p.setSyncTables(syncTableField.getValue());
-				}
-				model.getPreProcessers().add(p.getJsonObject());
-				model.getPostProcessers().add(p.getJsonObject());
-			}*/
+			/*
+			 * if (notNullOrEmpty(outputTableField.getValue()) ||
+			 * notNullOrEmpty(syncTableField.getValue())) { HiveP p = new
+			 * HiveP(); if (notNullOrEmpty(outputTableField.getValue())) {
+			 * p.setOutputTables(outputTableField.getValue()); if
+			 * (keepDaysField.getValue() != null) {
+			 * p.setKeepDays(keepDaysField.getValue().toString()); } if
+			 * (driftPercentField.getValue() != null) {
+			 * p.setDriftPercent(driftPercentField.getValue() .toString()); } }
+			 * if (notNullOrEmpty(syncTableField.getValue())) {
+			 * p.setSyncTables(syncTableField.getValue()); }
+			 * model.getPreProcessers().add(p.getJsonObject());
+			 * model.getPostProcessers().add(p.getJsonObject()); }
+			 */
 			// 自定义ZK
-			/*if (zkWindow.isOn()) {
-				model.getPostProcessers().add(
-						zkWindow.getProcesserType().getJsonObject());
-			}*/
+			/*
+			 * if (zkWindow.isOn()) { model.getPostProcessers().add(
+			 * zkWindow.getProcesserType().getJsonObject()); }
+			 */
 
 			RPCS.getJobService().updateJob(model,
 					new AbstractAsyncCallback<JobModel>() {
@@ -205,10 +204,10 @@ public class CardEditJob extends CenterTemplate implements
 		}
 	});
 
-	//private TextButton zk = new TextButton("自定义ZK[关闭]");
+	// private TextButton zk = new TextButton("自定义ZK[关闭]");
 
 	private FieldSet baseFieldSet;
-	//private FieldSet hiveProcesserFieldSet;
+	// private FieldSet hiveProcesserFieldSet;
 	private FieldSet configFieldSet;
 	private FieldSet scriptFieldSet;
 	private FieldSet resourceField;
@@ -220,11 +219,11 @@ public class CardEditJob extends CenterTemplate implements
 	private TextField baseDepJobs;
 	private ComboBox<Map<String, String>> baseDepCycle;
 	private TextField baseMain;
-	
+
 	private ComboBox<Integer> rollTimeBox;
 	private ComboBox<String> rollIntervalBox;
 	private ComboBox<Map<String, String>> jobPriorityBox;
-	
+
 	private ComboBox<String> isEncryptionBox;
 
 	private FieldLabel depCycleWapper;
@@ -234,19 +233,17 @@ public class CardEditJob extends CenterTemplate implements
 	private FieldLabel rollTimeWapper;
 	private FieldLabel rollIntervalWapper;
 	private FieldLabel jobPriorityWapper;
-	
+
 	private FieldLabel isEncryptionWapper;
-	
 
 	// add by gufei.wzy 辅助功能
-	/*private TextField outputTableField;
-	private FieldLabel outputTableLabel;
-	private TextField syncTableField;
-	private FieldLabel syncTableLabel;
-	private NumberField<Integer> keepDaysField;
-	private FieldLabel keepDaysLabel;
-	private NumberField<Integer> driftPercentField;
-	private FieldLabel driftPercentLabel;*/
+	/*
+	 * private TextField outputTableField; private FieldLabel outputTableLabel;
+	 * private TextField syncTableField; private FieldLabel syncTableLabel;
+	 * private NumberField<Integer> keepDaysField; private FieldLabel
+	 * keepDaysLabel; private NumberField<Integer> driftPercentField; private
+	 * FieldLabel driftPercentLabel;
+	 */
 
 	private CodeMirror script;
 	private TextArea configs;
@@ -262,14 +259,14 @@ public class CardEditJob extends CenterTemplate implements
 	private ComboBox<Map<String, String>> jobCycle;
 	private TextField hostField;
 
-	//private ZKProcesserWindow zkWindow = new ZKProcesserWindow(zk);
+	// private ZKProcesserWindow zkWindow = new ZKProcesserWindow(zk);
 
 	public CardEditJob(final JobPresenter presenter) {
 		this.presenter = presenter;
 
 		FlowLayoutContainer centerContainer = new FlowLayoutContainer();
 		centerContainer.add(getBaseFieldSet(), new MarginData(3));
-		//centerContainer.add(getHiveProcesserFieldSet(), new MarginData(3));
+		// centerContainer.add(getHiveProcesserFieldSet(), new MarginData(3));
 		centerContainer.add(getConfigFieldSet(), new MarginData(3));
 		centerContainer.add(getScriptFieldSet(), new MarginData(3));
 		centerContainer.add(getResourceField(), new MarginData(3));
@@ -282,86 +279,73 @@ public class CardEditJob extends CenterTemplate implements
 				presenter.display(presenter.getJobModel());
 			}
 		}));
-		/*zk.addBeforeSelectHandler(new BeforeSelectHandler() {
-			@Override
-			public void onBeforeSelect(BeforeSelectEvent event) {
-				event.setCancelled(true);
-				zkWindow.show();
-			}
-		});
-		addButton(zk);*/
+		/*
+		 * zk.addBeforeSelectHandler(new BeforeSelectHandler() {
+		 * 
+		 * @Override public void onBeforeSelect(BeforeSelectEvent event) {
+		 * event.setCancelled(true); zkWindow.show(); } }); addButton(zk);
+		 */
 		addButton(upload);
 		addButton(save);
 	}
-/*
-	private FieldSet getHiveProcesserFieldSet() {
-		if (hiveProcesserFieldSet == null) {
-			hiveProcesserFieldSet = new FieldSet();
-			hiveProcesserFieldSet.setCollapsible(true);
-			hiveProcesserFieldSet.setHeadingText("辅助功能配置");
-			hiveProcesserFieldSet.setHeight(160);
-			VerticalLayoutContainer container = new VerticalLayoutContainer();
-			outputTableField = new TextField();
-			outputTableField.setWidth(550);
-			outputTableField.setAutoValidate(true);
-			outputTableField
-					.setEmptyText("多个表用','分隔，用于产出检查和历史分区清理。只支持第一个分区字段为pt且最新分区为昨天的表");
-			ToolTipConfig outputTableToolTip = new ToolTipConfig();
-			outputTableToolTip = new ToolTipConfig();
-			outputTableToolTip
-					.setBodyHtml("<span style=\"display:inline;word-wrap:break-word;\">多个表用英文逗号分隔。用于产出检查和历史分区清理。</span>");
-			outputTableToolTip.setTitleHtml("产出的表");
-			outputTableToolTip.setMouseOffset(new int[] { 0, 0 });
-			outputTableToolTip.setAnchor(Side.BOTTOM);
-			outputTableToolTip.setMaxWidth(280);
-			outputTableToolTip.setHideDelay(3000);
-			// outputTableField.setToolTipConfig(outputTableToolTip);
 
-			syncTableField = new TextField();
-			syncTableField.setWidth(550);
-			syncTableField.setAutoValidate(true);
-			syncTableField.setEmptyText("多个表用';'分隔。参数之间用','分隔。");
-			syncTableField
-					.setToolTip("可选参数依次为 1.分区下子分区数目(默认1)2.要同步的日期与当天的差值（默认-1，也就是昨天）;<br/>如r_auction_auctions,2;ds_fdi_atplog_base,70,-5");
-			ToolTipConfig syncTableToolTip = new ToolTipConfig();
-			syncTableToolTip
-					.setBodyHtml("<span style=\"display:inline;word-wrap:break-word;\">多个表用英文分号';'分隔。可选参数依次为分区下子分区数目，要同步的日期，参数之间用英文逗号分隔。用于同步天网表。</span>");
-			syncTableToolTip.setTitleHtml("要同步的天网表");
-			syncTableToolTip.setMouseOffset(new int[] { 0, 0 });
-			syncTableToolTip.setAnchor(Side.TOP);
-			syncTableToolTip.setMaxWidth(280);
-			syncTableToolTip.setHideDelay(3000);
-			// syncTableField.setToolTipConfig(syncTableToolTip);
-
-			keepDaysField = new NumberField<Integer>(
-					new IntegerPropertyEditor());
-			keepDaysField.setEmptyText("天数之前的分区会自动删除");
-			keepDaysField.setAutoValidate(true);
-
-			driftPercentField = new NumberField<Integer>(
-					new IntegerPropertyEditor());
-			driftPercentField.setEmptyText("百分比（如30）");
-			driftPercentField.setToolTip("分区没有正常产出或者分区大小变化超过这个比例会发出报警");
-			driftPercentField.setAutoValidate(true);
-
-			outputTableLabel = new FieldLabel(outputTableField, "产出的表名");
-			outputTableLabel.setHeight(30);
-			syncTableLabel = new FieldLabel(syncTableField, "阻塞同步的天网表");
-			syncTableLabel.setHeight(30);
-			keepDaysLabel = new FieldLabel(keepDaysField, "分区保留天数");
-			keepDaysLabel.setHeight(30);
-			driftPercentLabel = new FieldLabel(driftPercentField, "产出数据浮动报警");
-			driftPercentLabel.setHeight(30);
-
-			container.add(syncTableLabel);
-			container.add(outputTableLabel);
-			container.add(driftPercentLabel);
-			container.add(keepDaysLabel);
-
-			hiveProcesserFieldSet.add(container);
-		}
-		return hiveProcesserFieldSet;
-	}*/
+	/*
+	 * private FieldSet getHiveProcesserFieldSet() { if (hiveProcesserFieldSet
+	 * == null) { hiveProcesserFieldSet = new FieldSet();
+	 * hiveProcesserFieldSet.setCollapsible(true);
+	 * hiveProcesserFieldSet.setHeadingText("辅助功能配置");
+	 * hiveProcesserFieldSet.setHeight(160); VerticalLayoutContainer container =
+	 * new VerticalLayoutContainer(); outputTableField = new TextField();
+	 * outputTableField.setWidth(550); outputTableField.setAutoValidate(true);
+	 * outputTableField
+	 * .setEmptyText("多个表用','分隔，用于产出检查和历史分区清理。只支持第一个分区字段为pt且最新分区为昨天的表");
+	 * ToolTipConfig outputTableToolTip = new ToolTipConfig();
+	 * outputTableToolTip = new ToolTipConfig(); outputTableToolTip
+	 * .setBodyHtml(
+	 * "<span style=\"display:inline;word-wrap:break-word;\">多个表用英文逗号分隔。用于产出检查和历史分区清理。</span>"
+	 * ); outputTableToolTip.setTitleHtml("产出的表");
+	 * outputTableToolTip.setMouseOffset(new int[] { 0, 0 });
+	 * outputTableToolTip.setAnchor(Side.BOTTOM);
+	 * outputTableToolTip.setMaxWidth(280);
+	 * outputTableToolTip.setHideDelay(3000); //
+	 * outputTableField.setToolTipConfig(outputTableToolTip);
+	 * 
+	 * syncTableField = new TextField(); syncTableField.setWidth(550);
+	 * syncTableField.setAutoValidate(true);
+	 * syncTableField.setEmptyText("多个表用';'分隔。参数之间用','分隔。"); syncTableField
+	 * .setToolTip(
+	 * "可选参数依次为 1.分区下子分区数目(默认1)2.要同步的日期与当天的差值（默认-1，也就是昨天）;<br/>如r_auction_auctions,2;ds_fdi_atplog_base,70,-5"
+	 * ); ToolTipConfig syncTableToolTip = new ToolTipConfig(); syncTableToolTip
+	 * .setBodyHtml(
+	 * "<span style=\"display:inline;word-wrap:break-word;\">多个表用英文分号';'分隔。可选参数依次为分区下子分区数目，要同步的日期，参数之间用英文逗号分隔。用于同步天网表。</span>"
+	 * ); syncTableToolTip.setTitleHtml("要同步的天网表");
+	 * syncTableToolTip.setMouseOffset(new int[] { 0, 0 });
+	 * syncTableToolTip.setAnchor(Side.TOP); syncTableToolTip.setMaxWidth(280);
+	 * syncTableToolTip.setHideDelay(3000); //
+	 * syncTableField.setToolTipConfig(syncTableToolTip);
+	 * 
+	 * keepDaysField = new NumberField<Integer>( new IntegerPropertyEditor());
+	 * keepDaysField.setEmptyText("天数之前的分区会自动删除");
+	 * keepDaysField.setAutoValidate(true);
+	 * 
+	 * driftPercentField = new NumberField<Integer>( new
+	 * IntegerPropertyEditor()); driftPercentField.setEmptyText("百分比（如30）");
+	 * driftPercentField.setToolTip("分区没有正常产出或者分区大小变化超过这个比例会发出报警");
+	 * driftPercentField.setAutoValidate(true);
+	 * 
+	 * outputTableLabel = new FieldLabel(outputTableField, "产出的表名");
+	 * outputTableLabel.setHeight(30); syncTableLabel = new
+	 * FieldLabel(syncTableField, "阻塞同步的天网表"); syncTableLabel.setHeight(30);
+	 * keepDaysLabel = new FieldLabel(keepDaysField, "分区保留天数");
+	 * keepDaysLabel.setHeight(30); driftPercentLabel = new
+	 * FieldLabel(driftPercentField, "产出数据浮动报警");
+	 * driftPercentLabel.setHeight(30);
+	 * 
+	 * container.add(syncTableLabel); container.add(outputTableLabel);
+	 * container.add(driftPercentLabel); container.add(keepDaysLabel);
+	 * 
+	 * hiveProcesserFieldSet.add(container); } return hiveProcesserFieldSet; }
+	 */
 
 	@Override
 	public void refresh(final JobModel t) {
@@ -403,23 +387,23 @@ public class CardEditJob extends CenterTemplate implements
 				}
 			}
 		}
-		
+
 		String rollInterval = t.getAllProperties().get(CardInfo.ROLL_INTERVAL);
 		if (rollInterval == null) {
-			rollIntervalBox.setValue(rollIntervalBox.getStore().get(0),true);
-		}else {
-			for (String data : rollIntervalBox.getStore().getAll()){
+			rollIntervalBox.setValue(rollIntervalBox.getStore().get(0), true);
+		} else {
+			for (String data : rollIntervalBox.getStore().getAll()) {
 				if (rollInterval.equals(data)) {
-					rollIntervalBox.setValue(data,true);
+					rollIntervalBox.setValue(data, true);
 					break;
 				}
 			}
 		}
-		
+
 		String rolltime = t.getAllProperties().get(CardInfo.ROLL_TIMES);
 		if (rolltime == null) {
 			rollTimeBox.setValue(rollTimeBox.getStore().get(0), true);
-		}else {
+		} else {
 			for (Integer data : rollTimeBox.getStore().getAll()) {
 				if (Integer.valueOf(rolltime.trim()).equals(data)) {
 					rollTimeBox.setValue(data, true);
@@ -427,25 +411,24 @@ public class CardEditJob extends CenterTemplate implements
 				}
 			}
 		}
-		
-		String isEncryptionStr = t.getAllProperties().get(CardInfo.Encryption);
+		String isEncryptionStr = t.getAllProperties().get(CardInfo.ENCRYPTION);
 		if (isEncryptionStr == null) {
-			isEncryptionBox.setValue("yes",true);
-		}else {
+			isEncryptionBox.setValue("yes", true);
+		} else {
 			if ("true".equals(isEncryptionStr)) {
-				isEncryptionBox.setValue("no",true);
-			}else {
+				isEncryptionBox.setValue("no", true);
+			} else {
 				isEncryptionBox.setValue("yes", true);
 			}
 		}
-		
+
 		String priorities = t.getAllProperties().get(CardInfo.PRIORITY_LEVEL);
-		if(priorities == null){
-			jobPriorityBox.setValue(jobPriorityBox.getStore().get(0),true);
-		}else {
-			for(Map<String, String> data : jobPriorityBox.getStore().getAll()){
+		if (priorities == null) {
+			jobPriorityBox.setValue(jobPriorityBox.getStore().get(0), true);
+		} else {
+			for (Map<String, String> data : jobPriorityBox.getStore().getAll()) {
 				if (data.get("value").equals(priorities)) {
-					jobPriorityBox.setValue(data,true);
+					jobPriorityBox.setValue(data, true);
 					break;
 				}
 			}
@@ -460,7 +443,6 @@ public class CardEditJob extends CenterTemplate implements
 				}
 			}
 		}
-		
 
 		if (t.getJobCycle() == null) {
 			jobCycle.setValue(jobCycle.getStore().get(0), true);
@@ -474,46 +456,51 @@ public class CardEditJob extends CenterTemplate implements
 		}
 
 		// 初始化一下各种处理器配置
-		//zkWindow.setOff();
-		/*outputTableField.setValue(null);
-		keepDaysField.setValue(null);
-		driftPercentField.setValue(null);
-		syncTableField.setValue(null);
-		for (String post : t.getPostProcessers()) {
-			if (post != null) {
-				ProcesserType p = ProcesserType.parse(post);
-				if (p != null) {
-					if (p.getId().equalsIgnoreCase("hive")) {
-						HiveP hiveP = (HiveP) p;
-						outputTableField.setValue(hiveP.getOutputTables());
-						if (hiveP.getKeepDays() != null) {
-							keepDaysField.setValue(Integer.parseInt(hiveP
-									.getKeepDays()));
-						}
-						if (hiveP.getDriftPercent() != null) {
-							driftPercentField.setValue(Integer.parseInt(hiveP
-									.getDriftPercent()));
-						}
-						syncTableField.setValue(hiveP.getSyncTables());
-					} else if (p.getId().equalsIgnoreCase("zookeeper")) {
-						if (!((ZooKeeperP) p).getUseDefault()) {
-							zkWindow.setProcesser((ZooKeeperP) p);
-						}
-					}
-				}
-			}
-		}*/
+		// zkWindow.setOff();
+		/*
+		 * outputTableField.setValue(null); keepDaysField.setValue(null);
+		 * driftPercentField.setValue(null); syncTableField.setValue(null); for
+		 * (String post : t.getPostProcessers()) { if (post != null) {
+		 * ProcesserType p = ProcesserType.parse(post); if (p != null) { if
+		 * (p.getId().equalsIgnoreCase("hive")) { HiveP hiveP = (HiveP) p;
+		 * outputTableField.setValue(hiveP.getOutputTables()); if
+		 * (hiveP.getKeepDays() != null) {
+		 * keepDaysField.setValue(Integer.parseInt(hiveP .getKeepDays())); } if
+		 * (hiveP.getDriftPercent() != null) {
+		 * driftPercentField.setValue(Integer.parseInt(hiveP
+		 * .getDriftPercent())); }
+		 * syncTableField.setValue(hiveP.getSyncTables()); } else if
+		 * (p.getId().equalsIgnoreCase("zookeeper")) { if (!((ZooKeeperP)
+		 * p).getUseDefault()) { zkWindow.setProcesser((ZooKeeperP) p); } } } }
+		 * }
+		 */
 
 		script.setValue(t.getScript() == null ? "" : t.getScript());
 		if (JobModel.MapReduce.equals(t.getJobRunType())) {
 			scriptFieldSet.hide();
-			//hiveProcesserFieldSet.hide();
+			// hiveProcesserFieldSet.hide();
 		} else {
 			scriptFieldSet.show();
-			//hiveProcesserFieldSet.show();
+			// hiveProcesserFieldSet.show();
 		}
-		configs.setValue(FormatUtil.convertPropertiesToEditString(t
-				.getLocalProperties()));
+		Map<String, String> conf = new HashMap<String, String>(
+				t.getLocalProperties());
+		if (conf.containsKey(CardInfo.DEPENDENCY_CYCLE)) {
+			conf.remove(CardInfo.DEPENDENCY_CYCLE);
+		}
+		if (conf.containsKey(CardInfo.ENCRYPTION)) {
+			conf.remove(CardInfo.ENCRYPTION);
+		}
+		if (conf.containsKey(CardInfo.PRIORITY_LEVEL)) {
+			conf.remove(CardInfo.PRIORITY_LEVEL);
+		}
+		if (conf.containsKey(CardInfo.ROLL_INTERVAL)) {
+			conf.remove(CardInfo.ROLL_INTERVAL);
+		}
+		if (conf.containsKey(CardInfo.ROLL_TIMES)) {
+			conf.remove(CardInfo.ROLL_TIMES);
+		}
+		configs.setValue(FormatUtil.convertPropertiesToEditString(conf));
 		resources.setValue(FormatUtil.convertResourcesToEditString(t
 				.getLocalResources()));
 
@@ -565,7 +552,7 @@ public class CardEditJob extends CenterTemplate implements
 					});
 			scheduleTypeStore.add(JobModel.INDEPEN_JOB);
 			scheduleTypeStore.add(JobModel.DEPEND_JOB);
-//			scheduleTypeStore.add(JobModel.CYCLE_JOB);
+			// scheduleTypeStore.add(JobModel.CYCLE_JOB);
 
 			baseScheduleType = new ComboBox<String>(scheduleTypeStore,
 					new LabelProvider<String>() {
@@ -726,52 +713,51 @@ public class CardEditJob extends CenterTemplate implements
 						}
 
 					});
-			
+
 			ListStore<Map<String, String>> levelStore = new ListStore<Map<String, String>>(
-					new ModelKeyProvider<Map<String,String>>() {
+					new ModelKeyProvider<Map<String, String>>() {
 						@Override
 						public String getKey(final Map<String, String> item) {
 							return item.get("key");
 						}
-					}
-					);
-			
-			Map<String, String> highmap = new HashMap<String,String>();
+					});
+
+			Map<String, String> highmap = new HashMap<String, String>();
 			highmap.put("key", "high");
 			highmap.put("value", "3");
-			Map<String, String> midmap = new HashMap<String,String>();
+			Map<String, String> midmap = new HashMap<String, String>();
 			midmap.put("key", "middle");
 			midmap.put("value", "2");
-			Map<String, String> lowmap = new HashMap<String,String>();
+			Map<String, String> lowmap = new HashMap<String, String>();
 			lowmap.put("key", "low");
 			lowmap.put("value", "1");
 			levelStore.add(highmap);
 			levelStore.add(midmap);
 			levelStore.add(lowmap);
-			jobPriorityBox = new ComboBox<Map<String, String>>(levelStore, 
-				new LabelProvider<Map<String, String>>() {
+			jobPriorityBox = new ComboBox<Map<String, String>>(levelStore,
+					new LabelProvider<Map<String, String>>() {
 
-					@Override
-					public String getLabel(Map<String, String> item) {
-						// TODO Auto-generated method stub
-						return item.get("key");
-					}
-				},new AbstractSafeHtmlRenderer<Map<String, String>>() {
+						@Override
+						public String getLabel(Map<String, String> item) {
+							// TODO Auto-generated method stub
+							return item.get("key");
+						}
+					}, new AbstractSafeHtmlRenderer<Map<String, String>>() {
 
-					@Override
-					public SafeHtml render(Map<String, String> object) {
-						ComboBoxTemplates t = GWT
-								.create(ComboBoxTemplates.class);
-						return t.display(object.get("key"));
-					}
-				}
-				);
-			ListStore<Integer> rollTimeStore = new ListStore<Integer>(new ModelKeyProvider<Integer>() {
-				@Override
-				public String getKey(Integer item) {
-					return item.toString();
-				}
-			});
+						@Override
+						public SafeHtml render(Map<String, String> object) {
+							ComboBoxTemplates t = GWT
+									.create(ComboBoxTemplates.class);
+							return t.display(object.get("key"));
+						}
+					});
+			ListStore<Integer> rollTimeStore = new ListStore<Integer>(
+					new ModelKeyProvider<Integer>() {
+						@Override
+						public String getKey(Integer item) {
+							return item.toString();
+						}
+					});
 			rollTimeStore.add(0);
 			rollTimeStore.add(1);
 			rollTimeStore.add(2);
@@ -782,22 +768,21 @@ public class CardEditJob extends CenterTemplate implements
 						public String getLabel(Integer item) {
 							return item.toString();
 						}
-					},
-					new AbstractSafeHtmlRenderer<Integer>() {
+					}, new AbstractSafeHtmlRenderer<Integer>() {
 						@Override
 						public SafeHtml render(Integer object) {
 							ComboBoxTemplates t = GWT
 									.create(ComboBoxTemplates.class);
 							return t.display(object.toString());
 						}
-					}
-					);
-			ListStore<String> rollIntervalStore = new ListStore<String>(new ModelKeyProvider<String>() {
-				@Override
-				public String getKey(String item) {
-					return item.toString();
-				}
-			});
+					});
+			ListStore<String> rollIntervalStore = new ListStore<String>(
+					new ModelKeyProvider<String>() {
+						@Override
+						public String getKey(String item) {
+							return item.toString();
+						}
+					});
 			rollIntervalStore.add("1");
 			rollIntervalStore.add("10");
 			rollIntervalStore.add("30");
@@ -808,23 +793,22 @@ public class CardEditJob extends CenterTemplate implements
 						public String getLabel(String item) {
 							return item;
 						}
-					},
-					new AbstractSafeHtmlRenderer<String>() {
+					}, new AbstractSafeHtmlRenderer<String>() {
 						@Override
 						public SafeHtml render(String object) {
 							ComboBoxTemplates t = GWT
 									.create(ComboBoxTemplates.class);
 							return t.display(object);
 						}
-					}
-					);
-			
-			ListStore<String> isEncryptionStore = new ListStore<String>(new ModelKeyProvider<String>() {
-				@Override
-				public String getKey(String item) {
-					return item.toString();
-				}
-			});
+					});
+
+			ListStore<String> isEncryptionStore = new ListStore<String>(
+					new ModelKeyProvider<String>() {
+						@Override
+						public String getKey(String item) {
+							return item.toString();
+						}
+					});
 			isEncryptionStore.add("yes");
 			isEncryptionStore.add("no");
 			isEncryptionBox = new ComboBox<String>(isEncryptionStore,
@@ -832,45 +816,41 @@ public class CardEditJob extends CenterTemplate implements
 						public String getLabel(String item) {
 							return item;
 						}
-					},
-					new AbstractSafeHtmlRenderer<String>() {
+					}, new AbstractSafeHtmlRenderer<String>() {
 						@Override
 						public SafeHtml render(String object) {
 							ComboBoxTemplates t = GWT
 									.create(ComboBoxTemplates.class);
 							return t.display(object);
 						}
-					}
-					);
+					});
 
-			
 			baseDepCycle.setWidth(150);
 			baseDepCycle.setTriggerAction(TriggerAction.ALL);
 			baseDepCycle.setEditable(false);
 			baseMain = new TextField();
 			baseMain.setWidth(150);
-			
+
 			jobPriorityBox.setWidth(150);
 			jobPriorityBox.setTriggerAction(TriggerAction.ALL);
 			jobPriorityBox.setEditable(false);
-			
+
 			rollTimeBox.setWidth(150);
 			rollTimeBox.setTriggerAction(TriggerAction.ALL);
 			rollTimeBox.setEditable(false);
-			
+
 			rollIntervalBox.setWidth(150);
 			rollIntervalBox.setTriggerAction(TriggerAction.ALL);
 			rollIntervalBox.setEditable(false);
-			
+
 			isEncryptionBox.setWidth(150);
 			isEncryptionBox.setTriggerAction(TriggerAction.ALL);
 			isEncryptionBox.setEditable(false);
-			
+
 			rollTimeWapper = new FieldLabel(rollTimeBox, "失败重试次数");
 			rollIntervalWapper = new FieldLabel(rollIntervalBox, "重试间隔（分）");
 			jobPriorityWapper = new FieldLabel(jobPriorityBox, "任务优先级");
 			isEncryptionWapper = new FieldLabel(isEncryptionBox, "脚本可见");
-			
 
 			depCycleWapper = new FieldLabel(baseDepCycle, "依赖周期");
 			depJobsWapper = new FieldLabel(baseDepJobs, "依赖任务");
@@ -881,9 +861,10 @@ public class CardEditJob extends CenterTemplate implements
 			mainWapper = new FieldLabel(baseMain, "Main类");
 			leftContainer.add(new FieldLabel(baseName, "名称"),
 					new VerticalLayoutData(1, -1));
-			leftContainer.add(rollTimeWapper, new VerticalLayoutData(1,-1));
-			leftContainer.add(rollIntervalWapper,new VerticalLayoutData(1, -1));
-			leftContainer.add(jobPriorityWapper,new VerticalLayoutData(1,-1));
+			leftContainer.add(rollTimeWapper, new VerticalLayoutData(1, -1));
+			leftContainer
+					.add(rollIntervalWapper, new VerticalLayoutData(1, -1));
+			leftContainer.add(jobPriorityWapper, new VerticalLayoutData(1, -1));
 			leftContainer.add(tzWapper, new VerticalLayoutData(1, -1));
 			leftContainer.add(cycleWapper, new VerticalLayoutData(1, -1));
 			leftContainer.add(new FieldLabel(baseDesc, "描述"),
@@ -895,8 +876,10 @@ public class CardEditJob extends CenterTemplate implements
 			rightContainer.add(depJobsWapper, new VerticalLayoutData(1, -1));
 			rightContainer.add(depCycleWapper, new VerticalLayoutData(1, -1));
 			rightContainer.add(offWapper, new VerticalLayoutData(1, -1));
-			rightContainer.add(new FieldLabel(hostField, "Host"), new VerticalLayoutData(1, -1));
-			rightContainer.add(isEncryptionWapper,new VerticalLayoutData(1,-1));
+			rightContainer.add(new FieldLabel(hostField, "Host"),
+					new VerticalLayoutData(1, -1));
+			rightContainer.add(isEncryptionWapper,
+					new VerticalLayoutData(1, -1));
 			leftContainer.add(mainWapper, new VerticalLayoutData(1, -1));
 
 		}

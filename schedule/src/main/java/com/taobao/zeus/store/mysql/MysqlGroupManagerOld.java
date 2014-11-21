@@ -635,6 +635,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		String script = persist.getScript();
 		String resources = persist.getResources();
 		String configs = persist.getConfigs();
+		String host = persist.getHost();
 		logger.info("begin updateActionList.");
 		HibernateTemplate template = getHibernateTemplate();
 		List<JobPersistence> actionList = template.find("from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId='"+ jobId +"' order by id desc");
@@ -645,6 +646,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 					actionPer.setScript(script);
 					actionPer.setResources(resources);
 					actionPer.setConfigs(configs);
+					actionPer.setHost(host);
 					actionPer.setGmtModified(new Date());
 					template.saveOrUpdate(actionPer);
 				}

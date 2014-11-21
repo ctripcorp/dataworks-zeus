@@ -62,14 +62,15 @@ public class HiveOutputCheckJob extends AbstractJob {
 		for (String tableName : this.tableNames) {
 
 			log("开始进行检测表：" + tableName);
-			Table t = tableManager.getTable(tableName);
+			//FIXME hive表
+			Table t = tableManager.getTable("default",tableName);
 			// 表不存在
 			if (t == null) {
 				tableFailed("表 " + tableName + " 不存在。");
 				continue;
 			}
-
-			List<Partition> parts = tableManager.getPartitions(tableName, null);
+			//FIXME hive
+			List<Partition> parts = tableManager.getPartitions("default", tableName, null);
 			// 没有分区
 			if (parts == null || parts.isEmpty()) {
 				tableFailed("表 " + tableName + " 没有获取到存在的分区。");

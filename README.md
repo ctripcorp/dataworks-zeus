@@ -43,3 +43,9 @@ JOB时间变更，action生成做调整：
 	2. 情况二：job定时修改前在下一次action生成之前，修改后在下一次action生成之后，当天有两个版本，修改后的时间在schedule中继续等待调度。
 	3. 情况三：job定时修改前和修改后都在下一次action生成之后，当天只有一个版本，删除修改前的时间版本。
 	4. 情况四：job定时修改后在下一次action生成之前，修改前在下一次action生成之后，当天只有一个版本，删除修改前的时间版本，后生成的版本status=failed，不会漏跑调度。
+	
+v0.21
+增加host修改即时生效功能.
+增加hive元数据展示功能.
+修复hive分区数据下载bug，改为访问hdfs api之前同时加载core-site.xml和hdfs-site.xml.
+屏蔽系统配置项"zeus.dependency.cycle"; "run.priority.level";"roll.back.times";"roll.back.wait.time";"zeus.secret.script"配置会展现但是不能够通过配置栏编辑。

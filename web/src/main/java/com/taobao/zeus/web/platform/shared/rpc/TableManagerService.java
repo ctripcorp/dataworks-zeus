@@ -18,6 +18,8 @@ import com.taobao.zeus.web.platform.client.util.GwtException;
  */
 @RemoteServiceRelativePath("table.rpc")
 public interface TableManagerService extends RemoteService {
+	
+	
 
 	/**
 	 * 获取一张hive表的model
@@ -25,19 +27,10 @@ public interface TableManagerService extends RemoteService {
 	 * @param tableName
 	 * @return
 	 */
-	TableModel getTableModel(String tableName);
+	TableModel getTableModel(String dataBaseName, String tableName);
 
-	/**
-	 * 分页获取hive表的model列表
-	 * 
-	 * @param loadConfigString
-	 * @param uid
-	 * @return
-	 * @throws GwtException
-	 */
 	PagingLoadResult<TableModel> getPagingTables(
-			FilterPagingLoadConfig loadConfigString, String uid)
-			throws GwtException;
+			FilterPagingLoadConfig loadConfigString, String uid, String dbName) throws GwtException;
 
 	/**
 	 * 获取预览数据
@@ -51,4 +44,6 @@ public interface TableManagerService extends RemoteService {
 	public List<PartitionModel> getPartitions(TableModel t) throws GwtException;
 
 	public PartitionModel fillPartitionSize(PartitionModel p);
+
+
 }

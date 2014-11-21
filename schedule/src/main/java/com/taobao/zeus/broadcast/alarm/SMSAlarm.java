@@ -43,6 +43,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 		}
 		message += "<br/>" + content;
 		int code = sendNOCAlarm(notifyUrl, accessToken, srcId, devId, itemId, level, message);
+		log.info("send noc alarm: "+title+"; message: "+message);
 //		System.out.println("send cats code:" + code);
 	}
 

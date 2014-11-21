@@ -84,7 +84,7 @@ public class ReadOnlyGroupManager extends HibernateDaoSupport{
 			@Override
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
-				Object[] o=(Object[]) session.createSQLQuery("select count(*),max(id),max(gmt_modified) from zeus_job").uniqueResult();
+				Object[] o=(Object[]) session.createSQLQuery("select count(*),max(job_id),max(gmt_modified) from zeus_action where id>=date_format(now(),'20%y%m%d0000000000')").uniqueResult();
 				if(o!=null){
 					Judge j=new Judge();
 					j.count=((Number) o[0]).intValue();
@@ -242,7 +242,7 @@ public class ReadOnlyGroupManager extends HibernateDaoSupport{
 			@Override
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
-				Object[] o=(Object[]) session.createSQLQuery("select count(*),max(id),max(gmt_modified) from zeus_job").uniqueResult();
+				Object[] o=(Object[]) session.createSQLQuery("select count(*),max(job_id),max(gmt_modified) from zeus_action where id>=date_format(now(),'20%y%m%d0000000000')").uniqueResult();
 				if(o!=null){
 					Judge j=new Judge();
 					j.count=((Number) o[0]).intValue();

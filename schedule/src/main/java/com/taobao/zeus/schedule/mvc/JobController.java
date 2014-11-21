@@ -308,9 +308,10 @@ public class JobController extends Controller {
 					if(Long.parseLong(jobId) < Long.parseLong(currentDateStr)){
 						JobHistory history = new JobHistory();
 						history.setIllustrate("漏跑任务,自动恢复执行");
-						history.setTriggerType(TriggerType.MANUAL_RECOVER);
+						history.setTriggerType(TriggerType.SCHEDULE);
 						history.setJobId(jobId);
 						history.setToJobId(jd.getToJobId());
+						history.setExecuteHost(jd.getHost());
 						if(jd != null){
 							history.setOperator(jd.getOwner() == null ? null : jd.getOwner());
 						}
@@ -618,7 +619,9 @@ public class JobController extends Controller {
 			return;
 		}
 		if (jobDescriptor.getDependencies().contains(event.getJobId())) {// 本Job依赖失败的Job
-			if (event.getTriggerType() == TriggerType.SCHEDULE) {// 依赖的Job
+			return;
+			//下游的所有依赖job不发送通知
+			/*if (event.getTriggerType() == TriggerType.SCHEDULE) {// 依赖的Job
 																	// 的失败类型是
 																	// SCHEDULE类型
 				// 自身依赖的Job失败了，表明自身也无法继续执行，抛出失败的消息
@@ -654,7 +657,7 @@ public class JobController extends Controller {
 						+ " is fail,dispatch the fail event");
 				// 广播消息
 				context.getDispatcher().forwardEvent(jfe);
-			}
+			}*/
 		}
 	}
 

@@ -85,13 +85,7 @@ public class CliTableManager implements TableManager {
 		List<Table> tables = new ArrayList<Table>();
 		try {
 			List<String> tbs = null;
-			if (dbName == null) {
-				tbs = client.getTables(DEFAULT_DB,
-						getPatternFromQuery(pattern));
-			}else {
-				tbs = client.getTables(dbName,
-						getPatternFromQuery(pattern));
-			}
+			tbs = client.getTables(dbName,getPatternFromQuery(pattern));
 			limit = offset + limit > tbs.size() ? tbs.size() - offset : limit;
 			for (String t : tbs.subList(offset, offset + limit)) {
 				tables.add(client.getTable(dbName, t));
@@ -111,8 +105,7 @@ public class CliTableManager implements TableManager {
 	@Override
 	public Table getTable(String dbName, String tableName) {
 		try {
-			if(dbName == null) return client.getTable(DEFAULT_DB, tableName);
-			else return client.getTable(dbName, tableName);
+			return client.getTable(dbName, tableName);
 		} catch (Exception e) {
 			log.warn("找不到该表:" + dbName+":" + tableName, e);
 		}
@@ -125,11 +118,7 @@ public class CliTableManager implements TableManager {
 			throws ZeusException {
 		List<Partition> l = null;
 		try {
-			if (dbName == null) {
-				l = client.listPartitions(DEFAULT_DB, tableName, (short) -1);
-			}else{
 				l = client.listPartitions(dbName, tableName, (short) -1);
-			}
 			if (limit != null && limit > 0) {
 				limit = limit > l.size() ? l.size() : limit;
 				l = l.subList(l.size() - limit, l.size());
@@ -152,11 +141,7 @@ public class CliTableManager implements TableManager {
 		}
 		try {
 			int size = 0;
-			if (dbName == null) {
-				size = client.getTables(DEFAULT_DB, getPatternFromQuery(pattern)).size();
-			}else {
-				size = client.getTables(dbName, getPatternFromQuery(pattern)).size();
-			}
+		    size = client.getTables(dbName, getPatternFromQuery(pattern)).size();
 			return size;
 		} catch (Exception e) {
 			throw new ZeusException("获取表数量信息失败", e);

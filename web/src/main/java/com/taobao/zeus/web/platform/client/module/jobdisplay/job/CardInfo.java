@@ -373,7 +373,6 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 				}
 				sb.append(key+"="+value+"<br/>");
 			}else if(key.equals(DEPENDENCY_CYCLE)||
-					key.equals(ENCRYPTION)||
 					key.equals(PRIORITY_LEVEL)||
 					key.equals(ROLL_TIMES)||
 					key.equals(ROLL_INTERVAL)			

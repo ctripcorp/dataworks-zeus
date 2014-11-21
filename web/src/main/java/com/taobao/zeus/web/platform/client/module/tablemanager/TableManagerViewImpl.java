@@ -204,7 +204,9 @@ public class TableManagerViewImpl implements TableManagerView {
 				public void load(FilterPagingLoadConfig loadConfig,
 						AsyncCallback<PagingLoadResult<TableModel>> callback) {
 					String dbname = dbNameText.getValue();
+					if(dbname != null){
 					tableService.getPagingTables(loadConfig, null, dbname, callback);
+					}
 				}
 			};
 			loader = new PagingLoader<FilterPagingLoadConfig, PagingLoadResult<TableModel>>(

@@ -61,6 +61,10 @@ public class DataPreviewJob extends AbstractJob {
 		}
 		JobConf confQ = new JobConf(conf);
 		FileSystem fs = FileSystem.get(confQ);
+		if (inputFormatString.equals("org.apache.hadoop.hive.ql.io.RCFileInputFormat")) {
+			log("暂时不支持RCFile访问 ");
+			throw new Exception("暂时不支持RCFile访问");
+		}
 
 		@SuppressWarnings("unchecked")
 		InputFormat<Writable, Writable> inputFormat = (InputFormat<Writable, Writable>) ReflectionUtils
@@ -82,6 +86,7 @@ public class DataPreviewJob extends AbstractJob {
 			@SuppressWarnings("deprecation")
 			InputSplit split = new FileSplit(f.getPath(), 0, f.getLen(),
 					new JobConf(conf));
+			//FIXME
 			reader = inputFormat.getRecordReader(split, confQ, Reporter.NULL);
 			Writable key = null;
 			Text textValue = new Text();

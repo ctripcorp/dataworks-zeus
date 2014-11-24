@@ -46,6 +46,8 @@ JOB时间变更，action生成做调整：
 	
 v0.21
 增加host修改即时生效功能.
-增加hive元数据展示功能.
+增加hive元数据展示功能,暂时不支持rcfile的展示。
 修复hive分区数据下载bug，改为访问hdfs api之前同时加载core-site.xml和hdfs-site.xml.
-屏蔽系统配置项"zeus.dependency.cycle"; "run.priority.level";"roll.back.times";"roll.back.wait.time";"zeus.secret.script"配置会展现但是不能够通过配置栏编辑。
+屏蔽系统配置项"zeus.dependency.cycle"; "run.priority.level";"roll.back.times";"roll.back.wait.time"。"zeus.secret.script"配置会展现但是不能够通过配置栏编辑。
+修复了漏跑host指定的bug.
+修复了漏发邮件缓存刷新的bug.

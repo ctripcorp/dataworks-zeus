@@ -71,22 +71,22 @@ public class PartitionDownloadServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		ZeusUser user = LoginUser.getUser();
+		String dbName = req.getParameter("dbname");
         String tableName = req.getParameter("table");
         String pathString = req.getParameter("path");
-
 		resp.setCharacterEncoding("GBK");
 		resp.setContentType("text/csv");
 		resp.setHeader("Content-disposition", "attachment;filename="
 				+ tableName + ".csv");
 		PrintWriter w = resp.getWriter();
 
-		TableModel t = tableManager.getTableModel(tableName);
+		TableModel t = tableManager.getTableModel(dbName,tableName);
 		String inputFormatString = t.getInputFormat();
 		char fieldDelim = t.getFieldDelim()==null? DEFAULT_FIELD_DELIM:t.getFieldDelim().toCharArray()[0];
 		char lineDelim = t.getLineDelim() == null ? DEFAULT_LINE_DELIM : t
 				.getLineDelim().toCharArray()[0];
 
-		final Configuration conf = ConfUtil.getDefaultCoreSite();
+		final Configuration conf = ConfUtil.getDefaultCoreAndHdfsSite();
 		Profile profile = profileManager.findByUid(user.getUid());
 		if (profile != null) {
 			String ugi = profile.getHadoopConf().get("hadoop.hadoop.job.ugi");

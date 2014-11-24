@@ -308,9 +308,10 @@ public class JobController extends Controller {
 					if(Long.parseLong(jobId) < Long.parseLong(currentDateStr)){
 						JobHistory history = new JobHistory();
 						history.setIllustrate("漏跑任务,自动恢复执行");
-						history.setTriggerType(TriggerType.MANUAL_RECOVER);
+						history.setTriggerType(TriggerType.SCHEDULE);
 						history.setJobId(jobId);
 						history.setToJobId(jd.getToJobId());
+						history.setExecuteHost(jd.getHost());
 						if(jd != null){
 							history.setOperator(jd.getOwner() == null ? null : jd.getOwner());
 						}
@@ -618,6 +619,8 @@ public class JobController extends Controller {
 			return;
 		}
 		if (jobDescriptor.getDependencies().contains(event.getJobId())) {// 本Job依赖失败的Job
+			//return;
+			//2014-11-21修改规则：下游的所有依赖job不发送通知 (客户要求发送，此规则恢复到修改前)
 			if (event.getTriggerType() == TriggerType.SCHEDULE) {// 依赖的Job
 																	// 的失败类型是
 																	// SCHEDULE类型

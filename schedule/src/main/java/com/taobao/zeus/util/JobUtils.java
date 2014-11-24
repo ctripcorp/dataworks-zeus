@@ -115,7 +115,7 @@ public class JobUtils {
 		System.out.println("Manual Job run date :"+dateStr);
 		if(dateStr != null && dateStr.length() == 14){
 			script = RenderHierarchyProperties.render(script, dateStr);
-			System.out.println("Manual Job script :"+script);
+//			System.out.println("Manual Job script :"+script);
 		}		
 		///*********************************************************
 		// 处理脚本中的 资源引用 语句
@@ -131,7 +131,7 @@ public class JobUtils {
 		}else{
 			script = replace(jobContext.getProperties().getAllProperties(), script);
 		}
-		System.out.println("Manual Job last script :"+script);
+//		System.out.println("Manual Job last script :"+script);
 		script=replaceScript(history,script);
 		hp.setProperty(PropertyKeys.JOB_SCRIPT, script);
 

@@ -619,9 +619,9 @@ public class JobController extends Controller {
 			return;
 		}
 		if (jobDescriptor.getDependencies().contains(event.getJobId())) {// 本Job依赖失败的Job
-			return;
-			//下游的所有依赖job不发送通知
-			/*if (event.getTriggerType() == TriggerType.SCHEDULE) {// 依赖的Job
+			//return;
+			//2014-11-21修改规则：下游的所有依赖job不发送通知 (客户要求发送，此规则恢复到修改前)
+			if (event.getTriggerType() == TriggerType.SCHEDULE) {// 依赖的Job
 																	// 的失败类型是
 																	// SCHEDULE类型
 				// 自身依赖的Job失败了，表明自身也无法继续执行，抛出失败的消息
@@ -657,7 +657,7 @@ public class JobController extends Controller {
 						+ " is fail,dispatch the fail event");
 				// 广播消息
 				context.getDispatcher().forwardEvent(jfe);
-			}*/
+			}
 		}
 	}
 

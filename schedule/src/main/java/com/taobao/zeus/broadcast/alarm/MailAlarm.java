@@ -54,8 +54,7 @@ public class MailAlarm extends AbstractZeusAlarm{
 			if(emails.size()>0){
 				content = content.replace("<br/>", "\r\n");
 				sendEmail(emails,title,content);
-				log.info("send email: " + emails + "; from: " + from + " title: "+title+"; content: "+content);
-				log.info("send success!");
+				log.info("send email success: [" + emails + "]; from: [" + from + "]; title: "+title);
 			}
 		}
 	}

@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.model.ZeusFollow;
 import com.taobao.zeus.store.FollowManager;
+import com.taobao.zeus.store.FollowManagerOld;
 import com.taobao.zeus.store.GroupBeanOld;
 import com.taobao.zeus.store.JobBeanOld;
 import com.taobao.zeus.store.JobHistoryManager;
@@ -31,7 +32,7 @@ public class TreeServiceImpl implements TreeService{
 	@Autowired
 	private ReadOnlyGroupManagerOld readOnlyGroupManager;
 	@Autowired
-	private FollowManager followManager;
+	private FollowManagerOld followManagerOld;
 	@Autowired
 	private JobHistoryManager jobHistoryManager;
 	
@@ -90,7 +91,7 @@ public class TreeServiceImpl implements TreeService{
 	private GroupJobTreeModel getTreeData(GroupBeanOld rootGroup) {
 		
 		String uid=LoginUser.getUser().getUid();
-		List<ZeusFollow> list=followManager.findAllTypeFollows(uid);
+		List<ZeusFollow> list=followManagerOld.findAllTypeFollows(uid);
 		Map<String, Boolean> groupFollow=new HashMap<String, Boolean>();
 		Map<String, Boolean> jobFollow=new HashMap<String, Boolean>();
 		for(ZeusFollow f:list){
@@ -166,12 +167,12 @@ public class TreeServiceImpl implements TreeService{
 
 	@Override
 	public void follow(int type, String targetId) {
-		followManager.addFollow(LoginUser.getUser().getUid(), type, targetId);
+		followManagerOld.addFollow(LoginUser.getUser().getUid(), type, targetId);
 	}
 
 	@Override
 	public void unfollow(int type, String targetId) {
-		followManager.deleteFollow(LoginUser.getUser().getUid(), type, targetId);
+		followManagerOld.deleteFollow(LoginUser.getUser().getUid(), type, targetId);
 	}
 
 	@Override

@@ -152,8 +152,7 @@
 	<build>
 		<finalName>zeus-web</finalName>
 		<filters>
-<!-- 			<filter>${user.home}/prometheus/antx.properties</filter> -->
-			<filter>src/main/resources/antx.properties</filter>
+			<filter>src/main/filter/antx.properties</filter>
 		</filters>
 		<resources>
 			<resource>

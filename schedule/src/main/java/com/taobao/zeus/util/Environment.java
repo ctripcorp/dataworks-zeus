@@ -2,6 +2,9 @@ package com.taobao.zeus.util;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * 环境类
@@ -12,8 +15,8 @@ import java.io.File;
  */
 public class Environment {
 
+	private static Logger log = LoggerFactory.getLogger(Environment.class);
 	private static String env;
-	
 	/**
 	 * 执行job需要下载资源文件时用到的路径
 	 */
@@ -54,6 +57,15 @@ public class Environment {
 		Environment.notifyUrl=notifyUrl.trim();
 		Environment.accessToken=accessToken.trim();
 		Environment.excludeFile=excludeFile.trim();
+		log.info("the env is " + env.trim());
+		log.info("the downloadPath is " + downloadPath.trim());
+		log.info("the hadoopHome is " + hadoopHome.trim());
+		log.info("the hadoopConfDir is " + hadoopConfDir.trim());
+		log.info("the hiveHome is " + hiveHome.trim());
+		log.info("the hiveConfDir is " + hiveConfDir.trim());
+		log.info("the host is " + host.trim());
+		log.info("the port is " + port.trim());
+		log.info("the excludeFile is " + excludeFile.trim());
 	}
 	
 	public static String getNotifyUrl() {

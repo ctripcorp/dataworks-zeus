@@ -1,5 +1,10 @@
 package com.taobao.zeus.broadcast.alarm;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URLEncoder;
@@ -8,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -42,13 +49,13 @@ public class SMSAlarm extends AbstractZeusAlarm{
 			}
 		}
 		message += "<br/>" + content;
-		int code = sendNOCAlarm(notifyUrl, accessToken, srcId, devId, itemId, level, message);
-		log.info("send noc alarm: "+title+"; message: "+message);
-//		System.out.println("send cats code:" + code);
+		sendNOCAlarm(notifyUrl, accessToken, srcId, devId, itemId, level, message);
 	}
 
 	@SuppressWarnings("deprecation")
-	public Integer sendNOCAlarm(String sendUrl, String accessToken, String srcId, String devId, String itemId, String level, String message) {
+	public void sendNOCAlarm(String sendUrl, String accessToken, String srcId, String devId, String itemId, String level, String message) {
+		log.info("begin to send the noc, the srcId is " + srcId + ", the devId is " + devId + ", the itemId is " + itemId + ".");
+		log.info("The message is " + message);
         HttpClient client = new HttpClient();
 		PostMethod method = new PostMethod(sendUrl);
 		method.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -58,14 +65,24 @@ public class SMSAlarm extends AbstractZeusAlarm{
 			bodyMap.put("request_body", "njson=" + getRequestBody(srcId, devId, itemId, level, message));
 			method.setRequestBody(JsonUtil.map2json(bodyMap).toString());
 			int code = client.executeMethod(method);
-			if (code != 200) {
+			log.info("The return code is " + HttpStatus.SC_OK);
+			BufferedReader in = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
+			String responseBodyAsString = null;
+			while ((responseBodyAsString = in.readLine()) != null) {
+				log.info("The response body is " + responseBodyAsString);
+			}	
+			if (code !=  HttpStatus.SC_OK) {
 				log.error("send cats failed, code: " + code);
+				return;
 			}
-			return code;
-		} catch(Exception e) {
-			e.printStackTrace();
-			return 0;
-		} 
+			log.info("Send noc successfully!");
+		} catch(HttpException  e) {
+			log.error("send noc fail," + e.getMessage());
+		} catch (IOException e) {
+			log.error("send noc fail," + e.getMessage());
+		} catch (Exception e) {
+			log.error("send noc fail," + e.getMessage());
+		}
    }
    
 	private String getRequestBody(String srcId, String devId, String itemId, String level, String message) throws UnsupportedEncodingException {

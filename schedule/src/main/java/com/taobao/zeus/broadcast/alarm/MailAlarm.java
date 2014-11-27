@@ -2,6 +2,8 @@ package com.taobao.zeus.broadcast.alarm;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.taobao.zeus.store.UserManager;
@@ -11,6 +13,7 @@ import com.taobao.zeus.util.Environment;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
@@ -22,7 +25,7 @@ import javax.mail.internet.MimeMessage;
 public class MailAlarm extends AbstractZeusAlarm{
 	@Autowired
 	private UserManager userManager;
-	
+	private static Logger log = LoggerFactory.getLogger(MailAlarm.class);
     private static String host = Environment.getHost();//邮件服务器
 	private static String port = Environment.getPort();//端口
     private static String from = Environment.getSendFrom();//发送者
@@ -32,7 +35,6 @@ public class MailAlarm extends AbstractZeusAlarm{
 	@Override
 	public void alarm(List<String> users, String title, String content)
 			throws Exception {
-//		System.out.println("send email: "+host+" | "+port+" | "+from+" | "+user+" | "+password);
 		List<ZeusUser> userList = userManager.findListByUid(users);
 		List<String> emails = new ArrayList<String>();
 		if(userList != null && userList.size()>0){
@@ -54,14 +56,13 @@ public class MailAlarm extends AbstractZeusAlarm{
 			if(emails.size()>0){
 				content = content.replace("<br/>", "\r\n");
 				sendEmail(emails,title,content);
-				log.info("send email: " + emails + "; from: " + from + " title: "+title+"; content: "+content);
-				log.info("send success!");
 			}
 		}
 	}
 
     public static void sendEmail(List<String> emails, String subject, String body) {
         try {
+        	log.info("begin to send the email!");
             Properties props = new Properties();
             props.put("mail.smtp.host", host);
             props.put("mail.smtp.port", port);
@@ -83,10 +84,14 @@ public class MailAlarm extends AbstractZeusAlarm{
             msg.setText(body, "UTF-8");
             msg.saveChanges();
             transport.sendMessage(msg, msg.getAllRecipients());
+            log.info("send email: " + emails + "; from: " + from + " subject: "+subject);
+			log.info("send success!");
         } catch (NoSuchProviderException e) {
-            e.printStackTrace();
+           log.info("fail to send the mail, " + e.getMessage());
         } catch (MessagingException e) {
-            e.printStackTrace();
-        }
+           log.info("fail to send the mail, " + e.getMessage());
+        } catch (Exception e) {
+           log.info("fail to send the mail, " + e.getMessage());
+		}
     }
 }

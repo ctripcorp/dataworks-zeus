@@ -414,7 +414,7 @@ public class JobController extends Controller {
 		history.setIllustrate("依赖任务全部到位，开始执行");
 		history.setTriggerType(TriggerType.SCHEDULE);
 		history.setJobId(jobId);
-		System.out.println("依赖任务执行的operator ："+jobDescriptor.getOwner());
+//		System.out.println("依赖任务执行的operator ："+jobDescriptor.getOwner());
 		history.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
 		history.setToJobId(jobDescriptor.getToJobId() == null ? null : jobDescriptor.getToJobId());
 		history.setExecuteHost(jobDescriptor.getHost());

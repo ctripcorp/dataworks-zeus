@@ -3,13 +3,18 @@ package com.taobao.zeus.store;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.taobao.zeus.model.GroupDescriptor;
 import com.taobao.zeus.model.JobDescriptor;
 import com.taobao.zeus.model.JobDescriptor.JobScheduleType;
 import com.taobao.zeus.model.JobStatus;
+import com.taobao.zeus.socket.master.Master;
 import com.taobao.zeus.util.Tuple;
 
 public class GroupManagerTool {
+	private static Logger log = LoggerFactory.getLogger(Master.class);
 
 	public static GroupBean getUpstreamGroupBean(String groupId,GroupManager groupManager) {
 		GroupDescriptor group=groupManager.getGroupDescriptor(groupId);
@@ -35,9 +40,13 @@ public class GroupManagerTool {
 		for(JobBean j1:allJobBeans.values()){
 			if(j1.getJobDescriptor().getScheduleType()==JobScheduleType.Dependent){
 				for(String depId:j1.getJobDescriptor().getDependencies()){
-					JobBean depJob=allJobBeans.get(depId);
-					j1.addDependee(depJob);
-					depJob.addDepender(j1);
+					try{
+						JobBean depJob=allJobBeans.get(depId);
+						j1.addDependee(depJob);
+						depJob.addDepender(j1);
+					}catch(Exception e){
+						log.error("the jobid is" + j1.getJobDescriptor().getId() + ", the depId is " + depId);
+					}
 				}
 			}
 		}

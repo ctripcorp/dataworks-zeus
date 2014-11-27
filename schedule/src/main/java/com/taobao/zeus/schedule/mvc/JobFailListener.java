@@ -125,7 +125,8 @@ public class JobFailListener extends DispatcherListener{
 						int hour=now.get(Calendar.HOUR_OF_DAY);
 						int day=now.get(Calendar.DAY_OF_WEEK);
 						if(day==Calendar.SATURDAY || day==Calendar.SUNDAY || hour<9 || hour>18){
-							smsAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
+							String historyId = event.getHistory().getId();
+							smsAlarm.alarm(historyId, "宙斯报警", "宙斯"+msg,chain);
 						}
 					}
 				}

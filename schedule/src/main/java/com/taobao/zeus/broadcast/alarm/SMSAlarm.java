@@ -1,8 +1,6 @@
 package com.taobao.zeus.broadcast.alarm;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URLEncoder;
@@ -53,9 +51,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 
 	@SuppressWarnings("deprecation")
 	public void sendNOCAlarm(String sendUrl, String accessToken, String srcId, String devId, String itemId, String level, String message) {
-		log.info("begin to send the noc, the srcId is " + srcId + ", the devId is " + devId + ", the itemId is " + itemId + ".");
-		log.info("the message is " + message);
-		log.info("the sendUrl is " + sendUrl);
+		log.info("begin to send the noc, the srcId is " + srcId + ", the devId is " + devId + ", the itemId is " + itemId + ". the message is " + message + ". the sendUrl is " + sendUrl);
         HttpClient client = new HttpClient();
 		PostMethod method = new PostMethod(sendUrl);
 		Gson gson = new Gson();
@@ -69,10 +65,10 @@ public class SMSAlarm extends AbstractZeusAlarm{
 			int code = client.executeMethod(method);
 			log.info("the return code is " + HttpStatus.SC_OK);
 			String responseBodyAsString = method.getResponseBodyAsString(2000);
-			log.info("the return is " + responseBodyAsString);
-			ReturnJson rJ = null;
+			log.info("the response body is " + responseBodyAsString);
+			ResponseJson rJ = null;
 			if (responseBodyAsString != null) {
-				rJ = gson.fromJson(responseBodyAsString, ReturnJson.class);
+				rJ = gson.fromJson(responseBodyAsString, ResponseJson.class);
 			}
 			if (code !=  HttpStatus.SC_OK || rJ == null || !rJ.isSuccess()) {
 				log.error("send noc failed, code: " + code);
@@ -100,7 +96,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 		return URLEncoder.encode(JsonUtil.map2json(param).toString(), "utf-8");
 	}
 	
-	class ReturnJson{
+	class ResponseJson{
 
 		private String message;
 		private String data;
@@ -143,7 +139,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 		String returnString = "{\"message\": \"\", \"data\": \"enqueue\", \"success\": true, \"error\": 0}";
 //		String returnString = null;
 		Gson gson = new Gson();
-		ReturnJson rJson = gson.fromJson(returnString, ReturnJson.class);
+		ResponseJson rJson = gson.fromJson(returnString, ResponseJson.class);
 		System.out.println("the message is " + rJson.getMessage());
 		System.out.println("the data is " + rJson.getData());
 		System.out.println("the error is " + rJson.getError());

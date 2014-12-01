@@ -95,7 +95,7 @@ public class JobValidate {
 	private void check(String parentJobId,Set<JobBean> deps) throws ZeusException{
 		for(JobBean job:deps){
 			if(job.getJobDescriptor().getId().equals(parentJobId)){
-				throw new ZeusException("存在死循环依赖，请检查!");
+				throw new ZeusException("存在死循环依赖，请检查JobId: " + parentJobId);
 			}
 			if(job.getJobDescriptor().getScheduleType()==JobScheduleType.Dependent){
 				check(parentJobId,job.getDependee());

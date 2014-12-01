@@ -107,28 +107,36 @@ public class JobFailListener extends DispatcherListener{
 						}
 					};
 				}.start();
-				
-				String msg="Job任务("+jobId+"-"+owner.getName()+"):"+jobBean.getJobDescriptor().getName()+" 运行失败";
-				if(!jobBean.getDepender().isEmpty()){
-					msg+=",影响范围:"+getDependencyJobs(jobBean);
-				}
-				if(!causeJobId.equalsIgnoreCase(event.getJobId())){
-					msg+="(根本原因:job "+causeJobId+"运行失败)";
-				}
-				//优先级低的不NOC告警
-				String priorityLevel = jobBean.getJobDescriptor().getProperties().get("run.priority.level");
-				if(priorityLevel == null || !priorityLevel.trim().equals("1")){
-					//手机报警
-					//只发送自动调度的报警  并且只在下班时间 或者周末发送
-					if(event.getHistory().getTriggerType()==TriggerType.SCHEDULE){
-						Calendar now=Calendar.getInstance();
-						int hour=now.get(Calendar.HOUR_OF_DAY);
-						int day=now.get(Calendar.DAY_OF_WEEK);
-						if(day==Calendar.SATURDAY || day==Calendar.SUNDAY || hour<9 || hour>17){
-							smsAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
+				new Thread(){
+					@Override
+					public void run(){
+						String msg="Job任务("+jobId+"-"+owner.getName()+"):"+jobBean.getJobDescriptor().getName()+" 运行失败";
+						if(!jobBean.getDepender().isEmpty()){
+							msg+=",影响范围:"+getDependencyJobs(jobBean);
+						}
+						if(!causeJobId.equalsIgnoreCase(event.getJobId())){
+							msg+="(根本原因:job "+causeJobId+"运行失败)";
+						}
+						//优先级低的不NOC告警
+						String priorityLevel = jobBean.getJobDescriptor().getProperties().get("run.priority.level");
+						if(priorityLevel == null || !priorityLevel.trim().equals("1")){
+							//手机报警
+							//只发送自动调度的报警  并且只在下班时间 或者周末发送
+							if(event.getHistory().getTriggerType()==TriggerType.SCHEDULE){
+								Calendar now=Calendar.getInstance();
+								int hour=now.get(Calendar.HOUR_OF_DAY);
+								int day=now.get(Calendar.DAY_OF_WEEK);
+								if(day==Calendar.SATURDAY || day==Calendar.SUNDAY || hour<9 || hour>18){
+									try {
+										smsAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
+									} catch (Exception e) {
+										log.error("NOC发送出现异常",e);
+									}
+								}
+							}
 						}
 					}
-				}
+				}.start();
 			}
 		} catch (Exception e) {
 			//处理异常，防止后续的依赖任务受此影响，无法正常执行

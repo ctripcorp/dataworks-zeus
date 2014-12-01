@@ -114,4 +114,7 @@ public class GroupBean implements Serializable{
 	public void setParentGroupBean(GroupBean parentGroupBean) {
 		this.parentGroupBean = parentGroupBean;
 	}
+	public boolean isExisted(){
+		return groupDescriptor.isExisted();
+	}
 }

@@ -51,3 +51,8 @@ v0.21
 屏蔽系统配置项"zeus.dependency.cycle"; "run.priority.level";"roll.back.times";"roll.back.wait.time"。"zeus.secret.script"配置会展现但是不能够通过配置栏编辑。
 修复了漏跑host指定的bug.
 修复了漏发邮件缓存刷新的bug.
+
+v0.22
+对alarm模块的打日志进行了规范。
+修改SMSalarm规则，去掉\和[]符号。
+删除组不从数据库删除，而将组标志位置为0。(exisited为1表示组存在)

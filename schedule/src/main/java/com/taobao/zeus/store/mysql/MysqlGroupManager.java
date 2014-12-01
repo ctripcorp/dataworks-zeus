@@ -33,6 +33,7 @@ import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.model.processer.DownloadProcesser;
 import com.taobao.zeus.model.processer.Processer;
 import com.taobao.zeus.store.GroupBean;
+import com.taobao.zeus.store.GroupBeanOld;
 import com.taobao.zeus.store.GroupManager;
 import com.taobao.zeus.store.GroupManagerTool;
 import com.taobao.zeus.store.JobBean;
@@ -54,7 +55,17 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 	public void deleteGroup(String user, String groupId) throws ZeusException {
 		GroupBean group = getDownstreamGroupBean(groupId);
 		if (group.isDirectory()) {
-			if (!group.getChildrenGroupBeans().isEmpty()) {
+//			if (!group.getChildrenGroupBeans().isEmpty()) {
+//				throw new ZeusException("该组下不为空，无法删除");
+//			}
+			boolean candelete = true;
+			for (GroupBean child : group.getChildrenGroupBeans()) {
+				if (child.isExisted()) {
+					candelete = false;
+					break;
+				}
+			}
+			if (!candelete) {
 				throw new ZeusException("该组下不为空，无法删除");
 			}
 		} else {
@@ -62,9 +73,10 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 				throw new ZeusException("该组下不为空，无法删除");
 			}
 		}
-		getHibernateTemplate().delete(
-				getHibernateTemplate().get(GroupPersistence.class,
-						Integer.valueOf(groupId)));
+		GroupPersistence object = (GroupPersistence)getHibernateTemplate().get(GroupPersistence.class,
+				Integer.valueOf(groupId));
+		object.setExisted(0);
+		getHibernateTemplate().update(object);
 	}
 
 	@Override
@@ -343,13 +355,12 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 		group.setName(groupName);
 		group.setParent(parentGroup);
 		group.setDirectory(isDirectory);
-
 		GroupValidate.valide(group);
 
 		GroupPersistence persist = PersistenceAndBeanConvert.convert(group);
 		persist.setGmtCreate(new Date());
 		persist.setGmtModified(new Date());
-
+		persist.setExisted(1);
 		getHibernateTemplate().save(persist);
 		return PersistenceAndBeanConvert.convert(persist);
 	}

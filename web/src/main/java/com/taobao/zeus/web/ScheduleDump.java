@@ -355,7 +355,7 @@ public class ScheduleDump extends HttpServlet {
 							resp.getWriter().println("<a href='dump.do?op=workers'>查看master-worker 状态</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=queue' >等待队列任务</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=action' >生成Action版本</a>&nbsp;&nbsp;&nbsp;&nbsp;");
-							resp.getWriter().println("<a href='dump.do?op=clear' >清理和备份两个月前job</a>");
+//							resp.getWriter().println("<a href='dump.do?op=clear' >清理和备份两个月前job</a>");
 						}
 					}
 

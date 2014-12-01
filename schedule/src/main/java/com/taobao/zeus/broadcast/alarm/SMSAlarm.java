@@ -32,7 +32,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 	private static String accessToken = Environment.getAccessToken();//Noc access_token
 
 	@Override
-	public void alarm(List<String> uids, String title, String content)
+	public void alarm(String jobId, List<String> uids, String title, String content)
 			throws Exception {
 		String srcId = "BI-Zeus调度系统";
 		String devId = InetAddress.getLocalHost().getHostName();
@@ -46,12 +46,12 @@ public class SMSAlarm extends AbstractZeusAlarm{
 			}
 		}
 		message += "<br>" + content;
-		sendNOCAlarm(notifyUrl, accessToken, srcId, devId, itemId, level, message);
+		sendNOCAlarm(jobId, notifyUrl, accessToken, srcId, devId, itemId, level, message);
 	}
 
 	@SuppressWarnings("deprecation")
-	public void sendNOCAlarm(String sendUrl, String accessToken, String srcId, String devId, String itemId, String level, String message) {
-		log.info("begin to send the noc, the srcId is " + srcId + ", the devId is " + devId + ", the itemId is " + itemId + ". the message is " + message + ". the sendUrl is " + sendUrl);
+	public void sendNOCAlarm(String jobId, String sendUrl, String accessToken, String srcId, String devId, String itemId, String level, String message) {
+		log.info("jobId: " + jobId + " begin to send the noc, the srcId is " + srcId + ", the devId is " + devId + ", the itemId is " + itemId + ". the message is " + message + ". the sendUrl is " + sendUrl);
         HttpClient client = new HttpClient();
 		PostMethod method = new PostMethod(sendUrl);
 		Gson gson = new Gson();
@@ -63,24 +63,24 @@ public class SMSAlarm extends AbstractZeusAlarm{
 			bodyMap.put("request_body", "njson=" + requestBody);
 			method.setRequestBody(JsonUtil.map2json(bodyMap).toString());
 			int code = client.executeMethod(method);
-			log.info("the return code is " + HttpStatus.SC_OK);
+			log.info("jobId: " + jobId + " the return code is " + HttpStatus.SC_OK);
 			String responseBodyAsString = method.getResponseBodyAsString(2000);
-			log.info("the response body is " + responseBodyAsString);
+			log.info("jobId: " + jobId + " the response body is " + responseBodyAsString);
 			ResponseJson rJ = null;
 			if (responseBodyAsString != null) {
 				rJ = gson.fromJson(responseBodyAsString, ResponseJson.class);
 			}
 			if (code !=  HttpStatus.SC_OK || rJ == null || !rJ.isSuccess()) {
-				log.error("send noc failed, code: " + code);
+				log.error("jobId: " + jobId + " send noc failed, code: " + code);
 				return;
 			}
-			log.info("Send noc successfully!");
+			log.info("jobId: " + jobId + " send noc successfully!");
 		} catch(HttpException  e) {
-			log.error("send noc fail,", e);
+			log.error("jobId: " + jobId +" send noc fail,", e);
 		} catch (IOException e) {
-			log.error("send noc fail,", e);
+			log.error("jobId: " + jobId + " send noc fail,", e);
 		} catch (Exception e) {
-			log.error("send noc fail,", e);
+			log.error("jobId: " + jobId + " send noc fail,", e);
 		}
    }
    

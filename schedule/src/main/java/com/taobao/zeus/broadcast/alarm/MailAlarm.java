@@ -33,7 +33,7 @@ public class MailAlarm extends AbstractZeusAlarm {
 	private static String password = Environment.getPassword();// 密码
 
 	@Override
-	public void alarm(List<String> users, String title, String content)
+	public void alarm(String jobId, List<String> users, String title, String content)
 			throws Exception {
 		List<ZeusUser> userList = userManager.findListByUid(users);
 		List<String> emails = new ArrayList<String>();
@@ -56,15 +56,15 @@ public class MailAlarm extends AbstractZeusAlarm {
 			}
 			if (emails.size() > 0) {
 				content = content.replace("<br/>", "\r\n");
-				sendEmail(emails, title, content);
+				sendEmail(jobId, emails, title, content);
 			}
 		}
 	}
 
-	public static void sendEmail(List<String> emails, String subject,
+	public static void sendEmail(String jobId, List<String> emails, String subject,
 			String body) {
 		try {
-			log.info("begin to send the email!");
+			log.info( "jobId: " + jobId +" begin to send the email!");
 			Properties props = new Properties();
 			props.put("mail.smtp.host", host);
 			props.put("mail.smtp.port", port);
@@ -86,14 +86,14 @@ public class MailAlarm extends AbstractZeusAlarm {
 			msg.setText(body, "UTF-8");
 			msg.saveChanges();
 			transport.sendMessage(msg, msg.getAllRecipients());
-			log.info("send email: " + emails + "; from: " + from + " subject: "
+			log.info("jobId: " + jobId + " send email: " + emails + "; from: " + from + " subject: "
 					+ subject + ", send success!");
 		} catch (NoSuchProviderException e) {
-			log.error("fail to send the mail. ", e);
+			log.error("jobId: " + jobId + " fail to send the mail. ", e);
 		} catch (MessagingException e) {
-			log.error("fail to send the mail. ", e);
+			log.error("jobId: " + jobId + " fail to send the mail. ", e);
 		} catch (Exception e) {
-			log.error("fail to send the mail. ", e);
+			log.error("jobId: " + jobId + " fail to send the mail. ", e);
 		}
 	}
 }

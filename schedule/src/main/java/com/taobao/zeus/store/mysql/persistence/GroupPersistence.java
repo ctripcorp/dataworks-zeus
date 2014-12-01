@@ -36,6 +36,14 @@ public class GroupPersistence implements Serializable{
 	private Date gmtCreate=new Date();
 	@Column(name="gmt_modified",nullable=false)
 	private Date gmtModified=new Date();
+	@Column(nullable=false)
+	private int existed;
+	public int getExisted() {
+		return existed;
+	}
+	public void setExisted(int existed) {
+		this.existed = existed;
+	}
 	public Integer getId() {
 		return id;
 	}

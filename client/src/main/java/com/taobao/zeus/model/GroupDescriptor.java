@@ -14,6 +14,7 @@ public class GroupDescriptor implements Serializable{
 	private String owner;
 	private String desc;
 	private boolean directory;
+	private boolean isExisted;
 	private Map<String, String> properties=new HashMap<String, String>();
 	private List<Map<String,String>> resources=new ArrayList<Map<String,String>>();
 	
@@ -83,5 +84,16 @@ public class GroupDescriptor implements Serializable{
 	public void setProperties(Map<String, String> properties) {
 		this.properties = properties;
 	}
+	public boolean isExisted() {
+		return isExisted;
+	}
 
+	public void setExisted(boolean isExisted) {
+		this.isExisted = isExisted;
+	}
+
+	public Boolean IsExisted() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

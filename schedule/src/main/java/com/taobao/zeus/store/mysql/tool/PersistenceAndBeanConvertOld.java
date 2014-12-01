@@ -282,6 +282,7 @@ public class PersistenceAndBeanConvertOld {
 		gd.setOwner(persist.getOwner());
 		gd.setDesc(persist.getDescr());
 		gd.setDirectory(persist.getDirectory() == 0 ? true : false);
+		gd.setExisted(persist.getExisted() == 0 ? false : true);
 		if (persist.getConfigs() != null) {
 			JSONObject object = JSONObject.fromObject(persist.getConfigs());
 			gd.setProperties(new HashMap<String, String>());
@@ -329,6 +330,7 @@ public class PersistenceAndBeanConvertOld {
 		persist.setConfigs(object.toString());
 		persist.setDescr(gd.getDesc());
 		persist.setDirectory(gd.isDirectory() ? 0 : 1);
+		persist.setExisted(gd.isExisted() ? 1 : 0);
 		if (gd.getId() != null) {
 			persist.setId(Integer.valueOf(gd.getId()));
 		}

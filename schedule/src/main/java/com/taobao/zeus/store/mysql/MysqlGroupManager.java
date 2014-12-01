@@ -575,6 +575,11 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 					actionPer.setStatus("failed");
 				}
 			}
+			if(actionPer.getAuto() == 0){
+				if(actionPer.getStatus() == null || actionPer.getStatus().equalsIgnoreCase("wait")){
+					actionPer.setStatus("failed");
+				}
+			}
 			getHibernateTemplate().saveOrUpdate(actionPer);			
 		}catch(DataAccessException e){
 			throw new ZeusException(e);

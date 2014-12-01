@@ -638,7 +638,11 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 		public String getOwner() {
 			return gd.getOwner();
 		}
-
+		
+		@Override
+		public boolean isExisted(){
+			return gd.isExisted();
+		}
 
 		@Override
 		public boolean isDirectory() {

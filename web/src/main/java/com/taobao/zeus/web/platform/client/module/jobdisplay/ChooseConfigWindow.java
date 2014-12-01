@@ -101,7 +101,8 @@ public class ChooseConfigWindow extends Window{
 						final AutoProgressMessageBox wait=new AutoProgressMessageBox("运行中","doing");
 						wait.auto();
 						wait.show();
-						String actionid = md.get("actionid");System.out.println(actionid);System.out.println(type);
+						String actionid = md.get("actionid");
+						//System.out.println(actionid);System.out.println(type);
 						RPCS.getJobService().run(actionid, type, new AbstractAsyncCallback<Void>() {
 							@Override
 							public void onSuccess(Void result) {

@@ -126,41 +126,42 @@ public class TreeServiceImpl implements TreeService{
 			}
 		});
 		for(GroupBeanOld g:children){
-			GroupJobTreeModel group=new GroupJobTreeModel();
-			group.setName(g.getGroupDescriptor().getName());
-			group.setId(g.getGroupDescriptor().getId());
-			group.setGroup(true);
-			group.setJob(false);
-			group.setOwner(g.getGroupDescriptor().getOwner());
-			group.setDirectory(g.isDirectory());
-			Boolean follow=groupFollow.get(g.getGroupDescriptor().getId());
-			group.setFollow(follow==null?false:(follow?true:false));
-			parent.getChildren().add(group);
-			if(g.isDirectory()){
-				setGroup(group,g.getChildrenGroupBeans(),groupFollow,jobFollow);
-			}else{
-				List<JobBeanOld> list=new ArrayList<JobBeanOld>();
-				for(JobBeanOld jb:g.getJobBeans().values()){
-					list.add(jb);
-				}
-				Collections.sort(list, new Comparator<JobBeanOld>() {
-					public int compare(JobBeanOld o1, JobBeanOld o2) {
-						return o1.getJobDescriptor().getName().compareTo(o2.getJobDescriptor().getName());
+			if(g.isExisted()){
+				GroupJobTreeModel group=new GroupJobTreeModel();
+				group.setName(g.getGroupDescriptor().getName());
+				group.setId(g.getGroupDescriptor().getId());
+				group.setGroup(true);
+				group.setJob(false);
+				group.setOwner(g.getGroupDescriptor().getOwner());
+				group.setDirectory(g.isDirectory());
+				Boolean follow=groupFollow.get(g.getGroupDescriptor().getId());
+				group.setFollow(follow==null?false:(follow?true:false));
+				parent.getChildren().add(group);
+				if(g.isDirectory()){
+					setGroup(group,g.getChildrenGroupBeans(),groupFollow,jobFollow);
+				}else{
+					List<JobBeanOld> list=new ArrayList<JobBeanOld>();
+					for(JobBeanOld jb:g.getJobBeans().values()){
+						list.add(jb);
 					}
-				});
-				for(JobBeanOld jb:list){
-					GroupJobTreeModel job=new GroupJobTreeModel();
-					job.setId(jb.getJobDescriptor().getId());
-					job.setGroup(false);
-					job.setDirectory(false);
-					job.setName(jb.getJobDescriptor().getName());
-					job.setJob(true);
-					Boolean jFollow=jobFollow.get(job.getId());
-					job.setFollow(jFollow==null?false:(jFollow?true:false));
-					group.getChildren().add(job);
+					Collections.sort(list, new Comparator<JobBeanOld>() {
+						public int compare(JobBeanOld o1, JobBeanOld o2) {
+							return o1.getJobDescriptor().getName().compareTo(o2.getJobDescriptor().getName());
+						}
+					});
+					for(JobBeanOld jb:list){
+						GroupJobTreeModel job=new GroupJobTreeModel();
+						job.setId(jb.getJobDescriptor().getId());
+						job.setGroup(false);
+						job.setDirectory(false);
+						job.setName(jb.getJobDescriptor().getName());
+						job.setJob(true);
+						Boolean jFollow=jobFollow.get(job.getId());
+						job.setFollow(jFollow==null?false:(jFollow?true:false));
+						group.getChildren().add(job);
+					}
 				}
 			}
-			
 		}
 	}
 

@@ -55,7 +55,17 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 	public void deleteGroup(String user, String groupId) throws ZeusException {
 		GroupBeanOld group = getDownstreamGroupBean(groupId);
 		if (group.isDirectory()) {
-			if (!group.getChildrenGroupBeans().isEmpty()) {
+//			if (!group.getChildrenGroupBeans().isEmpty()) {
+//				throw new ZeusException("该组下不为空，无法删除");
+//			}
+			boolean candelete = true;
+			for (GroupBeanOld child : group.getChildrenGroupBeans()) {
+				if (child.isExisted()) {
+					candelete = false;
+					break;
+				}
+			}
+			if (!candelete) {
 				throw new ZeusException("该组下不为空，无法删除");
 			}
 		} else {
@@ -63,9 +73,10 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 				throw new ZeusException("该组下不为空，无法删除");
 			}
 		}
-		getHibernateTemplate().delete(
-				getHibernateTemplate().get(GroupPersistence.class,
-						Integer.valueOf(groupId)));
+		GroupPersistence object = (GroupPersistence)getHibernateTemplate().get(GroupPersistence.class,
+				Integer.valueOf(groupId));
+		object.setExisted(0);
+		getHibernateTemplate().update(object);
 	}
 
 	@Override
@@ -350,7 +361,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		GroupPersistence persist = PersistenceAndBeanConvertOld.convert(group);
 		persist.setGmtCreate(new Date());
 		persist.setGmtModified(new Date());
-
+		persist.setExisted(1);
 		getHibernateTemplate().save(persist);
 		return PersistenceAndBeanConvertOld.convert(persist);
 	}

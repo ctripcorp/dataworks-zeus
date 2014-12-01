@@ -34,6 +34,7 @@ public abstract class AbstractZeusAlarm implements ZeusAlarm{
 			throws Exception {
 		JobHistory history=jobHistoryManager.findJobHistory(historyId);
 		TriggerType type=history.getTriggerType();
+		//获得action_id
 		String jobId=history.getJobId();
 		List<String> users=new ArrayList<String>();
 		if(type==TriggerType.SCHEDULE){
@@ -62,7 +63,7 @@ public abstract class AbstractZeusAlarm implements ZeusAlarm{
 				}
 			}
 		}
-		alarm(result, title, content);
+		alarm(jobId, result, title, content);
 	}
 
 	@Override
@@ -71,12 +72,12 @@ public abstract class AbstractZeusAlarm implements ZeusAlarm{
 		alarm(historyId, title, content, null);
 	}
 	/**
-	 * 
+	 * @param jobId anction_id
 	 * @param users 用户域账号id
 	 * @param title
 	 * @param content
 	 * @throws Exception
 	 */
-	public abstract void alarm(List<String> users,String title,String content) throws Exception;
+	public abstract void alarm(String jobId, List<String> users,String title,String content) throws Exception;
 
 }

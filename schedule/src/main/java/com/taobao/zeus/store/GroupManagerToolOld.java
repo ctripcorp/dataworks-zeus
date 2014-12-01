@@ -3,15 +3,25 @@ package com.taobao.zeus.store;
 import java.util.List;
 import java.util.Map;
 
+
+
+
+
+
+import org.antlr.grammar.v3.ANTLRParser.id_return;
+import org.apache.hadoop.hive.metastore.api.ThriftHiveMetastore.Processor.isPartitionMarkedForEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.taobao.zeus.model.GroupDescriptor;
 import com.taobao.zeus.model.JobDescriptorOld;
 import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.model.JobDescriptorOld.JobScheduleTypeOld;
-import com.taobao.zeus.store.mysql.tool.PersistenceAndBeanConvertOld;
 import com.taobao.zeus.util.Tuple;
 
 public class GroupManagerToolOld {
-
+	private static Logger log = LoggerFactory.getLogger(GroupManagerToolOld.class);
+	
 	public static GroupBeanOld getUpstreamGroupBean(String groupId,GroupManagerOld groupManagerOld) {
 		GroupDescriptor group=groupManagerOld.getGroupDescriptor(groupId);
 		GroupBeanOld result=new GroupBeanOld(group);
@@ -36,9 +46,14 @@ public class GroupManagerToolOld {
 		for(JobBeanOld j1:allJobBeans.values()){
 			if(j1.getJobDescriptor().getScheduleType()==JobScheduleTypeOld.Dependent){
 				for(String depId:j1.getJobDescriptor().getDependencies()){
-					JobBeanOld depJob=allJobBeans.get(depId);
-					j1.addDependee(depJob);
-					depJob.addDepender(j1);
+					try {
+						JobBeanOld depJob=allJobBeans.get(depId);
+						j1.addDependee(depJob);
+						depJob.addDepender(j1);
+					} catch (Exception e) {
+						log.error("The id is " + j1.getJobDescriptor().getId() + ", the depId is " + depId);
+					}
+					
 				}
 			}
 		}

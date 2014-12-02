@@ -14,7 +14,8 @@ import com.taobao.zeus.socket.master.Master;
 import com.taobao.zeus.util.Tuple;
 
 public class GroupManagerTool {
-	private static Logger log = LoggerFactory.getLogger(Master.class);
+
+	private static Logger log = LoggerFactory.getLogger(GroupManagerTool.class);
 
 	public static GroupBean getUpstreamGroupBean(String groupId,GroupManager groupManager) {
 		GroupDescriptor group=groupManager.getGroupDescriptor(groupId);

@@ -92,8 +92,4 @@ public class GroupDescriptor implements Serializable{
 		this.isExisted = isExisted;
 	}
 
-	public Boolean IsExisted() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

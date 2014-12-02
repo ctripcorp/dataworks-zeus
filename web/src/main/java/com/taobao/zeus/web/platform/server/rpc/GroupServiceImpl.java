@@ -189,7 +189,7 @@ public class GroupServiceImpl implements GroupService{
 		gd.setId(group.getId());
 		gd.setName(group.getName());
 		gd.setProperties(group.getLocalProperties());
-		
+//		gd.setExisted(true);
 		
 		try {
 			permissionGroupManagerOld.updateGroup(LoginUser.getUser().getUid(), gd);

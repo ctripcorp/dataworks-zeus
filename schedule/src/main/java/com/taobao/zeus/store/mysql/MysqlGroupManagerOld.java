@@ -280,7 +280,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		persist.setDirectory(old.getDirectory());
 		persist.setGmtCreate(old.getGmtCreate());
 		persist.setGmtModified(new Date());
-
+		persist.setExisted(old.getExisted());
 		getHibernateTemplate().update(persist);
 	}
 

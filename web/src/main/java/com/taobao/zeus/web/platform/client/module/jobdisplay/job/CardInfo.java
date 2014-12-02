@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.History;
@@ -13,8 +12,6 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.Dialog;
-import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
-import com.sencha.gxt.widget.core.client.box.AutoProgressMessageBox;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.box.ProgressMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -40,8 +37,6 @@ import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror.CodeMirrorC
 import com.taobao.zeus.web.platform.client.module.jobdisplay.AdminConfigWindow;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.CenterTemplate;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.ChooseConfigWindow;
-import com.taobao.zeus.web.platform.client.module.jobdisplay.job.ProcesserType.HiveP;
-import com.taobao.zeus.web.platform.client.module.jobdisplay.job.ProcesserType.ZooKeeperP;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.TreeKeyProviderTool;
 import com.taobao.zeus.web.platform.client.module.jobmanager.event.TreeNodeChangeEvent;
@@ -197,6 +192,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 	private FieldLabel rollTime;
 	private FieldLabel rollInterval;
 	private FieldLabel jobPriority;
+	private FieldLabel maxTime;
 	
 	private HTMLPanel configContent;
 	private HTMLPanel configParentContent;
@@ -236,6 +232,8 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 	public static final String ROLL_TIMES = "roll.back.times";
 	public static final String ROLL_INTERVAL = "roll.back.wait.time";
 	public static final String ENCRYPTION = "zeus.secret.script";
+	public static final String MAX_TIME= "zeus.job.maxtime";
+	public static final String POSITIVE_INTEGER = "^[0-9]*[1-9][0-9]*$";
 	private void display(final JobModel model){
 		((Label)baseId.getWidget()).setText(model.getId());
 		((Label)baseName.getWidget()).setText(model.getName());
@@ -248,8 +246,13 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		((Label)host.getWidget()).setText(model.getHost());
 		((Label)offRaw.getWidget()).setText(model.getOffRaw());
 		((Label)rollTime.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_TIMES));
+		if (model.getAllProperties().get(CardInfo.MAX_TIME) != null) {
+			((Label)maxTime.getWidget()).setText(model.getAllProperties().get(CardInfo.MAX_TIME)+"分钟");
+		}else {
+			((Label)maxTime.getWidget()).setText("无预计");
+		}
 		if(model.getAllProperties().get(CardInfo.ROLL_INTERVAL) != null){
-		((Label)rollInterval.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_INTERVAL)+"分钟");}
+			((Label)rollInterval.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_INTERVAL)+"分钟");}
 		else {
 			((Label)rollInterval.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_INTERVAL));
 		}
@@ -375,7 +378,8 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			}else if(key.equals(DEPENDENCY_CYCLE)||
 					key.equals(PRIORITY_LEVEL)||
 					key.equals(ROLL_TIMES)||
-					key.equals(ROLL_INTERVAL)			
+					key.equals(ROLL_INTERVAL)||
+					key.equals(MAX_TIME)
 					)
 			{}
 			else{
@@ -433,7 +437,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		if(baseFieldSet==null){
 			baseFieldSet=new FieldSet();
 			baseFieldSet.setHeadingText("基本信息");
-			baseFieldSet.setHeight(220);
+			baseFieldSet.setHeight(230);
 			
 			HorizontalLayoutContainer layoutContainer=new HorizontalLayoutContainer();
 			baseFieldSet.add(layoutContainer);
@@ -464,7 +468,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			rollTime = new FieldLabel(getLabel(),"失败重试次数");
 			rollInterval = new FieldLabel(getLabel(),"重试时间间隔");
 			jobPriority = new FieldLabel(getLabel(),"任务优先级");
-			
+			maxTime = new FieldLabel(getLabel(), "预计时长");
 			leftContainer.add(baseId,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(baseName,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(baseOwner,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
@@ -484,7 +488,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			rightContainer.add(rollTime,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			rightContainer.add(rollInterval,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(jobPriority,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
-		
+			leftContainer.add(maxTime, new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			//leftContainer.add(host,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 
 		}

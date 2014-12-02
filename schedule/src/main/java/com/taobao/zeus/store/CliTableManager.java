@@ -36,8 +36,11 @@ public class CliTableManager implements TableManager {
         log.debug("hive conf file:"+f.toString());
 		if(f.exists()){
 			conf.addResource(f.toURI().toURL());
+			client=new HiveMetaStoreClient(conf);
+		}else{
+			log.info("the file is not exist");
 		}
-		client=new HiveMetaStoreClient(conf);
+		
 	}
 
 	public CliTableManager(Configuration conf) throws Exception {

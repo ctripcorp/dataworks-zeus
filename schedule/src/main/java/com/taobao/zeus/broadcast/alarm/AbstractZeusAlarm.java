@@ -12,7 +12,9 @@ import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.model.JobStatus.TriggerType;
 import com.taobao.zeus.schedule.mvc.JobFailListener.ChainException;
 import com.taobao.zeus.store.FollowManager;
+import com.taobao.zeus.store.FollowManagerOld;
 import com.taobao.zeus.store.GroupManager;
+import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.UserManager;
 
@@ -21,14 +23,11 @@ public abstract class AbstractZeusAlarm implements ZeusAlarm{
 	@Autowired
 	protected JobHistoryManager jobHistoryManager;
 	@Autowired
-	@Qualifier("followManager")
-	protected FollowManager followManager;
+	@Qualifier("followManagerOld")
+	protected FollowManagerOld followManagerOld;
 	@Autowired
-	@Qualifier("groupManager")
-	protected GroupManager groupManager;
-	@Autowired
-	@Qualifier("userManager")
-	protected UserManager userManager;
+	@Qualifier("groupManagerOld")
+	protected GroupManagerOld groupManagerOld;
 	@Override
 	public void alarm(String historyId, String title, String content,ChainException chain)
 			throws Exception {
@@ -36,11 +35,13 @@ public abstract class AbstractZeusAlarm implements ZeusAlarm{
 		TriggerType type=history.getTriggerType();
 		//获得action_id
 		String jobId=history.getJobId();
+		//获得job_id
+		String tojobId=history.getToJobId();
 		List<String> users=new ArrayList<String>();
 		if(type==TriggerType.SCHEDULE){
-			users=followManager.findActualJobFollowers(jobId);
+			users=followManagerOld.findActualJobFollowers(tojobId);
 		}else{
-			users.add(groupManager.getJobDescriptor(jobId).getX().getOwner());
+			users.add(groupManagerOld.getJobDescriptor(jobId).getX().getOwner());
 			if(history.getOperator()!=null){
 				if(!users.contains(history.getOperator())){
 					users.add(history.getOperator());

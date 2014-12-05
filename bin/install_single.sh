@@ -16,7 +16,7 @@ PROJECT_NAME=prometheus
 
 #zeus configuration file
 FILE_CONF=/home/kylong/antx.properties
-
+DB_CONF=/home/kylong/persistence.xml
 #set MAVEN_HOME
 export M2_HOME=/home/kylong/apache-maven-3.2.3
 export PATH=${PATH}:${M2_HOME}/bin
@@ -29,6 +29,11 @@ echo "Current workspace of the script is ${curpath}"
 if [ ! -e "$FILE_CONF" ]
 then 
   echo "The configuration file:antx.properties is not exited"
+  exit 1
+fi
+if [ ! -e "$DB_CONF" ]
+then 
+  echo "The configuration file:persistence.xml is not exited"
   exit 1
 fi
 
@@ -77,6 +82,11 @@ then
   echo "Please delete the zeus project: ${curpath}/${PROJECT_NAME}"
   exit 1
 fi
+if [ -e "${curpath}/zeus-web" ]
+then
+  echo "Please delete the zeus project: ${curpath}/zeus-web"
+  exit 1
+fi
 
 ###################install#############################################
 tomcat_pid() {
@@ -117,14 +127,16 @@ else
   exit 1
 fi
 
+cd $PROJECT_NAME
+#git checkout -b shell origin/shell
+
 #replace the configuration
 dis_dir="${curpath}/${PROJECT_NAME}/web/src/main/resources"
 echo "Copy the configuation ${FILE_CONF} to ${dis_dir}"
 cp $FILE_CONF $dis_dir
-
+echo "Copy the configuation ${DB_CONF} to ${dis_dir}"
+cp $DB_CONF $dis_dir
 #begin intall
-cd $PROJECT_NAME
-#git checkout -b shell origin/shell
 mvn install
 if [ $? -eq 0 ]
 then
@@ -134,12 +146,11 @@ else
   exit 1
 fi
 
-
 ##############################deploy######################################
 target="${curpath}/${PROJECT_NAME}/web/target/zeus-web.war"
-echo "Begin to deploy the ${target}"
 if [ -n $ZEUS_LOCATION ]
 then
+  echo "Begin to deploy the ${target} to ${ZEUS_LOCATION}"
   cp $target ${ZEUS_LOCATION}
 else
   exit 1
@@ -148,3 +159,4 @@ fi
 #start tomcat
 ${ZEUS_TOMCAT} start
 echo "Install successfully"
+

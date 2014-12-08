@@ -619,8 +619,9 @@ public class Master {
 	private void checkTimeOver() {
 		for (MasterWorkerHolder w : context.getWorkers().values()) {
 			checkScheduleTimeOver(w);
-			checkManualTimeOver(w);
-			checkDebugTimeOver(w);
+			//TODO 未测试
+//			checkManualTimeOver(w);
+//			checkDebugTimeOver(w);
 		}
 	}
 

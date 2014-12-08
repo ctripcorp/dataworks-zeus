@@ -3,7 +3,7 @@ echo "The script can be run only by zeus administator."
 set -e
 #######################configuration############
 #the location of the script which control the tomcat which contains zeus.
-ZEUS_TOMCAT=/etc/init.d/tomcat
+TOMCAT_HOME=/opt/app/tomcat
 
 #the directory of war file of zeus
 ZEUS_LOCATION=/opt/ctrip/web/work
@@ -93,9 +93,36 @@ tomcat_pid() {
   echo `ps aux | grep -i tomcat|grep org.apache.catalina.startup.Bootstrap | grep -v grep | awk '{ print $2 }'`
 }
 
+stop() {
+  pid=$(tomcat_pid)
+  if [ -n "$pid" ]
+  then
+    echo "Stoping Tomcat"
+#    /bin/su -p -s /bin/sh $TOMCAT_USER $TOMCAT_HOME/bin/shutdown.sh
+    /bin/sh $TOMCAT_HOME/bin/shutdown.sh
+
+    let kwait=10
+    count=0;
+    until [ `ps -p $pid | grep -c $pid` = '0' ] || [ $count -gt $kwait ]
+    do
+      echo -n -e "\nwaiting for processes to exit";
+      sleep 1
+      let count=$count+1;
+    done
+
+    if [ $count -gt $kwait ]; then
+       echo ". The tomcat (pid $pid) didn't stop after 10 seconds \n, please shutdown yourself"
+       exit 1
+    fi
+  else
+    echo "Tomcat is stopped"
+  fi
+
+  return 0
+}
 
 #stop the tomcat
-$ZEUS_TOMCAT stop
+stop
 pid=$(tomcat_pid)
 if [ -n "$pid" ]
 then
@@ -157,6 +184,6 @@ else
 fi
 
 #start tomcat
-${ZEUS_TOMCAT} start
+$TOMCAT_HOME/bin/startup.sh
 echo "Install successfully"
 

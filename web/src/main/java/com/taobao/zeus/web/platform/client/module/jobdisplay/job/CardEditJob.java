@@ -7,14 +7,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
+import org.json.Test;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.editor.client.Editor;
+import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
+import com.google.gwt.user.client.Window;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.Style.Side;
 import com.sencha.gxt.core.client.XTemplates;
@@ -37,10 +43,13 @@ import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.NumberField;
+import com.sencha.gxt.widget.core.client.form.Validator;
 import com.sencha.gxt.widget.core.client.form.NumberPropertyEditor.IntegerPropertyEditor;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.form.validator.RegExValidator;
 import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
+import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror;
 import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror.CodeMirrorConfig;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.CenterTemplate;
@@ -150,6 +159,13 @@ public class CardEditJob extends CenterTemplate implements
 					rollTimeBox.getValue().toString());
 			model.getLocalProperties().put(CardInfo.PRIORITY_LEVEL,
 					jobPriorityBox.getValue().get("value"));
+			String maxTimeSet = maxTimeField.getCurrentValue();
+			if (maxTimeSet == null || maxTimeSet.trim().length() == 0) {
+				model.getLocalProperties().remove(CardInfo.MAX_TIME);
+			}else if(maxTimeSet.matches(CardInfo.POSITIVE_INTEGER)) {
+				model.getLocalProperties().put(CardInfo.MAX_TIME, maxTimeSet);
+			}
+			
 			String isEncryptionText = isEncryptionBox.getValue();
 			if ("no".equals(isEncryptionText)) {
 				model.getLocalProperties().put(CardInfo.ENCRYPTION,"true");
@@ -233,9 +249,8 @@ public class CardEditJob extends CenterTemplate implements
 	private FieldLabel rollTimeWapper;
 	private FieldLabel rollIntervalWapper;
 	private FieldLabel jobPriorityWapper;
-
 	private FieldLabel isEncryptionWapper;
-
+	private FieldLabel maxTimeWapper;
 	// add by gufei.wzy 辅助功能
 	/*
 	 * private TextField outputTableField; private FieldLabel outputTableLabel;
@@ -258,6 +273,7 @@ public class CardEditJob extends CenterTemplate implements
 	private FieldLabel cycleWapper;
 	private ComboBox<Map<String, String>> jobCycle;
 	private TextField hostField;
+	private TextField maxTimeField;
 
 	// private ZKProcesserWindow zkWindow = new ZKProcesserWindow(zk);
 
@@ -433,6 +449,11 @@ public class CardEditJob extends CenterTemplate implements
 				}
 			}
 		}
+		
+		String maxTimeStr = t.getAllProperties().get(CardInfo.MAX_TIME);
+		if (maxTimeStr != null) {
+			maxTimeField.setValue(maxTimeStr);
+		}
 
 		if (t.getJobScheduleType() == null) {
 			baseScheduleType.setValue(baseScheduleType.getStore().get(0), true);
@@ -500,6 +521,9 @@ public class CardEditJob extends CenterTemplate implements
 		if (conf.containsKey(CardInfo.ROLL_TIMES)) {
 			conf.remove(CardInfo.ROLL_TIMES);
 		}
+		if (conf.containsKey(CardInfo.MAX_TIME)) {
+			conf.remove(CardInfo.MAX_TIME);
+		}
 		configs.setValue(FormatUtil.convertPropertiesToEditString(conf));
 		resources.setValue(FormatUtil.convertResourcesToEditString(t
 				.getLocalResources()));
@@ -517,7 +541,7 @@ public class CardEditJob extends CenterTemplate implements
 		if (baseFieldSet == null) {
 			baseFieldSet = new FieldSet();
 			baseFieldSet.setHeadingText("基本信息");
-			baseFieldSet.setHeight(200);
+			baseFieldSet.setHeight(230);
 
 			HorizontalLayoutContainer layoutContainer = new HorizontalLayoutContainer();
 			baseFieldSet.add(layoutContainer);
@@ -543,6 +567,11 @@ public class CardEditJob extends CenterTemplate implements
 			baseDesc.setHeight(36);
 			hostField = new TextField();
 			hostField.setWidth(150);
+			maxTimeField = new TextField();
+			maxTimeField.setWidth(150);
+			maxTimeField.addValidator(new RegExValidator(CardInfo.POSITIVE_INTEGER, "请输入正整数"));
+			maxTimeField.setAutoValidate(true);
+			
 			ListStore<String> scheduleTypeStore = new ListStore<String>(
 					new ModelKeyProvider<String>() {
 						@Override
@@ -851,6 +880,7 @@ public class CardEditJob extends CenterTemplate implements
 			rollIntervalWapper = new FieldLabel(rollIntervalBox, "重试间隔（分）");
 			jobPriorityWapper = new FieldLabel(jobPriorityBox, "任务优先级");
 			isEncryptionWapper = new FieldLabel(isEncryptionBox, "脚本可见");
+			maxTimeWapper = new FieldLabel(maxTimeField, "预计时长(分)");
 
 			depCycleWapper = new FieldLabel(baseDepCycle, "依赖周期");
 			depJobsWapper = new FieldLabel(baseDepJobs, "依赖任务");
@@ -881,7 +911,7 @@ public class CardEditJob extends CenterTemplate implements
 			rightContainer.add(isEncryptionWapper,
 					new VerticalLayoutData(1, -1));
 			leftContainer.add(mainWapper, new VerticalLayoutData(1, -1));
-
+			rightContainer.add(maxTimeWapper, new VerticalLayoutData(1, -1));
 		}
 		return baseFieldSet;
 	}

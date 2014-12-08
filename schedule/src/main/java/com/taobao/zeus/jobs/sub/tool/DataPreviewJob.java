@@ -61,10 +61,10 @@ public class DataPreviewJob extends AbstractJob {
 		}
 		JobConf confQ = new JobConf(conf);
 		FileSystem fs = FileSystem.get(confQ);
-		if (inputFormatString.equals("org.apache.hadoop.hive.ql.io.RCFileInputFormat")) {
+/*		if (inputFormatString.equals("org.apache.hadoop.hive.ql.io.RCFileInputFormat")) {
 			log("暂时不支持RCFile访问 ");
 			throw new Exception("暂时不支持RCFile访问");
-		}
+		}*/
 
 		@SuppressWarnings("unchecked")
 		InputFormat<Writable, Writable> inputFormat = (InputFormat<Writable, Writable>) ReflectionUtils

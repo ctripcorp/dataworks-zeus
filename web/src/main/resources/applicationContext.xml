@@ -89,7 +89,7 @@
 	<bean id="profileManager" class="com.taobao.zeus.store.mysql.MysqlProfileManager" />
 	<bean id="debugHistoryManager" class="com.taobao.zeus.store.mysql.MysqlDebugHistoryManager" />
 	<bean id="fileManager" class="com.taobao.zeus.store.mysql.MysqlFileManager" />
-	<bean id="followManager" class="com.taobao.zeus.store.mysql.MysqlFollowManager" />
+	<bean id="followManagerOld" class="com.taobao.zeus.store.mysql.MysqlFollowManagerOld" />
 	<bean id="userManager" class="com.taobao.zeus.store.mysql.MysqlUserManager" />
 	<bean id="jobHistoryManager" class="com.taobao.zeus.store.mysql.MysqlJobHistoryManager" />
 	<bean id="permissionManager" class="com.taobao.zeus.store.mysql.MysqlPermissionManager" />

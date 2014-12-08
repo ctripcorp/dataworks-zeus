@@ -31,9 +31,10 @@ public class MysqlReportManager extends HibernateDaoSupport{
 					SQLException {
 				Map<String, Map<String, String>> result=new HashMap<String, Map<String,String>>();
 				
-				String success_sql="select count(*),h.gmt_create from zeus_action_history h " +
+				String success_sql="select count(distinct h.action_id),h.gmt_create from zeus_action_history h " +
 						"left join zeus_action j on h.action_id=j.id " +
-						"where h.status='success' and trigger_type=1 and to_days(h.gmt_create) between to_days(?) and to_days(?) group by to_days(h.gmt_create) order by h.gmt_create desc";
+						"where h.status='success' and trigger_type=1 and to_days(h.gmt_create) between to_days(?) and to_days(?) "+
+						"group by to_days(h.gmt_create) order by h.gmt_create desc";
 				SQLQuery query=session.createSQLQuery(success_sql);
 				query.setParameter(0, start);
 				query.setParameter(1, end);
@@ -47,12 +48,16 @@ public class MysqlReportManager extends HibernateDaoSupport{
 					result.put(format.format(date), map);
 				}
 				
-				String fail_sql="select count(*),h.gmt_create from zeus_action_history h " +
+				String fail_sql="select count(distinct h.action_id),h.gmt_create from zeus_action_history h " +
 					"left join zeus_action j on h.action_id=j.id " +
-					"where h.status='failed' and trigger_type=1 and to_days(h.gmt_create) between to_days(?) and to_days(?) group by to_days(h.gmt_create) order by h.gmt_create desc";
+					"where h.status='failed' and trigger_type=1 and to_days(h.gmt_create) between to_days(?) and to_days(?) "+
+					"and h.action_id not in (select action_id from zeus_action_history where status='success' and trigger_type=1 and to_days(gmt_create) between to_days(?) and to_days(?)) "+
+					"group by to_days(h.gmt_create) order by h.gmt_create desc";
 				query=session.createSQLQuery(fail_sql);
 				query.setDate(0, start);
 				query.setDate(1, end);
+				query.setDate(2, start);
+				query.setDate(3, end);
 				List fail_list=query.list();
 				for(Object o:fail_list){
 					Object[] oo=(Object[])o;
@@ -79,13 +84,16 @@ public class MysqlReportManager extends HibernateDaoSupport{
 					SQLException {
 				List<Map<String, String>> result=new ArrayList<Map<String,String>>();
 				
-				String sql="select count(*) as cou,j.owner,u.name from zeus_action_history h " +
+				String sql="select count(distinct h.action_id) as cou,j.owner,u.name from zeus_action_history h " +
 						"left join zeus_action j on h.action_id=j.id " +
 						"left join zeus_user u on j.owner=u.uid " +
 						"where h.status='failed' and h.trigger_type=1 " +
-						"and to_days(?)=to_days(h.gmt_create) group by j.owner order by cou desc limit 10";
+						"and to_days(?)=to_days(h.gmt_create) "+
+						"and h.action_id not in (select action_id from zeus_action_history where status='success' and trigger_type=1 and to_days(?)=to_days(gmt_create)) "+
+						"group by j.owner order by cou desc limit 10";
 				SQLQuery query=session.createSQLQuery(sql);
 				query.setDate(0, date);
+				query.setDate(1, date);
 				List list=query.list();
 				for(Object o:list){
 					Object[] oo=(Object[])o;
@@ -107,17 +115,19 @@ public class MysqlReportManager extends HibernateDaoSupport{
 				@Override
 				public Object doInHibernate(Session session) throws HibernateException,
 						SQLException {
-					String sql="select h.id,h.action_id,j.name from zeus_action_history h " +
+					String sql="select distinct h.action_id,j.name from zeus_action_history h " +
 							"left join zeus_action j on h.action_id=j.id where h.status='failed' " +
-							"and h.trigger_type=1 and to_days(?) =to_days(h.gmt_create) and j.owner=?";
+							"and h.trigger_type=1 and to_days(?) =to_days(h.gmt_create) and j.owner=? "+
+							"and h.action_id not in (select action_id from zeus_action_history where status='success' and trigger_type=1 and to_days(?)=to_days(gmt_create))";
 					SQLQuery query=session.createSQLQuery(sql);
 					query.setDate(0, date);
 					query.setString(1, map.get("uid"));
+					query.setDate(2, date);
 					List<Object[]> list=query.list();
 					int count=0;
 					for(Object[] rs:list){
-						String jobID = rs[1].toString();
-						String jobName = rs[2].toString();
+						String jobID = rs[0].toString();
+						String jobName = rs[1].toString();
 						// 去重
 						if(!map.containsKey(jobID)){
 							map.put("history"+count++, jobName+"("+jobID+")");

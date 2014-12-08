@@ -22,3 +22,4 @@ web/.settings
 zeus_platform
 .gwt
 /web/.gwt
+/web/*.log

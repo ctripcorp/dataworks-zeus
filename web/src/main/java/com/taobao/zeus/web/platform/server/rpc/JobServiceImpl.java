@@ -38,6 +38,7 @@ import com.taobao.zeus.model.processer.Processer;
 import com.taobao.zeus.socket.protocol.Protocol.ExecuteKind;
 import com.taobao.zeus.socket.worker.ClientWorker;
 import com.taobao.zeus.store.FollowManager;
+import com.taobao.zeus.store.FollowManagerOld;
 import com.taobao.zeus.store.GroupBeanOld;
 import com.taobao.zeus.store.GroupBean;
 import com.taobao.zeus.store.JobBean;
@@ -77,7 +78,7 @@ public class JobServiceImpl implements JobService {
 	@Autowired
 	private UserManager userManager;
 	@Autowired
-	private FollowManager followManager;
+	private FollowManagerOld followManagerOld;
 	@Autowired
 	private PermissionManager permissionManager;
 	@Autowired
@@ -181,7 +182,7 @@ public class JobServiceImpl implements JobService {
 		jobModel.setAdmin(permissionGroupManagerOld.hasJobPermission(LoginUser
 				.getUser().getUid(), jobId));
 
-		List<ZeusFollow> follows = followManager.findJobFollowers(jobId);
+		List<ZeusFollow> follows = followManagerOld.findJobFollowers(jobId);
 		if (follows != null) {
 			List<String> followNames = new ArrayList<String>();
 			for (ZeusFollow zf : follows) {

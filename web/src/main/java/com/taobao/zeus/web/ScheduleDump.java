@@ -273,80 +273,80 @@ public class ScheduleDump extends HttpServlet {
 							}
 							resp.getWriter().println("Action生成完毕！");
 						} else if ("clear".equals(op)) {
-							int beforeAmount = -2;
-							int cnt = 0;
-							int sum = 0;
-							Calendar cal = Calendar.getInstance();
-							cal.add(Calendar.MONTH, beforeAmount);
-							Date date = cal.getTime();
-							SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-							String dateStr = df.format(date) + "0000";
-							Dispatcher dispatcher = context.getDispatcher();
-							if (dispatcher != null) {
-								List<Controller> controllers = dispatcher.getControllers();
-								if (controllers != null&& controllers.size() > 0) {
-									resp.getWriter().println("开始清理内存中controller id为" + dateStr + "以前的controller：");
-									List<JobDescriptor> toBeTransferred = new ArrayList<JobDescriptor>();
-									Iterator<Controller> iter = controllers.iterator();
-									while (iter.hasNext()) {
-										sum ++ ;
-										JobController jobc = (JobController) iter.next();
-										String jobId = jobc.getJobId();
-										if (Long.parseLong(jobId) < Long.parseLong(dateStr)) {
-											Tuple<JobDescriptor, JobStatus> tuple = context.getGroupManager().getJobDescriptor(jobId);
-											JobStatus status = tuple.getY();
-											if (!Status.RUNNING.equals(status.getStatus())) {
-												toBeTransferred.add(tuple.getX());
-												iter.remove();
-												resp.getWriter().println("<br>成功清理了id为" + jobId + "的controller");
-												cnt++;
-											}
-										}
-									}
-									resp.getWriter().println("<br>内存中共"+ sum +"个controllers，清理了两个月前" + cnt+ "个controllers");
-									if (toBeTransferred != null && toBeTransferred.size() != 0) {
-										int count = 0;
-										MysqlGroupManager manager = ( MysqlGroupManager ) context.getApplicationContext ().getBean( "groupManager" );
-										HibernateTemplate template = manager.getHibernateTemplate();
-										SessionFactory factory = template.getSessionFactory();
-										Session session = factory.openSession();
-										Transaction tx = null;
-										tx = session.beginTransaction();
-										try {
-											for (JobDescriptor job : toBeTransferred) {
-												JobPersistence persist = PersistenceAndBeanConvert.convert(job);
-												JobPersistenceBackup backup = new JobPersistenceBackup(persist);
-												resp.getWriter().println("<br>开始备份数据库中id为" + job.getId() + "的action");
-												session.delete(persist);
-												session.saveOrUpdate(backup);
-												count ++;
-											}
-											tx.commit();
-											resp.getWriter().println("<br>完成数据库备份， 共备份" + count + "条数据");
-										} catch (RuntimeException e) {
-											try {
-												tx.rollback();
-											} catch (Exception e2) {
-												resp.getWriter().println(e2.getMessage());
-											}
-											resp.getWriter().println(e.getMessage());
-										} finally {
-											try {
-												if (session != null) {
-													session.close();
-												}
-												if (factory != null) {
-													factory.close();
-												}
-											} catch (Exception e3) {
-												resp.getWriter().print(e3.getMessage());
-											}
-										}
-									}
-
-								}
-							}
-
+//							int beforeAmount = -2;
+//							int cnt = 0;
+//							int sum = 0;
+//							Calendar cal = Calendar.getInstance();
+//							cal.add(Calendar.MONTH, beforeAmount);
+//							Date date = cal.getTime();
+//							SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+//							String dateStr = df.format(date) + "0000";
+//							Dispatcher dispatcher = context.getDispatcher();
+//							if (dispatcher != null) {
+//								List<Controller> controllers = dispatcher.getControllers();
+//								if (controllers != null&& controllers.size() > 0) {
+//									resp.getWriter().println("开始清理内存中controller id为" + dateStr + "以前的controller：");
+//									List<JobDescriptor> toBeTransferred = new ArrayList<JobDescriptor>();
+//									Iterator<Controller> iter = controllers.iterator();
+//									while (iter.hasNext()) {
+//										sum ++ ;
+//										JobController jobc = (JobController) iter.next();
+//										String jobId = jobc.getJobId();
+//										if (Long.parseLong(jobId) < Long.parseLong(dateStr)) {
+//											Tuple<JobDescriptor, JobStatus> tuple = context.getGroupManager().getJobDescriptor(jobId);
+//											JobStatus status = tuple.getY();
+//											if (!Status.RUNNING.equals(status.getStatus())) {
+//												toBeTransferred.add(tuple.getX());
+//												iter.remove();
+//												resp.getWriter().println("<br>成功清理了id为" + jobId + "的controller");
+//												cnt++;
+//											}
+//										}
+//									}
+//									resp.getWriter().println("<br>内存中共"+ sum +"个controllers，清理了两个月前" + cnt+ "个controllers");
+//									if (toBeTransferred != null && toBeTransferred.size() != 0) {
+//										int count = 0;
+//										MysqlGroupManager manager = ( MysqlGroupManager ) context.getApplicationContext ().getBean( "groupManager" );
+//										HibernateTemplate template = manager.getHibernateTemplate();
+//										SessionFactory factory = template.getSessionFactory();
+//										Session session = factory.openSession();
+//										Transaction tx = null;
+//										tx = session.beginTransaction();
+//										try {
+//											for (JobDescriptor job : toBeTransferred) {
+//												JobPersistence persist = PersistenceAndBeanConvert.convert(job);
+//												JobPersistenceBackup backup = new JobPersistenceBackup(persist);
+//												resp.getWriter().println("<br>开始备份数据库中id为" + job.getId() + "的action");
+//												session.delete(persist);
+//												session.saveOrUpdate(backup);
+//												count ++;
+//											}
+//											tx.commit();
+//											resp.getWriter().println("<br>完成数据库备份， 共备份" + count + "条数据");
+//										} catch (RuntimeException e) {
+//											try {
+//												tx.rollback();
+//											} catch (Exception e2) {
+//												resp.getWriter().println(e2.getMessage());
+//											}
+//											resp.getWriter().println(e.getMessage());
+//										} finally {
+//											try {
+//												if (session != null) {
+//													session.close();
+//												}
+//												if (factory != null) {
+//													factory.close();
+//												}
+//											} catch (Exception e3) {
+//												resp.getWriter().print(e3.getMessage());
+//											}
+//										}
+//									}
+//
+//								}
+//							}
+//
 						}
 
 						else {
@@ -355,6 +355,7 @@ public class ScheduleDump extends HttpServlet {
 							resp.getWriter().println("<a href='dump.do?op=workers'>查看master-worker 状态</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=queue' >等待队列任务</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=action' >生成Action版本</a>&nbsp;&nbsp;&nbsp;&nbsp;");
+							//FIXME 清理程序需要判断依赖关系，否则不能用
 //							resp.getWriter().println("<a href='dump.do?op=clear' >清理和备份两个月前job</a>");
 						}
 					}

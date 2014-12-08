@@ -1,3 +1,4 @@
+
 package com.taobao.zeus.web.platform.server.rpc;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.model.GroupDescriptor;
 import com.taobao.zeus.model.ZeusFollow;
 import com.taobao.zeus.store.FollowManager;
+import com.taobao.zeus.store.FollowManagerOld;
 import com.taobao.zeus.store.GroupBeanOld;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.UserManager;
@@ -29,7 +31,7 @@ public class GroupServiceImpl implements GroupService{
 	@Autowired
 	private PermissionGroupManagerOld permissionGroupManagerOld;
 	@Autowired
-	private FollowManager followManager;
+	private FollowManagerOld followManagerOld;
 	@Autowired
 	private UserManager userManager;
 	@Autowired
@@ -67,7 +69,7 @@ public class GroupServiceImpl implements GroupService{
 		model.setOwner(gd.getOwner());
 		model.setParent(gd.getParent());
 		model.setAdmin(permissionGroupManagerOld.hasGroupPermission(LoginUser.getUser().getUid(), groupId));
-		List<ZeusFollow> follows=followManager.findGroupFollowers(Arrays.asList(groupId));
+		List<ZeusFollow> follows=followManagerOld.findGroupFollowers(Arrays.asList(groupId));
 		if(follows!=null){
 			List<String> followsName=new ArrayList<String>();
 			for(ZeusFollow zf:follows){
@@ -104,7 +106,7 @@ public class GroupServiceImpl implements GroupService{
 		model.setParent(gd.getParent());
 		model.setAllProperties(bean.getHierarchyProperties().getAllProperties());
 		model.setAdmin(permissionGroupManagerOld.hasGroupPermission(LoginUser.getUser().getUid(), groupId));
-		List<ZeusFollow> follows=followManager.findGroupFollowers(Arrays.asList(groupId));
+		List<ZeusFollow> follows=followManagerOld.findGroupFollowers(Arrays.asList(groupId));
 		if(follows!=null){
 			List<String> followsName=new ArrayList<String>();
 			for(ZeusFollow zf:follows){

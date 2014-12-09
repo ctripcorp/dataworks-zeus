@@ -1,7 +1,8 @@
 #!/bin/sh
 echo "The script can be run only by zeus administator."
 set -e
-#######################configuration############
+#######################configuration###################################
+#please allocate the real value for the below variables before run.
 #the location of the script which control the tomcat which contains zeus.
 TOMCAT_HOME=/opt/app/tomcat
 
@@ -69,12 +70,6 @@ then
   exit 1
 fi
 
-#check the setting file of mvn
-if [ ! -e "~/.m2/settings.xml" ]
-then
-  echo "Please copy the setting file"
-  exit 1
-fi
 
 #check whether the project exist
 if [ -e "${curpath}/${PROJECT_NAME}" ]
@@ -155,7 +150,7 @@ else
 fi
 
 cd $PROJECT_NAME
-#git checkout -b shell origin/shell
+
 
 #replace the configuration
 dis_dir="${curpath}/${PROJECT_NAME}/web/src/main/resources"

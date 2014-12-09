@@ -41,7 +41,7 @@ public abstract class AbstractZeusAlarm implements ZeusAlarm{
 		if(type==TriggerType.SCHEDULE){
 			users=followManagerOld.findActualJobFollowers(tojobId);
 		}else{
-			users.add(groupManagerOld.getJobDescriptor(jobId).getX().getOwner());
+			users.add(groupManagerOld.getJobDescriptor(tojobId).getX().getOwner());
 			if(history.getOperator()!=null){
 				if(!users.contains(history.getOperator())){
 					users.add(history.getOperator());

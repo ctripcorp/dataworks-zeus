@@ -81,6 +81,20 @@ public class JobFailListener extends DispatcherListener{
 							StringBuffer sb=new StringBuffer();
 							sb.append("Job任务(").append(jobId).append(")").append(jobBean.getJobDescriptor().getName()).append("运行失败");
 							sb.append("<br/>");
+							Map<String, String> properties=jobBean.getJobDescriptor().getProperties();
+							if(properties!=null){
+								String plevel=properties.get("run.priority.level");
+								if("1".equals(plevel)){
+									sb.append("Job任务优先级: ").append("low").append("，");
+								}else if("2".equals(plevel)){
+									sb.append("Job任务优先级: ").append("middle").append("，");
+								}else if("3".equals(plevel)){
+									sb.append("Job任务优先级: ").append("high").append("，");
+								}
+							}
+							String owner=jobBean.getJobDescriptor().getOwner();
+							sb.append("Job任务owner: ").append(owner);
+							sb.append("<br/>");
 							String type="";
 							if(event.getTriggerType()==TriggerType.MANUAL){
 								type="手动触发";

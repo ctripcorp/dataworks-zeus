@@ -1,17 +1,9 @@
 package com.taobao.zeus.broadcast.alarm;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.taobao.zeus.store.UserManager;
-import com.taobao.zeus.store.mysql.persistence.ZeusUser;
-import com.taobao.zeus.util.Environment;
-
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -22,10 +14,22 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.taobao.zeus.model.LogDescriptor;
+import com.taobao.zeus.store.UserManager;
+import com.taobao.zeus.store.mysql.MysqlLogManager;
+import com.taobao.zeus.store.mysql.persistence.ZeusUser;
+import com.taobao.zeus.util.Environment;
+
 public class MailAlarm extends AbstractZeusAlarm {
+	private static Logger log = LoggerFactory.getLogger(MailAlarm.class);
 	@Autowired
 	private UserManager userManager;
-	private static Logger log = LoggerFactory.getLogger(MailAlarm.class);
+	@Autowired
+	private MysqlLogManager zeusLogManager;
 	private static String host = Environment.getHost();// 邮件服务器
 	private static String port = Environment.getPort();// 端口
 	private static String from = Environment.getSendFrom();// 发送者
@@ -57,6 +61,20 @@ public class MailAlarm extends AbstractZeusAlarm {
 			if (emails.size() > 0) {
 				content = content.replace("<br/>", "\r\n");
 				sendEmail(jobId, emails, title, content);
+				try{
+					LogDescriptor logDescriptor = new LogDescriptor();
+					logDescriptor.setLogType("email");
+					logDescriptor.setIp(InetAddress.getLocalHost().getHostAddress());
+					logDescriptor.setUserName("zeus");
+					logDescriptor.setUrl(jobId);
+					logDescriptor.setRpc(emails.toString());
+					logDescriptor.setDelegate(title);
+					logDescriptor.setMethod("");
+					logDescriptor.setDescription((content.length()>4000 ? content.substring(4000) : content));
+					zeusLogManager.addLog(logDescriptor);
+				}catch(Exception ex){
+					log.error(ex.toString());
+				}
 			}
 		}
 	}

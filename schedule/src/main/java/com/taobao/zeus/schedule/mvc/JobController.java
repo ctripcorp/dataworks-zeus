@@ -710,9 +710,10 @@ public class JobController extends Controller {
 			ScheduleInfoLog.info("JobId:" + jobId + " independent job,update");
 			try {
 				if (detail != null) {
-					context.getScheduler().deleteJob(jobId, "zeus");
-					ScheduleInfoLog.info("JobId:" + jobId
-							+ " remove from schedule");
+//					context.getScheduler().deleteJob(jobId, "zeus");
+//					ScheduleInfoLog.info("JobId:" + jobId
+//							+ " remove from schedule");
+					return;
 				}
 				CronTrigger trigger = new CronTrigger(jd.getId(), "zeus",
 						jd.getCronExpression());
@@ -722,7 +723,7 @@ public class JobController extends Controller {
 						context.getDispatcher());
 				context.getScheduler().scheduleJob(detail, trigger);
 				ScheduleInfoLog.info("JobId:" + jobId
-						+ " add job to schedule for refresh");
+						+ " add job to schedule ");
 			} catch (SchedulerException e) {
 				log.error(e);
 			} catch (ParseException e) {
@@ -844,6 +845,7 @@ public class JobController extends Controller {
 					.getString("jobId");
 			Dispatcher dispatcher = (Dispatcher) context.getJobDetail()
 					.getJobDataMap().get("dispatcher");
+			log.info("start the triggerEvent, the jobId = " + jobId);
 			ScheduleTriggerEvent ste = new ScheduleTriggerEvent(jobId);
 			dispatcher.forwardEvent(ste);
 		}

@@ -17,7 +17,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.gson.Gson;
+import com.taobao.zeus.model.LogDescriptor;
 import com.taobao.zeus.store.UserManager;
+import com.taobao.zeus.store.mysql.MysqlLogManager;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.JsonUtil;
@@ -27,7 +29,8 @@ public class SMSAlarm extends AbstractZeusAlarm{
 	private static Logger log=LogManager.getLogger(SMSAlarm.class);
 	@Autowired
 	private UserManager userManager;
-	
+	@Autowired
+	private MysqlLogManager zeusLogManager;
     private static String notifyUrl = Environment.getNotifyUrl();//Noc服务器
 	private static String accessToken = Environment.getAccessToken();//Noc access_token
 
@@ -47,6 +50,20 @@ public class SMSAlarm extends AbstractZeusAlarm{
 		}
 		message += "<br>" + content;
 		sendNOCAlarm(jobId, notifyUrl, accessToken, srcId, devId, itemId, level, message);
+		try{
+			LogDescriptor logDescriptor = new LogDescriptor();
+			logDescriptor.setLogType("noc");
+			logDescriptor.setIp(InetAddress.getLocalHost().getHostAddress());
+			logDescriptor.setUserName("zeus");
+			logDescriptor.setUrl(jobId);
+			logDescriptor.setRpc(srcId);
+			logDescriptor.setDelegate(devId);
+			logDescriptor.setMethod(level);
+			logDescriptor.setDescription((message.length()>4000 ? message.substring(4000) : message));
+			zeusLogManager.addLog(logDescriptor);
+		}catch(Exception ex){
+			log.error(ex.toString());
+		}
 	}
 
 	@SuppressWarnings("deprecation")

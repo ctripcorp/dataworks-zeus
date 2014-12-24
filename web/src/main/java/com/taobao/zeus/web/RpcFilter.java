@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -33,6 +34,8 @@ import com.google.gwt.user.server.rpc.RPCServletUtils;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
 import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
 import com.google.gwt.user.server.rpc.SerializationPolicyProvider;
+import com.taobao.zeus.model.LogDescriptor;
+import com.taobao.zeus.store.mysql.MysqlLogManager;
 
 /**
  * rpc过滤器,过滤所有.rpc请求,输出rpc响应内容
@@ -45,12 +48,16 @@ public class RpcFilter implements Filter, SerializationPolicyProvider {
 	private static Logger log=LogManager.getLogger(RpcFilter.class);
 	private final Map<String, SerializationPolicy> serializationPolicyCache = new HashMap<String, SerializationPolicy>();
 	private ServletContext context;
-
 	private WebApplicationContext webApplicationContext;
+	@Autowired
+	private MysqlLogManager zeusLogManager;
+	
 	@Override
 	public void init(FilterConfig config) throws ServletException {
 		this.context = config.getServletContext();
-		webApplicationContext=WebApplicationContextUtils.getWebApplicationContext(context);
+		webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
+//		zeusLogManager = new MysqlLogManager();
+		zeusLogManager = (MysqlLogManager)webApplicationContext.getBean("zeusLogManager");
 	}
 
 	@Override
@@ -59,7 +66,9 @@ public class RpcFilter implements Filter, SerializationPolicyProvider {
 		HttpServletRequest request = (HttpServletRequest) req;
 		
 		if (request.getRequestURI().endsWith(".rpc")) {
+			String remoteIP = request.getRemoteAddr();
 			String requestURI = request.getRequestURI();
+			
 			String rpc = requestURI.substring(requestURI.lastIndexOf("/") + 1);
 			Object delegate =webApplicationContext.getBean(rpc);
 			if (delegate == null) {
@@ -77,6 +86,29 @@ public class RpcFilter implements Filter, SerializationPolicyProvider {
 						rpcRequest.getFlags());
 				RPCServletUtils.writeResponse(null, (HttpServletResponse) resp,
 						responsePayload, false);
+				//**********add rpc logs**********
+				LogDescriptor logDescriptor = new LogDescriptor();
+				logDescriptor.setLogType("rpc");
+				logDescriptor.setIp(remoteIP);
+				logDescriptor.setUserName(LoginUser.user.get().getUid());
+				logDescriptor.setUrl(requestURI);
+				logDescriptor.setRpc(rpc);
+				logDescriptor.setDelegate(delegate.getClass().getSimpleName());
+				logDescriptor.setMethod(rpcRequestMethod.getName());
+				String description = "";
+				if(rpcRequest.getParameters().length>0 && rpcRequest.getParameters()[0]!=null){
+					description = rpcRequest.getParameters()[0].toString();
+				}
+				logDescriptor.setDescription(description);
+				zeusLogManager.addLog(logDescriptor);
+				//*********************************
+/*				System.out.println("user: "+LoginUser.user.get().getUid()+
+						" | IP: "+remoteIP+
+						" | url: "+requestURI+
+						" | rpc: "+rpc+
+						" | delegate: "+delegate.getClass().getSimpleName()+
+						" | method: "+rpcRequestMethod.getName()+
+						" | parameter: "+ (rpcRequest.getParameters().length>0 ? rpcRequest.getParameters()[0].toString() : ""));*/
 			} catch (SerializationException e) {
 				log.error(e);
 				throw new RuntimeException("RPC序列化异常", e);

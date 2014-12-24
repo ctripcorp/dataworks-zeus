@@ -37,6 +37,7 @@
 				<value>com.taobao.zeus.store.mysql.persistence.ProfilePersistence</value>
 				<value>com.taobao.zeus.store.mysql.persistence.TimeZone</value>
 				<value>com.taobao.zeus.store.mysql.persistence.Worker</value>
+				<value>com.taobao.zeus.store.mysql.persistence.LogPersistence</value>
 			</list>
 		</property>
 	</bean>

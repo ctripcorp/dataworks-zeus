@@ -844,6 +844,7 @@ public class JobController extends Controller {
 					.getString("jobId");
 			Dispatcher dispatcher = (Dispatcher) context.getJobDetail()
 					.getJobDataMap().get("dispatcher");
+			log.info("start the triggerEvent, the jobId = " + jobId);
 			ScheduleTriggerEvent ste = new ScheduleTriggerEvent(jobId);
 			dispatcher.forwardEvent(ste);
 		}

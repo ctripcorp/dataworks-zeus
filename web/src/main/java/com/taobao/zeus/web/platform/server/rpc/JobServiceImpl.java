@@ -990,6 +990,7 @@ public class JobServiceImpl implements JobService {
 		try {
 			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
 					jd);
+			permissionGroupManagerOld.updateActionList(jd);
 		} catch (ZeusException e) {
 			log.error("syncScript", e);
 			throw new GwtException(

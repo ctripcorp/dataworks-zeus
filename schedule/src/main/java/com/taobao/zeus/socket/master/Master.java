@@ -596,6 +596,8 @@ public class Master {
 			JobFailedEvent jfe = new JobFailedEvent(jobID,
 					type, context.getJobHistoryManager()
 							.findJobHistory(his.getId()), jobException);
+			jfe.setRollBackTime(rollBackTimes);
+			jfe.setRunCount(runCount);
 			context.getDispatcher().forwardEvent(jfe);
 		} else {
 			// 运行成功，发出成功消息
@@ -724,13 +726,17 @@ public class Master {
 			JobHistory his = context.getJobHistoryManager().findJobHistory(
 					context.getGroupManager().getJobStatus(jobId)
 							.getHistoryId());
-			long runTime = (System.currentTimeMillis() - his.getStartTime()
-					.getTime()) / 1000 / 60;
-			if (runTime > maxTime) {
-				if (timeOverAlarm(his, null, runTime, maxTime, 0, jd)) {
-					w.getRunnings().replace(jobId, false, true);
+			if (his != null && his.getStartTime() != null) {
+				long runTime = (System.currentTimeMillis() - his.getStartTime()
+						.getTime()) / 1000 / 60;
+				if (runTime > maxTime) {
+					log.info("send the timeOverAlarm of job: " + jobId);
+					if (timeOverAlarm(his, null, runTime, maxTime, 0, jd)) {
+						w.getRunnings().replace(jobId, false, true);
+					}
 				}
 			}
+			
 		}
 	}
 

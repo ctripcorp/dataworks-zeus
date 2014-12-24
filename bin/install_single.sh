@@ -9,7 +9,7 @@ TOMCAT_HOME=/opt/app/tomcat
 #the directory of war file of zeus
 ZEUS_LOCATION=/opt/ctrip/web/work
 #the directory for backing up the old war file of zeus
-BACKUP_DIR=${ZEUS_LOCATION}/backup
+BACKUP_DIR=/home/zeus/backup
 
 #git repository of zeus
 GIT_REPO=git@git.dev.sh.ctripcorp.com:cdata/prometheus.git

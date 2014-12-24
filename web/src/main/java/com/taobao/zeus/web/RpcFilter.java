@@ -87,20 +87,24 @@ public class RpcFilter implements Filter, SerializationPolicyProvider {
 				RPCServletUtils.writeResponse(null, (HttpServletResponse) resp,
 						responsePayload, false);
 				//**********add rpc logs**********
-				LogDescriptor logDescriptor = new LogDescriptor();
-				logDescriptor.setLogType("rpc");
-				logDescriptor.setIp(remoteIP);
-				logDescriptor.setUserName(LoginUser.user.get().getUid());
-				logDescriptor.setUrl(requestURI);
-				logDescriptor.setRpc(rpc);
-				logDescriptor.setDelegate(delegate.getClass().getSimpleName());
-				logDescriptor.setMethod(rpcRequestMethod.getName());
-				String description = "";
-				if(rpcRequest.getParameters().length>0 && rpcRequest.getParameters()[0]!=null){
-					description = rpcRequest.getParameters()[0].toString();
+				try{
+					LogDescriptor logDescriptor = new LogDescriptor();
+					logDescriptor.setLogType("rpc");
+					logDescriptor.setIp(remoteIP);
+					logDescriptor.setUserName(LoginUser.user.get().getUid());
+					logDescriptor.setUrl(requestURI);
+					logDescriptor.setRpc(rpc);
+					logDescriptor.setDelegate(delegate.getClass().getSimpleName());
+					logDescriptor.setMethod(rpcRequestMethod.getName());
+					String description = "";
+					if(rpcRequest.getParameters().length>0 && rpcRequest.getParameters()[0]!=null){
+						description = rpcRequest.getParameters()[0].toString();
+					}
+					logDescriptor.setDescription(description);
+					zeusLogManager.addLog(logDescriptor);
+				}catch(Exception ex){
+					log.error(ex);
 				}
-				logDescriptor.setDescription(description);
-				zeusLogManager.addLog(logDescriptor);
 				//*********************************
 /*				System.out.println("user: "+LoginUser.user.get().getUid()+
 						" | IP: "+remoteIP+

@@ -155,7 +155,7 @@ public class PlatformEntry implements EntryPoint {
 				com.google.gwt.user.client.Window.Location.assign("/zeus-web/login.do");
 			}
 		});
-		// 闃瞐rk璁よ瘉杩囨湡锛屼竴鍒嗛挓鍙戦�涓�rpc璇锋眰
+		// 防ark认证过期，一分钟发送一次rpc请求
 		new Timer(){
 			@Override
 			public void run() {

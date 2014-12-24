@@ -429,7 +429,7 @@ public class ReadOnlyGroupManager extends HibernateDaoSupport{
 		@Override
 		public GroupBean getDownstreamGroupBean(GroupBean parent) {
 			try {
-				return getDownstreamGroupBean(parent, 99).get(2000,TimeUnit.MILLISECONDS);
+				return getDownstreamGroupBean(parent, 99).get(60,TimeUnit.SECONDS);
 			} catch (Exception e) {
 				log.error("getDownstreamGroupBean failed", e);
 				return null;
@@ -461,7 +461,7 @@ public class ReadOnlyGroupManager extends HibernateDaoSupport{
 							parent.getChildrenGroupBeans().add(childBean);
 						}
 						for(Future<GroupBean> f:futures){
-							f.get(2000,TimeUnit.MILLISECONDS);
+							f.get(60,TimeUnit.SECONDS);
 						}
 					}else{
 						List<Tuple<JobDescriptor, JobStatus>> jobs=getChildrenJob(parent.getGroupDescriptor().getId());

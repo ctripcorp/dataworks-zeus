@@ -81,6 +81,20 @@ public class JobFailListener extends DispatcherListener{
 							StringBuffer sb=new StringBuffer();
 							sb.append("Job任务(").append(jobId).append(")").append(jobBean.getJobDescriptor().getName()).append("运行失败");
 							sb.append("<br/>");
+							Map<String, String> properties=jobBean.getJobDescriptor().getProperties();
+							if(properties!=null){
+								String plevel=properties.get("run.priority.level");
+								if("1".equals(plevel)){
+									sb.append("Job任务优先级: ").append("low").append("，");
+								}else if("2".equals(plevel)){
+									sb.append("Job任务优先级: ").append("middle").append("，");
+								}else if("3".equals(plevel)){
+									sb.append("Job任务优先级: ").append("high").append("，");
+								}
+							}
+							String owner=jobBean.getJobDescriptor().getOwner();
+							sb.append("Job任务owner: ").append(owner);
+							sb.append("<br/>");
 							String type="";
 							if(event.getTriggerType()==TriggerType.MANUAL){
 								type="手动触发";
@@ -121,16 +135,21 @@ public class JobFailListener extends DispatcherListener{
 						String priorityLevel = jobBean.getJobDescriptor().getProperties().get("run.priority.level");
 						if(priorityLevel == null || !priorityLevel.trim().equals("1")){
 							//手机报警
+							//最后一次重试的时候发送
 							//只发送自动调度的报警  并且只在下班时间 或者周末发送
 							if(event.getHistory().getTriggerType()==TriggerType.SCHEDULE){
+								int runCount = event.getRunCount();
+							    int rollBackTime = event.getRollBackTime();
 								Calendar now=Calendar.getInstance();
 								int hour=now.get(Calendar.HOUR_OF_DAY);
 								int day=now.get(Calendar.DAY_OF_WEEK);
-								if(day==Calendar.SATURDAY || day==Calendar.SUNDAY || hour<9 || hour>18){
-									try {
-										smsAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
-									} catch (Exception e) {
-										log.error("NOC发送出现异常",e);
+								if (runCount > rollBackTime) {
+									if(day==Calendar.SATURDAY || day==Calendar.SUNDAY || hour<9 || hour>18){
+										try {
+											smsAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
+										} catch (Exception e) {
+											log.error("NOC发送出现异常",e);
+										}
 									}
 								}
 							}

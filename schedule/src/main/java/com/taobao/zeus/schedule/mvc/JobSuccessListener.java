@@ -35,6 +35,7 @@ public class JobSuccessListener extends DispatcherListener{
 				if(event.getTriggerType()==TriggerType.SCHEDULE){
 					return;
 				}
+				log.info("The event history id is" + event.getHistoryId());
 				JobHistory history=jobHistoryManager.findJobHistory(event.getHistoryId());
 				final JobDescriptor jd=groupManager.getJobDescriptor(history.getJobId()).getX();
 				if(history.getOperator()!=null){

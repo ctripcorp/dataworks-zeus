@@ -127,7 +127,8 @@ public class Master {
 										context.getDispatcher().forwardEvent(
 												new JobMaintenanceEvent(Events.UpdateJob,
 														id.toString()));
-									}else{
+									}else if(id < (Long.parseLong(currentDateStr)-10000000)){
+										//当前时间10分钟之前JOB的才检测漏跑
 										int loopCount = 0;
 										rollBackLostJob(id, actionDetails, loopCount, rollBackActionId);
 									}

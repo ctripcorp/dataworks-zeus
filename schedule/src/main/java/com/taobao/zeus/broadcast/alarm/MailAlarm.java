@@ -70,7 +70,8 @@ public class MailAlarm extends AbstractZeusAlarm {
 					logDescriptor.setRpc(emails.toString());
 					logDescriptor.setDelegate(title);
 					logDescriptor.setMethod("");
-					logDescriptor.setDescription((content.length()>4000 ? content.substring(4000) : content));
+//					logDescriptor.setDescription((content.length()>4000 ? content.substring(4000) : content));
+					logDescriptor.setDescription("");
 					zeusLogManager.addLog(logDescriptor);
 				}catch(Exception ex){
 					log.error(ex.toString());

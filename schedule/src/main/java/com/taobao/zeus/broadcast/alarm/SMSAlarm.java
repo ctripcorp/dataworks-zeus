@@ -59,7 +59,8 @@ public class SMSAlarm extends AbstractZeusAlarm{
 			logDescriptor.setRpc(srcId);
 			logDescriptor.setDelegate(devId);
 			logDescriptor.setMethod(level);
-			logDescriptor.setDescription((message.length()>4000 ? message.substring(4000) : message));
+//			logDescriptor.setDescription((message.length()>4000 ? message.substring(4000) : message));
+			logDescriptor.setDescription("");
 			zeusLogManager.addLog(logDescriptor);
 		}catch(Exception ex){
 			log.error(ex.toString());

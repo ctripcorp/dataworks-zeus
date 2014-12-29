@@ -7,7 +7,9 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,24 +89,28 @@ public class RpcFilter implements Filter, SerializationPolicyProvider {
 				RPCServletUtils.writeResponse(null, (HttpServletResponse) resp,
 						responsePayload, false);
 				//**********add rpc logs**********
-				try{
-					LogDescriptor logDescriptor = new LogDescriptor();
-					logDescriptor.setLogType("rpc");
-					logDescriptor.setIp(remoteIP);
-					logDescriptor.setUserName(LoginUser.user.get().getUid());
-					logDescriptor.setUrl(requestURI);
-					logDescriptor.setRpc(rpc);
-					logDescriptor.setDelegate(delegate.getClass().getSimpleName());
-					logDescriptor.setMethod(rpcRequestMethod.getName());
-					String description = "";
-					if(rpcRequest.getParameters().length>0 && rpcRequest.getParameters()[0]!=null){
-						description = rpcRequest.getParameters()[0].toString();
+				/*SimpleDateFormat df=new SimpleDateFormat("HH");
+				int currentHour = Integer.parseInt(df.format(new Date()));
+				if(currentHour >= 9 && currentHour < 22){
+					try{
+						LogDescriptor logDescriptor = new LogDescriptor();
+						logDescriptor.setLogType("rpc");
+						logDescriptor.setIp(remoteIP);
+						logDescriptor.setUserName(LoginUser.user.get().getUid());
+						logDescriptor.setUrl(requestURI);
+						logDescriptor.setRpc(rpc);
+						logDescriptor.setDelegate(delegate.getClass().getSimpleName());
+						logDescriptor.setMethod(rpcRequestMethod.getName());
+						String description = "";
+						if(rpcRequest.getParameters().length>0 && rpcRequest.getParameters()[0]!=null){
+							description = rpcRequest.getParameters()[0].toString();
+						}
+						logDescriptor.setDescription(description);
+						zeusLogManager.addLog(logDescriptor);
+					}catch(Exception ex){
+						log.error(ex);
 					}
-					logDescriptor.setDescription(description);
-					zeusLogManager.addLog(logDescriptor);
-				}catch(Exception ex){
-					log.error(ex);
-				}
+				}*/
 				//*********************************
 /*				System.out.println("user: "+LoginUser.user.get().getUid()+
 						" | IP: "+remoteIP+

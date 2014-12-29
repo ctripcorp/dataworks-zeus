@@ -50,7 +50,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 		}
 		message += "<br>" + content;
 		sendNOCAlarm(jobId, notifyUrl, accessToken, srcId, devId, itemId, level, message);
-		try{
+		/*try{
 			LogDescriptor logDescriptor = new LogDescriptor();
 			logDescriptor.setLogType("noc");
 			logDescriptor.setIp(InetAddress.getLocalHost().getHostAddress());
@@ -64,7 +64,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 			zeusLogManager.addLog(logDescriptor);
 		}catch(Exception ex){
 			log.error(ex.toString());
-		}
+		}*/
 	}
 
 	@SuppressWarnings("deprecation")

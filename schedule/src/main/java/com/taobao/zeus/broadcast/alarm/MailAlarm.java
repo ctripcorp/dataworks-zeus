@@ -1,6 +1,7 @@
 package com.taobao.zeus.broadcast.alarm;
 
 import java.net.InetAddress;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,7 +62,7 @@ public class MailAlarm extends AbstractZeusAlarm {
 			if (emails.size() > 0) {
 				content = content.replace("<br/>", "\r\n");
 				sendEmail(jobId, emails, title, content);
-				try{
+				/*try{
 					LogDescriptor logDescriptor = new LogDescriptor();
 					logDescriptor.setLogType("email");
 					logDescriptor.setIp(InetAddress.getLocalHost().getHostAddress());
@@ -75,7 +76,7 @@ public class MailAlarm extends AbstractZeusAlarm {
 					zeusLogManager.addLog(logDescriptor);
 				}catch(Exception ex){
 					log.error(ex.toString());
-				}
+				}*/
 			}
 		}
 	}

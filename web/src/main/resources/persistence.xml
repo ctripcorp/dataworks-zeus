@@ -47,13 +47,13 @@
 		<property name="url" value="jdbc:mysql://192.168.83.243:3306/zeus_lky1?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;autoReconnectForPools=true"/>
 		<property name="username" value="biuser"/>
 		<property name="password" value="biuser"/>
-		<property name="maxActive" value="20" />
-		<property name="initialSize" value="3" />
+		<property name="maxActive" value="50" />
+		<property name="initialSize" value="10" />
 		<property name="maxWait" value="60000" />
-		<property name="maxIdle" value="15" />
-		<property name="minIdle" value="5" />
+		<property name="maxIdle" value="30" />
+		<property name="minIdle" value="10" />
 		<property name="removeAbandoned" value="true" />
-		<property name="removeAbandonedTimeout" value="180" />
+		<property name="removeAbandonedTimeout" value="120" />
         <property name="validationQuery" value="SELECT 1" />
         <property name="testOnBorrow" value="true" />
 	</bean>

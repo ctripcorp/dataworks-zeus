@@ -102,9 +102,14 @@ public class Master {
 					SimpleDateFormat df=new SimpleDateFormat("mm");
 					SimpleDateFormat df2=new SimpleDateFormat("yyyy-MM-dd");
 					SimpleDateFormat df3=new SimpleDateFormat("yyyyMMddHHmmss");
+					SimpleDateFormat df4=new SimpleDateFormat("HH");
 					String currentDateStr = df3.format(now)+"0000";
+					int execHour = Integer.parseInt(df4.format(now));
 					int execMinute = Integer.parseInt(df.format(now));
-					if(execMinute == 0 || execMinute == 30){
+					if((execHour == 0 && execMinute == 0) 
+							|| (execHour == 1 && execMinute == 15)
+							|| (execHour > 7 && execMinute == 21) 
+							|| (execHour > 7 && execMinute == 51)){
 						System.out.println("生成Action，当前时间：" + currentDateStr);
 						log.info("start to action, current date：" + currentDateStr);
 						List<JobPersistenceOld> jobDetails = context.getGroupManagerOld().getAllJobs();
@@ -127,8 +132,8 @@ public class Master {
 										context.getDispatcher().forwardEvent(
 												new JobMaintenanceEvent(Events.UpdateJob,
 														id.toString()));
-									}else if(id < (Long.parseLong(currentDateStr)-10000000)){
-										//当前时间10分钟之前JOB的才检测漏跑
+									}else if(id < (Long.parseLong(currentDateStr)-15000000)){
+										//当前时间20分钟之前JOB的才检测漏跑
 										int loopCount = 0;
 										rollBackLostJob(id, actionDetails, loopCount, rollBackActionId);
 									}
@@ -256,17 +261,19 @@ public class Master {
 		MasterWorkerHolder selectWorker = null;
 		Float selectMemRate = null;
 		for (MasterWorkerHolder worker : context.getWorkers().values()) {
-			HeartBeatInfo heart = worker.getHeart();
-			log.info("worker a : heart :" + heart.memRate);
-			if (heart != null && heart.memRate != null && heart.memRate < 0.8) {
-				if (selectWorker == null) {
-					selectWorker = worker;
-					selectMemRate = heart.memRate;
-					log.info("worker b : heart :"+ selectMemRate);
-				} else if (selectMemRate > heart.memRate) {
-					selectWorker = worker;
-					selectMemRate = heart.memRate;
-					log.info("worker c : heart :"+ selectMemRate);
+			if(worker != null){
+				HeartBeatInfo heart = worker.getHeart();
+				log.info("worker a : heart :" + heart.memRate);
+				if (heart != null && heart.memRate != null && heart.memRate < 0.8) {
+					if (selectWorker == null) {
+						selectWorker = worker;
+						selectMemRate = heart.memRate;
+						log.info("worker b : heart :"+ selectMemRate);
+					} else if (selectMemRate > heart.memRate) {
+						selectWorker = worker;
+						selectMemRate = heart.memRate;
+						log.info("worker c : heart :"+ selectMemRate);
+					}
 				}
 			}
 		}
@@ -279,19 +286,21 @@ public class Master {
 		if (host != null && !"".equals(host)) {
 			boolean isWorkerHost = false;
 			for (MasterWorkerHolder worker : context.getWorkers().values()) {
-				HeartBeatInfo heart = worker.getHeart();
-				log.info("worker a : host :" + host + " heart :" + heart.memRate);
-				if (heart != null && heart.memRate != null
-						&& heart.memRate < 0.8 && host.equals(heart.host)) {
-					isWorkerHost = true;
-					if (selectWorker == null) {
-						selectWorker = worker;
-						selectMemRate = heart.memRate;
-						log.info("worker b : host :" + host+ " heart :" + selectMemRate);
-					} else if (selectMemRate > heart.memRate) {
-						selectWorker = worker;
-						selectMemRate = heart.memRate;
-						log.info("worker c : host :" + host+ " heart :" + selectMemRate);
+				if(worker != null){
+					HeartBeatInfo heart = worker.getHeart();
+					log.info("worker a : host :" + host + " heart :" + heart.memRate);
+					if (heart != null && heart.memRate != null
+							&& heart.memRate < 0.8 && host.equals(heart.host)) {
+						isWorkerHost = true;
+						if (selectWorker == null) {
+							selectWorker = worker;
+							selectMemRate = heart.memRate;
+							log.info("worker b : host :" + host+ " heart :" + selectMemRate);
+						} else if (selectMemRate > heart.memRate) {
+							selectWorker = worker;
+							selectMemRate = heart.memRate;
+							log.info("worker c : host :" + host+ " heart :" + selectMemRate);
+						}
 					}
 				}
 			}

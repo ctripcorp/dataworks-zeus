@@ -231,7 +231,7 @@ public class ScheduleDump extends HttpServlet {
 											context.getDispatcher().forwardEvent(
 													new JobMaintenanceEvent(Events.UpdateJob,
 															id.toString()));
-										}else if(id < (Long.parseLong(currentDateStr)-10000000)){
+										}else if(id < (Long.parseLong(currentDateStr)-15000000)){
 											int loopCount = 0;
 											context.getMaster().rollBackLostJob(id, actionDetails, loopCount, rollBackActionId);
 

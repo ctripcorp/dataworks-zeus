@@ -53,7 +53,7 @@
 		<property name="maxIdle" value="30" />
 		<property name="minIdle" value="10" />
 		<property name="removeAbandoned" value="true" />
-		<property name="removeAbandonedTimeout" value="120" />
+		<property name="removeAbandonedTimeout" value="180" />
         <property name="validationQuery" value="SELECT 1" />
         <property name="testOnBorrow" value="true" />
 	</bean>

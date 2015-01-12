@@ -1,6 +1,5 @@
 package com.taobao.zeus.web.platform.client.module.jobdisplay.job;
 
-
 import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;

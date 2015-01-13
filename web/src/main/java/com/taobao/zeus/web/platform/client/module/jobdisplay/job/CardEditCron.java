@@ -36,7 +36,7 @@ public class CardEditCron extends Window  {
 		setHeadingText("构造定时表达式");
 		setModal(true);
 		setHeight(270);
-		setWidth(300);
+		setWidth(230);
 		add(getLayoutContainer());
 		expModel = new CronExpress(exp);
 		init(expModel);
@@ -72,10 +72,16 @@ public class CardEditCron extends Window  {
 		}
 		
 		minuteWrapper = new FieldLabel(minute, "分");
+		minuteWrapper.setLabelWidth(30);
 		hourWrapper = new FieldLabel(hour,"时");
+		hourWrapper.setLabelWidth(30);
 		dayWrapper = new FieldLabel(day,"天");
+		dayWrapper.setLabelWidth(30);
 		monthWrapper = new FieldLabel(month,"月");
+		monthWrapper.setLabelWidth(30);
 		weekWrapper = new FieldLabel(week, "周");
+		weekWrapper.setLabelWidth(30);
+		
 		getLayoutContainer().add(minuteWrapper);
 		getLayoutContainer().add(hourWrapper);
 		getLayoutContainer().add(dayWrapper);

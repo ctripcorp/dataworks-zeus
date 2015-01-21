@@ -526,6 +526,7 @@ public class Master {
 	//schedule任务运行，失败后重试
 	private void runScheduleJobContext(MasterWorkerHolder w, final String jobID, int runCount, final int rollBackTimes, final int rollBackWaitTime){
 		runCount++;
+		boolean isCancelJob = false;
 		if(runCount > 1){
 			try {
 				Thread.sleep(rollBackWaitTime*60*1000);
@@ -555,6 +556,7 @@ public class Master {
 			his.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
 			his.setToJobId(jobDescriptor.getToJobId() == null ? null : jobDescriptor.getToJobId());
 			his.setTimezone(jobDescriptor.getTimezone());
+			his.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
 			context.getJobHistoryManager().addJobHistory(his);
 			his.getLog().appendZeus(
 					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -603,11 +605,13 @@ public class Master {
 			ScheduleInfoLog.info("JobId:" + jobID
 					+ " run fail and dispatch the fail event");
 			jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
-			JobFailedEvent jfe = new JobFailedEvent(jobID,
-					type, context.getJobHistoryManager()
-							.findJobHistory(his.getId()), jobException);
+			JobHistory jobHistory = context.getJobHistoryManager().findJobHistory(his.getId());
+			JobFailedEvent jfe = new JobFailedEvent(jobID, type, jobHistory, jobException);
 			jfe.setRollBackTime(rollBackTimes);
 			jfe.setRunCount(runCount);
+			if(jobHistory.getLog().getContent().contains("任务被取消")){
+				isCancelJob = true;
+			}
 			context.getDispatcher().forwardEvent(jfe);
 		} else {
 			// 运行成功，发出成功消息
@@ -620,7 +624,7 @@ public class Master {
 			context.getDispatcher().forwardEvent(jse);
 		}
 		context.getGroupManager().updateJobStatus(jobstatus);
-		if(runCount < (rollBackTimes + 1) && !success){
+		if(runCount < (rollBackTimes + 1) && !success && !isCancelJob){
 			runScheduleJobContext(w, jobID, runCount, rollBackTimes, rollBackWaitTime);
 		}
 	}

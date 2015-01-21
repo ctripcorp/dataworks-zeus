@@ -676,6 +676,26 @@ public class CardEditJob extends CenterTemplate implements
 
 			baseCron = new TextField();
 			baseCron.setWidth(150);
+			baseCron.setReadOnly(true);
+			baseCron.addHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					String before_cron = baseCron.getCurrentValue();
+					final CardEditCron chd = new CardEditCron(before_cron);
+					chd.setSelectHandler(new SelectHandler(){
+
+						@Override
+						public void onSelect(SelectEvent event) {
+							String after_cron = chd.getCronExpress();
+							baseCron.setValue(after_cron);
+						}
+						
+					});
+					chd.show();
+				}
+			},ClickEvent.getType());
+			
 			baseDepJobs = new TextField();
 			baseDepJobs.setWidth(150);
 			baseDepJobs.setReadOnly(true);

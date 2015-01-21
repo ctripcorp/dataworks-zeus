@@ -113,8 +113,8 @@ public class DistributeLocker extends HibernateDaoSupport{
 			zeusSchedule.startup(port);
 		}else{//其他服务器抢占了锁
 			log.info("not my locker");
-			//如果最近更新时间在2分钟以上，则认为抢占的Master服务器已经失去连接，本服务器主动进行抢占
-			if(System.currentTimeMillis()-lock.getServerUpdate().getTime()>1000*60*2L){
+			//如果最近更新时间在5分钟以上，则认为抢占的Master服务器已经失去连接，本服务器主动进行抢占
+			if(System.currentTimeMillis()-lock.getServerUpdate().getTime()>1000*60*5L){
 				log.error("rob the locker and update");
 				lock.setHost(host);
 				lock.setServerUpdate(new Date());

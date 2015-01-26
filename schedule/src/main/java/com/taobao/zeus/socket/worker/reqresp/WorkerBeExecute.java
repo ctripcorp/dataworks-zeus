@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.taobao.zeus.jobs.Job;
 import com.taobao.zeus.jobs.JobContext;
@@ -26,6 +29,7 @@ import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.JobUtils;
 
 public class WorkerBeExecute {
+	private static Logger log = LoggerFactory.getLogger(WorkerBeExecute.class);
 	public Future<Response> execute(final WorkerContext context,
 			final Request req) {
 		if (req.getOperate() == Operate.Debug) {
@@ -96,9 +100,13 @@ public class WorkerBeExecute {
 							context.getJobHistoryManager().updateJobHistory(
 									jobHistory);
 							history.getLog().appendZeus("exitCode=" + exitCode);
-							context.getJobHistoryManager().updateJobHistoryLog(
-									history.getId(),
-									history.getLog().getContent());
+							try{
+								context.getJobHistoryManager().updateJobHistoryLog(
+										history.getId(),
+										history.getLog().getContent());
+							}catch(Exception ex){
+								log.error("update manual job log exception:", ex);
+							}
 							context.getManualRunnings().remove(historyId);
 						}
 
@@ -180,9 +188,13 @@ public class WorkerBeExecute {
 							context.getDebugHistoryManager()
 									.updateDebugHistory(debugHistory);
 							history.getLog().appendZeus("exitCode=" + exitCode);
-							context.getDebugHistoryManager()
-									.updateDebugHistoryLog(history.getId(),
-											history.getLog().getContent());
+							try{
+								context.getDebugHistoryManager()
+										.updateDebugHistoryLog(history.getId(),
+												history.getLog().getContent());
+							}catch(Exception ex){
+								log.error("update debug log exception:", ex);
+							}
 							context.getDebugRunnings().remove(debugId);
 						}
 
@@ -280,9 +292,13 @@ public class WorkerBeExecute {
 							context.getJobHistoryManager().updateJobHistory(
 									jobHistory);
 							history.getLog().appendZeus("exitCode=" + exitCode);
-							context.getJobHistoryManager().updateJobHistoryLog(
-									history.getId(),
-									history.getLog().getContent());
+							try{
+								context.getJobHistoryManager().updateJobHistoryLog(
+										history.getId(),
+										history.getLog().getContent());
+							}catch(Exception ex){
+								log.error("update schedule job log exception:", ex);
+							}
 							context.getRunnings().remove(jobId);
 						}
 

@@ -750,7 +750,6 @@ public class Master {
 					}
 				}
 			}
-			
 		}
 	}
 
@@ -773,8 +772,26 @@ public class Master {
 			title.append("调试任务").append("] 脚本名称：").append(fd.getName());
 		}
 		final StringBuffer content = new StringBuffer(title);
+		if(jd != null){
+			content.append("\nJOB任务名称：").append(jd.getName());
+			Map<String, String> properties=jd.getProperties();
+			if(properties != null){
+				String plevel=properties.get("run.priority.level");
+				if("1".equals(plevel)){
+					content.append("\nJob任务优先级: ").append("low");
+				}else if("2".equals(plevel)){
+					content.append("\nJob任务优先级: ").append("middle");
+				}else if("3".equals(plevel)){
+					content.append("\nJob任务优先级: ").append("high");
+				}
+			}
+			content.append("\nJOB任务Owner：").append(jd.getOwner());
+		}
 		content.append("\n已经运行时间：").append(runTime).append("分钟")
 				.append("\n设置最大运行时间：").append(maxTime).append("分钟");
+		if(his != null){
+			content.append("\n运行日志：\n").append(his.getLog().getContent().replaceAll("\\n", "<br/>"));
+		}
 		try {
 			if (type == 2) {
 				// 此处可以发送IM消息
@@ -810,7 +827,6 @@ public class Master {
 							//mailAlarm.alarm(his.getId(), title.toString(),content.toString(), null);
 						}
 					}
-					
 				}
 			}
 			return true;

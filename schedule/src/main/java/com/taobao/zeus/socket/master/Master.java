@@ -609,7 +609,7 @@ public class Master {
 			JobFailedEvent jfe = new JobFailedEvent(jobID, type, jobHistory, jobException);
 			jfe.setRollBackTime(rollBackTimes);
 			jfe.setRunCount(runCount);
-			if(jobHistory.getLog().getContent().contains("任务被取消")){
+			if(jobHistory.getLog().getContent().contains("开始执行取消任务命令")){
 				isCancelJob = true;
 			}
 			context.getDispatcher().forwardEvent(jfe);

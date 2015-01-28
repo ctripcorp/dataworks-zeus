@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 
 import com.taobao.zeus.broadcast.alarm.MailAlarm;
 import com.taobao.zeus.broadcast.alarm.SMSAlarm;
+import com.taobao.zeus.model.JobDescriptor;
+import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.model.JobStatus.TriggerType;
 import com.taobao.zeus.mvc.DispatcherListener;
 import com.taobao.zeus.mvc.MvcEvent;
@@ -21,6 +23,7 @@ import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.UserManager;
 import com.taobao.zeus.store.mysql.ReadOnlyGroupManager;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
+import com.taobao.zeus.util.Tuple;
 /**
  * 任务失败的监听
  * 当任务失败，需要发送邮件给相关人员
@@ -43,14 +46,14 @@ public class JobFailListener extends DispatcherListener{
 		mailAlarm=(MailAlarm) context.getApplicationContext().getBean("mailAlarm");
 		smsAlarm=(SMSAlarm) context.getApplicationContext().getBean("smsAlarm");
 	}
-	private ThreadLocal<ChainException> chainLocal=new ThreadLocal<ChainException>();
+	//private ThreadLocal<ChainException> chainLocal=new ThreadLocal<ChainException>();
 	public static class ChainException{
 		final String causeJobId;
 		Map<String, Integer> userCountMap=new HashMap<String, Integer>();
-		GroupBean gb;
+//		GroupBean gb;
 		public ChainException(String jobId,GroupBean gb){
 			this.causeJobId=jobId;
-			this.gb=gb;
+//			this.gb=gb;
 		}
 		public Map<String, Integer> getUserCountMap() {
 			return userCountMap;
@@ -65,23 +68,24 @@ public class JobFailListener extends DispatcherListener{
 			if(mvce.getAppEvent() instanceof JobFailedEvent){
 				final JobFailedEvent event=(JobFailedEvent) mvce.getAppEvent();
 				final String jobId=event.getJobId();
-				final String causeJobId=event.getJobException().getCauseJobId();
-				if(chainLocal.get()==null || !chainLocal.get().getCauseJobId().equals(causeJobId)){
-					GroupBean gb=readOnlyGroupManager.getGlobeGroupBean();
-					chainLocal.set(new ChainException(causeJobId, gb));
-				}
-				final ChainException chain=chainLocal.get();
-				final JobBean jobBean=chain.gb.getAllSubJobBeans().get(jobId);
-				final ZeusUser owner=userManager.findByUid(jobBean.getJobDescriptor().getOwner());
+//				final String causeJobId=event.getJobException().getCauseJobId();
+//				if(chainLocal.get()==null || !chainLocal.get().getCauseJobId().equals(causeJobId)){
+//					GroupBean gb=readOnlyGroupManager.getGlobeGroupBean();
+//					chainLocal.set(new ChainException(causeJobId, gb));
+//				}
+//				final ChainException chain=chainLocal.get();
+//				final JobBean jobBean=chain.gb.getAllSubJobBeans().get(jobId);
+				final JobDescriptor jobDescriptor = groupManager.getJobDescriptor(jobId).getX();
+				final ZeusUser owner=userManager.findByUid(jobDescriptor.getOwner());
 				//延迟6秒发送邮件，保证日志已经输出到数据库
 				new Thread(){
 					public void run() {
 						try {
 							Thread.sleep(6000);
 							StringBuffer sb=new StringBuffer();
-							sb.append("Job任务(").append(jobId).append(")").append(jobBean.getJobDescriptor().getName()).append("运行失败");
+							sb.append("Job任务(").append(jobId).append(")").append(jobDescriptor.getName()).append("运行失败");
 							sb.append("<br/>");
-							Map<String, String> properties=jobBean.getJobDescriptor().getProperties();
+							Map<String, String> properties=jobDescriptor.getProperties();
 							if(properties!=null){
 								String plevel=properties.get("run.priority.level");
 								if("1".equals(plevel)){
@@ -92,7 +96,7 @@ public class JobFailListener extends DispatcherListener{
 									sb.append("Job任务优先级: ").append("high").append("，");
 								}
 							}
-							String owner=jobBean.getJobDescriptor().getOwner();
+							String owner=jobDescriptor.getOwner();
 							sb.append("Job任务owner: ").append(owner);
 							sb.append("<br/>");
 							String type="";
@@ -107,12 +111,9 @@ public class JobFailListener extends DispatcherListener{
 							if(event.getHistory()!=null){
 								sb.append("失败原因:<br/>"+jobHistoryManager.findJobHistory(event.getHistory().getId()).getLog().getContent().replaceAll("\\n", "<br/>"));
 								String msg= "Zeus报警 JobId:"+jobId+" 任务运行失败";
-								if(!jobBean.getDepender().isEmpty()){
-									msg+=",影响范围:"+getDependencyJobs(jobBean);
-								}
-								if(!causeJobId.equalsIgnoreCase(event.getJobId())){
-									msg+="(根本原因:job "+causeJobId+"运行失败)";
-								}
+//								if(!causeJobId.equalsIgnoreCase(event.getJobId())){
+//									msg+="(根本原因:job "+causeJobId+"运行失败)";
+//								}
 								mailAlarm.alarm(event.getHistory().getId(), msg, sb.toString());
 								//smsAlarm.alarm(event.getHistory().getId(), msg, sb.toString());
 							}
@@ -124,15 +125,9 @@ public class JobFailListener extends DispatcherListener{
 				new Thread(){
 					@Override
 					public void run(){
-						String msg="Job任务("+jobId+"-"+owner.getName()+"):"+jobBean.getJobDescriptor().getName()+" 运行失败";
-						if(!jobBean.getDepender().isEmpty()){
-							msg+=",影响范围:"+getDependencyJobs(jobBean);
-						}
-						if(!causeJobId.equalsIgnoreCase(event.getJobId())){
-							msg+="(根本原因:job "+causeJobId+"运行失败)";
-						}
+						String msg="Job任务("+jobId+"-"+owner.getName()+"):" + jobDescriptor.getName()+" 运行失败";
 						//优先级低的不NOC告警
-						String priorityLevel = jobBean.getJobDescriptor().getProperties().get("run.priority.level");
+						String priorityLevel = jobDescriptor.getProperties().get("run.priority.level");
 						if(priorityLevel == null || !priorityLevel.trim().equals("1")){
 							//手机报警
 							//最后一次重试的时候发送
@@ -146,7 +141,7 @@ public class JobFailListener extends DispatcherListener{
 								if (runCount > rollBackTime) {
 									if(day==Calendar.SATURDAY || day==Calendar.SUNDAY || hour<9 || hour>18){
 										try {
-											smsAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg,chain);
+											smsAlarm.alarm(event.getHistory().getId(), "宙斯报警", "宙斯"+msg, null);
 										} catch (Exception e) {
 											log.error("NOC发送出现异常",e);
 										}

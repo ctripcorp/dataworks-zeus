@@ -49,12 +49,12 @@ public class HiveJob extends ProcessJob {
 		Date start = new Date();
 		Integer exitCode = runInner();
 		// 如果任务失败，且整个任务执行时间小于10分钟，则进行重试
-		if (exitCode != 0
-				&& getJobContext().getRunType() == JobContext.SCHEDULE_RUN
-				&& new Date().getTime() - start.getTime() < 10 * 60 * 1000L) {
-			log("Hive Job Fail in 10 min , try to retry");
-			exitCode = runInner();
-		}
+//		if (exitCode != 0
+//				&& getJobContext().getRunType() == JobContext.SCHEDULE_RUN
+//				&& new Date().getTime() - start.getTime() < 10 * 60 * 1000L) {
+//			log("Hive Job Fail in 10 min , try to retry");
+//			exitCode = runInner();
+//		}
 		return exitCode;
 	}
 

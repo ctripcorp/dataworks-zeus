@@ -526,6 +526,7 @@ public class Master {
 	//schedule任务运行，失败后重试
 	private void runScheduleJobContext(MasterWorkerHolder w, final String jobID, int runCount, final int rollBackTimes, final int rollBackWaitTime){
 		runCount++;
+		boolean isCancelJob = false;
 		if(runCount > 1){
 			try {
 				Thread.sleep(rollBackWaitTime*60*1000);
@@ -555,6 +556,7 @@ public class Master {
 			his.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
 			his.setToJobId(jobDescriptor.getToJobId() == null ? null : jobDescriptor.getToJobId());
 			his.setTimezone(jobDescriptor.getTimezone());
+			his.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
 			context.getJobHistoryManager().addJobHistory(his);
 			his.getLog().appendZeus(
 					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -603,11 +605,13 @@ public class Master {
 			ScheduleInfoLog.info("JobId:" + jobID
 					+ " run fail and dispatch the fail event");
 			jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
-			JobFailedEvent jfe = new JobFailedEvent(jobID,
-					type, context.getJobHistoryManager()
-							.findJobHistory(his.getId()), jobException);
+			JobHistory jobHistory = context.getJobHistoryManager().findJobHistory(his.getId());
+			JobFailedEvent jfe = new JobFailedEvent(jobID, type, jobHistory, jobException);
 			jfe.setRollBackTime(rollBackTimes);
 			jfe.setRunCount(runCount);
+			if(jobHistory.getLog().getContent().contains("开始执行取消任务命令")){
+				isCancelJob = true;
+			}
 			context.getDispatcher().forwardEvent(jfe);
 		} else {
 			// 运行成功，发出成功消息
@@ -620,7 +624,7 @@ public class Master {
 			context.getDispatcher().forwardEvent(jse);
 		}
 		context.getGroupManager().updateJobStatus(jobstatus);
-		if(runCount < (rollBackTimes + 1) && !success){
+		if(runCount < (rollBackTimes + 1) && !success && !isCancelJob){
 			runScheduleJobContext(w, jobID, runCount, rollBackTimes, rollBackWaitTime);
 		}
 	}
@@ -746,7 +750,6 @@ public class Master {
 					}
 				}
 			}
-			
 		}
 	}
 
@@ -769,8 +772,26 @@ public class Master {
 			title.append("调试任务").append("] 脚本名称：").append(fd.getName());
 		}
 		final StringBuffer content = new StringBuffer(title);
+		if(jd != null){
+			content.append("\nJOB任务名称：").append(jd.getName());
+			Map<String, String> properties=jd.getProperties();
+			if(properties != null){
+				String plevel=properties.get("run.priority.level");
+				if("1".equals(plevel)){
+					content.append("\nJob任务优先级: ").append("low");
+				}else if("2".equals(plevel)){
+					content.append("\nJob任务优先级: ").append("middle");
+				}else if("3".equals(plevel)){
+					content.append("\nJob任务优先级: ").append("high");
+				}
+			}
+			content.append("\nJOB任务Owner：").append(jd.getOwner());
+		}
 		content.append("\n已经运行时间：").append(runTime).append("分钟")
 				.append("\n设置最大运行时间：").append(maxTime).append("分钟");
+		if(his != null){
+			content.append("\n运行日志：\n").append(his.getLog().getContent().replaceAll("\\n", "<br/>"));
+		}
 		try {
 			if (type == 2) {
 				// 此处可以发送IM消息
@@ -806,7 +827,6 @@ public class Master {
 							//mailAlarm.alarm(his.getId(), title.toString(),content.toString(), null);
 						}
 					}
-					
 				}
 			}
 			return true;

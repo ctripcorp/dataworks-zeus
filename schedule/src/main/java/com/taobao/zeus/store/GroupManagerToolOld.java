@@ -51,7 +51,7 @@ public class GroupManagerToolOld {
 						j1.addDependee(depJob);
 						depJob.addDepender(j1);
 					} catch (Exception e) {
-						log.error("The id is " + j1.getJobDescriptor().getId() + ", the depId is " + depId);
+						log.error("The jobid is " + j1.getJobDescriptor().getId() + ", the depId is " + depId);
 					}
 					
 				}

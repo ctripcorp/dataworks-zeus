@@ -85,6 +85,7 @@ public class MasterContext {
 		server=new MasterServer(handler);
 		server.start(port);
 		master=new Master(this);
+		ScheduleInfoLog.info("init finish");
 	}
 	public void destory(){
 		threadPool.shutdown();
@@ -99,6 +100,7 @@ public class MasterContext {
 				e.printStackTrace();
 			}
 		}
+		ScheduleInfoLog.info("destory finish");
 	}
 	
 	public Map<Channel, MasterWorkerHolder> getWorkers() {

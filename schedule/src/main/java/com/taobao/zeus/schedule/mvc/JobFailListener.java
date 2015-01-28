@@ -50,10 +50,10 @@ public class JobFailListener extends DispatcherListener{
 	public static class ChainException{
 		final String causeJobId;
 		Map<String, Integer> userCountMap=new HashMap<String, Integer>();
-		GroupBean gb;
+//		GroupBean gb;
 		public ChainException(String jobId,GroupBean gb){
 			this.causeJobId=jobId;
-			this.gb=gb;
+//			this.gb=gb;
 		}
 		public Map<String, Integer> getUserCountMap() {
 			return userCountMap;
@@ -68,7 +68,7 @@ public class JobFailListener extends DispatcherListener{
 			if(mvce.getAppEvent() instanceof JobFailedEvent){
 				final JobFailedEvent event=(JobFailedEvent) mvce.getAppEvent();
 				final String jobId=event.getJobId();
-				final String causeJobId=event.getJobException().getCauseJobId();
+//				final String causeJobId=event.getJobException().getCauseJobId();
 //				if(chainLocal.get()==null || !chainLocal.get().getCauseJobId().equals(causeJobId)){
 //					GroupBean gb=readOnlyGroupManager.getGlobeGroupBean();
 //					chainLocal.set(new ChainException(causeJobId, gb));
@@ -111,9 +111,9 @@ public class JobFailListener extends DispatcherListener{
 							if(event.getHistory()!=null){
 								sb.append("失败原因:<br/>"+jobHistoryManager.findJobHistory(event.getHistory().getId()).getLog().getContent().replaceAll("\\n", "<br/>"));
 								String msg= "Zeus报警 JobId:"+jobId+" 任务运行失败";
-								if(!causeJobId.equalsIgnoreCase(event.getJobId())){
-									msg+="(根本原因:job "+causeJobId+"运行失败)";
-								}
+//								if(!causeJobId.equalsIgnoreCase(event.getJobId())){
+//									msg+="(根本原因:job "+causeJobId+"运行失败)";
+//								}
 								mailAlarm.alarm(event.getHistory().getId(), msg, sb.toString());
 								//smsAlarm.alarm(event.getHistory().getId(), msg, sb.toString());
 							}

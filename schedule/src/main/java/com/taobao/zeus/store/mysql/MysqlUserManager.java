@@ -73,6 +73,9 @@ public class MysqlUserManager extends HibernateDaoSupport implements UserManager
 				zu.setPhone(user.getPhone());
 			}
 			zu.setGmtModified(new Date());
+			zu.setIsEffective(user.getIsEffective());
+			zu.setUserType(user.getUserType());
+			zu.setDescription(user.getDescription());
 			getHibernateTemplate().update(zu);
 		}else{
 			user.setGmtCreate(new Date());

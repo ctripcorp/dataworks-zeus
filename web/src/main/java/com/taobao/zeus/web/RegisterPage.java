@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -16,80 +17,66 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 
+
 import com.taobao.zeus.store.UserManager;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.web.LoginUser;
 
 
-public class LoginPage  extends HttpServlet  {
+public class RegisterPage  extends HttpServlet  {
 
 	private static final long serialVersionUID = 1L;
 	private UserManager userManager;
 	
-	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String url  = "/login2.html";
-		request.getRequestDispatcher(url).forward(request,response);
-		return;  
-		
+		doPost(request,response);
 	}
+	
 	@Override
 	public void init(ServletConfig servletConfig ) throws ServletException {
 		ApplicationContext applicationContext=WebApplicationContextUtils.getWebApplicationContext(servletConfig.getServletContext());
 		userManager=(UserManager) applicationContext.getBean("userManager");
 	}
+	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
-		//String url  = "/login.html";
-		//request.getRequestDispatcher(url).forward(request,response);
-		String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        
-        ZeusUser u = userManager.findByUid(username);
-        PrintWriter out = response.getWriter();
         response.setCharacterEncoding("utf-8");
-		if(null == u){
-			out.print("null");
+        PrintWriter out = response.getWriter();     
+        
+		String uid = request.getParameter("user");
+        ZeusUser u = userManager.findByUid(uid);
+
+		if(null != u){
+			out.print("exist");
 		}else{
-			String ps = u.getPassword();
-//			System.out.println(password);
-//			System.out.println(ps);
-//			System.out.println(MD5(password));
-			if(null !=ps){
-				if(!MD5(password).toUpperCase().equals(ps.toUpperCase())){
+			try{
+		        String password = request.getParameter("passwd");
+		        String email = request.getParameter("email");
+		        String phone = request.getParameter("phone");
+		        String userType = request.getParameter("userType");
+				String passwordMD5 = MD5(password);
+				ZeusUser newUser = new ZeusUser();
+				newUser.setUid(uid);
+				newUser.setName(uid);
+				newUser.setEmail(email);
+				newUser.setPhone(phone);
+				newUser.setWangwang("");
+				newUser.setPassword(passwordMD5);
+				newUser.setGmtCreate(new Date());
+				newUser.setGmtModified(new Date());
+				newUser.setUserType(Integer.parseInt(userType));
+				ZeusUser returnUser = userManager.addOrUpdateUser(newUser);
+				if(null != returnUser){
+					out.print(returnUser.getUid());
+				}else{
 					out.print("error");
-					return;
 				}
+			}catch(Exception ex){
+				out.print("error");
 			}
-
-
-			  
-			String uid = u.getUid();
-
-			ZeusUser.USER.setUid(uid);
-			ZeusUser.USER.setEmail(u.getEmail());
-			ZeusUser.USER.setName(u.getName());
-			ZeusUser.USER.setPhone(u.getPhone());
-			
-			Cookie cookie = new Cookie("LOGIN_USERNAME", uid);
-			String host = request.getServerName();  
-			cookie.setPath("/");  
-			//cookie.setDomain(host);  
-			response.addCookie(cookie);
-			request.getSession().setAttribute("user", uid);
-			
-//			Cookie[] cookies = request.getCookies();//这样便可以获取一个cookie数组
-//			for(Cookie c : cookies){
-//			   System.out.println( c.getName());// get the cookie name
-//			   System.out.println( c.getValue()); // get the cookie value
-//			}
-//			System.out.println("ZeusUser.USER-----------------"+ZeusUser.USER.toString());
-			LoginUser.user.set(ZeusUser.USER);
-			out.print(uid);
 		}
 	}
 	private static String MD5(String sourceStr) {
@@ -110,7 +97,6 @@ public class LoginPage  extends HttpServlet  {
             }
             result = buf.toString();
             //System.out.println("MD5(" + sourceStr + ",32) = " + result);
-            
             //System.out.println("MD5(" + sourceStr + ",16) = " + buf.toString().substring(8, 24));
         } catch (NoSuchAlgorithmException e) {
             System.out.println(e);

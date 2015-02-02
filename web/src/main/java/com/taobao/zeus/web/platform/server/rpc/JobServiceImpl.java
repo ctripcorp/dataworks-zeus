@@ -497,7 +497,8 @@ public class JobServiceImpl implements JobService {
 		history.setJobId(jobId);
 		history.setToJobId(jobDescriptor.getToJobId());
 		history.setTriggerType(triggerType);
-		history.setOperator(LoginUser.getUser().getUid());
+//		history.setOperator(LoginUser.getUser().getUid());
+		history.setOperator(jobDescriptor.getOwner());
 		history.setIllustrate("触发人：" + LoginUser.getUser().getUid());
 		history.setStatus(Status.RUNNING);
 		history.setStatisEndTime(jobDescriptor.getStatisEndTime());

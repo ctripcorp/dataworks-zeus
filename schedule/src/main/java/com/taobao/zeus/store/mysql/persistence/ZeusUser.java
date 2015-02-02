@@ -47,6 +47,12 @@ public class ZeusUser{
 	private Date gmtCreate;
 	@Column(name="gmt_modified")
 	private Date gmtModified;
+	@Column(name="is_effective")
+	private int isEffective;
+	@Column(name="user_type")
+	private int userType;
+	@Column
+	private String description;
 	public ZeusUser(String email, String name, String phone,
 			String uid) {
 		this.email = email;
@@ -111,6 +117,24 @@ public class ZeusUser{
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public int getIsEffective() {
+		return isEffective;
+	}
+	public void setIsEffective(int isEffective) {
+		this.isEffective = isEffective;
+	}
+	public int getUserType() {
+		return userType;
+	}
+	public void setUserType(int userType) {
+		this.userType = userType;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	@Override
 	public String toString() {

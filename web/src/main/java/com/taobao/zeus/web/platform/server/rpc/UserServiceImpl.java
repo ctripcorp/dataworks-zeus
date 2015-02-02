@@ -82,9 +82,9 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 			return "null";
 		}else{
 			String ps = u.getPassword();
-			System.out.println(password);
-			System.out.println(ps);
-			System.out.println(MD5(password));
+//			System.out.println(password);
+//			System.out.println(ps);
+//			System.out.println(MD5(password));
 			if(null !=ps){
 				if(!MD5(password).toUpperCase().equals(ps.toUpperCase())){
 					return "error";

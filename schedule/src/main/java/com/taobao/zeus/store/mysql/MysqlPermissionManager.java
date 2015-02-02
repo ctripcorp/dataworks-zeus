@@ -186,7 +186,7 @@ public class MysqlPermissionManager extends HibernateDaoSupport implements Permi
 			gb=gb.getParentGroupBean();
 		}
 		Set<String> users=new HashSet<String>();
-		users.addAll(getJobAdmins(jobId));
+		users.addAll(getJobAdmins(jobBean.getJobDescriptor().getToJobId()));
 		for(String g:groups){
 			users.addAll(getGroupAdmins(g));
 		}

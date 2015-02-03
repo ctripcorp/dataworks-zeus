@@ -7,6 +7,7 @@ public class ZUser implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String uid;
 	private String name;
+	private int userType;
 	private boolean Super=false;
 	public boolean isSuper() {
 		return Super;
@@ -25,6 +26,12 @@ public class ZUser implements Serializable{
 	}
 	public void setUid(String uid) {
 		this.uid = uid;
+	}
+	public int getUserType() {
+		return userType;
+	}
+	public void setUserType(int userType) {
+		this.userType = userType;
 	}
 
 }

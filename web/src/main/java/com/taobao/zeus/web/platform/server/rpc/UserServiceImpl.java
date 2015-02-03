@@ -56,6 +56,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 		ZUser zu=new ZUser();
 		zu.setName(u.getName());
 		zu.setUid(u.getUid());
+		zu.setUserType(u.getUserType());
 		zu.setSuper(Super.getSupers().contains(u.getUid()));
 		return zu;
 	}
@@ -68,6 +69,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 			ZUser zu=new ZUser();
 			zu.setName(u.getName());
 			zu.setUid(u.getUid());
+			zu.setUserType(u.getUserType());
 			result.add(zu);
 		}
 		return result;
@@ -149,5 +151,4 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 		return uid;
 
 	}
-
 }

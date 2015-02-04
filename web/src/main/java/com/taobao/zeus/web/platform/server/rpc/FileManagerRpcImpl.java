@@ -1,8 +1,16 @@
 package com.taobao.zeus.web.platform.server.rpc;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -17,6 +25,7 @@ import com.taobao.zeus.web.platform.shared.rpc.FileClientBean;
 import com.taobao.zeus.web.platform.shared.rpc.FileManagerService;
 
 public class FileManagerRpcImpl implements FileManagerService{
+	private static Logger log = LoggerFactory.getLogger(FileManager.class);
 	@Autowired
 	private FileManager fileManager;
 	@Autowired
@@ -222,4 +231,35 @@ public class FileManagerRpcImpl implements FileManagerService{
 		return false;
 	}
 
+	@Override
+	public FileModel getHomeFile(String id) {
+		FileModel homeTemplate = getFile(id);
+		String content = homeTemplate.getContent();
+		ZeusUser user = LoginUser.getUser();
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("uid", user.getUid());
+		String out = RenderHomePage(content, params);
+		homeTemplate.setContent(out);
+		return homeTemplate;
+		
+	}
+	
+	private String RenderHomePage(String in, Map<String, Object> params){
+		try {
+			VelocityEngine engine = new VelocityEngine();
+			VelocityContext context = new VelocityContext();
+			
+			for(Entry<String, Object> entry : params.entrySet()){
+				context.put(entry.getKey(), entry.getValue());
+			}
+			StringWriter out = new StringWriter();
+			engine.init();
+			engine.evaluate(context, out, "", in);
+			return out.toString();
+		} catch (Exception e) {
+			log.error("render error", e);
+			return in;
+		}
+	}
+	  
 }

@@ -226,7 +226,7 @@ public class UserServlet extends HttpServlet {
 											"\r\n		用户账号："+newUser.getUid()+
 											"\r\n		用户姓名："+newUser.getName()+
 											"\r\n		用户邮箱："+newUser.getEmail()+
-											"\r\n	请确认，另外请开通Hive账号和权限。谢谢！"+
+											"\r\n	请确认，另外请开通Hive账号和权限。谢谢！ "+
 											"\r\n	权限描述如下："+
 											"\r\n		" + newUser.getDescription());
 								}

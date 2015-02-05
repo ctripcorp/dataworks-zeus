@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -18,8 +20,12 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 
 
+
+
+import com.taobao.zeus.broadcast.alarm.MailAlarm;
 import com.taobao.zeus.store.UserManager;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
+import com.taobao.zeus.store.mysql.persistence.ZeusUser.UserStatus;
 import com.taobao.zeus.web.LoginUser;
 
 
@@ -43,6 +49,7 @@ public class RegisterPage  extends HttpServlet  {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
         PrintWriter out = response.getWriter();     
         
@@ -70,6 +77,24 @@ public class RegisterPage  extends HttpServlet  {
 				newUser.setUserType(Integer.parseInt(userType));
 				ZeusUser returnUser = userManager.addOrUpdateUser(newUser);
 				if(null != returnUser){
+					List<String> mailUsers = new ArrayList<String>();
+					mailUsers.add(ZeusUser.ADMIN.getUid());
+					MailAlarm mailAlarm = new MailAlarm();
+					List<String> emails = getEmailsByUsers(mailUsers);
+					if(emails != null && emails.size()>0){
+						emails.add(returnUser.getEmail());
+						emails.add("yongchengchen@Ctrip.com");
+//						emails.add("jianguo@Ctrip.com");
+//						emails.add("yafengli@Ctrip.com");
+						mailAlarm.sendEmail("", emails, "Zeus新用户注册申请",
+								"Dear All,"+
+								"\r\n	Zeus系统有新用户注册，详细信息如下："+
+								"\r\n		用户类别："+(returnUser.getUserType()==0 ? "组用户" : "个人用户")+
+								"\r\n		用户账号："+returnUser.getUid()+
+								"\r\n		用户姓名："+returnUser.getName()+
+								"\r\n		用户邮箱："+returnUser.getEmail()+
+								"\r\n	请确认并审核。谢谢！");
+					}
 					out.print(returnUser.getUid());
 				}else{
 					out.print("error");
@@ -79,6 +104,35 @@ public class RegisterPage  extends HttpServlet  {
 			}
 		}
 	}
+	
+	private List<String> getEmailsByUsers(List<String> users){
+		List<String> emails = new ArrayList<String>();
+		try{
+			List<ZeusUser> userList = userManager.findListByUid(users);
+			if (userList != null && userList.size() > 0) {
+				for (ZeusUser user : userList) {
+					String userEmail = user.getEmail();
+					if (userEmail != null && !userEmail.isEmpty()
+							&& userEmail.contains("@")) {
+						if (userEmail.contains(";")) {
+							String[] userEmails = userEmail.split(";");
+							for (String ems : userEmails) {
+								if (ems.contains("@")) {
+									emails.add(ems);
+								}
+							}
+						} else {
+							emails.add(userEmail);
+						}
+					}
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		return emails;
+	}
+	
 	private static String MD5(String sourceStr) {
         String result = "";
         try {

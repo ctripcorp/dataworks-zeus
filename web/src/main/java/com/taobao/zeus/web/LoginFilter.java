@@ -74,7 +74,9 @@ public class LoginFilter implements Filter {
 		ZeusUser zeusUser=null;
 
 		if(uri.endsWith(".taobao") || uri.endsWith(".js") || uri.endsWith(".css") || uri.endsWith(".gif") ||
-				uri.endsWith(".jpg") || uri.endsWith(".png") || uri.endsWith(".do")|| uri.endsWith(".jsp")|| uri.endsWith("login.html")|| uri.endsWith(".ico")){
+				uri.endsWith(".jpg") || uri.endsWith(".png") || uri.endsWith(".do")|| uri.endsWith(".jsp")|| 
+				uri.endsWith("login.html")|| uri.endsWith("userInfo.html")|| uri.endsWith("userEdit.html")|| 
+				uri.endsWith(".ico")){
 			chain.doFilter(request, response);
 			return;
 		}

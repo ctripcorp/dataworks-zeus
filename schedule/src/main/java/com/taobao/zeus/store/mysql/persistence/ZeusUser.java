@@ -19,6 +19,20 @@ import javax.persistence.Query;
  */
 @Entity(name="zeus_user")
 public class ZeusUser{
+	public enum UserStatus {
+	       WAIT_CHECK (0), CHECK_SUCCESS (1), Cancel (-1), CHECK_FAILED (-2);
+	       private int nCode ;
+	       private UserStatus( int _nCode) {
+	           this.nCode = _nCode;
+	       }
+	       @Override
+	       public String toString() {
+	           return String.valueOf ( this.nCode );
+	       }
+	       public int value() {
+	           return this.nCode;
+	       }
+	}
 	
 	public static final ZeusUser ADMIN=new ZeusUser(){
 		public String getEmail() {return "DataInfrastructure@Ctrip.com";};

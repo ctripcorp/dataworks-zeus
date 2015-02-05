@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="stylesheets/mini.css" rel="stylesheet" type="text/css" />
+<script src="js/boot.js" type="text/javascript" charset="UTF-8"></script>
+<style type="text/css">
+    body
+    {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+</style>
+<title>用户管理</title>
+</head>
+<!-- <body onload="loadRights()"> -->
+<body>
+    <input id="mid" type="hidden" value='100' />
+	<div class="mini-toolbar" style="border-bottom:0;padding:0px;">
+            <table style="width:100%;">
+                <tr style="height:30px">
+                    <td style="width:100%;">
+                        <a id="btnAdd" class="mini-button" iconcls="icon-add" onclick="add()">新增</a> 
+                        <a id="btnEdit" class="mini-button" iconcls="icon-edit" onclick="edit()">修改</a> 
+                        <a id="btnCheckSuccess" class="mini-button" iconcls="icon-ok" onclick="checkSuccess()">审核通过</a>
+                        <a id="btnCheckFailed" class="mini-button" iconcls="icon-no" onclick="checkFailed()">审核拒绝</a>
+                        <a id="btnCancel" class="mini-button" iconcls="icon-cancel" onclick="remove()">删除</a>
+                        <a class="mini-button" iconcls="icon-reload" onclick="reflash()">刷新</a>     
+                    </td>
+                    <td style="white-space:nowrap;">
+                        <label for="key$text">用户：</label>
+                        <input id="key" class="mini-textbox" emptyText="请输入用户名、姓名、email..." style="width:300px;" onenter="onKeyEnter"/>   
+                        <a class="mini-button" style="margin-right:10px;" iconcls="icon-search" plain="true" onclick="onSearch()">查询</a>
+                    </td>
+                </tr>
+            </table>           
+    </div>
+    <!--撑满页面-->
+    <div class="mini-fit">
+        <div id="datagrid1" class="mini-datagrid" style="width: 100%; height: 100%;" url="user.do?action=list"
+            idfield="uid" multiselect="true" sizelist="[10,25,50]" pagesize="30" frozenstartcolumn="0"
+            frozenendcolumn="2">
+	        <div property="columns">
+	            <!--<div type="indexcolumn"></div>        -->
+	            <div type="checkcolumn" ></div> 
+	            <!-- <div field="isEffective" headerAlign="center" allowSort="true"  renderer="getIsEffective">用户状态</div>  -->
+	            <div field="isEffective" headerAlign="center" allowSort="true"  renderer="getIsEffective">用户状态</div>
+	            <div field="userType" headerAlign="center" allowSort="true" renderer="getUserType">用户类型</div>        
+	            <div field="uid" eaderAlign="center" allowSort="true">用户帐号</div>    
+	            <div field="name" headerAlign="center" allowSort="true">用户姓名</div>  
+	            <div field="email" headerAlign="center" allowSort="true">邮箱地址</div>
+	            <div field="phone" headerAlign="center" allowSort="true">手机号码</div>
+	            <div field="description" headerAlign="center" allowSort="true">描述</div>
+	            <div field="gmtModified" headerAlign="center" dateFormat="yyyy-MM-dd HH:mm:ss" allowSort="false">更新日期</div>                   
+	        </div>
+	    </div>
+	</div>
+
+	
+    
+
+    <script type="text/javascript">
+        mini.parse();
+
+        var grid = mini.get("datagrid1");
+        grid.load();
+        grid.sortBy("gmtModified", "desc");
+
+        var btnAdd = mini.get("btnAdd");
+        var btnEdit = mini.get("btnEdit");
+        var btnCancel = mini.get("btnCancel");
+        var btnCheckSuccess = mini.get("btnCheckSuccess");
+        var btnCheckFailed = mini.get("btnCheckFailed");
+        
+        btnAdd.hide();
+        
+        setTimeout('checkRights()',100);
+        function checkRights(){
+            //console.log(grid.data.length);
+            if(grid.data.length == 1){
+            	btnCheckSuccess.hide();
+            	btnCheckFailed.hide();
+            	btnCancel.hide();
+            }
+        }
+
+/*      btnAdd.hide();
+        btnEdit.hide();
+        btnCancel.hide();
+        */
+        grid.on("drawcell", function (e) {
+            var record = e.record,
+	        column = e.column,
+	        field = e.field,
+	        value = e.value;
+
+/*             //给列增加背景色
+            if (field == "isEffective") {
+                e.cellStyle = "background:#ecedef";
+            } */
+
+            if (column.field == "isEffective") {
+                if (e.value == 1) {
+                    e.cellHtml = "<span class='icon-ok' style='margin-left:10px'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;审核通过</span>"
+                } else if(e.value == -2) {
+                    e.cellHtml = "<span class='icon-no' style='margin-left:10px'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;审核拒绝</span>"
+                } else if(e.value == 0) {
+                    e.cellHtml = "<span class='icon-new' style='margin-left:10px'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;待审核</span>"
+                } else if(e.value == -1) {
+                    e.cellHtml = "<span class='icon-cancel' style='margin-left:10px'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;已删除</span>"
+                }
+            }
+
+        });
+        
+        function add() {
+            mini.open({
+                url: "../zeus-web/userEdit.html",
+                title: "添加用户信息", width: 670, height: 500,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    var data = { action: "add"};
+                    iframe.contentWindow.SetData(data);
+                    iframe.style.height="98%";
+                },
+                ondestroy: function (action) {
+                    grid.reload();
+                }
+            });
+        }
+        function edit() {
+         
+            var row = grid.getSelected();
+            if (row) {
+                mini.open({
+                    url: "../zeus-web/userEdit.html",
+                    title: "修改用户信息", width: 670, height: 500,
+                    onload: function () {
+                        var iframe = this.getIFrameEl();
+                        var data = { action: "edit", uid: row.uid };
+                        iframe.contentWindow.SetData(data);
+                        iframe.style.height="98%";
+                        
+                    },
+                    ondestroy: function (action) {
+                        grid.reload();
+                        
+                    }
+                });
+                
+            } else {
+                alert("请选中一条记录");
+            }
+            
+        }
+        function remove() {
+            
+            var rows = grid.getSelecteds();
+            if (rows.length > 0) {
+                if (confirm("确定删除选中记录？")) {
+                    var uids = [];
+                    for (var i = 0, l = rows.length; i < l; i++) {
+                        var r = rows[i];
+                        uids.push(r.uid);
+                    }
+                    var ids = uids.join(',');
+                    grid.loading("操作中，请稍后......");
+                    $.ajax({
+                        url: "user.do?action=cancel",
+                        data: { uids: ids },
+                        success: function (text) {
+                            grid.reload();
+                        },
+                        error: function () {
+                        }
+                    });
+                }
+            } else {
+                alert("请选中一条记录");
+            }
+        }
+		function checkSuccess() {
+            var rows = grid.getSelecteds();
+            if (rows.length > 0) {
+                if (confirm("确定选中的记录通过了审核？")) {
+                    var uids = [];
+                    for (var i = 0, l = rows.length; i < l; i++) {
+                        var r = rows[i];
+                        uids.push(r.uid);
+                    }
+                    var ids = uids.join(',');
+                    grid.loading("操作中，请稍后......");
+                    $.ajax({
+                        url: "user.do?action=checksuccess",
+                        data: { uids: ids },
+                        success: function (text) {
+                            grid.reload();
+                        },
+                        error: function () {
+                        }
+                    });
+                }
+            } else {
+                alert("请选中一条记录");
+            }
+        }
+		function checkFailed() {
+            var rows = grid.getSelecteds();
+            if (rows.length > 0) {
+                if (confirm("确定选中的记录拒绝审核？")) {
+                    var uids = [];
+                    for (var i = 0, l = rows.length; i < l; i++) {
+                        var r = rows[i];
+                        uids.push(r.uid);
+                    }
+                    var ids = uids.join(',');
+                    grid.loading("操作中，请稍后......");
+                    $.ajax({
+                        url: "user.do?action=checkfailed",
+                        data: { uids: ids },
+                        success: function (text) {
+                            grid.reload();
+                        },
+                        error: function () {
+                        }
+                    });
+                }
+            } else {
+                alert("请选中一条记录");
+            }
+        }
+        function search() {
+            var key = mini.get("key").getValue();
+            grid.load({ key: key });
+        }
+        function onKeyEnter(e) {
+            search();
+        }
+        function onSearch() {
+            search();
+        }
+        function reflash() {
+            grid.reload();
+        }
+        function getIsEffective(e) {
+            if(e.value == "1"){
+				return "审核通过";
+            }else if(e.value == "-2"){
+            	return "审核拒绝";
+            }else if(e.value == "-1"){
+            	return "已删除";
+            }else{
+            	return "待审核";
+            }    
+        }
+        function getUserType(e) {
+            if(e.value == "1"){
+				return "个人用户";
+            }else{
+            	return "组用户";
+            }    
+        }
+        //屏蔽弹出框
+        var WinAlerts = window.alert;
+        window.alert = function (e) {
+            if (e != null && e.indexOf("提示内容")>-1)
+            {
+                //和谐了
+            }
+            else
+            {
+                WinAlerts (e);
+            }
+            
+        }; 
+        
+    </script>
+</body>
+</html>

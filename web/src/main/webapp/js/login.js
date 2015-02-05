@@ -160,8 +160,8 @@ $(document)
 											return false;
 										}
 
-										if ($('#user').val().length < 4
-												|| $('#user').val().length > 16) {
+										if (user.length < 4
+												|| user.length > 16) {
 
 											$('#user').focus().css({
 												border : "1px solid red",
@@ -173,40 +173,8 @@ $(document)
 											return false;
 
 										}
-										/*$.ajax({
-													type : reMethod,
-													url : "/member/ajaxyz.php",
-													data : "uid="
-															+ $("#user").val()
-															+ '&temp='
-															+ new Date(),
-													dataType : 'html',
-													success : function(result) {
-
-														if (result.length > 2) {
-															$('#user')
-																	.focus()
-																	.css(
-																			{
-																				border : "1px solid red",
-																				boxShadow : "0 0 2px red"
-																			});
-															$("#userCue").html(
-																	result);
-															return false;
-														} else {
-															$('#user')
-																	.css(
-																			{
-																				border : "1px solid #D7D7D7",
-																				boxShadow : "none"
-																			});
-														}
-
-													}
-												});*/
-
-										if ($('#passwd').val().length < pwdmin) {
+										//密码验证
+										if (passwd.length < pwdmin) {
 											$('#passwd').focus();
 											$('#userCue').html(
 													"<font color='red'><b>×密码不能小于"
@@ -214,6 +182,7 @@ $(document)
 															+ "位</b></font>");
 											return false;
 										}
+										//两次密码验证
 										if ($('#passwd2').val() != $('#passwd')
 												.val()) {
 											$('#passwd2').focus();
@@ -222,28 +191,27 @@ $(document)
 															"<font color='red'><b>×两次密码不一致！</b></font>");
 											return false;
 										}
-
-										/*var sqq = /^[1-9]{1}[0-9]{4,9}$/;
-										if (!sqq.test($('#qq').val())
-												|| $('#qq').val().length < 5
-												|| $('#qq').val().length > 12) {
-											$('#qq').focus().css({
-												border : "1px solid red",
-												boxShadow : "0 0 2px red"
-											});
+										
+										//邮箱验证
+										//var emailPatrn  = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+										var emailPattern = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/; 
+										if (!emailPattern.test(email)) {
 											$('#userCue')
-													.html(
-															"<font color='red'><b>×QQ号码格式不正确</b></font>");
+											.html(
+													"<font color='red'><b>×邮件格式不正确！</b></font>");
 											return false;
-										} else {
-											$('#qq').css({
-												border : "1px solid #D7D7D7",
-												boxShadow : "none"
-											});
-
 										}
-
-										$('#regUser').submit();*/
+										
+										//手机号码验证
+										var phonePattern=/^[0-9]{1,12}$/;
+										if (!phonePattern.exec(phone)) {
+											$('#userCue')
+											.html(
+													"<font color='red'><b>×手机号码格式不正确！</b></font>");
+											return false;
+										}
+										
+										//提交
 										$.ajax({
 											url : "register.do",
 											async : false,
@@ -265,11 +233,11 @@ $(document)
 												if (response == "exist") {
 													$('#userCue')
 													.html(
-															"<font color='red'><b>用户名已经存在！</b></font>");
+															"<font color='red'><b>警告：用户名已经存在！</b></font>");
 												} else if (response == "error") {
 													$('#userCue')
 													.html(
-															"<font color='red'><b>用户注册失败！</b></font>");
+															"<font color='red'><b>警告：用户注册失败！</b></font>");
 												} else{
 													$('#userCue')
 													.html(

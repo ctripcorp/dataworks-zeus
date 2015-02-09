@@ -240,8 +240,8 @@ public class PermissionGroupManagerOld implements GroupManagerOld{
 	}
 	@Override
 	public void grantGroupOwner(String granter, String uid, String groupId) throws ZeusException{
-		ZeusUser nextUser = userManager.findByUid(uid);
-		if (nextUser.getUserType() != 1) {
+		ZeusUser nextUser = userManager.findByUidFilter(uid);
+		if (nextUser.getUserType() != 0) {
 			throw new ZeusException("请转给组管理员！");
 		}
 		GroupBeanOld gb=groupManager.getUpstreamGroupBean(groupId);
@@ -260,8 +260,8 @@ public class PermissionGroupManagerOld implements GroupManagerOld{
 	}
 	@Override
 	public void grantJobOwner(String granter, String uid, String jobId) throws ZeusException{
-		ZeusUser nextUser = userManager.findByUid(uid);
-		if (nextUser.getUserType() != 1) {
+		ZeusUser nextUser = userManager.findByUidFilter(uid);
+		if (nextUser.getUserType() != 0) {
 			throw new ZeusException("请转给组管理员！");
 		}
 		JobBeanOld jb=groupManager.getUpstreamJobBean(jobId);

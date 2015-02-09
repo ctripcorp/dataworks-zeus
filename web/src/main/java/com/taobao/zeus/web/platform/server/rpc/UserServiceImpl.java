@@ -78,7 +78,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 	public String checkUser(String username,String password) {
 		//ZeusUser u= LoginUser.getUser();
 		//HttpServletRequest httpRequest
-		ZeusUser u = userManager.findByUid(username);
+		ZeusUser u = userManager.findByUidFilter(username);
 //		System.out.println(u);
 		if(null == u){
 			return "null";

@@ -228,7 +228,7 @@ public class AdminConfigWindow extends Window{
 			public void onSuccess(List<ZUser> result) {
 				allUsers=result;
 				for(ZUser u : result){
-					if (u.getUserType() == 1) {
+					if (u.getUserType() == 0) {
 						allGroupAdminUsers.add(u);
 					}
 				}

@@ -57,7 +57,7 @@ public class UserServlet extends HttpServlet {
 		}
 
 		String action = request.getParameter("action");
-		System.out.println("action=" + action);
+//		System.out.println("action=" + action);
 		if (action != null) {
 			if ("list".equals(action)) {
 				try{
@@ -69,8 +69,8 @@ public class UserServlet extends HttpServlet {
 					String sortOrder = request.getParameter("sortOrder");
 					String filter = request.getParameter("key");
 					List<ZeusUser> allUsers = new ArrayList<ZeusUser>();
-					System.out.println(sessionUser.toString());
-					System.out.println("Admin user:" + ZeusUser.ADMIN.getUid());
+//					System.out.println(sessionUser.toString());
+//					System.out.println("Admin user:" + ZeusUser.ADMIN.getUid());
 	
 					if (sessionUser.toString().equalsIgnoreCase(
 							ZeusUser.ADMIN.getUid())) {
@@ -106,14 +106,14 @@ public class UserServlet extends HttpServlet {
 								new JsonDateValueProcessor());
 						JSONArray json = JSONArray.fromObject(results, jsonConfig);
 						String jsonString = json.toString();
-						System.out.println(jsonString);
+//						System.out.println(jsonString);
 						out.print(jsonString.substring(1, jsonString.length() - 1));
 					}
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
 			} else if ("add".equals(action)) {
-				String data = request.getParameter("data");
+				/*String data = request.getParameter("data");
 				if (data != null && data.length() > 2) {
 					try {
 						JSONObject obj = JSONObject.fromObject(data.substring(
@@ -143,7 +143,7 @@ public class UserServlet extends HttpServlet {
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
-				}
+				}*/
 
 			} else if ("get".equals(action)) {
 				String uid = request.getParameter("uid");
@@ -156,7 +156,7 @@ public class UserServlet extends HttpServlet {
 									new JsonDateValueProcessor());
 							JSONObject json = JSONObject.fromObject(user, jsonConfig);
 							String jsonString = json.toString();
-							System.out.println(jsonString);
+//							System.out.println(jsonString);
 							out.print(jsonString);
 						}
 					} catch (Exception ex) {
@@ -204,7 +204,7 @@ public class UserServlet extends HttpServlet {
 				}
 				if (uids != null && uids.trim().length() > 0) {
 					try{
-						System.out.println(uids);
+//						System.out.println(uids);
 						for (String uid : uids.split(",")) {
 							ZeusUser user = userManager.findByUid(uid);
 							user.setIsEffective(isEffective);
@@ -216,7 +216,6 @@ public class UserServlet extends HttpServlet {
 								MailAlarm mailAlarm = new MailAlarm();
 								List<String> emails = getEmailsByUsers(mailUsers);
 								if(emails != null && emails.size()>0){
-									emails.add("yongchengchen@Ctrip.com");
 //									emails.add("jianguo@Ctrip.com");
 //									emails.add("yafengli@Ctrip.com");
 									mailAlarm.sendEmail("", emails, "Zeus新用户审核已通过",
@@ -229,6 +228,38 @@ public class UserServlet extends HttpServlet {
 											"\r\n	请确认，另外请开通Hive账号和权限。谢谢！"+
 											"\r\n	权限描述如下："+
 											"\r\n		" + newUser.getDescription());
+								}
+							}else if("checkfailed".equals(action) && newUser.getIsEffective()==UserStatus.CHECK_FAILED.value()){
+								List<String> mailUsers = new ArrayList<String>();
+								mailUsers.add(ZeusUser.ADMIN.getUid());
+								mailUsers.add(newUser.getUid());
+								MailAlarm mailAlarm = new MailAlarm();
+								List<String> emails = getEmailsByUsers(mailUsers);
+								if(emails != null && emails.size()>0){
+									mailAlarm.sendEmail("", emails, "Zeus新用户审核被拒绝",
+											"Dear All,"+
+											"\r\n	Zeus新用户审核被拒绝，详细信息如下："+
+											"\r\n		用户类别："+(newUser.getUserType()==0 ? "组用户" : "个人用户")+
+											"\r\n		用户账号："+newUser.getUid()+
+											"\r\n		用户姓名："+newUser.getName()+
+											"\r\n		用户邮箱："+newUser.getEmail()+
+											"\r\n	请知晓，谢谢！");
+								}
+							}else if("cancel".equals(action) && newUser.getIsEffective()==UserStatus.Cancel.value()){
+								List<String> mailUsers = new ArrayList<String>();
+								mailUsers.add(ZeusUser.ADMIN.getUid());
+								mailUsers.add(newUser.getUid());
+								MailAlarm mailAlarm = new MailAlarm();
+								List<String> emails = getEmailsByUsers(mailUsers);
+								if(emails != null && emails.size()>0){
+									mailAlarm.sendEmail("", emails, "Zeus用户被删除",
+											"Dear All,"+
+											"\r\n	Zeus用户被删除，详细信息如下："+
+											"\r\n		用户类别："+(newUser.getUserType()==0 ? "组用户" : "个人用户")+
+											"\r\n		用户账号："+newUser.getUid()+
+											"\r\n		用户姓名："+newUser.getName()+
+											"\r\n		用户邮箱："+newUser.getEmail()+
+											"\r\n	请知晓，谢谢！");
 								}
 							}
 						}

@@ -40,7 +40,7 @@ public class ZeusFollowPersistence {
 	@Column(name="gmt_modified")
 	private Date gmtModified;
 	/**
-	 * 0表示不是第一联系人，1表示是第一联系人
+	 * 0表示不是重要联系人，1表示是重要联系人
 	 */
 	@Column(name="important")
 	private int important;

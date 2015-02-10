@@ -91,7 +91,8 @@ public abstract class AbstractZeusAlarm implements ZeusAlarm{
 				}
 			}
 			String owner = groupManagerOld.getJobDescriptor(tojobId).getX().getOwner();
-			//首先添加重要联系人，然后是job本身的owner，最后是followers。
+			
+			//首先添加重要联系人，然后是job本身的owner，最后是关注者。
 			for(ZeusFollow person : importantContacts){
 				if (!users.contains(person.getUid())) {
 					users.add(person.getUid());

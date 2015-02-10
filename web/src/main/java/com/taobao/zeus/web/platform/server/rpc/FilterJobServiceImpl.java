@@ -7,11 +7,13 @@ import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.taobao.zeus.model.JobStatus.TriggerType;
 import com.taobao.zeus.util.Environment;
+import com.taobao.zeus.util.Tuple;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
 import com.taobao.zeus.web.platform.client.util.GwtException;
 import com.taobao.zeus.web.platform.client.util.ZUser;
+import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 import com.taobao.zeus.web.platform.shared.rpc.JobService;
 
 public class FilterJobServiceImpl implements JobService{
@@ -150,5 +152,25 @@ public class FilterJobServiceImpl implements JobService{
 			PagingLoadConfig config, Date startDate, Date endDate) {
 		return jobService.getSubJobStatus(groupId,config,startDate,endDate);
 	}
+
+	@Override
+	public void grantImportantContact(String jobId, String uid)
+			throws GwtException {
+		jobService.grantImportantContact(jobId, uid);
+		
+	}
+
+	@Override
+	public void revokeImportantContact(String jobId, String uid)
+			throws GwtException {
+		jobService.revokeImportantContact(jobId, uid);
+		
+	}
+
+	@Override
+	public List<ZUserContactTuple> getAllContactList(String jobId) {
+		return jobService.getAllContactList(jobId);
+	}
+
 
 }

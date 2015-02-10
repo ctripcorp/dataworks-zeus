@@ -40,7 +40,7 @@ public class MailAlarm extends AbstractZeusAlarm {
 	@Override
 	public void alarm(String jobId, List<String> users, String title, String content)
 			throws Exception {
-		List<ZeusUser> userList = userManager.findListByUid(users);
+		List<ZeusUser> userList = userManager.findListByUidByOrder(users);
 		List<String> emails = new ArrayList<String>();
 		if (userList != null && userList.size() > 0) {
 			for (ZeusUser user : userList) {

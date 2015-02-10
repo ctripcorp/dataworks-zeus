@@ -22,6 +22,7 @@ import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobBeanOld;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.UserManager;
+import com.taobao.zeus.store.mysql.MysqlFollowManagerOld;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.store.mysql.persistence.Worker;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
@@ -357,21 +358,19 @@ public class PermissionGroupManagerOld implements GroupManagerOld{
 	
 	@Override
 	public List<JobPersistenceOld> getAllJobs() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
 	public List<String> getAllDependencied(String jobID) {
-		// TODO Auto-generated method stub
 		return groupManager.getAllDependencied(jobID);
 	}
 	@Override
 	public List<String> getAllDependencies(String jobID) {
-		// TODO Auto-generated method stub
 		return groupManager.getAllDependencies(jobID);
 	}
 	@Override
 	public void updateActionList(JobDescriptorOld job) {
 		groupManager.updateActionList(job);
 	}
+	
 }

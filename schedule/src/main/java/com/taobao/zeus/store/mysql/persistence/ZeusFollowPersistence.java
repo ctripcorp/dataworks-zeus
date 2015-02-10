@@ -39,6 +39,11 @@ public class ZeusFollowPersistence {
 	private Date gmtCreate;
 	@Column(name="gmt_modified")
 	private Date gmtModified;
+	/**
+	 * 0表示不是第一联系人，1表示是第一联系人
+	 */
+	@Column(name="important")
+	private int important;
 
 	public Long getId() {
 		return id;
@@ -86,6 +91,14 @@ public class ZeusFollowPersistence {
 
 	public void setUid(String uid) {
 		this.uid = uid;
+	}
+
+	public int getImportant() {
+		return important;
+	}
+
+	public void setImportant(int important) {
+		this.important = important;
 	}
 	
 	

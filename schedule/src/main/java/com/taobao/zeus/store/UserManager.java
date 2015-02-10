@@ -14,4 +14,10 @@ public interface UserManager{
 	public List<ZeusUser> findListByUid(List<String> uids);
 	
 	public ZeusUser addOrUpdateUser(ZeusUser user);
+	/**
+	 * 按照uids的顺序返回user列表
+	 * @param uids
+	 * @return
+	 */
+	public List<ZeusUser> findListByUidByOrder(List<String> uids);
 }

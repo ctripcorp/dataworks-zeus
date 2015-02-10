@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 
+
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -37,6 +38,7 @@ import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror.CodeMirrorC
 import com.taobao.zeus.web.platform.client.module.jobdisplay.AdminConfigWindow;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.CenterTemplate;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.ChooseConfigWindow;
+import com.taobao.zeus.web.platform.client.module.jobdisplay.ImportantContactConfigWindow;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.TreeKeyProviderTool;
 import com.taobao.zeus.web.platform.client.module.jobmanager.event.TreeNodeChangeEvent;
@@ -87,6 +89,12 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 				}
 			});
 			box.show();
+		}
+	});
+	private TextButton configImportantContact=new TextButton("配置重要联系人",new SelectHandler() {
+		@Override
+		public void onSelect(SelectEvent event) {
+			new ImportantContactConfigWindow(presenter).show();;
 		}
 	});
 	private TextButton configAdmin=new TextButton("配置管理员",new SelectHandler() {
@@ -193,6 +201,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 	private FieldLabel rollInterval;
 	private FieldLabel jobPriority;
 	private FieldLabel maxTime;
+	private FieldLabel importantContacts;
 	
 	private HTMLPanel configContent;
 	private HTMLPanel configParentContent;
@@ -213,6 +222,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		addButton(onoff);
 		addButton(deleteGroup);
 		addButton(configAdmin);
+		addButton(configImportantContact);
 		addButton(toDoc);
 		
 		FlowLayoutContainer centerContainer=new FlowLayoutContainer();
@@ -251,6 +261,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		}else {
 			((Label)maxTime.getWidget()).setText("无预计");
 		}
+		((Label)importantContacts.getWidget()).setText(model.getImportantContacts().toString());
 		if(model.getAllProperties().get(CardInfo.ROLL_INTERVAL) != null){
 			((Label)rollInterval.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_INTERVAL)+"分钟");}
 		else {
@@ -469,6 +480,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			rollInterval = new FieldLabel(getLabel(),"重试时间间隔");
 			jobPriority = new FieldLabel(getLabel(),"任务优先级");
 			maxTime = new FieldLabel(getLabel(), "预计时长");
+			importantContacts = new FieldLabel(getLabel(), "重要联系人");
 			leftContainer.add(baseId,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(baseName,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(baseOwner,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
@@ -483,12 +495,14 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			rightContainer.add(offRaw,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			rightContainer.add(jobCycle,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			rightContainer.add(host,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			leftContainer.add(importantContacts,new VerticalLayoutContainer.VerticalLayoutData(1,-1));
 			leftContainer.add(baseFollers,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(baseAdmins,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			rightContainer.add(rollTime,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			rightContainer.add(rollInterval,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(jobPriority,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
-			leftContainer.add(maxTime, new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			rightContainer.add(maxTime, new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			
 			//leftContainer.add(host,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 
 		}

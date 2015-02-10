@@ -81,4 +81,21 @@ public class MysqlUserManager extends HibernateDaoSupport implements UserManager
 		}
 		return user;
 	}
+
+	@Override
+	public List<ZeusUser> findListByUidByOrder(final List<String> uids) {
+		List<ZeusUser> result = new ArrayList<ZeusUser>();
+		if(uids.isEmpty()){
+			return result;
+		}
+		List<ZeusUser> users = findListByUid(uids);
+		for(String uid : uids){
+			for(ZeusUser user : users){
+				if (uid.equals(user.getUid())) {
+					result.add(user);
+				}
+			}
+		}
+		return result;
+	}
 }

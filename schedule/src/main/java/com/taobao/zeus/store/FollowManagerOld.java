@@ -3,6 +3,7 @@ package com.taobao.zeus.store;
 import java.util.List;
 
 import com.taobao.zeus.model.ZeusFollow;
+import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 
 
 public interface FollowManagerOld {
@@ -59,4 +60,21 @@ public interface FollowManagerOld {
 	 * @return
 	 */
 	List<String> findActualJobFollowers(String jobId);
+	/**
+	 * 查询所有关注该job的人
+	 * 综合考虑了job自身被关注的人，以及上层group被关注的人
+	 * @param jobId
+	 * @return
+	 */
+	List<ZeusFollow> findAllFollowers(String jobId);	
+	/**
+	 * 添加zeusfollow重要联系人
+	 * @param targetId jobid
+	 * @param uid
+	 * @param isFirst
+	 */
+	void grantImportantContact(String jobId, String uid);
+	
+	void revokeImportantContact(String jobId, String uid);
+
 }

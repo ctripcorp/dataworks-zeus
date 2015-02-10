@@ -47,6 +47,11 @@ public class PersistenceAndBeanConvert {
 		zf.setUid(persist.getUid());
 		zf.setTargetId(persist.getTargetId().toString());
 		zf.setType(persist.getType());
+		if (persist.getImportant() == 0) {
+			zf.setImportant(false);
+		}else {
+			zf.setImportant(true);
+		}
 		return zf;
 	}
 
@@ -59,6 +64,11 @@ public class PersistenceAndBeanConvert {
 		persiste.setTargetId(Long.valueOf(zf.getTargetId()));
 		persiste.setType(zf.getType());
 		persiste.setUid(zf.getUid());
+		if (zf.isImportant()) {
+			persiste.setImportant(1);
+		}else {
+			persiste.setImportant(0);
+		}
 		return persiste;
 	}
 

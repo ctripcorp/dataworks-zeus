@@ -110,7 +110,7 @@ public class JobFailListener extends DispatcherListener{
 							sb.append("Job任务的触发类型为:"+type).append("<br/>");
 							if(event.getHistory()!=null){
 								sb.append("失败原因:<br/>"+jobHistoryManager.findJobHistory(event.getHistory().getId()).getLog().getContent().replaceAll("\\n", "<br/>"));
-								String msg= "Zeus报警 JobId:"+jobId+" 任务运行失败";
+								String msg= "Zeus报警 JobId:"+jobId+" ("+jobDescriptor.getName()+") 任务运行失败";
 //								if(!causeJobId.equalsIgnoreCase(event.getJobId())){
 //									msg+="(根本原因:job "+causeJobId+"运行失败)";
 //								}

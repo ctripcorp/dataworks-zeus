@@ -73,7 +73,7 @@ public class GroupServiceImpl implements GroupService{
 		if(follows!=null){
 			List<String> followsName=new ArrayList<String>();
 			for(ZeusFollow zf:follows){
-				String name=userManager.findByUid(zf.getUid()).getName();
+				String name=userManager.findByUidFilter(zf.getUid()).getName();
 				if(name==null){
 					name=zf.getUid();
 				}

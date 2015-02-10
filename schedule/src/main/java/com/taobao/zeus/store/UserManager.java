@@ -9,13 +9,9 @@ public interface UserManager{
 	
 	public List<ZeusUser> getAllUsers();
 	
-	public List<ZeusUser> findAllUsers(String sortField, String sortOrder);
-	
 	public ZeusUser findByUid(String uid);
 	
 	public List<ZeusUser> findListByUid(List<String> uids);
-	
-	public List<ZeusUser> findListByFilter(String filter, String sortField, String sortOrder);
 	
 	public ZeusUser addOrUpdateUser(ZeusUser user);
 	/**
@@ -24,4 +20,11 @@ public interface UserManager{
 	 * @return
 	 */
 	public List<ZeusUser> findListByUidByOrder(List<String> uids);
+	
+	//2015-02-04 add--------
+	public ZeusUser findByUidFilter(String uid);
+	
+	public List<ZeusUser> findAllUsers(String sortField, String sortOrder);
+	
+	public List<ZeusUser> findListByFilter(String filter, String sortField, String sortOrder);
 }

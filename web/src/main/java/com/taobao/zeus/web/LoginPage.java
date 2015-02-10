@@ -49,7 +49,7 @@ public class LoginPage  extends HttpServlet  {
 		String username = request.getParameter("username");
         String password = request.getParameter("password");
         
-        ZeusUser u = userManager.findByUid(username);
+        ZeusUser u = userManager.findByUidFilter(username);
         PrintWriter out = response.getWriter();
         response.setCharacterEncoding("utf-8");
 		if(null == u){

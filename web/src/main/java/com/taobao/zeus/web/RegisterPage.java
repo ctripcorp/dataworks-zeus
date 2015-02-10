@@ -83,9 +83,6 @@ public class RegisterPage  extends HttpServlet  {
 					List<String> emails = getEmailsByUsers(mailUsers);
 					if(emails != null && emails.size()>0){
 						emails.add(returnUser.getEmail());
-						emails.add("yongchengchen@Ctrip.com");
-//						emails.add("jianguo@Ctrip.com");
-//						emails.add("yafengli@Ctrip.com");
 						mailAlarm.sendEmail("", emails, "Zeus新用户注册申请",
 								"Dear All,"+
 								"\r\n	Zeus系统有新用户注册，详细信息如下："+

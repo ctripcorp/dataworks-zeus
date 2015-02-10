@@ -22,7 +22,7 @@ public class MysqlUserManager extends HibernateDaoSupport implements UserManager
 		return (List<ZeusUser>) getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
-				Query query=session.createQuery("from com.taobao.zeus.store.mysql.persistence.ZeusUser");
+				Query query=session.createQuery("from com.taobao.zeus.store.mysql.persistence.ZeusUser where isEffective=1 ");
 				return query.list();
 			}
 		});
@@ -104,6 +104,17 @@ public class MysqlUserManager extends HibernateDaoSupport implements UserManager
 	}
 	
 	/**2015-02-04**/
+	public ZeusUser findByUidFilter(String uid){
+		DetachedCriteria criteria=DetachedCriteria.forClass(ZeusUser.class);
+		criteria.add(Expression.eq("uid", uid));
+		criteria.add(Expression.eq("isEffective", 1));
+		List<ZeusUser> users=getHibernateTemplate().findByCriteria(criteria);
+		if(users!=null && !users.isEmpty()){
+			return users.get(0);
+		}
+		return null;
+	}
+	
 	public List<ZeusUser> findAllUsers(final String sortField, final String sortOrder){
 		return (List<ZeusUser>) getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException,

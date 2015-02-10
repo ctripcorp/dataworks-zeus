@@ -176,11 +176,10 @@ public class MysqlFollowManagerOld extends HibernateDaoSupport implements Follow
 		List<ZeusFollowPersistence> list=(List<ZeusFollowPersistence>) getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
-				Query query=session.createQuery("from com.taobao.zeus.store.mysql.persistence.ZeusFollowPersistence where uid=? and type=? and targetId=? and first=?");
+				Query query=session.createQuery("from com.taobao.zeus.store.mysql.persistence.ZeusFollowPersistence where uid=? and type=? and targetId=?");
 				query.setParameter(0, uid);
 				query.setParameter(1, type);
 				query.setParameter(2, Long.valueOf(targetId));
-				query.setParameter(3, 0);
 				return query.list();
 			}
 		});

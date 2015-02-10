@@ -245,6 +245,9 @@ public class PermissionGroupManagerOld implements GroupManagerOld{
 		if (nextUser.getUserType() != 0) {
 			throw new ZeusException("请转给组管理员！");
 		}
+		if (nextUser.getIsEffective() != 1) {
+			throw new ZeusException("请转给有效用户");
+		}
 		GroupBeanOld gb=groupManager.getUpstreamGroupBean(groupId);
 		List<String> owners=new ArrayList<String>();
 		while(gb!=null){
@@ -264,6 +267,9 @@ public class PermissionGroupManagerOld implements GroupManagerOld{
 		ZeusUser nextUser = userManager.findByUidFilter(uid);
 		if (nextUser.getUserType() != 0) {
 			throw new ZeusException("请转给组管理员！");
+		}
+		if (nextUser.getIsEffective() != 1) {
+			throw new ZeusException("请转给有效用户");
 		}
 		JobBeanOld jb=groupManager.getUpstreamJobBean(jobId);
 		List<String> owners=new ArrayList<String>();

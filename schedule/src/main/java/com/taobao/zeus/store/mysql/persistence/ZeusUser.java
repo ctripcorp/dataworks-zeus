@@ -19,6 +19,20 @@ import javax.persistence.Query;
  */
 @Entity(name="zeus_user")
 public class ZeusUser{
+	public enum UserStatus {
+	       WAIT_CHECK (0), CHECK_SUCCESS (1), Cancel (-1), CHECK_FAILED (-2);
+	       private int nCode ;
+	       private UserStatus( int _nCode) {
+	           this.nCode = _nCode;
+	       }
+	       @Override
+	       public String toString() {
+	           return String.valueOf ( this.nCode );
+	       }
+	       public int value() {
+	           return this.nCode;
+	       }
+	}
 	
 	public static final ZeusUser ADMIN=new ZeusUser(){
 		public String getEmail() {return "DataInfrastructure@Ctrip.com";};
@@ -47,6 +61,12 @@ public class ZeusUser{
 	private Date gmtCreate;
 	@Column(name="gmt_modified")
 	private Date gmtModified;
+	@Column(name="is_effective")
+	private int isEffective;
+	@Column(name="user_type")
+	private int userType;
+	@Column
+	private String description;
 	public ZeusUser(String email, String name, String phone,
 			String uid) {
 		this.email = email;
@@ -111,6 +131,24 @@ public class ZeusUser{
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public int getIsEffective() {
+		return isEffective;
+	}
+	public void setIsEffective(int isEffective) {
+		this.isEffective = isEffective;
+	}
+	public int getUserType() {
+		return userType;
+	}
+	public void setUserType(int userType) {
+		this.userType = userType;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	@Override
 	public String toString() {

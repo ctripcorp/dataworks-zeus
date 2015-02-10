@@ -56,6 +56,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 		ZUser zu=new ZUser();
 		zu.setName(u.getName());
 		zu.setUid(u.getUid());
+		zu.setUserType(u.getUserType());
 		zu.setSuper(Super.getSupers().contains(u.getUid()));
 		return zu;
 	}
@@ -68,6 +69,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 			ZUser zu=new ZUser();
 			zu.setName(u.getName());
 			zu.setUid(u.getUid());
+			zu.setUserType(u.getUserType());
 			result.add(zu);
 		}
 		return result;
@@ -82,9 +84,9 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 			return "null";
 		}else{
 			String ps = u.getPassword();
-			System.out.println(password);
-			System.out.println(ps);
-			System.out.println(MD5(password));
+//			System.out.println(password);
+//			System.out.println(ps);
+//			System.out.println(MD5(password));
 			if(null !=ps){
 				if(!MD5(password).toUpperCase().equals(ps.toUpperCase())){
 					return "error";
@@ -149,5 +151,4 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 		return uid;
 
 	}
-
 }

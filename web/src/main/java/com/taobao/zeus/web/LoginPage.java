@@ -30,7 +30,7 @@ public class LoginPage  extends HttpServlet  {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String url  = "/login.html";
+		String url  = "/login2.html";
 		request.getRequestDispatcher(url).forward(request,response);
 		return;  
 		

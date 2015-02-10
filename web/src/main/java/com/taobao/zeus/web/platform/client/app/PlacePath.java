@@ -8,6 +8,7 @@ import com.taobao.zeus.web.platform.client.app.document.DocumentApp;
 import com.taobao.zeus.web.platform.client.app.home.HomeApp;
 import com.taobao.zeus.web.platform.client.app.report.ReportApp;
 import com.taobao.zeus.web.platform.client.app.schedule.ScheduleApp;
+import com.taobao.zeus.web.platform.client.app.user.UserApp;
 import com.taobao.zeus.web.platform.client.module.filemanager.FileManagerPresenter;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.JobDisplayPresenter;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobManagerPresenter;
@@ -19,7 +20,8 @@ public class PlacePath {
 		Home(HomeApp.TAG),
 		Document(DocumentApp.TAG),
 		Schedule(ScheduleApp.TAG),
-		Report(ReportApp.TAG);
+		Report(ReportApp.TAG),
+		User(UserApp.TAG);
 		private final KV kv;
 		private App(String value){
 			kv=new KV("App",value);

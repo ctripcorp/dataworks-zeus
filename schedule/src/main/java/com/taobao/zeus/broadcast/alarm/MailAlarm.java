@@ -81,7 +81,7 @@ public class MailAlarm extends AbstractZeusAlarm {
 		}
 	}
 
-	public static void sendEmail(String jobId, List<String> emails, String subject,
+	public void sendEmail(String jobId, List<String> emails, String subject,
 			String body) {
 		try {
 			log.info( "jobId: " + jobId +" begin to send the email!");

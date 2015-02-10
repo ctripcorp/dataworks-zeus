@@ -26,6 +26,7 @@ import com.taobao.zeus.web.platform.client.app.document.DocumentApp;
 import com.taobao.zeus.web.platform.client.app.home.HomeApp;
 import com.taobao.zeus.web.platform.client.app.report.ReportApp;
 import com.taobao.zeus.web.platform.client.app.schedule.ScheduleApp;
+import com.taobao.zeus.web.platform.client.app.user.UserApp;
 import com.taobao.zeus.web.platform.client.theme.shortcut.ShortcutCellDefaultAppearance.ShortcutCellResources;
 import com.taobao.zeus.web.platform.client.util.PlatformContext;
 import com.taobao.zeus.web.platform.client.util.ZUser;
@@ -100,6 +101,8 @@ public class Platform implements IsWidget ,PlaceHandler{
 			app=getApp(ScheduleApp.class);
 		}else if(App.Report.getKv().value.equals(kv.value)){
 			app=getApp(ReportApp.class);
+		}else if(App.User.getKv().value.equals(kv.value)){
+			app=getApp(UserApp.class);
 		}
 		if(app!=null){
 			if(apps.get(app)==null){

@@ -55,16 +55,17 @@ public class RegisterPage  extends HttpServlet  {
         
 		String uid = request.getParameter("user");
         ZeusUser u = userManager.findByUid(uid);
-
 		if(null != u){
 			out.print("exist");
 		}else{
 			try{
+		        ZeusUser diAdmin = userManager.findByUid("diadmin");
 		        String password = request.getParameter("passwd");
 		        String email = request.getParameter("email");
 		        String phone = request.getParameter("phone");
 		        String userType = request.getParameter("userType");
 				String passwordMD5 = MD5(password);
+				String description = request.getParameter("description");
 				ZeusUser newUser = new ZeusUser();
 				newUser.setUid(uid);
 				newUser.setName(uid);
@@ -75,6 +76,7 @@ public class RegisterPage  extends HttpServlet  {
 				newUser.setGmtCreate(new Date());
 				newUser.setGmtModified(new Date());
 				newUser.setUserType(Integer.parseInt(userType));
+				newUser.setDescription(description);
 				ZeusUser returnUser = userManager.addOrUpdateUser(newUser);
 				if(null != returnUser){
 					List<String> mailUsers = new ArrayList<String>();
@@ -83,6 +85,7 @@ public class RegisterPage  extends HttpServlet  {
 					List<String> emails = getEmailsByUsers(mailUsers);
 					if(emails != null && emails.size()>0){
 						emails.add(returnUser.getEmail());
+						emails.add(diAdmin.getEmail());
 						mailAlarm.sendEmail("", emails, "Zeus新用户注册申请",
 								"Dear All,"+
 								"\r\n	Zeus系统有新用户注册，详细信息如下："+
@@ -90,7 +93,10 @@ public class RegisterPage  extends HttpServlet  {
 								"\r\n		用户账号："+returnUser.getUid()+
 								"\r\n		用户姓名："+returnUser.getName()+
 								"\r\n		用户邮箱："+returnUser.getEmail()+
-								"\r\n	请确认并审核。谢谢！");
+								"\r\n	请确认并审核。\r\n"+
+								"\r\n	另外，请DI团队开通hive帐号及权限，权限描述如下："+
+								"\r\n		" + returnUser.getDescription()+
+								"\r\n	\r\n	\r\n谢谢！");
 					}
 					out.print(returnUser.getUid());
 				}else{

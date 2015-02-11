@@ -75,14 +75,14 @@
 					<input type="hidden" name="to" value="reg" /> <input type="hidden"
 						name="did" value="0" />
 					<ul class="reg_form" id="reg-ul">
-						<div id="userCue" class="cue">快速注册请注意格式</div>
-						<li><label for="userType" class="input-tips2">用户类型：</label>
+						<div id="userCue" class="cue"><font color='green'>提醒：Zeus帐号与Hive帐号必须相同</font></div>
+						<li style="display:none"><label for="userType" class="input-tips2">用户类型：</label>
 							<div class="inputOuter2" style="margin-top:15px">
 								<input type="radio" name="userTypes" value="0" checked="checked"/> 组用户&nbsp;&nbsp;&nbsp;&nbsp;
 								<input type="radio" name="userTypes" value="1" /> 个人用户
 							</div></li>
 							
-						<li><label for="user" class="input-tips2">用户名：</label>
+						<li><label for="user" class="input-tips2">帐号：</label>
 							<div class="inputOuter2">
 								<input type="text" id="user" name="user" maxlength="16"
 									class="inputstyle2" />
@@ -116,7 +116,11 @@
 								<input type="text" id="qq" name="qq" maxlength="10"
 									class="inputstyle2" />
 							</div></li> -->
-
+						<li><label for="description" class="input-tips2">权限描述：</label>
+							<div class="inputOuter2">
+								<textarea id="description" name="description" cols="10" rows="3" class="inputstyle2" style="height:110px; maxLength:100px"></textarea>
+							</div>
+						</li>
 						<li>
 							<div class="inputArea">
 								<input type="button" id="register"

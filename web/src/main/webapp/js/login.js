@@ -149,6 +149,7 @@ $(document)
 										var email = $("#email").val();
 										var phone = $("#phone").val();
 										var userType = $('input[name="userTypes"]:checked').val();
+										var description = $("#description").val();
 										if ($('#user').val() == "") {
 											$('#user').focus().css({
 												border : "1px solid red",
@@ -220,7 +221,8 @@ $(document)
 												passwd : passwd,
 												email : email,
 												phone : phone,
-												userType : userType
+												userType : userType,
+												description : description
 											},
 											type : "post",
 
@@ -247,6 +249,7 @@ $(document)
 													$("#passwd2").val("");
 													$("#email").val("");
 													$("#phone").val("");
+													$("#description").val("");
 												}
 											}
 										});

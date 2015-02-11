@@ -216,8 +216,6 @@ public class UserServlet extends HttpServlet {
 								MailAlarm mailAlarm = new MailAlarm();
 								List<String> emails = getEmailsByUsers(mailUsers);
 								if(emails != null && emails.size()>0){
-//									emails.add("jianguo@Ctrip.com");
-//									emails.add("yafengli@Ctrip.com");
 									mailAlarm.sendEmail("", emails, "Zeus新用户审核已通过",
 											"Dear All,"+
 											"\r\n	Zeus新用户审核已通过，详细信息如下："+
@@ -225,9 +223,7 @@ public class UserServlet extends HttpServlet {
 											"\r\n		用户账号："+newUser.getUid()+
 											"\r\n		用户姓名："+newUser.getName()+
 											"\r\n		用户邮箱："+newUser.getEmail()+
-											"\r\n	请确认，另外请开通Hive账号和权限。谢谢！"+
-											"\r\n	权限描述如下："+
-											"\r\n		" + newUser.getDescription());
+											"\r\n	请确认，谢谢！");
 								}
 							}else if("checkfailed".equals(action) && newUser.getIsEffective()==UserStatus.CHECK_FAILED.value()){
 								List<String> mailUsers = new ArrayList<String>();

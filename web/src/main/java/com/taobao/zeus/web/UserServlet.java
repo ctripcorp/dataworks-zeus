@@ -22,6 +22,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.taobao.zeus.broadcast.alarm.MailAlarm;
+import com.taobao.zeus.store.GroupManager;
 import com.taobao.zeus.store.UserManager;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser.UserStatus;
@@ -30,6 +31,7 @@ public class UserServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	private UserManager userManager;
+	private GroupManager groupManager;
 
 	@Override
 	protected void doGet(HttpServletRequest request,
@@ -42,6 +44,7 @@ public class UserServlet extends HttpServlet {
 		ApplicationContext applicationContext = WebApplicationContextUtils
 				.getWebApplicationContext(servletConfig.getServletContext());
 		userManager = (UserManager) applicationContext.getBean("userManager");
+		groupManager = (GroupManager) applicationContext.getBean("groupManager");
 	}
 
 	@Override
@@ -144,7 +147,6 @@ public class UserServlet extends HttpServlet {
 						ex.printStackTrace();
 					}
 				}*/
-
 			} else if ("get".equals(action)) {
 				String uid = request.getParameter("uid");
 				if (uid != null && uid.length() > 0) {
@@ -210,6 +212,14 @@ public class UserServlet extends HttpServlet {
 							user.setIsEffective(isEffective);
 							ZeusUser newUser = userManager.addOrUpdateUser(user);
 							if("checksuccess".equals(action) && newUser.getIsEffective()==UserStatus.CHECK_SUCCESS.value()){
+								//1.审核通过后,给组帐号添加大目录
+								if(newUser != null && newUser.getUserType()==0){
+									String rootGroupId = groupManager.getRootGroupId();
+									if(rootGroupId != null){
+										groupManager.createGroup(newUser.getUid(), newUser.getUid(), rootGroupId, true);
+									}
+								}
+								//2.给用户发邮件，告知审核已通过
 								List<String> mailUsers = new ArrayList<String>();
 								mailUsers.add(ZeusUser.ADMIN.getUid());
 								mailUsers.add(newUser.getUid());
@@ -225,6 +235,7 @@ public class UserServlet extends HttpServlet {
 											"\r\n		用户邮箱："+newUser.getEmail()+
 											"\r\n	请确认，谢谢！");
 								}
+
 							}else if("checkfailed".equals(action) && newUser.getIsEffective()==UserStatus.CHECK_FAILED.value()){
 								List<String> mailUsers = new ArrayList<String>();
 								mailUsers.add(ZeusUser.ADMIN.getUid());

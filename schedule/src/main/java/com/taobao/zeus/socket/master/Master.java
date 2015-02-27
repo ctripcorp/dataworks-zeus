@@ -773,6 +773,7 @@ public class Master {
 		}
 		final StringBuffer content = new StringBuffer(title);
 		if(jd != null){
+			title.append(" (").append(jd.getName()).append(")");
 			content.append("\nJOB任务名称：").append(jd.getName());
 			Map<String, String> properties=jd.getProperties();
 			if(properties != null){

@@ -25,4 +25,6 @@ public interface FileManagerServiceAsync {
 
 	void getCommonFiles(FileModel fm, AsyncCallback<List<FileModel>> callback);
 
+	void getHomeFile(String id, AsyncCallback<FileModel> callback);
+
 }

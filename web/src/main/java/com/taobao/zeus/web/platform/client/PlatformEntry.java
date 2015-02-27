@@ -44,6 +44,7 @@ import com.taobao.zeus.web.platform.client.app.document.DocumentApp;
 import com.taobao.zeus.web.platform.client.app.home.HomeApp;
 import com.taobao.zeus.web.platform.client.app.report.ReportApp;
 import com.taobao.zeus.web.platform.client.app.schedule.ScheduleApp;
+import com.taobao.zeus.web.platform.client.app.user.UserApp;
 import com.taobao.zeus.web.platform.client.module.filemanager.FileModel;
 import com.taobao.zeus.web.platform.client.module.guide.GuideTip;
 import com.taobao.zeus.web.platform.client.util.GWTEnvironment;
@@ -107,10 +108,12 @@ public class PlatformEntry implements EntryPoint {
 			public void onSuccess(ZUser result) {
 				Platform s=new Platform(result);
 				final HomeApp home=new HomeApp(s.getPlatformContext());
+				final UserApp user=new UserApp(s.getPlatformContext());
 				s.addApp(home);
 				s.addApp(new DocumentApp(s.getPlatformContext()));
 				s.addApp(new ScheduleApp(s.getPlatformContext()));
 				s.addApp(new ReportApp(s.getPlatformContext()));
+				s.addApp(user);
 				
 				RootPanel.get().add(s);
 				

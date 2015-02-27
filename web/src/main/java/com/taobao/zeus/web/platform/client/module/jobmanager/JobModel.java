@@ -35,6 +35,7 @@ public class JobModel implements Serializable {
 	private Boolean admin;
 	private List<String> admins = new ArrayList<String>();
 	private List<String> follows = new ArrayList<String>();
+	private List<String> importantContacts = new ArrayList<String>();
 	private Map<String, String> readyDependencies = new HashMap<String, String>();
 	private String status;
 	private String lastStatus;
@@ -59,6 +60,7 @@ public class JobModel implements Serializable {
 		JobModel model = new JobModel();
 		model.setAdmin(getAdmin());
 		model.setAdmins(new ArrayList<String>(getAdmins()));
+		model.setImportantContacts(new ArrayList<String>(getImportantContacts()));
 		model.setAllProperties(new HashMap<String, String>(getAllProperties()));
 		model.setAllResources(new ArrayList<Map<String, String>>(
 				getAllResources()));
@@ -348,5 +350,15 @@ public class JobModel implements Serializable {
 
 	public void setHost(String host) {
 		this.host = host;
+	}
+
+
+	public List<String> getImportantContacts() {
+		return importantContacts;
+	}
+
+
+	public void setImportantContacts(List<String> importantContacts) {
+		this.importantContacts = importantContacts;
 	}
 }

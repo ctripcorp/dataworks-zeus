@@ -42,7 +42,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 		String itemId = title;
 		String level = "high";
 		String message = title;
-		List<ZeusUser> userList = userManager.findListByUid(uids);
+		List<ZeusUser> userList = userManager.findListByUidByOrder(uids);
 		if(userList != null && userList.size()>0){
 			for(ZeusUser user : userList){
 				message += "<br>负责人："+user.getName()+" 电话："+user.getPhone()+" 邮箱："+user.getEmail();

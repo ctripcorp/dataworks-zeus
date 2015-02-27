@@ -10,7 +10,7 @@ import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
 import com.taobao.zeus.web.platform.client.util.ZUser;
-import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
+import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 
 public interface JobServiceAsync {
 
@@ -68,5 +68,15 @@ public interface JobServiceAsync {
 
 	void getSubJobStatus(String groupId, PagingLoadConfig config, Date startDate,
 			Date endDate, AsyncCallback<PagingLoadResult<JobModelAction>> callback);
+
+	void grantImportantContact(String jobId, String uid,
+			AsyncCallback<Void> callback);
+
+	void revokeImportantContact(String jobId, String uid,
+			AsyncCallback<Void> callback);
+
+	void getAllContactList(String jobId,
+			AsyncCallback<List<ZUserContactTuple>> callback);
+
 
 }

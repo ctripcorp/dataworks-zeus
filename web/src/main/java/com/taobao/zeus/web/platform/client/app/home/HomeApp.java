@@ -39,7 +39,7 @@ public class HomeApp implements Application{
 			public void go(HasWidgets hasWidgets) {
 				hasWidgets.add(widget);
 				String id=GWTEnvironment.getHomeTemplateId();
-				RPCS.getFileManagerService().getFile(id, new AbstractAsyncCallback<FileModel>() {
+				RPCS.getFileManagerService().getHomeFile(id, new AbstractAsyncCallback<FileModel>() {
 					public void onSuccess(FileModel result) {
 						widget.setContent(result.getContent());
 					}

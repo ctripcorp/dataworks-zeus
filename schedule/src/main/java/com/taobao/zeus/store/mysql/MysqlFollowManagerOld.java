@@ -4,15 +4,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import org.antlr.grammar.v3.ANTLRParser.finallyClause_return;
+import org.apache.commons.lang.ObjectUtils.Null;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.taobao.zeus.model.ZeusFollow;
 import com.taobao.zeus.store.FollowManagerOld;
@@ -23,6 +30,7 @@ import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.JobBeanOld;
 import com.taobao.zeus.store.mysql.persistence.ZeusFollowPersistence;
+import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.store.mysql.tool.PersistenceAndBeanConvert;
 @SuppressWarnings("unchecked")
 public class MysqlFollowManagerOld extends HibernateDaoSupport implements FollowManagerOld{
@@ -157,6 +165,7 @@ public class MysqlFollowManagerOld extends HibernateDaoSupport implements Follow
 		persist.setTargetId(Long.valueOf(targetId));
 		persist.setType(type);
 		persist.setUid(uid);
+		persist.setImportant(0);
 		getHibernateTemplate().save(persist);
 		
 		return PersistenceAndBeanConvert.convert(persist);
@@ -183,6 +192,7 @@ public class MysqlFollowManagerOld extends HibernateDaoSupport implements Follow
 	@Autowired
 	@Qualifier("groupManagerOld")
 	private GroupManagerOld groupManagerOld;
+	
 	@Override
 	public List<String> findActualJobFollowers(String jobId) {
 		List<ZeusFollow> jobFollows=findJobFollowers(jobId);
@@ -212,4 +222,50 @@ public class MysqlFollowManagerOld extends HibernateDaoSupport implements Follow
 		return follows;
 	}
 
+	@Override
+	public List<ZeusFollow> findAllFollowers(String jobId) {
+		List<ZeusFollow> jobFollows=findJobFollowers(jobId);
+		JobBeanOld jobBean=groupManagerOld.getUpstreamJobBean(jobId);
+		
+		List<String> groupIds=new ArrayList<String>();
+		GroupBeanOld gb=jobBean.getGroupBean();
+		while(gb!=null){
+			groupIds.add(gb.getGroupDescriptor().getId());
+			gb=gb.getParentGroupBean();
+		}
+		List<ZeusFollow> groupFollows=findGroupFollowers(groupIds);
+		
+		List<ZeusFollow> result = new ArrayList<ZeusFollow>();
+		result.addAll(jobFollows);
+		result.addAll(groupFollows);
+		return result;
+	}
+
+	public void updateImportantContact(final String targetId,final String uid, int isImportant) {
+		List<ZeusFollowPersistence> list=(List<ZeusFollowPersistence>) getHibernateTemplate().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException,
+					SQLException {
+				Query query=session.createQuery("from com.taobao.zeus.store.mysql.persistence.ZeusFollowPersistence where uid=? and type=" + ZeusFollow.JobType + " and targetId=?");
+				query.setParameter(0, uid);
+				query.setParameter(1, Long.valueOf(targetId));
+				return query.list();
+			} 
+		});
+		if(list!=null && !list.isEmpty()){
+			ZeusFollowPersistence persist=list.get(0);
+			persist.setImportant(isImportant);
+			persist.setGmtModified(new Date());
+			getHibernateTemplate().saveOrUpdate(persist);
+		}
+	}
+
+	@Override
+	public void grantImportantContact(String targetId, String uid) {
+		updateImportantContact(targetId, uid, 1);
+	}
+
+	@Override
+	public void revokeImportantContact(String targetId, String uid) {
+		updateImportantContact(targetId, uid, 0);
+	}	
 }

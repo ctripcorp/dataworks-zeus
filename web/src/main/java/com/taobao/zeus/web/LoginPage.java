@@ -30,7 +30,7 @@ public class LoginPage  extends HttpServlet  {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String url  = "/login.html";
+		String url  = "/login2.html";
 		request.getRequestDispatcher(url).forward(request,response);
 		return;  
 		
@@ -49,7 +49,7 @@ public class LoginPage  extends HttpServlet  {
 		String username = request.getParameter("username");
         String password = request.getParameter("password");
         
-        ZeusUser u = userManager.findByUid(username);
+        ZeusUser u = userManager.findByUidFilter(username);
         PrintWriter out = response.getWriter();
         response.setCharacterEncoding("utf-8");
 		if(null == u){

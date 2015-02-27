@@ -22,11 +22,12 @@ public class MysqlUserManager extends HibernateDaoSupport implements UserManager
 		return (List<ZeusUser>) getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
-				Query query=session.createQuery("from com.taobao.zeus.store.mysql.persistence.ZeusUser");
+				Query query=session.createQuery("from com.taobao.zeus.store.mysql.persistence.ZeusUser where isEffective=1 ");
 				return query.list();
 			}
 		});
 	}
+
 	
 	public ZeusUser findByUid(String uid){
 		DetachedCriteria criteria=DetachedCriteria.forClass(ZeusUser.class);
@@ -73,6 +74,9 @@ public class MysqlUserManager extends HibernateDaoSupport implements UserManager
 				zu.setPhone(user.getPhone());
 			}
 			zu.setGmtModified(new Date());
+			zu.setIsEffective(user.getIsEffective());
+			zu.setUserType(user.getUserType());
+			zu.setDescription(user.getDescription());
 			getHibernateTemplate().update(zu);
 		}else{
 			user.setGmtCreate(new Date());
@@ -81,4 +85,61 @@ public class MysqlUserManager extends HibernateDaoSupport implements UserManager
 		}
 		return user;
 	}
+
+	@Override
+	public List<ZeusUser> findListByUidByOrder(final List<String> uids) {
+		List<ZeusUser> result = new ArrayList<ZeusUser>();
+		if(uids.isEmpty()){
+			return result;
+		}
+		List<ZeusUser> users = findListByUid(uids);
+		for(String uid : uids){
+			for(ZeusUser user : users){
+				if (uid.equals(user.getUid())) {
+					result.add(user);
+				}
+			}
+		}
+		return result;
+	}
+	
+	/**2015-02-04**/
+	public ZeusUser findByUidFilter(String uid){
+		DetachedCriteria criteria=DetachedCriteria.forClass(ZeusUser.class);
+		criteria.add(Expression.eq("uid", uid));
+		criteria.add(Expression.eq("isEffective", 1));
+		List<ZeusUser> users=getHibernateTemplate().findByCriteria(criteria);
+		if(users!=null && !users.isEmpty()){
+			return users.get(0);
+		}
+		return null;
+	}
+	
+	public List<ZeusUser> findAllUsers(final String sortField, final String sortOrder){
+		return (List<ZeusUser>) getHibernateTemplate().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException,
+					SQLException {
+				Query query=session.createQuery("from com.taobao.zeus.store.mysql.persistence.ZeusUser order by " + sortField + " " + sortOrder);
+				return query.list();
+			}
+		});
+	}
+	
+	public List<ZeusUser> findListByFilter(final String filter, final String sortField, final String sortOrder){
+		if(filter.isEmpty()){
+			return new ArrayList<ZeusUser>();
+		}
+		List<ZeusUser> list = (List<ZeusUser>) getHibernateTemplate().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException,
+					SQLException {
+				Query query=session.createQuery("from com.taobao.zeus.store.mysql.persistence.ZeusUser "+
+					"where uid like :uid or name like :name or email like :email order by " + sortField + " " + sortOrder);
+				query.setString("uid", "%"+filter+"%");
+				query.setString("name", "%"+filter+"%");
+				query.setString("email", "%"+filter+"%");
+				return query.list();
+			}
+		});
+		return list;
+	} 
 }

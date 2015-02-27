@@ -9,6 +9,8 @@ public class ZeusFollow {
 	
 	public static final Integer GroupType=1;
 	public static final Integer JobType=2;
+	public static final Integer isFirst=1;
+	public static final Integer notFirst=0;
 	private Long id;
 	/**
 	 * 关注的类型
@@ -24,6 +26,11 @@ public class ZeusFollow {
 	 * 如果关注的是Job  则这里是Job id
 	 */
 	private String targetId;
+	
+	/**
+	 * false表示不是第一联系人，true表示是第一联系人
+	 */
+	private boolean important;
 
 	public Long getId() {
 		return id;
@@ -55,6 +62,14 @@ public class ZeusFollow {
 
 	public void setUid(String uid) {
 		this.uid = uid;
+	}
+
+	public boolean isImportant() {
+		return important;
+	}
+
+	public void setImportant(boolean important) {
+		this.important = important;
 	}
 
 }

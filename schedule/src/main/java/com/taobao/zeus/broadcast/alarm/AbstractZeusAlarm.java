@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.model.JobStatus.TriggerType;
+import com.taobao.zeus.model.ZeusFollow;
 import com.taobao.zeus.schedule.mvc.JobFailListener.ChainException;
 import com.taobao.zeus.store.FollowManager;
 import com.taobao.zeus.store.FollowManagerOld;
@@ -28,6 +29,7 @@ public abstract class AbstractZeusAlarm implements ZeusAlarm{
 	@Autowired
 	@Qualifier("groupManagerOld")
 	protected GroupManagerOld groupManagerOld;
+/*	
 	@Override
 	public void alarm(String historyId, String title, String content,ChainException chain)
 			throws Exception {
@@ -66,7 +68,71 @@ public abstract class AbstractZeusAlarm implements ZeusAlarm{
 		}
 		alarm(jobId, result, title, content);
 	}
-
+*/
+	@Override
+	public void alarm(String historyId, String title, String content,ChainException chain)
+			throws Exception {
+		JobHistory history=jobHistoryManager.findJobHistory(historyId);
+		TriggerType type=history.getTriggerType();
+		//获得action_id
+		String jobId=history.getJobId();
+		//获得job_id
+		String tojobId=history.getToJobId();
+		List<String> users=new ArrayList<String>();
+		if(type==TriggerType.SCHEDULE){
+			List<ZeusFollow> zeusFollowers = followManagerOld.findAllFollowers(tojobId);
+			List<ZeusFollow> importantContacts = new ArrayList<ZeusFollow>();
+			List<ZeusFollow> otherFollowers = new ArrayList<ZeusFollow>();
+			for(ZeusFollow zf : zeusFollowers){
+				if (zf.isImportant() && ZeusFollow.JobType.equals(zf.getType())) {
+					importantContacts.add(zf);
+				}else {
+					otherFollowers.add(zf);
+				}
+			}
+			String owner = groupManagerOld.getJobDescriptor(tojobId).getX().getOwner();
+			
+			//首先添加重要联系人，然后是job本身的owner，最后是关注者。
+			for(ZeusFollow person : importantContacts){
+				if (!users.contains(person.getUid())) {
+					users.add(person.getUid());
+				}
+			}
+			if (!users.contains(owner)) {
+				users.add(owner);
+			}
+			for (ZeusFollow other : otherFollowers) {
+				if (!users.contains(other.getUid())) {
+					users.add(other.getUid());
+				}
+			}
+		}else{
+			users.add(groupManagerOld.getJobDescriptor(tojobId).getX().getOwner());
+			if(history.getOperator()!=null){
+				if(!users.contains(history.getOperator())){
+					users.add(history.getOperator());
+				}
+			}
+		}
+		List<String> result=new ArrayList<String>();
+		if(chain==null){
+			result=users;
+		}else{
+			for(String uid:users){
+				Integer count=chain.getUserCountMap().get(uid);
+				if(count==null){
+					count=1;
+					chain.getUserCountMap().put(uid, count);
+				}
+				if(count<20){//一个job失败，最多发给同一个人20个报警
+					chain.getUserCountMap().put(uid, ++count);
+					result.add(uid);
+				}
+			}
+		}
+		alarm(jobId, result, title, content);
+	}
+	
 	@Override
 	public void alarm(String historyId, String title, String content)
 			throws Exception {

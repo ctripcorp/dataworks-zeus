@@ -33,6 +33,7 @@ public class AdminConfigWindow extends Window{
 	private GroupPresenter groupPresenter;
 	private List<ZUser> admins=new ArrayList<ZUser>();
 	private List<ZUser> allUsers=new ArrayList<ZUser>();
+	private List<ZUser> allGroupAdminUsers = new ArrayList<ZUser>();
 	private HTMLPanel label=new HTMLPanel("");
 	private TextButton add=new TextButton("添加管理员", new SelectHandler() {
 		private ListStore<Map<String, String>> store=new ListStore<Map<String, String>>(new ModelKeyProvider<Map<String, String>>() {
@@ -82,6 +83,7 @@ public class AdminConfigWindow extends Window{
 			win.addButton(submit);
 		}
 		public void onSelect(SelectEvent event) {
+			store.clear();
 			for(ZUser s:allUsers){
 				Map<String, String> md=new HashMap<String, String>();
 				md.put("name", s.getName()+"("+s.getUid()+")");
@@ -142,6 +144,7 @@ public class AdminConfigWindow extends Window{
 			win.addButton(submit);
 		}
 		public void onSelect(SelectEvent event) {
+			store.clear();
 			for(ZUser u:admins){
 				Map<String, String> md=new HashMap<String, String>();
 				md.put("name", u.getName()+"("+u.getUid()+")");
@@ -198,11 +201,12 @@ public class AdminConfigWindow extends Window{
 			combo.setForceSelection(true);
 			combo.setTriggerAction(TriggerAction.QUERY);
 			combo.setStore(store);
-			win.add(new FieldLabel(combo, "选择用户"));
+			win.add(new FieldLabel(combo, "选择组管理员"));
 			win.addButton(submit);
 		}
 		public void onSelect(SelectEvent event) {
-			for(ZUser s:allUsers){
+			store.clear();
+			for(ZUser s : allGroupAdminUsers){
 				Map<String, String> md=new HashMap<String, String>();
 				md.put("name", s.getName()+"("+s.getUid()+")");
 				md.put("uid", s.getUid());
@@ -223,6 +227,11 @@ public class AdminConfigWindow extends Window{
 		RPCS.getUserService().getAllUsers(new AbstractAsyncCallback<List<ZUser>>() {
 			public void onSuccess(List<ZUser> result) {
 				allUsers=result;
+				for(ZUser u : result){
+					if (u.getUserType() == 0) {
+						allGroupAdminUsers.add(u);
+					}
+				}
 			}
 		});
 		addHideHandler(new HideHandler() {

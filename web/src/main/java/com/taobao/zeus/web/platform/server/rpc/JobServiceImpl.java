@@ -61,6 +61,7 @@ import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
 import com.taobao.zeus.web.platform.client.util.GwtException;
 import com.taobao.zeus.web.platform.client.util.ZUser;
+import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 import com.taobao.zeus.web.platform.shared.rpc.JobService;
 
 public class JobServiceImpl implements JobService {
@@ -194,6 +195,7 @@ public class JobServiceImpl implements JobService {
 			}
 			jobModel.setFollows(followNames);
 		}
+		jobModel.setImportantContacts(getImportantContactUid(jobId));
 		List<String> ladmins = permissionManager.getJobAdmins(jobId);
 		List<String> admins = new ArrayList<String>();
 		for (String s : ladmins) {
@@ -204,6 +206,7 @@ public class JobServiceImpl implements JobService {
 			admins.add(name);
 		}
 		jobModel.setAdmins(admins);
+		
 
 		List<String> owners = new ArrayList<String>();
 		owners.add(jobBean.getJobDescriptor().getOwner());
@@ -497,7 +500,8 @@ public class JobServiceImpl implements JobService {
 		history.setJobId(jobId);
 		history.setToJobId(jobDescriptor.getToJobId());
 		history.setTriggerType(triggerType);
-		history.setOperator(LoginUser.getUser().getUid());
+//		history.setOperator(LoginUser.getUser().getUid());
+		history.setOperator(jobDescriptor.getOwner());
 		history.setIllustrate("触发人：" + LoginUser.getUser().getUid());
 		history.setStatus(Status.RUNNING);
 		history.setStatisEndTime(jobDescriptor.getStatisEndTime());
@@ -1019,13 +1023,77 @@ public class JobServiceImpl implements JobService {
 		return result;
 	}
 
-	public static void main(String[] args) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-		String actionTimeStr = "201411131356230000".substring(0,14);
-		Long actionTimeInt = Long.valueOf(actionTimeStr);
-		Long nowTimeInt = Long.valueOf(df.format(new Date()));
-		System.out.println(actionTimeInt);
-		System.out.println(nowTimeInt);
+
+	@Override
+	public void grantImportantContact(String jobId, String uid) throws GwtException {
+		if (permissionGroupManagerOld.hasJobPermission(LoginUser.getUser().getUid(), jobId)) {
+			followManagerOld.grantImportantContact(jobId, uid);
+		}else {
+			throw new GwtException("您无权进行操作!");
+		}
+	}
+
+	@Override
+	public void revokeImportantContact(String jobId, String uid) throws GwtException {
+		if (permissionGroupManagerOld.hasJobPermission(LoginUser.getUser().getUid(), jobId)) {
+			followManagerOld.revokeImportantContact(jobId, uid);
+		}else {
+			throw new GwtException("您无权进行操作!");
+		}
 		
+	}
+
+
+	public List<ZUser> getImportantContactList(List<ZeusFollow> jobFollowers) {
+		return getContactList(jobFollowers, true);
+	}
+
+	public List<ZUser> getNotImportantContactList(List<ZeusFollow> jobFollowers) {
+		return getContactList(jobFollowers, false);
+	}
+	
+	public List<ZUser> getContactList(List<ZeusFollow> jobFollowers, boolean isImportant){
+
+		List<String> uids = new ArrayList<String>();
+		List<ZUser> results = new ArrayList<ZUser>();
+		for(ZeusFollow zf : jobFollowers){
+			if (zf.isImportant() == isImportant) {
+				uids.add(zf.getUid());
+			}
+		}
+		List<ZeusUser> users = userManager.findListByUid(uids);
+		for(ZeusUser user : users){
+			ZUser tmp = new ZUser();
+			tmp.setName(user.getName());
+			tmp.setUid(user.getUid());
+			results.add(tmp);
+		}
+		return results;
+	}
+	@Override
+	public List<ZUserContactTuple> getAllContactList(String jobId){
+		List<ZeusFollow> jobFollowers = followManagerOld.findJobFollowers(jobId);
+		List<ZUser> importantContactList = getImportantContactList(jobFollowers);
+		List<ZUser> notImportantContactList = getNotImportantContactList(jobFollowers);
+		List<ZUserContactTuple> results = new ArrayList<ZUserContactTuple>();
+		for(ZUser u : importantContactList){
+			ZUserContactTuple tmp = new ZUserContactTuple(u, true);
+			results.add(tmp);
+		}
+		for(ZUser u : notImportantContactList){
+			ZUserContactTuple tmp = new ZUserContactTuple(u, false);
+			results.add(tmp);
+		}
+		return results;
+	}
+	
+	public List<String> getImportantContactUid(String jobId){
+		List<ZeusFollow> jobFollowers = followManagerOld.findJobFollowers(jobId);
+		List<ZUser> contactList = getContactList(jobFollowers, true);
+		List<String> uidList = new ArrayList<String>();
+		for(ZUser u : contactList){
+			uidList.add(u.getUid());
+		}
+		return uidList;
 	}
 }

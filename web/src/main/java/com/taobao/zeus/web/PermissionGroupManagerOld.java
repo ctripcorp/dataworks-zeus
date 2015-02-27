@@ -22,6 +22,7 @@ import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobBeanOld;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.UserManager;
+import com.taobao.zeus.store.mysql.MysqlFollowManagerOld;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.store.mysql.persistence.Worker;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
@@ -240,6 +241,13 @@ public class PermissionGroupManagerOld implements GroupManagerOld{
 	}
 	@Override
 	public void grantGroupOwner(String granter, String uid, String groupId) throws ZeusException{
+		ZeusUser nextUser = userManager.findByUidFilter(uid);
+		if (nextUser.getUserType() != 0) {
+			throw new ZeusException("请转给组管理员！");
+		}
+		if (nextUser.getIsEffective() != 1) {
+			throw new ZeusException("请转给有效用户");
+		}
 		GroupBeanOld gb=groupManager.getUpstreamGroupBean(groupId);
 		List<String> owners=new ArrayList<String>();
 		while(gb!=null){
@@ -256,6 +264,13 @@ public class PermissionGroupManagerOld implements GroupManagerOld{
 	}
 	@Override
 	public void grantJobOwner(String granter, String uid, String jobId) throws ZeusException{
+		ZeusUser nextUser = userManager.findByUidFilter(uid);
+		if (nextUser.getUserType() != 0) {
+			throw new ZeusException("请转给组管理员！");
+		}
+		if (nextUser.getIsEffective() != 1) {
+			throw new ZeusException("请转给有效用户");
+		}
 		JobBeanOld jb=groupManager.getUpstreamJobBean(jobId);
 		List<String> owners=new ArrayList<String>();
 		owners.add(jb.getJobDescriptor().getOwner());
@@ -357,21 +372,19 @@ public class PermissionGroupManagerOld implements GroupManagerOld{
 	
 	@Override
 	public List<JobPersistenceOld> getAllJobs() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
 	public List<String> getAllDependencied(String jobID) {
-		// TODO Auto-generated method stub
 		return groupManager.getAllDependencied(jobID);
 	}
 	@Override
 	public List<String> getAllDependencies(String jobID) {
-		// TODO Auto-generated method stub
 		return groupManager.getAllDependencies(jobID);
 	}
 	@Override
 	public void updateActionList(JobDescriptorOld job) {
 		groupManager.updateActionList(job);
 	}
+	
 }

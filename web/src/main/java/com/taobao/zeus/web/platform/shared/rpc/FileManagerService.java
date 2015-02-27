@@ -23,4 +23,6 @@ public interface FileManagerService extends RemoteService{
 	void moveFile(String sourceId,String targetId);
 	
 	List<FileModel> getCommonFiles(FileModel fm);
+	
+	public FileModel getHomeFile(String id);
 }

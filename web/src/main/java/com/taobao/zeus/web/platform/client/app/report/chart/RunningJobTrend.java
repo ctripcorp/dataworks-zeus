@@ -79,7 +79,7 @@ public class RunningJobTrend implements IsWidget{
 					chart.setChartTitleText("运行任务趋势图");
 					chart.setColumnPlotOptions(new ColumnPlotOptions()
 						.setPointPadding(0.2).setBorderWidth(0))
-					.setLegend(new Legend()
+						.setLegend(new Legend()
 						.setLayout(Legend.Layout.VERTICAL)
 						.setAlign(Legend.Align.LEFT)
 						.setVerticalAlign(VerticalAlign.TOP)
@@ -87,17 +87,17 @@ public class RunningJobTrend implements IsWidget{
 						.setY(70)
 						.setFloating(true)
 						.setBackgroundColor("#FFFFFF")
-						.setShadow(true))
-					.setToolTip(new ToolTip()
+						.setShadow(true)).setColors("#3399ff","#ff6600")	//"#4572A7","#AA4643"
+						.setToolTip(new ToolTip()
 						.setFormatter(new ToolTipFormatter() {
 							@Override
 							public String format(ToolTipData toolTipData) {
-								return toolTipData.getYAsLong()+"";
+								return toolTipData.getSeriesName()+": "+toolTipData.getYAsLong()+"";
 							}
 						}));
 					
 					chart.getXAxis().setCategories(categories);
-					chart.getYAxis().setAxisTitleText("数量");
+					chart.getYAxis().setAxisTitleText("任务数量");
 					chart.addSeries(chart.createSeries().setName("成功的任务")
 							.setPoints(successNum));
 					chart.addSeries(chart.createSeries().setName("失败的任务")

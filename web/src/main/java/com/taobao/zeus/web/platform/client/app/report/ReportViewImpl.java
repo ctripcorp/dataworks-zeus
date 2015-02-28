@@ -73,7 +73,7 @@ public class ReportViewImpl implements ReportView{
 		tg.add(ownerTrend);
 		allBtnContainer.add(runningTrend,vBoxData);
 		allBtnContainer.add(ownerTrend,vBoxData);
-		allContainer.setWestWidget(allBtnContainer,new BorderLayoutData(300));
+		allContainer.setWestWidget(allBtnContainer,new BorderLayoutData(200));
 		allContainer.setCenterWidget(allChartContainer);
 		panel.add(allContainer, new TabItemConfig("统计报表", false));
 		

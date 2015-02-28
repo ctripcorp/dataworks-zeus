@@ -57,7 +57,7 @@ public class OwnerJobTrend implements IsWidget{
 					chart.setChartTitleText(format.format(date.getValue())+"责任人失败任务统计图");
 					chart.setColumnPlotOptions(new ColumnPlotOptions()
 						.setPointPadding(0.2).setBorderWidth(0))
-					.setLegend(new Legend()
+						.setLegend(new Legend()
 						.setLayout(Legend.Layout.VERTICAL)
 						.setAlign(Legend.Align.LEFT)
 						.setVerticalAlign(VerticalAlign.TOP)
@@ -65,8 +65,8 @@ public class OwnerJobTrend implements IsWidget{
 						.setY(70)
 						.setFloating(true)
 						.setBackgroundColor("#FFFFFF")
-						.setShadow(true))
-					.setToolTip(new ToolTip()
+						.setShadow(true)).setColors("#3399ff","#ff6600")	//"#4572A7","#AA4643"
+						.setToolTip(new ToolTip()
 						.setFormatter(new ToolTipFormatter() {
 							public String format(ToolTipData toolTipData) {
 								int index=0;

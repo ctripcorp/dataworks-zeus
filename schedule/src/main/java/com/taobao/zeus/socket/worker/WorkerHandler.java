@@ -104,6 +104,7 @@ public class WorkerHandler extends SimpleChannelUpstreamHandler{
 			context.getManualRunnings().get(historyId).getJobContext().getJobHistory().getLog().appendZeus("worker与master断开连接，worker主动取消该任务");
 			context.getClientWorker().cancelManualJob(historyId);
 		}
+		SocketLog.info("job cancel successfully");
 		this.context.setServerChannel(null);
 	}
 	private List<ResponseListener> listeners=new CopyOnWriteArrayList<ResponseListener>();

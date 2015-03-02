@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
+import org.apache.hadoop.hive.ql.parse.HiveParser.stringLiteralSequence_return;
 import org.json.Test;
 
 import com.google.gwt.core.shared.GWT;
@@ -22,12 +23,14 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
 import com.google.gwt.user.client.Window;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.Style.Side;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
@@ -59,6 +62,7 @@ import com.taobao.zeus.web.platform.client.module.jobdisplay.job.ProcesserType.H
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.ProcesserType.ZooKeeperP;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.processer.ZKProcesserWindow;
 import com.taobao.zeus.web.platform.client.module.jobmanager.CheckableJobTree;
+import com.taobao.zeus.web.platform.client.module.jobmanager.DependencyConfigWindow;
 import com.taobao.zeus.web.platform.client.module.jobmanager.GroupJobTreeModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.event.TreeNodeChangeEvent;
@@ -96,6 +100,51 @@ public class CardEditJob extends CenterTemplate implements
 					}).show();
 		}
 	});
+	
+//	private TextButton copyJobDependences = new TextButton("复制依赖",new SelectHandler(){
+//		@Override
+//		public void onSelect(SelectEvent event) {
+//			final CheckableJobTree tree = new CheckableJobTree();
+//			tree.getTree().setCheckable(false);
+//			tree.getTree().getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+//			tree.setCheckableJobTreeHeadingText("复制另一个任务的依赖到本任务");
+//			tree.setSelectHandler(new SelectHandler() {
+//				
+//				@Override
+//				public void onSelect(SelectEvent event) {
+//					GroupJobTreeModel job = tree.getTree()
+//							.getSelectionModel()
+//							.getSelectedItem();
+//					if (job != null) {
+//						if (job.isGroup()) {
+//							new AlertMessageBox("错误","不能选择组").show();
+//						} else {
+//							RPCS.getJobService().getJobDependencies(job.getId(), new AbstractAsyncCallback<List<String>>() {
+//
+//								@Override
+//								public void onSuccess(List<String> result) {
+//									String depsStr = "";
+//									for (String dep : result) {
+//											depsStr += dep + ",";
+//									}
+//									if (depsStr.endsWith(",")) {
+//										depsStr = depsStr.substring(0,
+//												depsStr.length() - 1);
+//									}
+//									baseDepJobs.setValue(depsStr.toString(), true);
+//									baseDepJobs.validate();
+//								}
+//							});
+//						}
+//					}
+//					
+//				}
+//			});
+//			tree.show();
+//		};
+//		
+//	});
+	
 
 	// 更新任务时，保存更新
 	private TextButton save = new TextButton("保存", new SelectHandler() {
@@ -303,6 +352,7 @@ public class CardEditJob extends CenterTemplate implements
 		 */
 		addButton(upload);
 		addButton(save);
+	//	addButton(copyJobDependences);
 	}
 
 	/*
@@ -609,6 +659,7 @@ public class CardEditJob extends CenterTemplate implements
 								offWapper.hide();
 								cycleWapper.hide();
 								hostField.show();
+	//							copyJobDependences.hide();
 							}
 							if (event.getValue().equals(JobModel.DEPEND_JOB)) {
 								cronWapper.hide();
@@ -620,6 +671,7 @@ public class CardEditJob extends CenterTemplate implements
 								depJobsWapper.show();
 								baseDepJobs.setAllowBlank(false);
 								hostField.show();
+	//							copyJobDependences.show();
 							}
 							if (event.getValue().equals(JobModel.CYCLE_JOB)) {
 								cronWapper.hide();
@@ -702,33 +754,98 @@ public class CardEditJob extends CenterTemplate implements
 			baseDepJobs.addHandler(new ClickHandler() {
 				@Override
 				public void onClick(final ClickEvent event) {
-					final CheckableJobTree tree = new CheckableJobTree();
-					tree.setSelectHandler(new SelectHandler() {
-						@Override
-						public void onSelect(final SelectEvent event) {
-							List<GroupJobTreeModel> list = tree.getTree()
-									.getCheckedSelection();// .getSelectionModel().getSelectedItems();
-							String result = "";
-							for (GroupJobTreeModel m : list) {
-								if (m.isJob()) {
-									result += m.getId() + ",";
+//					final CheckableJobTree tree = new CheckableJobTree();
+//					tree.setSelectHandler(new SelectHandler() {
+//						@Override
+//						public void onSelect(final SelectEvent event) {
+//							List<GroupJobTreeModel> list = tree.getTree()
+//									.getCheckedSelection();// .getSelectionModel().getSelectedItems();
+//							String result = "";
+//							for (GroupJobTreeModel m : list) {
+//								if (m.isJob()) {
+//									result += m.getId() + ",";
+//								}
+//							}
+//							if (result.endsWith(",")) {
+//								result = result.substring(0,
+//										result.length() - 1);
+//							}
+//							baseDepJobs.setValue(result.toString(), true);
+//							baseDepJobs.validate();
+//						}
+//					});
+//					tree.show();
+//					tree.refresh(new Callback() {
+//						@Override
+//						public void callback() {
+//							tree.init(baseDepJobs.getValue());
+//						}
+//					});
+					final DependencyConfigWindow config = new DependencyConfigWindow();
+					config.getCheckablePanel().setSelectHandler(
+							new SelectHandler() {
+								@Override
+								public void onSelect(final SelectEvent event) {
+									List<GroupJobTreeModel> list = config.getCheckablePanel().getTree()
+											.getCheckedSelection();// .getSelectionModel().getSelectedItems();
+									String result = "";
+									for (GroupJobTreeModel m : list) {
+										if (m.isJob()) {
+											result += m.getId() + ",";
+										}
+									}
+									if (result.endsWith(",")) {
+										result = result.substring(0,
+												result.length() - 1);
+									}
+									baseDepJobs.setValue(result.toString(), true);
+									baseDepJobs.validate();
+									config.hide();
 								}
-							}
-							if (result.endsWith(",")) {
-								result = result.substring(0,
-										result.length() - 1);
-							}
-							baseDepJobs.setValue(result.toString(), true);
-							baseDepJobs.validate();
-						}
-					});
-					tree.show();
-					tree.refresh(new Callback() {
-						@Override
-						public void callback() {
-							tree.init(baseDepJobs.getValue());
-						}
-					});
+							});
+					config.getCheckablePanel().refresh(
+							new Callback() {
+								@Override
+								public void callback() {
+									config.getCheckablePanel().init(baseDepJobs.getValue());
+								}
+							});
+					
+					config.getCopyPanel().setSelectHandler(
+							new SelectHandler() {
+								
+								@Override
+								public void onSelect(SelectEvent event) {
+									GroupJobTreeModel job = config.getCopyPanel().getTree()
+											.getSelectionModel()
+											.getSelectedItem();
+									if (job != null) {
+										if (job.isGroup()) {
+											new AlertMessageBox("错误","不能选择组").show();
+										} else {
+											RPCS.getJobService().getJobDependencies(job.getId(), new AbstractAsyncCallback<List<String>>() {
+				
+												@Override
+												public void onSuccess(List<String> result) {
+													String depsStr = "";
+													for (String dep : result) {
+															depsStr += dep + ",";
+													}
+													if (depsStr.endsWith(",")) {
+														depsStr = depsStr.substring(0,
+																depsStr.length() - 1);
+													}
+													baseDepJobs.setValue(depsStr.toString(), true);
+													baseDepJobs.validate();
+													config.hide();
+												}
+											});
+										}
+									}
+									
+								}
+							});
+					config.show();
 				}
 			}, ClickEvent.getType());
 			ListStore<Map<String, String>> cycleStore = new ListStore<Map<String, String>>(

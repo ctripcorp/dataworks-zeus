@@ -78,5 +78,7 @@ public interface JobServiceAsync {
 	void getAllContactList(String jobId,
 			AsyncCallback<List<ZUserContactTuple>> callback);
 
+	void getJobDependencies(String jobId, AsyncCallback<List<String>> callback);
+
 
 }

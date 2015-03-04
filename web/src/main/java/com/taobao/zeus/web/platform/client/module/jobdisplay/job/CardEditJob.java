@@ -101,49 +101,6 @@ public class CardEditJob extends CenterTemplate implements
 		}
 	});
 	
-//	private TextButton copyJobDependences = new TextButton("复制依赖",new SelectHandler(){
-//		@Override
-//		public void onSelect(SelectEvent event) {
-//			final CheckableJobTree tree = new CheckableJobTree();
-//			tree.getTree().setCheckable(false);
-//			tree.getTree().getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-//			tree.setCheckableJobTreeHeadingText("复制另一个任务的依赖到本任务");
-//			tree.setSelectHandler(new SelectHandler() {
-//				
-//				@Override
-//				public void onSelect(SelectEvent event) {
-//					GroupJobTreeModel job = tree.getTree()
-//							.getSelectionModel()
-//							.getSelectedItem();
-//					if (job != null) {
-//						if (job.isGroup()) {
-//							new AlertMessageBox("错误","不能选择组").show();
-//						} else {
-//							RPCS.getJobService().getJobDependencies(job.getId(), new AbstractAsyncCallback<List<String>>() {
-//
-//								@Override
-//								public void onSuccess(List<String> result) {
-//									String depsStr = "";
-//									for (String dep : result) {
-//											depsStr += dep + ",";
-//									}
-//									if (depsStr.endsWith(",")) {
-//										depsStr = depsStr.substring(0,
-//												depsStr.length() - 1);
-//									}
-//									baseDepJobs.setValue(depsStr.toString(), true);
-//									baseDepJobs.validate();
-//								}
-//							});
-//						}
-//					}
-//					
-//				}
-//			});
-//			tree.show();
-//		};
-//		
-//	});
 	
 
 	// 更新任务时，保存更新
@@ -352,7 +309,6 @@ public class CardEditJob extends CenterTemplate implements
 		 */
 		addButton(upload);
 		addButton(save);
-	//	addButton(copyJobDependences);
 	}
 
 	/*
@@ -659,7 +615,6 @@ public class CardEditJob extends CenterTemplate implements
 								offWapper.hide();
 								cycleWapper.hide();
 								hostField.show();
-	//							copyJobDependences.hide();
 							}
 							if (event.getValue().equals(JobModel.DEPEND_JOB)) {
 								cronWapper.hide();
@@ -671,7 +626,6 @@ public class CardEditJob extends CenterTemplate implements
 								depJobsWapper.show();
 								baseDepJobs.setAllowBlank(false);
 								hostField.show();
-	//							copyJobDependences.show();
 							}
 							if (event.getValue().equals(JobModel.CYCLE_JOB)) {
 								cronWapper.hide();
@@ -781,7 +735,7 @@ public class CardEditJob extends CenterTemplate implements
 //							tree.init(baseDepJobs.getValue());
 //						}
 //					});
-					final DependencyConfigWindow config = new DependencyConfigWindow();
+					final DependencyConfigWindow config = new DependencyConfigWindow(presenter.getJobModel().getId());
 					config.getCheckablePanel().setSelectHandler(
 							new SelectHandler() {
 								@Override
@@ -810,7 +764,6 @@ public class CardEditJob extends CenterTemplate implements
 									config.getCheckablePanel().init(baseDepJobs.getValue());
 								}
 							});
-					
 					config.getCopyPanel().setSelectHandler(
 							new SelectHandler() {
 								

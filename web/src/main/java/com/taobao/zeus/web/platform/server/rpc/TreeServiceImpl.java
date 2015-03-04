@@ -16,9 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.taobao.zeus.model.JobDescriptorOld.JobScheduleTypeOld;
 import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.model.ZeusFollow;
-import com.taobao.zeus.store.FollowManager;
 import com.taobao.zeus.store.FollowManagerOld;
 import com.taobao.zeus.store.GroupBeanOld;
 import com.taobao.zeus.store.JobBeanOld;
@@ -289,6 +289,22 @@ public class TreeServiceImpl implements TreeService{
 			log.error("getDependerTreeJson",e);
 			throw new RuntimeException(e.getMessage());
 		}
+	}
+	@Override
+	public GroupJobTreeModel getTreeDataOfOtherDependentJob(String jobId) {
+		GroupBeanOld rootGroup = readOnlyGroupManager
+				.getGlobeGroupBeanForTreeDisplay(true);
+		Map<String, JobBeanOld> allJobs = rootGroup.getAllSubJobBeans();
+		for (String key : allJobs.keySet()) {
+			JobBeanOld bean = allJobs.get(key);
+			if (!JobScheduleTypeOld.Dependent.equals(bean.getJobDescriptor().getScheduleType()) ) {
+				bean.getGroupBean().getJobBeans().remove(key);
+			}
+			if (bean.getJobDescriptor().getId().equals(jobId)) {
+				bean.getGroupBean().getJobBeans().remove(key);
+			}
+		}
+		return getTreeData(rootGroup);
 	}
 	
 }

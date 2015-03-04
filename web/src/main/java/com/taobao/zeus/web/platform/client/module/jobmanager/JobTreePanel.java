@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.hadoop.hive.ql.parse.HiveParser.booleanValue_return;
+
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.util.Margins;
@@ -27,7 +29,18 @@ import com.taobao.zeus.web.platform.client.util.RPCS;
 import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 
 public class JobTreePanel extends ContentPanel{
-	public JobTreePanel(){
+	
+	private String jobId; 
+	private boolean hasData;
+	private boolean showAll;
+	
+	public JobTreePanel(boolean showAll){
+		this.hasData = false;
+		this.showAll = showAll;
+		Init();
+	}
+	
+	private void Init() {
 		add(getLayoutContainer());
 		
 		store=new TreeStore<GroupJobTreeModel>(TreeKeyProviderTool.getModelKeyProvider());
@@ -175,7 +188,6 @@ public class JobTreePanel extends ContentPanel{
 				}
 			}
 		}));
-		refresh();
 	}
 
 	private boolean hasComma(String s){
@@ -215,7 +227,23 @@ public class JobTreePanel extends ContentPanel{
 		refresh(null);
 	}
 	public void refresh(final Callback callback){
-		RPCS.getTreeService().getTreeData(new AbstractAsyncCallback<GroupJobTreeModel>() {
+			RPCS.getTreeService().getTreeData(new AbstractAsyncCallback<GroupJobTreeModel>() {
+				@Override
+				public void onSuccess(GroupJobTreeModel result) {
+					for(GroupJobTreeModel m:store.getRootItems()){
+						store.remove(m);
+					}
+					parser(store, result);
+					tree.setExpanded(result, true);
+					if(callback!=null){
+						callback.callback();
+					}
+				}
+			});
+	}
+	public void loadDataOfOtherDependentJob(String jobId){
+		hasData = true;
+		RPCS.getTreeService().getTreeDataOfOtherDependentJob(jobId, new AbstractAsyncCallback<GroupJobTreeModel>() {
 			@Override
 			public void onSuccess(GroupJobTreeModel result) {
 				for(GroupJobTreeModel m:store.getRootItems()){
@@ -223,12 +251,8 @@ public class JobTreePanel extends ContentPanel{
 				}
 				parser(store, result);
 				tree.setExpanded(result, true);
-				if(callback!=null){
-					callback.callback();
-				}
 			}
 		});
-		
 	}
 	public void init(String curValue){
 		tree.getSelectionModel().deselectAll();
@@ -252,5 +276,25 @@ public class JobTreePanel extends ContentPanel{
 			}
 			filter.setText(filterText.toString());
 		}
+	}
+
+	public String getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
+
+	public boolean isHasData() {
+		return hasData;
+	}
+
+	public boolean isShowAll() {
+		return showAll;
+	}
+
+	public void setShowAll(boolean showAll) {
+		this.showAll = showAll;
 	}
 }

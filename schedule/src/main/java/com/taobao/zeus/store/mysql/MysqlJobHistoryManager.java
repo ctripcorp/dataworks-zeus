@@ -99,7 +99,7 @@ public class MysqlJobHistoryManager extends HibernateDaoSupport implements JobHi
 
 	@Override
 	public int pagingTotal(String jobId) {
-		Number number=(Number) getHibernateTemplate().find("select count(*) from com.taobao.zeus.store.mysql.persistence.JobHistoryPersistence where jobId="+jobId)
+		Number number=(Number) getHibernateTemplate().find("select count(*) from com.taobao.zeus.store.mysql.persistence.JobHistoryPersistence where toJobId="+jobId)
 		.iterator().next();
 		return number.intValue();
 	}

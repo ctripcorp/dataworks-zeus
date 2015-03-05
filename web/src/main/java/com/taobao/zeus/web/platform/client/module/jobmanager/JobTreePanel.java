@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.hadoop.hive.ql.parse.HiveParser.booleanValue_return;
-
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.util.Margins;
@@ -32,11 +30,9 @@ public class JobTreePanel extends ContentPanel{
 	
 	private String jobId; 
 	private boolean hasData;
-	private boolean showAll;
 	
-	public JobTreePanel(boolean showAll){
+	public JobTreePanel(){
 		this.hasData = false;
-		this.showAll = showAll;
 		Init();
 	}
 	
@@ -288,13 +284,5 @@ public class JobTreePanel extends ContentPanel{
 
 	public boolean isHasData() {
 		return hasData;
-	}
-
-	public boolean isShowAll() {
-		return showAll;
-	}
-
-	public void setShowAll(boolean showAll) {
-		this.showAll = showAll;
 	}
 }

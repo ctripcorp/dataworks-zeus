@@ -7,6 +7,7 @@ import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.Window;
+import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 
 public class DependencyConfigWindow extends Window{
 	
@@ -29,15 +30,15 @@ public class DependencyConfigWindow extends Window{
 	        	Widget selectedItem = event.getSelectedItem();
 	        	if (selectedItem instanceof JobTreePanel) {
 					JobTreePanel panel = (JobTreePanel)selectedItem;
-					if (!panel.isHasData() && !panel.isShowAll()) {
-						panel.loadDataOfOtherDependentJob(jobId);
+					if (panel==copyPanel && !panel.isHasData()) {
+						copyPanel.loadDataOfOtherDependentJob(jobId);
 					}
 				}
 	        }
 	      });
-		checkablePanel = new JobTreePanel(true);
+		checkablePanel = new JobTreePanel();
 		checkablePanel.setHeadingText("选择依赖任务(可以多选)");
-		copyPanel = new JobTreePanel(false);
+		copyPanel = new JobTreePanel();
 		copyPanel.setHeadingText("复制其它依赖任务的依赖到本任务");
 		copyPanel.getTree().setCheckable(false);
 		copyPanel.getTree().getSelectionModel().setSelectionMode(SelectionMode.SINGLE);

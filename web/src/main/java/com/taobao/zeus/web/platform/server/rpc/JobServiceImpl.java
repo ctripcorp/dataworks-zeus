@@ -630,14 +630,12 @@ public class JobServiceImpl implements JobService {
 		Map<String, JobBean> map = gb.getAllSubJobBeans();
 		List<Tuple<JobDescriptor, JobStatus>> allJobs = new ArrayList<Tuple<JobDescriptor, JobStatus>>();
 		if (startDate != null && endDate !=null) {
-			Date today = new Date();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 			Integer startInt = Integer.parseInt(dateFormat.format(startDate));
 			Integer endInt = Integer.parseInt(dateFormat.format(endDate)) + 1;
 			for (String key : map.keySet()) {
 				Integer subkeyInt = Integer.parseInt(key.substring(0, 8));
 				if (subkeyInt < endInt && subkeyInt >= startInt) {
-					JobStatus status = map.get(key).getJobStatus();
 					Tuple<JobDescriptor, JobStatus> tuple = new Tuple<JobDescriptor, JobStatus>(
 							map.get(key).getJobDescriptor(), map.get(key)
 									.getJobStatus());
@@ -666,6 +664,13 @@ public class JobServiceImpl implements JobService {
 			List<String> jobIds = new ArrayList<String>();
 			for (Tuple<JobDescriptor, JobStatus> tuple : allJobs) {
 				jobIds.add(tuple.getX().getId());
+				if (tuple.getX().getDependencies()!=null) {
+					for (String deps : tuple.getX().getDependencies()) {
+						if (!jobIds.contains(deps)) {
+							jobIds.add(deps);
+						}
+					}
+				}
 			}
 			Map<String, JobHistory> jobHisMap = jobHistoryManager
 					.findLastHistoryByList(jobIds);

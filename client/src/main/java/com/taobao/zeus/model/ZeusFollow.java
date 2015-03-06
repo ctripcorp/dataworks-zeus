@@ -28,7 +28,7 @@ public class ZeusFollow {
 	private String targetId;
 	
 	/**
-	 * false表示不是第一联系人，true表示是第一联系人
+	 * false表示不是重要联系人，true表示是重要联系人
 	 */
 	private boolean important;
 

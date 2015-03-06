@@ -148,4 +148,6 @@ public interface JobService extends RemoteService {
 	void revokeImportantContact(String jobId, String uid)  throws GwtException;
 	
 	List<ZUserContactTuple> getAllContactList(String jobId);
+	
+	List<String> getJobDependencies(String jobId) throws GwtException;
 }

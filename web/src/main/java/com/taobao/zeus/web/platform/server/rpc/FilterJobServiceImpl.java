@@ -172,5 +172,11 @@ public class FilterJobServiceImpl implements JobService{
 		return jobService.getAllContactList(jobId);
 	}
 
+	@Override
+	public List<String> getJobDependencies(String jobId) throws GwtException {
+		return jobService.getJobDependencies(jobId);
+	}
+
+
 
 }

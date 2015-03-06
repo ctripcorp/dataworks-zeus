@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -12,8 +11,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import net.sf.json.JSONObject;
 
@@ -37,18 +36,16 @@ import com.taobao.zeus.model.ZeusFollow;
 import com.taobao.zeus.model.processer.Processer;
 import com.taobao.zeus.socket.protocol.Protocol.ExecuteKind;
 import com.taobao.zeus.socket.worker.ClientWorker;
-import com.taobao.zeus.store.FollowManager;
 import com.taobao.zeus.store.FollowManagerOld;
-import com.taobao.zeus.store.GroupBeanOld;
 import com.taobao.zeus.store.GroupBean;
+import com.taobao.zeus.store.GroupBeanOld;
 import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.JobBeanOld;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.UserManager;
-import com.taobao.zeus.store.mysql.ReadOnlyGroupManagerOld;
 import com.taobao.zeus.store.mysql.ReadOnlyGroupManager;
-import com.taobao.zeus.store.mysql.persistence.JobPersistence;
+import com.taobao.zeus.store.mysql.ReadOnlyGroupManagerOld;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.store.mysql.tool.ProcesserUtil;
 import com.taobao.zeus.util.DateUtil;
@@ -633,14 +630,12 @@ public class JobServiceImpl implements JobService {
 		Map<String, JobBean> map = gb.getAllSubJobBeans();
 		List<Tuple<JobDescriptor, JobStatus>> allJobs = new ArrayList<Tuple<JobDescriptor, JobStatus>>();
 		if (startDate != null && endDate !=null) {
-			Date today = new Date();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 			Integer startInt = Integer.parseInt(dateFormat.format(startDate));
 			Integer endInt = Integer.parseInt(dateFormat.format(endDate)) + 1;
 			for (String key : map.keySet()) {
 				Integer subkeyInt = Integer.parseInt(key.substring(0, 8));
 				if (subkeyInt < endInt && subkeyInt >= startInt) {
-					JobStatus status = map.get(key).getJobStatus();
 					Tuple<JobDescriptor, JobStatus> tuple = new Tuple<JobDescriptor, JobStatus>(
 							map.get(key).getJobDescriptor(), map.get(key)
 									.getJobStatus());
@@ -669,6 +664,13 @@ public class JobServiceImpl implements JobService {
 			List<String> jobIds = new ArrayList<String>();
 			for (Tuple<JobDescriptor, JobStatus> tuple : allJobs) {
 				jobIds.add(tuple.getX().getId());
+				if (tuple.getX().getDependencies()!=null) {
+					for (String deps : tuple.getX().getDependencies()) {
+						if (!jobIds.contains(deps)) {
+							jobIds.add(deps);
+						}
+					}
+				}
 			}
 			Map<String, JobHistory> jobHisMap = jobHistoryManager
 					.findLastHistoryByList(jobIds);
@@ -1070,6 +1072,7 @@ public class JobServiceImpl implements JobService {
 		}
 		return results;
 	}
+	
 	@Override
 	public List<ZUserContactTuple> getAllContactList(String jobId){
 		List<ZeusFollow> jobFollowers = followManagerOld.findJobFollowers(jobId);
@@ -1096,4 +1099,12 @@ public class JobServiceImpl implements JobService {
 		}
 		return uidList;
 	}
+
+	@Override
+	public List<String> getJobDependencies(String jobId) throws GwtException {
+		JobModel job = getUpstreamJob(jobId);
+		List<String> dependencies = job.getDependencies();
+		return dependencies;
+	}
+
 }

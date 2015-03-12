@@ -110,6 +110,17 @@ public class JobPersistenceOld implements Serializable {
 	@Column(name="host")
 	private String host;
 	
+	@Column(name="worker_group_id")
+	private int workerGroupId;
+	
+	public int getWorkerGroupId() {
+		return workerGroupId;
+	}
+
+	public void setWorkerGroupId(int workerGroupId) {
+		this.workerGroupId = workerGroupId;
+	}
+
 	public String getConfigs() {
 		return configs;
 	}

@@ -1,35 +1,31 @@
 package com.taobao.zeus.web.platform.client.module.jobdisplay.job;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
-import org.apache.hadoop.hive.ql.parse.HiveParser.stringLiteralSequence_return;
-import org.json.Test;
-
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.editor.client.Editor;
-import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
-import com.sencha.gxt.core.client.Style.SelectionMode;
-import com.sencha.gxt.core.client.Style.Side;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.Store;
+import com.sencha.gxt.data.shared.loader.LoadResultListStoreBinding;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
+import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
@@ -38,37 +34,28 @@ import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.Hor
 import com.sencha.gxt.widget.core.client.container.MarginData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
-import com.sencha.gxt.widget.core.client.event.BeforeSelectEvent;
-import com.sencha.gxt.widget.core.client.event.BeforeSelectEvent.BeforeSelectHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
-import com.sencha.gxt.widget.core.client.form.NumberField;
-import com.sencha.gxt.widget.core.client.form.Validator;
-import com.sencha.gxt.widget.core.client.form.NumberPropertyEditor.IntegerPropertyEditor;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.form.validator.RegExValidator;
-import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
-import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror;
 import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror.CodeMirrorConfig;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.CenterTemplate;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.FormatUtil;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.FileUploadWidget.UploadCallback;
-import com.taobao.zeus.web.platform.client.module.jobdisplay.job.ProcesserType.HiveP;
-import com.taobao.zeus.web.platform.client.module.jobdisplay.job.ProcesserType.ZooKeeperP;
-import com.taobao.zeus.web.platform.client.module.jobdisplay.job.processer.ZKProcesserWindow;
-import com.taobao.zeus.web.platform.client.module.jobmanager.CheckableJobTree;
 import com.taobao.zeus.web.platform.client.module.jobmanager.DependencyConfigWindow;
 import com.taobao.zeus.web.platform.client.module.jobmanager.GroupJobTreeModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
+import com.taobao.zeus.web.platform.client.module.jobmanager.WorkerGroupWindow;
 import com.taobao.zeus.web.platform.client.module.jobmanager.event.TreeNodeChangeEvent;
 import com.taobao.zeus.web.platform.client.util.Callback;
 import com.taobao.zeus.web.platform.client.util.RPCS;
 import com.taobao.zeus.web.platform.client.util.Refreshable;
+import com.taobao.zeus.web.platform.client.util.WorkerGroupModel;
 import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 
 /**
@@ -123,7 +110,7 @@ public class CardEditJob extends CenterTemplate implements
 			model.setDefaultTZ(tzField.getValue());
 			model.setOffRaw(offField.getValue());
 			model.setJobScheduleType(baseScheduleType.getValue());
-			model.setHost(hostField.getValue());
+//			model.setHost(hostField.getValue());
 			if (baseScheduleType.getValue().equals(JobModel.DEPEND_JOB)
 					|| baseScheduleType.getValue().equals(JobModel.CYCLE_JOB)) {
 				String depJobStr = baseDepJobs.getValue();
@@ -178,6 +165,12 @@ public class CardEditJob extends CenterTemplate implements
 			}else {
 				model.getLocalProperties().remove(CardInfo.ENCRYPTION);
 			}
+			if (workerGroup.getCurrentValue()!=null && workerGroup.getCurrentValue().trim().length() !=0 ) {
+				model.setWorkerGroupId(Integer.parseInt(workerGroup.getCurrentValue()));
+			}else {
+				model.setWorkerGroupId(1);
+			}
+			
 			// Hive处理器配置
 			/*
 			 * if (notNullOrEmpty(outputTableField.getValue()) ||
@@ -278,7 +271,8 @@ public class CardEditJob extends CenterTemplate implements
 	private TextField offField;
 	private FieldLabel cycleWapper;
 	private ComboBox<Map<String, String>> jobCycle;
-	private TextField hostField;
+//	private TextField hostField;
+	private TextField workerGroup;
 	private TextField maxTimeField;
 
 	// private ZKProcesserWindow zkWindow = new ZKProcesserWindow(zk);
@@ -396,8 +390,9 @@ public class CardEditJob extends CenterTemplate implements
 			depcode = depcode.substring(0, depcode.length() - 1);
 		}
 		baseDepJobs.setValue(depcode);
-		hostField.setValue(t.getHost());
-
+//		hostField.setValue(t.getHost());
+		workerGroup.setValue(String.valueOf(t.getWorkerGroupId()));
+		
 		String cycle = t.getAllProperties().get(CardInfo.DEPENDENCY_CYCLE);
 		if (cycle == null) {
 			baseDepCycle.setValue(baseDepCycle.getStore().get(0), true);
@@ -571,8 +566,32 @@ public class CardEditJob extends CenterTemplate implements
 			baseDesc = new TextArea();
 			baseDesc.setWidth(150);
 			baseDesc.setHeight(36);
-			hostField = new TextField();
-			hostField.setWidth(150);
+//			hostField = new TextField();
+//			hostField.setWidth(150);
+
+			workerGroup = new TextField();
+			workerGroup.setWidth(150);
+			workerGroup.setReadOnly(true);
+			workerGroup.addHandler(new ClickHandler(){
+
+				@Override
+				public void onClick(ClickEvent event) {
+					final WorkerGroupWindow chdwnd = new WorkerGroupWindow();
+					chdwnd.setSelectHandler(new SelectHandler() {
+						
+						@Override
+						public void onSelect(SelectEvent event) {
+							if (chdwnd.getGrid().getSelectionModel()!=null) {
+								String id = chdwnd.getGrid().getSelectionModel().getSelectedItem().getId();
+								workerGroup.setValue(id);
+							}
+							chdwnd.hide();
+						}
+					});
+					chdwnd.show();
+				}
+			},  ClickEvent.getType());
+		
 			maxTimeField = new TextField();
 			maxTimeField.setWidth(150);
 			maxTimeField.addValidator(new RegExValidator(CardInfo.POSITIVE_INTEGER, "请输入正整数"));
@@ -614,7 +633,8 @@ public class CardEditJob extends CenterTemplate implements
 								tzWapper.hide();
 								offWapper.hide();
 								cycleWapper.hide();
-								hostField.show();
+//								hostField.show();
+								workerGroup.show();
 							}
 							if (event.getValue().equals(JobModel.DEPEND_JOB)) {
 								cronWapper.hide();
@@ -625,7 +645,8 @@ public class CardEditJob extends CenterTemplate implements
 								depCycleWapper.show();
 								depJobsWapper.show();
 								baseDepJobs.setAllowBlank(false);
-								hostField.show();
+//								hostField.show();
+								workerGroup.show();
 							}
 							if (event.getValue().equals(JobModel.CYCLE_JOB)) {
 								cronWapper.hide();
@@ -636,7 +657,8 @@ public class CardEditJob extends CenterTemplate implements
 								baseCron.setAllowBlank(true);
 								depJobsWapper.show();
 								baseDepJobs.setAllowBlank(true);
-								hostField.show();
+//								hostField.show();
+								workerGroup.show();
 							}
 						}
 					});
@@ -996,7 +1018,7 @@ public class CardEditJob extends CenterTemplate implements
 			rightContainer.add(depJobsWapper, new VerticalLayoutData(1, -1));
 			rightContainer.add(depCycleWapper, new VerticalLayoutData(1, -1));
 			rightContainer.add(offWapper, new VerticalLayoutData(1, -1));
-			rightContainer.add(new FieldLabel(hostField, "Host"),
+			rightContainer.add(new FieldLabel(workerGroup, "worker组id"),
 					new VerticalLayoutData(1, -1));
 			rightContainer.add(isEncryptionWapper,
 					new VerticalLayoutData(1, -1));

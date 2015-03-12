@@ -44,8 +44,10 @@ import com.taobao.zeus.store.JobBeanOld;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.UserManager;
+import com.taobao.zeus.store.WorkerManager;
 import com.taobao.zeus.store.mysql.ReadOnlyGroupManager;
 import com.taobao.zeus.store.mysql.ReadOnlyGroupManagerOld;
+import com.taobao.zeus.store.mysql.persistence.WorkerGroupPersistence;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.store.mysql.tool.ProcesserUtil;
 import com.taobao.zeus.util.DateUtil;
@@ -57,6 +59,7 @@ import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
 import com.taobao.zeus.web.platform.client.util.GwtException;
+import com.taobao.zeus.web.platform.client.util.WorkerGroupModel;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 import com.taobao.zeus.web.platform.shared.rpc.JobService;
@@ -81,7 +84,8 @@ public class JobServiceImpl implements JobService {
 	private PermissionManager permissionManager;
 	@Autowired
 	private ClientWorker worker;
-
+	@Autowired
+	private WorkerManager workerManager;
 	@Override
 	public JobModel createJob(String jobName, String parentGroupId,
 			String jobType) throws GwtException {
@@ -276,6 +280,7 @@ public class JobServiceImpl implements JobService {
 		jobModel.setOffRaw(jobBean.getJobDescriptor().getOffRaw());
 		jobModel.setJobCycle(jobBean.getJobDescriptor().getCycle());
 		jobModel.setHost(jobBean.getJobDescriptor().getHost());
+		jobModel.setWorkerGroupId(jobBean.getJobDescriptor().getWorkerGroupId());
 		return jobModel;
 	}
 
@@ -320,6 +325,7 @@ public class JobServiceImpl implements JobService {
 		jd.setOffRaw(jobModel.getOffRaw());
 		jd.setCycle(jobModel.getJobCycle());
 		jd.setHost(jobModel.getHost());
+		jd.setWorkerGroupId(jobModel.getWorkerGroupId());
 		try {
 			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
 					jd);
@@ -503,7 +509,8 @@ public class JobServiceImpl implements JobService {
 		history.setStatus(Status.RUNNING);
 		history.setStatisEndTime(jobDescriptor.getStatisEndTime());
 		history.setTimezone(jobDescriptor.getTimezone());
-		history.setExecuteHost(jobDescriptor.getHost());
+//		history.setExecuteHost(jobDescriptor.getHost());
+		history.setWorkerGroupId(jobDescriptor.getWorkerGroupId());
 		jobHistoryManager.addJobHistory(history);
 
 		try {
@@ -1107,4 +1114,37 @@ public class JobServiceImpl implements JobService {
 		return dependencies;
 	}
 
+
+	@Override
+	public PagingLoadResult<WorkerGroupModel> getWorkersGroup(PagingLoadConfig config) {
+		int start = config.getOffset();
+		int limit = config.getLimit();
+		List<WorkerGroupModel> tmp = new ArrayList<WorkerGroupModel>();
+		List<WorkerGroupPersistence> workerGroup = workerManager.getAllWorkerGroup();
+		for (WorkerGroupPersistence persist : workerGroup) {
+			if (persist.getEffective() == 1) {
+				WorkerGroupModel r = new WorkerGroupModel();
+				r.setId(String.valueOf(persist.getId()));
+				r.setName(persist.getName());
+				r.setDescription(persist.getDescription());
+				tmp.add(r);
+			}
+		}
+		Collections.sort(tmp,
+				new Comparator<WorkerGroupModel>() {
+					@Override
+					public int compare(WorkerGroupModel o1,
+							WorkerGroupModel o2) {
+						return Integer.valueOf(o1.getId()).compareTo(Integer.valueOf(o2.getId()));
+					}
+				});
+		int total = tmp.size();
+		if (start >= tmp.size()) {
+			start = 0;
+		}
+		tmp = tmp.subList(start,Math.min(start + limit, tmp.size()));
+		List<WorkerGroupModel> results = new ArrayList<WorkerGroupModel>();
+		results.addAll(tmp);
+		return new PagingLoadResultBean<WorkerGroupModel>(results,total,start);
+	}
 }

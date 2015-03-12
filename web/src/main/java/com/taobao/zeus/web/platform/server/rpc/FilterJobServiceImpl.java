@@ -7,11 +7,11 @@ import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.taobao.zeus.model.JobStatus.TriggerType;
 import com.taobao.zeus.util.Environment;
-import com.taobao.zeus.util.Tuple;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
 import com.taobao.zeus.web.platform.client.util.GwtException;
+import com.taobao.zeus.web.platform.client.util.WorkerGroupModel;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 import com.taobao.zeus.web.platform.shared.rpc.JobService;
@@ -175,6 +175,12 @@ public class FilterJobServiceImpl implements JobService{
 	@Override
 	public List<String> getJobDependencies(String jobId) throws GwtException {
 		return jobService.getJobDependencies(jobId);
+	}
+
+	@Override
+	public PagingLoadResult<WorkerGroupModel> getWorkersGroup(
+			PagingLoadConfig config) {
+		return jobService.getWorkersGroup(config);
 	}
 
 

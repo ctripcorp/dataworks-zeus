@@ -15,6 +15,7 @@ import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
 import com.taobao.zeus.web.platform.client.util.GwtException;
+import com.taobao.zeus.web.platform.client.util.WorkerGroupModel;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
@@ -150,4 +151,6 @@ public interface JobService extends RemoteService {
 	List<ZUserContactTuple> getAllContactList(String jobId);
 	
 	List<String> getJobDependencies(String jobId) throws GwtException;
+	
+	PagingLoadResult<WorkerGroupModel> getWorkersGroup(PagingLoadConfig config);
 }

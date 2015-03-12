@@ -38,13 +38,15 @@
 				<value>com.taobao.zeus.store.mysql.persistence.TimeZone</value>
 				<value>com.taobao.zeus.store.mysql.persistence.Worker</value>
 				<value>com.taobao.zeus.store.mysql.persistence.LogPersistence</value>
+				<value>com.taobao.zeus.store.mysql.persistence.WorkerGroupPersistence</value>
+				<value>com.taobao.zeus.store.mysql.persistence.WorkerRelationPersistence</value>
 			</list>
 		</property>
 	</bean>
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://192.168.83.243:3306/zeus_cyc2?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;autoReconnectForPools=true"/>
+		<property name="url" value="jdbc:mysql://192.168.83.243:3306/zeus_lky1?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;autoReconnectForPools=true"/>
 
 		<property name="username" value="biuser"/>
 		<property name="password" value="biuser"/>

@@ -311,6 +311,7 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 		persist.setStatus(orgPersist.getStatus());
 		persist.setReadyDependency(orgPersist.getReadyDependency());
 		persist.setHost(job.getHost());
+		persist.setWorkerGroupId(job.getWorkerGroupId());
 		// 如果是用户从界面上更新，开始时间、统计周期等均为空，用原来的值
 		if (job.getStartTime() == null || "".equals(job.getStartTime())) {
 			persist.setStartTime(orgPersist.getStartTime());

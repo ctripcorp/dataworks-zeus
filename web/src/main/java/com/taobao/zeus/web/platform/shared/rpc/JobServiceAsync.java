@@ -9,6 +9,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
+import com.taobao.zeus.web.platform.client.util.WorkerGroupModel;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 
@@ -80,5 +81,6 @@ public interface JobServiceAsync {
 
 	void getJobDependencies(String jobId, AsyncCallback<List<String>> callback);
 
-
+	void getWorkersGroup(PagingLoadConfig config,
+			AsyncCallback<PagingLoadResult<WorkerGroupModel>> callback);
 }

@@ -38,6 +38,7 @@ import com.sun.tools.javah.Mangle;
 import com.taobao.zeus.model.JobDescriptor;
 import com.taobao.zeus.model.JobStatus;
 import com.taobao.zeus.model.JobStatus.Status;
+import com.taobao.zeus.model.WorkerGroupCache;
 import com.taobao.zeus.mvc.Controller;
 import com.taobao.zeus.mvc.Dispatcher;
 import com.taobao.zeus.schedule.DistributeLocker;
@@ -53,6 +54,7 @@ import com.taobao.zeus.store.mysql.MysqlGroupManager;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceBackup;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
+import com.taobao.zeus.store.mysql.persistence.WorkerRelationPersistence;
 import com.taobao.zeus.store.mysql.tool.PersistenceAndBeanConvert;
 import com.taobao.zeus.util.Tuple;
 
@@ -272,91 +274,48 @@ public class ScheduleDump extends HttpServlet {
 								}
 							}
 							resp.getWriter().println("Action生成完毕！");
-						} else if ("clear".equals(op)) {
-//							int beforeAmount = -2;
-//							int cnt = 0;
-//							int sum = 0;
-//							Calendar cal = Calendar.getInstance();
-//							cal.add(Calendar.MONTH, beforeAmount);
-//							Date date = cal.getTime();
-//							SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-//							String dateStr = df.format(date) + "0000";
-//							Dispatcher dispatcher = context.getDispatcher();
-//							if (dispatcher != null) {
-//								List<Controller> controllers = dispatcher.getControllers();
-//								if (controllers != null&& controllers.size() > 0) {
-//									resp.getWriter().println("开始清理内存中controller id为" + dateStr + "以前的controller：");
-//									List<JobDescriptor> toBeTransferred = new ArrayList<JobDescriptor>();
-//									Iterator<Controller> iter = controllers.iterator();
-//									while (iter.hasNext()) {
-//										sum ++ ;
-//										JobController jobc = (JobController) iter.next();
-//										String jobId = jobc.getJobId();
-//										if (Long.parseLong(jobId) < Long.parseLong(dateStr)) {
-//											Tuple<JobDescriptor, JobStatus> tuple = context.getGroupManager().getJobDescriptor(jobId);
-//											JobStatus status = tuple.getY();
-//											if (!Status.RUNNING.equals(status.getStatus())) {
-//												toBeTransferred.add(tuple.getX());
-//												iter.remove();
-//												resp.getWriter().println("<br>成功清理了id为" + jobId + "的controller");
-//												cnt++;
-//											}
-//										}
-//									}
-//									resp.getWriter().println("<br>内存中共"+ sum +"个controllers，清理了两个月前" + cnt+ "个controllers");
-//									if (toBeTransferred != null && toBeTransferred.size() != 0) {
-//										int count = 0;
-//										MysqlGroupManager manager = ( MysqlGroupManager ) context.getApplicationContext ().getBean( "groupManager" );
-//										HibernateTemplate template = manager.getHibernateTemplate();
-//										SessionFactory factory = template.getSessionFactory();
-//										Session session = factory.openSession();
-//										Transaction tx = null;
-//										tx = session.beginTransaction();
-//										try {
-//											for (JobDescriptor job : toBeTransferred) {
-//												JobPersistence persist = PersistenceAndBeanConvert.convert(job);
-//												JobPersistenceBackup backup = new JobPersistenceBackup(persist);
-//												resp.getWriter().println("<br>开始备份数据库中id为" + job.getId() + "的action");
-//												session.delete(persist);
-//												session.saveOrUpdate(backup);
-//												count ++;
-//											}
-//											tx.commit();
-//											resp.getWriter().println("<br>完成数据库备份， 共备份" + count + "条数据");
-//										} catch (RuntimeException e) {
-//											try {
-//												tx.rollback();
-//											} catch (Exception e2) {
-//												resp.getWriter().println(e2.getMessage());
-//											}
-//											resp.getWriter().println(e.getMessage());
-//										} finally {
-//											try {
-//												if (session != null) {
-//													session.close();
-//												}
-//												if (factory != null) {
-//													factory.close();
-//												}
-//											} catch (Exception e3) {
-//												resp.getWriter().print(e3.getMessage());
-//											}
-//										}
-//									}
-//
-//								}
-//							}
-//
+						} else if ("workersgroup".equals(op)) {
+							List<WorkerGroupCache> allWorkerGroupInfomations = context.getWorkersGroupCache();
+							StringBuilder builder = new StringBuilder();
+							builder.append("<h5>缓存的wokers信息：</h5>");
+							builder.append("<table border=\"1\">");
+							builder.append("<tr>");
+							builder.append("<th>组id</th>");
+							builder.append("<th>名称</th>");
+							builder.append("<th>是否有效</th>");
+							builder.append("<th>描述</th>");
+							builder.append("<th>workers</th>");
+							builder.append("</tr>");
+							for (WorkerGroupCache info : allWorkerGroupInfomations) {
+								builder.append("<tr>");
+								builder.append("<td>" + info.getId() + "</td>");
+								builder.append("<td>" + info.getName() + "</td>");
+								if (info.isEffective()) {
+									builder.append("<td>有效</td>");
+								}else {
+									builder.append("<td>无效</td>");
+								}
+								builder.append("<td>" + info.getDescription() + "</td>");
+								builder.append("<td>");
+								for (String hosts : info.getHosts()) {
+									builder.append(hosts+"<br/>");
+								}
+								builder.append("</td>");
+								builder.append("</tr>");
+							}
+							builder.append("</table>");
+							resp.getWriter().println(builder.toString());
+						}else if ("refreshworkersgroup".equals(op)) {
+							context.refreshWorkerGroupCache();
+							resp.sendRedirect("dump.do?op=workersgroup");
 						}
-
 						else {
 							resp.getWriter().println("<a href='dump.do?op=jobstatus'>查看Job调度状态</a>&nbsp;&nbsp;&nbsp;&nbsp;");
-//							resp.getWriter().println("<a href='dump.do?op=clearschedule' >清理Job调度信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=workers'>查看master-worker 状态</a>&nbsp;&nbsp;&nbsp;&nbsp;");
-							resp.getWriter().println("<a href='dump.do?op=queue' >等待队列任务</a>&nbsp;&nbsp;&nbsp;&nbsp;");
-							resp.getWriter().println("<a href='dump.do?op=action' >生成Action版本</a>&nbsp;&nbsp;&nbsp;&nbsp;");
-							//FIXME 清理程序需要判断依赖关系，否则不能用
-//							resp.getWriter().println("<a href='dump.do?op=clear' >清理和备份两个月前job</a>");
+							resp.getWriter().println("<a href='dump.do?op=queue'>等待队列任务</a>&nbsp;&nbsp;&nbsp;&nbsp;");
+							resp.getWriter().println("<a href='dump.do?op=action'>生成Action版本</a>&nbsp;&nbsp;&nbsp;&nbsp;");
+							resp.getWriter().println("<a href='dump.do?op=workersgroup'>查看workers分组信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
+							resp.getWriter().println("<a href='dump.do?op=refreshworkersgroup'>刷新workers分组信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 						}
 					}
 

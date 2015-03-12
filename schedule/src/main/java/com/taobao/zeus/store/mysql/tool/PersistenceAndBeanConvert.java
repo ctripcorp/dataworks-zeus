@@ -166,6 +166,7 @@ public class PersistenceAndBeanConvert {
 		jd.setStatisStartTime(persist.getStatisStartTime()==null?null:DateUtil.date2String(persist.getStatisStartTime()));
 		jd.setStatisEndTime(persist.getStatisEndTime()==null?null:DateUtil.date2String(persist.getStatisEndTime()));
 		jd.setHost(persist.getHost());
+		jd.setWorkerGroupId(persist.getWorkerGroupId());
 		JobStatus status = new JobStatus();
 		status.setJobId(String.valueOf(persist.getId()));
 		status.setStatus(Status.parser(persist.getStatus()));
@@ -279,6 +280,7 @@ public class PersistenceAndBeanConvert {
 			Log.warn("parse str to date failed", e);
 		}
 		persist.setHost(jd.getHost());
+		persist.setWorkerGroupId(jd.getWorkerGroupId());
 		return persist;
 	}
 

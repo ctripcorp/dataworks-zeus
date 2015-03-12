@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +28,7 @@ import com.taobao.zeus.model.FileDescriptor;
 import com.taobao.zeus.model.JobDescriptor;
 import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.model.JobStatus;
+import com.taobao.zeus.model.WorkerGroupCache;
 import com.taobao.zeus.model.JobStatus.TriggerType;
 import com.taobao.zeus.model.Profile;
 import com.taobao.zeus.mvc.Controller;
@@ -56,6 +59,7 @@ import com.taobao.zeus.store.GroupBean;
 import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
+import com.taobao.zeus.store.mysql.persistence.WorkerRelationPersistence;
 import com.taobao.zeus.util.CronExpParser;
 import com.taobao.zeus.util.DateUtil;
 import com.taobao.zeus.util.Environment;
@@ -93,6 +97,16 @@ public class Master {
 		// 初始化
 		context.getDispatcher().forwardEvent(Events.Initialize);
 		context.setMaster(this);
+		//刷新worker分组关系列表
+		context.refreshWorkerGroupCache();
+		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
+			
+			@Override
+			public void run() {
+				context.refreshWorkerGroupCache();
+			}
+		}, 1, 1, TimeUnit.HOURS);
+		
 		//***************2014-09-15 定时扫描JOB表,生成action表********************
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
 			@Override
@@ -280,51 +294,92 @@ public class Master {
 		return selectWorker;
 	}
 
-	private MasterWorkerHolder getRunableWorker(String host) {
+//	private MasterWorkerHolder getRunableWorker(String host) {
+//		MasterWorkerHolder selectWorker = null;
+//		Float selectMemRate = null;
+//		if (host != null && !"".equals(host)) {
+//			boolean isWorkerHost = false;
+//			for (MasterWorkerHolder worker : context.getWorkers().values()) {
+//				if(worker != null){
+//					HeartBeatInfo heart = worker.getHeart();
+//					log.info("worker a : host :" + host + " heart :" + heart.memRate);
+//					if (heart != null && heart.memRate != null
+//							&& heart.memRate < 0.8 && host.equals(heart.host)) {
+//						isWorkerHost = true;
+//						if (selectWorker == null) {
+//							selectWorker = worker;
+//							selectMemRate = heart.memRate;
+//							log.info("worker b : host :" + host+ " heart :" + selectMemRate);
+//						} else if (selectMemRate > heart.memRate) {
+//							selectWorker = worker;
+//							selectMemRate = heart.memRate;
+//							log.info("worker c : host :" + host+ " heart :" + selectMemRate);
+//						}
+//					}
+//				}
+//			}
+//			if(!isWorkerHost){
+//				return this.getRunableWorker();
+//			}
+//			return selectWorker;
+//		}
+//
+//		else {
+//			return this.getRunableWorker();
+//		}
+//
+//	}
+	
+	private MasterWorkerHolder getRunableWorker(int workerGroupId) {
 		MasterWorkerHolder selectWorker = null;
 		Float selectMemRate = null;
-		if (host != null && !"".equals(host)) {
-			boolean isWorkerHost = false;
-			for (MasterWorkerHolder worker : context.getWorkers().values()) {
-				if(worker != null){
-					HeartBeatInfo heart = worker.getHeart();
-					log.info("worker a : host :" + host + " heart :" + heart.memRate);
-					if (heart != null && heart.memRate != null
-							&& heart.memRate < 0.8 && host.equals(heart.host)) {
-						isWorkerHost = true;
-						if (selectWorker == null) {
-							selectWorker = worker;
-							selectMemRate = heart.memRate;
-							log.info("worker b : host :" + host+ " heart :" + selectMemRate);
-						} else if (selectMemRate > heart.memRate) {
-							selectWorker = worker;
-							selectMemRate = heart.memRate;
-							log.info("worker c : host :" + host+ " heart :" + selectMemRate);
-						}
+		Set<String> workersGroup = getWorkersByGroupId(workerGroupId);
+		for (MasterWorkerHolder worker : context.getWorkers().values()) {
+			if (worker!=null && workersGroup.contains(worker.getHeart().host)) {
+				HeartBeatInfo heart = worker.getHeart();
+				if (heart != null && heart.memRate != null && heart.memRate < 0.8 ) {
+					if (selectWorker == null) {
+						selectWorker = worker;
+						selectMemRate = heart.memRate;
+						log.debug("worker b : host " + heart.host + ",heart "+ selectMemRate);
+					} else if (selectMemRate > heart.memRate) {
+						selectWorker = worker;
+						selectMemRate = heart.memRate;
+						log.debug("worker c : host " + heart.host + ",heart "+ selectMemRate);
 					}
 				}
 			}
-			if(!isWorkerHost){
-				return this.getRunableWorker();
-			}
-			return selectWorker;
 		}
-
-		else {
-			return this.getRunableWorker();
+		if (selectWorker != null) {
+			log.info("select worker: " + selectWorker.getHeart().host + ", for workerGroupId" + workerGroupId);
+		}else {
+			log.error("can not find proper workers");
 		}
-
+		return selectWorker;
 	}
-
-	//扫描可用的worker，给worker分配JOB任务
+	
+	private Set<String> getWorkersByGroupId(int workerGroupId){
+		Set<String> workers = new HashSet<String>();
+		for(WorkerGroupCache workergroup : context.getWorkersGroupCache()){
+			if (workergroup.getId() == workerGroupId ) {
+				for (String host : workergroup.getHosts()) {
+					workers.add(host);
+				}
+				break;
+			}
+		}
+		return workers;
+	}
+	
+ 	//扫描可用的worker，给worker分配JOB任务
 	private void scan() {
 
 		if (!context.getQueue().isEmpty()) {
 			log.info("schedule queue :" +context.getQueue().size());
 			final JobElement e = context.getQueue().poll();
 			log.info("priority level :"+e.getPriorityLevel()+"; JobID :"+e.getJobID());
-			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
-			log.info("schedule selectWorker :" +selectWorker+" host :"+e.getHost());
+			MasterWorkerHolder selectWorker = getRunableWorker(e.getWorkerGroupId());
+			log.info("WokerGroupId : "  + e.getWorkerGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
 			if (selectWorker == null) {
 				context.getQueue().offer(e);
 			} else {
@@ -336,8 +391,8 @@ public class Master {
 			log.info("manual queue :" +context.getManualQueue().size());
 			final JobElement e = context.getManualQueue().poll();
 			log.info("priority level: "+e.getPriorityLevel()+"; JobID:"+e.getJobID());
-			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
-			log.info("manual selectWorker :" +selectWorker+" host :"+e.getHost());
+			MasterWorkerHolder selectWorker = getRunableWorker(e.getWorkerGroupId());
+			log.info("WokerGroupId : "  + e.getWorkerGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
 			if (selectWorker == null) {
 				context.getManualQueue().offer(e);
 			} else {
@@ -349,8 +404,8 @@ public class Master {
 			log.info("debug queue :" +context.getDebugQueue().size() );
 			final JobElement e = context.getDebugQueue().poll();
 			log.info("priority level:null; JobID:"+e.getJobID());
-			MasterWorkerHolder selectWorker = getRunableWorker(e.getHost());
-			log.info("debug selectWorker :" +selectWorker+" host :"+e.getHost());
+			MasterWorkerHolder selectWorker = getRunableWorker(e.getWorkerGroupId());
+			log.info("WokerGroupId : "  + e.getWorkerGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
 			if (selectWorker == null) {
 				context.getDebugQueue().offer(e);
 			} else {
@@ -904,7 +959,7 @@ public class Master {
 		}catch(Exception ex){
 			priorityLevel = 3;
 		}
-		JobElement element = new JobElement(jobId, history.getExecuteHost(), priorityLevel);
+		JobElement element = new JobElement(jobId, history.getWorkerGroupId(), priorityLevel);
 		history.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
 		if (history.getTriggerType() == TriggerType.MANUAL_RECOVER) {
 			for (JobElement e : new ArrayList<JobElement>(context.getQueue())) {
@@ -992,6 +1047,7 @@ public class Master {
 							actionPer.setGroupId(jobDetail.getGroupId());
 							actionPer.setHistoryId(jobDetail.getHistoryId());
 							actionPer.setHost(jobDetail.getHost());
+							actionPer.setWorkerGroupId(jobDetail.getWorkerGroupId());
 							actionPer.setLastEndTime(jobDetail.getLastEndTime());
 							actionPer.setLastResult(jobDetail.getLastResult());
 							actionPer.setName(jobDetail.getName());
@@ -1277,6 +1333,7 @@ public class Master {
 									actionPer.setGroupId(jobDetail.getGroupId());
 									actionPer.setHistoryId(jobDetail.getHistoryId());
 									actionPer.setHost(jobDetail.getHost());
+									actionPer.setWorkerGroupId(jobDetail.getWorkerGroupId());
 									actionPer.setLastEndTime(jobDetail.getLastEndTime());
 									actionPer.setLastResult(jobDetail.getLastResult());
 									actionPer.setName(jobDetail.getName());

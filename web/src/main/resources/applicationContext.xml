@@ -98,6 +98,7 @@
 	<bean id="tableManager" class="com.taobao.zeus.store.CliTableManager" />
 	<bean id="reportManager" class="com.taobao.zeus.store.mysql.MysqlReportManager" />
 	<bean id="zeusLogManager" class="com.taobao.zeus.store.mysql.MysqlLogManager" />
+	<bean id="workerManager" class="com.taobao.zeus.store.mysql.MysqlWokerManager" />
 	<bean id="readOnlyGroupManager" class="com.taobao.zeus.store.mysql.ReadOnlyGroupManager" >
 		<property name="groupManager" ref="groupManager" />
 	</bean>

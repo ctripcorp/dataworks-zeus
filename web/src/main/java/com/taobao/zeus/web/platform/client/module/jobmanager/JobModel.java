@@ -44,6 +44,7 @@ public class JobModel implements Serializable {
 	private String offRaw;
 	private String jobCycle;
 	private String host;
+	private Integer workerGroupId;
 
 	public static final String MapReduce = "MapReduce程序";
 	public static final String SHELL = "shell 脚本";
@@ -88,6 +89,7 @@ public class JobModel implements Serializable {
 		model.setOffRaw(getOffRaw());
 		model.setJobCycle(getJobCycle());
 		model.setHost(getHost());
+		model.setWorkerGroupId(getWorkerGroupId());
 		return model;
 	}
 
@@ -360,5 +362,15 @@ public class JobModel implements Serializable {
 
 	public void setImportantContacts(List<String> importantContacts) {
 		this.importantContacts = importantContacts;
+	}
+
+
+	public Integer getWorkerGroupId() {
+		return workerGroupId;
+	}
+
+
+	public void setWorkerGroupId(Integer workerGroupId) {
+		this.workerGroupId = workerGroupId;
 	}
 }

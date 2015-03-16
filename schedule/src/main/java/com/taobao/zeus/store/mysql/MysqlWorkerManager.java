@@ -15,9 +15,8 @@ import com.taobao.zeus.store.WorkerManager;
 import com.taobao.zeus.store.mysql.persistence.WorkerGroupPersistence;
 import com.taobao.zeus.store.mysql.persistence.WorkerRelationPersistence;
 @SuppressWarnings("unchecked")
-public class MysqlWokerManager extends HibernateDaoSupport implements WorkerManager{
+public class MysqlWorkerManager extends HibernateDaoSupport implements WorkerManager{
 
-	@Override
 	public List<WorkerRelationPersistence> getAllWorkerRelations() {
 		return (List<WorkerRelationPersistence>)getHibernateTemplate().execute(new HibernateCallback() {
 
@@ -67,6 +66,11 @@ public class MysqlWokerManager extends HibernateDaoSupport implements WorkerMana
 			}
 			
 		});	
+	}
+
+	@Override
+	public WorkerGroupPersistence getWorkerGroupNameById(String workerGroupId) {
+		return (WorkerGroupPersistence) getHibernateTemplate().get(WorkerGroupPersistence.class, Integer.valueOf(workerGroupId));
 	}
 
 }

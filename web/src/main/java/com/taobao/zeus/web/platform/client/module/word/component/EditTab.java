@@ -16,7 +16,6 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.CloseEvent;
 import com.sencha.gxt.widget.core.client.event.CloseEvent.CloseHandler;
-import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.toolbar.FillToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.LabelToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
@@ -26,6 +25,8 @@ import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror.OnChangeLis
 import com.taobao.zeus.web.platform.client.module.filemanager.FileModel;
 import com.taobao.zeus.web.platform.client.module.word.WordPresenter;
 import com.taobao.zeus.web.platform.client.util.PlatformContext;
+import com.taobao.zeus.web.platform.client.util.RPCS;
+import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 import com.taobao.zeus.web.platform.client.util.async.PlatformAsyncCallback;
 
 public class EditTab extends BorderLayoutContainer {
@@ -76,9 +77,9 @@ public class EditTab extends BorderLayoutContainer {
 		bar.add(new LabelToolItem(" "));
 		workerGroupStatus = new Status(
 				GWT.<StatusAppearance> create(BlueBoxStatusAppearance.class));
-		workerGroupStatus.setText("运行worker组id： " + model.getWorkerGroupId());
-		workerGroupStatus.setWidth(150);
+		workerGroupStatus.setWidth(300);
 		bar.add(workerGroupStatus);
+		refreshWorkerGroupStatus(model.getWorkerGroupId());
 
 		codePanel.add(getCodeMirror(), new VerticalLayoutData(1, 1,
 				new Margins(5)));
@@ -186,8 +187,16 @@ public class EditTab extends BorderLayoutContainer {
 		return codePanel;
 	}
 
-	public void refreshWorkerGroupStatus(String id) {
-		workerGroupStatus.setText("运行worker组id： " + id);
+	public void refreshWorkerGroupStatus(final String id) {
+		RPCS.getJobService().getWorkersGroupNameById(id, new AbstractAsyncCallback<String>() {
+
+			@Override
+			public void onSuccess(String result) {
+				workerGroupStatus.setText("worker组id: " + id +", 组名: " + result);
+				
+			}
+		});
+		
 	}
 
 	public PlatformContext getContext() {

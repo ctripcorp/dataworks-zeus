@@ -86,4 +86,7 @@ public interface JobServiceAsync {
 
 	void syncScriptAndWorkerGroupId(String jobId, String script,
 			String workerGroupId, AsyncCallback<Void> callback);
+
+	void getWorkersGroupNameById(String workerGroupId,
+			AsyncCallback<String> callback);
 }

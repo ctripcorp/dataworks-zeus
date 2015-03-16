@@ -59,7 +59,6 @@ import com.taobao.zeus.store.GroupBean;
 import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
-import com.taobao.zeus.store.mysql.persistence.WorkerRelationPersistence;
 import com.taobao.zeus.util.CronExpParser;
 import com.taobao.zeus.util.DateUtil;
 import com.taobao.zeus.util.Environment;
@@ -104,6 +103,7 @@ public class Master {
 			@Override
 			public void run() {
 				context.refreshWorkerGroupCache();
+				log.info("refresh WorkerGroup Cache");
 			}
 		}, 1, 1, TimeUnit.HOURS);
 		

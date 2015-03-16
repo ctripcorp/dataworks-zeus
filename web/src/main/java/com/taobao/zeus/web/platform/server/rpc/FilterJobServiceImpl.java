@@ -189,6 +189,8 @@ public class FilterJobServiceImpl implements JobService{
 		jobService.syncScriptAndWorkerGroupId(jobId, script, workerGroupId);
 	}
 
-
-
+	@Override
+	public String getWorkersGroupNameById(String workerGroupId) {
+		return jobService.getWorkersGroupNameById(workerGroupId);
+	}
 }

@@ -1177,4 +1177,10 @@ public class JobServiceImpl implements JobService {
 		}
 		
 	}
+
+	@Override
+	public String getWorkersGroupNameById(String workerGroupId) {
+		String result = workerManager.getWorkerGroupNameById(workerGroupId).getName();
+		return result;
+	}
 }

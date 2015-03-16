@@ -153,12 +153,8 @@ public interface JobService extends RemoteService {
 	List<String> getJobDependencies(String jobId) throws GwtException;
 	
 	PagingLoadResult<WorkerGroupModel> getWorkersGroup(PagingLoadConfig config);
-	/**
-	 * 同步任务脚本
-	 * 给开发中心使用，方便开发中心直接同步脚本到调度中心
-	 * @param jobId
-	 * @param script
-	 * @throws GwtException
-	 */
+
 	void syncScriptAndWorkerGroupId(String jobId, String script, String workerGroupId) throws GwtException;
+	
+	String getWorkersGroupNameById(String workerGroupId);
 }

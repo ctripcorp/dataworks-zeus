@@ -4,20 +4,18 @@ import java.util.List;
 
 public class WorkerGroupCache {
 	
-	private int id;
+	private String id;
 	
 	private String name;
-	
-	private boolean effective;
 	
 	private String description;
 	
 	private List<String> hosts;
 	
-	public int getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getName() {
@@ -26,14 +24,6 @@ public class WorkerGroupCache {
 	
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	public boolean isEffective() {
-		return effective;
-	}
-	
-	public void setEffective(boolean effective) {
-		this.effective = effective;
 	}
 	
 	public String getDescription() {

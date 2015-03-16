@@ -16,7 +16,7 @@ public class WorkerRelationPersistence {
 	private String host;
 	
 	@Column(name = "worker_group_id", nullable = false)
-	private int workerGroupId;
+	private Integer workerGroupId;
 	
 	public Long getId() {
 		return id;
@@ -34,11 +34,11 @@ public class WorkerRelationPersistence {
 		this.host = host;
 	}
 
-	public int getWorkerGroupId() {
+	public Integer getWorkerGroupId() {
 		return workerGroupId;
 	}
 
-	public void setWorkerGroupId(int workerGroupId) {
+	public void setWorkerGroupId(Integer workerGroupId) {
 		this.workerGroupId = workerGroupId;
 	}
 	

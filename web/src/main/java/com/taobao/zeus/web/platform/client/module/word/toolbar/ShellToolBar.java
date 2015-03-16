@@ -1,13 +1,8 @@
 package com.taobao.zeus.web.platform.client.module.word.toolbar;
 
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.resources.client.ImageResource;
-import com.sencha.gxt.core.client.Style.LayoutRegion;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.messages.client.DefaultMessages;
 import com.sencha.gxt.widget.core.client.Dialog;
-import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
@@ -16,21 +11,17 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.menu.Menu;
-import com.sencha.gxt.widget.core.client.menu.MenuItem;
 import com.sencha.gxt.widget.core.client.toolbar.SeparatorToolItem;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror;
 import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror.OnChangeListener;
 import com.taobao.zeus.web.platform.client.module.filemanager.FileModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.CheckableJobTree;
 import com.taobao.zeus.web.platform.client.module.jobmanager.GroupJobTreeModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
-import com.taobao.zeus.web.platform.client.module.word.DataxWidget;
-import com.taobao.zeus.web.platform.client.module.word.DataxWidget.Callback;
 import com.taobao.zeus.web.platform.client.module.word.ShellWord;
 import com.taobao.zeus.web.platform.client.module.word.Word;
 import com.taobao.zeus.web.platform.client.module.word.component.EditTab;
-import com.taobao.zeus.web.platform.client.theme.ResourcesTool;
-import com.taobao.zeus.web.platform.client.util.GWTEnvironment;
 import com.taobao.zeus.web.platform.client.util.RPCS;
 import com.taobao.zeus.web.platform.client.util.ToolUtil;
 import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
@@ -51,6 +42,7 @@ public class ShellToolBar extends AbstractToolBar{
 		Menu menu=new Menu();
 		menu.add(upload);
 		menu.add(lingoes);
+		menu.add(workgroup);
 		extend.setMenu(menu);
 		add(extend);
 		add(new SeparatorToolItem());
@@ -98,6 +90,7 @@ public class ShellToolBar extends AbstractToolBar{
 			}
 			if(!exist){
 				final CheckableJobTree tree=new CheckableJobTree();
+				tree.setHeadingText("同步任务");
 				tree.getTree().setCheckable(false);
 				tree.getTree().getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 				tree.setSelectHandler(new SelectHandler() {
@@ -127,8 +120,9 @@ public class ShellToolBar extends AbstractToolBar{
 					sb.append("名称:"+result.getName()+"<br/>");
 					sb.append("所有人:"+result.getOwnerName()+"("+result.getOwner()+")<br/>");
 					sb.append("自动调度:"+(result.getAuto()?"开启":"关闭")+"<br/>");
+					sb.append("worker组id：" + (result.getWorkerGroupId()) + "<br/>");
 					sb.append("您确认要进行同步吗?");
-					ConfirmMessageBox confirm=new ConfirmMessageBox("同步脚本", sb.toString());
+					ConfirmMessageBox confirm=new ConfirmMessageBox("同步脚本和worker组id", sb.toString());
 					confirm.addHideHandler(new HideHandler() {
 						public void onHide(HideEvent event) {
 							Dialog dialog=(Dialog)event.getSource();
@@ -137,11 +131,20 @@ public class ShellToolBar extends AbstractToolBar{
 									shellWord.getEditTab().getCodeMirror().setValue("#sync["+shellWord.getFileModel().getId()+"->"
 											+jobId+"]\n"+shellWord.getEditTab().getNewContent());
 								}
-								RPCS.getJobService().syncScript(jobId, shellWord.getEditTab().getNewContent(), new AbstractAsyncCallback<Void>() {
-									public void onSuccess(Void result) {
-										Info.display("同步成功", "同步成功");
-									}
-								});
+								String workerGroupId = shellWord.getFileModel().getWorkerGroupId();
+								RPCS.getJobService().syncScriptAndWorkerGroupId(jobId, shellWord.getEditTab().getNewContent(), workerGroupId,
+									new AbstractAsyncCallback<Void>() {
+										@Override
+										public void onSuccess(
+												Void result) {
+											Info.display("同步成功","同步成功");
+										}
+									});
+//								RPCS.getJobService().syncScript(jobId, shellWord.getEditTab().getNewContent(), new AbstractAsyncCallback<Void>() {
+//									public void onSuccess(Void result) {
+//										Info.display("同步成功", "同步成功");
+//									}
+//								});
 							}
 						}
 					});

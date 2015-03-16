@@ -32,6 +32,8 @@ public class FilePersistence  implements Serializable{
 	private Date gmtCreate=new Date();
 	@Column(name="gmt_modified")
 	private Date gmtModified=new Date();
+	@Column(name="worker_group_id")
+	private Integer workerGroupId;
 
 	public Long getId() {
 		return id;
@@ -95,5 +97,13 @@ public class FilePersistence  implements Serializable{
 
 	public void setGmtModified(Date gmtModified) {
 		this.gmtModified = gmtModified;
+	}
+
+	public Integer getWorkerGroupId() {
+		return workerGroupId;
+	}
+
+	public void setWorkerGroupId(Integer workerGroupId) {
+		this.workerGroupId = workerGroupId;
 	}
 }

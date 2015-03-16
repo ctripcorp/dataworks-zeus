@@ -18,6 +18,7 @@ import com.taobao.zeus.socket.worker.ClientWorker;
 import com.taobao.zeus.store.DebugHistoryManager;
 import com.taobao.zeus.store.FileManager;
 import com.taobao.zeus.store.Super;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.web.LoginUser;
 import com.taobao.zeus.web.platform.client.module.word.model.DebugHistoryModel;
 import com.taobao.zeus.web.platform.client.util.GwtException;
@@ -34,7 +35,7 @@ public class JobDebugRpcImpl implements JobDebugService {
 	private static Logger log = LoggerFactory.getLogger(JobDebugRpcImpl.class);
 
 	@Override
-	public String debug(String fileId, String mode, String script)
+	public String debug(String fileId, String mode, String script, String workerGroupId)
 			throws GwtException {
 
 		String uid = LoginUser.getUser().getUid();
@@ -49,6 +50,12 @@ public class JobDebugRpcImpl implements JobDebugService {
 		history.setOwner(uid);
 		history.setJobRunType(JobRunType.parser(mode));
 		history.setScript(script);
+		if (workerGroupId == null) {
+			history.setWorkerGroupId(Environment.getDefaultWorkerGroupId());
+			log.info("using default workersgroup");
+		}else {
+			history.setWorkerGroupId(workerGroupId);
+		}
 		debugHistoryManager.addDebugHistory(history);
 
 		String debugId = history.getId();

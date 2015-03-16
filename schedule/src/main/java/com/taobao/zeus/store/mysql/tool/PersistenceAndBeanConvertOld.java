@@ -155,7 +155,7 @@ public class PersistenceAndBeanConvertOld {
 		jd.setStatisStartTime(persist.getStatisStartTime()==null?null:DateUtil.date2String(persist.getStatisStartTime()));
 		jd.setStatisEndTime(persist.getStatisEndTime()==null?null:DateUtil.date2String(persist.getStatisEndTime()));
 		jd.setHost(persist.getHost());
-		jd.setWorkerGroupId(persist.getWorkerGroupId());
+		jd.setWorkerGroupId(persist.getWorkerGroupId().toString());
 		JobStatus status = new JobStatus();
 		status.setJobId(String.valueOf(persist.getId()));
 		status.setStatus(Status.parser(persist.getStatus()));
@@ -268,7 +268,7 @@ public class PersistenceAndBeanConvertOld {
 			Log.warn("parse str to date failed", e);
 		}
 		persist.setHost(jd.getHost());
-		persist.setWorkerGroupId(jd.getWorkerGroupId());
+		persist.setWorkerGroupId(Integer.valueOf(jd.getWorkerGroupId()));
 		return persist;
 	}
 
@@ -371,6 +371,7 @@ public class PersistenceAndBeanConvertOld {
 		history.setStatisEndTime(persist.getStatisEndTime()==null?null:DateUtil.date2String(persist.getStatisEndTime()));
 		history.setTimezone(persist.getTimezone());
 		history.setCycle(persist.getCycle());
+		history.setWorkerGroupId(persist.getWorkerGroupId().toString());
 		return history;
 	}
 
@@ -411,7 +412,7 @@ public class PersistenceAndBeanConvertOld {
 				Log.warn("parse str to date failed", e);
 			}
 		}
-
+		persist.setWorkerGroupId(Integer.valueOf(history.getWorkerGroupId()));
 		return persist;
 	}
 

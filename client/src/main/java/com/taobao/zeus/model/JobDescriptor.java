@@ -47,7 +47,7 @@ public class JobDescriptor implements Serializable {
 	
 	private String host;
 	
-	private int workerGroupId;
+	private String workerGroupId;
 
 	public JobDescriptor getCopy() {
 		JobDescriptor jobDescriptor = new JobDescriptor();
@@ -346,11 +346,11 @@ public class JobDescriptor implements Serializable {
 		this.host = host;
 	}
 
-	public int getWorkerGroupId() {
+	public String getWorkerGroupId() {
 		return workerGroupId;
 	}
 
-	public void setWorkerGroupId(int workerGroupId) {
+	public void setWorkerGroupId(String workerGroupId) {
 		this.workerGroupId = workerGroupId;
 	}
 }

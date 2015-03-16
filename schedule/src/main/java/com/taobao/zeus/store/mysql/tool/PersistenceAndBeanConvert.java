@@ -166,7 +166,7 @@ public class PersistenceAndBeanConvert {
 		jd.setStatisStartTime(persist.getStatisStartTime()==null?null:DateUtil.date2String(persist.getStatisStartTime()));
 		jd.setStatisEndTime(persist.getStatisEndTime()==null?null:DateUtil.date2String(persist.getStatisEndTime()));
 		jd.setHost(persist.getHost());
-		jd.setWorkerGroupId(persist.getWorkerGroupId());
+		jd.setWorkerGroupId(persist.getWorkerGroupId().toString());
 		JobStatus status = new JobStatus();
 		status.setJobId(String.valueOf(persist.getId()));
 		status.setStatus(Status.parser(persist.getStatus()));
@@ -280,7 +280,7 @@ public class PersistenceAndBeanConvert {
 			Log.warn("parse str to date failed", e);
 		}
 		persist.setHost(jd.getHost());
-		persist.setWorkerGroupId(jd.getWorkerGroupId());
+		persist.setWorkerGroupId(Integer.valueOf(jd.getWorkerGroupId()));
 		return persist;
 	}
 
@@ -443,6 +443,9 @@ public class PersistenceAndBeanConvert {
 				.getParent().toString());
 		file.setGmtCreate(persistence.getGmtCreate());
 		file.setGmtModified(persistence.getGmtModified());
+		if (persistence.getWorkerGroupId() != null) {
+			file.setWorkerGroupId(String.valueOf(persistence.getWorkerGroupId()));
+		}
 		return file;
 	}
 
@@ -462,6 +465,9 @@ public class PersistenceAndBeanConvert {
 				: FilePersistence.FILE);
 		persistence.setGmtCreate(file.getGmtCreate());
 		persistence.setGmtModified(file.getGmtModified());
+		if (file.getWorkerGroupId() != null) {
+			persistence.setWorkerGroupId(Integer.valueOf(file.getWorkerGroupId()));
+		}
 		return persistence;
 	}
 
@@ -481,6 +487,7 @@ public class PersistenceAndBeanConvert {
 		debug.setJobRunType(JobRunType.parser(persistence.getRuntype()));
 		debug.setLog(persistence.getLog());
 		debug.setOwner(persistence.getOwner());
+		debug.setWorkerGroupId(persistence.getWorkerGroupId().toString());
 		return debug;
 	}
 
@@ -505,6 +512,7 @@ public class PersistenceAndBeanConvert {
 				.getJobRunType().toString());
 		persist.setLog(debug.getLog().getContent());
 		persist.setOwner(debug.getOwner() == null ? null : debug.getOwner());
+		persist.setWorkerGroupId(Integer.valueOf(debug.getWorkerGroupId()));
 		return persist;
 	}
 

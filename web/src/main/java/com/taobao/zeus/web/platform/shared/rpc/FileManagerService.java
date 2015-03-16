@@ -25,4 +25,6 @@ public interface FileManagerService extends RemoteService{
 	List<FileModel> getCommonFiles(FileModel fm);
 	
 	public FileModel getHomeFile(String id);
+
+	void updateWorkerGroupId(String fileId, String workerGroupId);
 }

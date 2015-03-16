@@ -183,6 +183,12 @@ public class FilterJobServiceImpl implements JobService{
 		return jobService.getWorkersGroup(config);
 	}
 
+	@Override
+	public void syncScriptAndWorkerGroupId(String jobId, String script,
+			String workerGroupId) throws GwtException {
+		jobService.syncScriptAndWorkerGroupId(jobId, script, workerGroupId);
+	}
+
 
 
 }

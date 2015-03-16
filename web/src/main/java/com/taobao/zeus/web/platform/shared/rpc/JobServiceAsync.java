@@ -83,4 +83,7 @@ public interface JobServiceAsync {
 
 	void getWorkersGroup(PagingLoadConfig config,
 			AsyncCallback<PagingLoadResult<WorkerGroupModel>> callback);
+
+	void syncScriptAndWorkerGroupId(String jobId, String script,
+			String workerGroupId, AsyncCallback<Void> callback);
 }

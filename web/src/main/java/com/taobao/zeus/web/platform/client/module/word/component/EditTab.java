@@ -16,6 +16,7 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.CloseEvent;
 import com.sencha.gxt.widget.core.client.event.CloseEvent.CloseHandler;
+import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.toolbar.FillToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.LabelToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
@@ -38,16 +39,15 @@ public class EditTab extends BorderLayoutContainer {
 
 	private Status status;
 	private Status charCount;
+	private Status workerGroupStatus;
 	private LogTabPanel logTabPanel = new LogTabPanel();
-
 	private VerticalLayoutContainer codePanel = new VerticalLayoutContainer();
 	private ContentPanel logPanel = new ContentPanel();
 
 	private String newContent;
 
 	private PlatformContext context;
-
-
+	
 	public EditTab(PlatformContext context, WordPresenter presenter,
 			final FileModel model) {
 		this.context = context;
@@ -71,12 +71,19 @@ public class EditTab extends BorderLayoutContainer {
 		status = new Status(
 				GWT.<StatusAppearance> create(BlueBoxStatusAppearance.class));
 		status.setText("已保存");
-		status.setWidth(150);
+		status.setWidth(100);
 		bar.add(status);
+		bar.add(new LabelToolItem(" "));
+		workerGroupStatus = new Status(
+				GWT.<StatusAppearance> create(BlueBoxStatusAppearance.class));
+		workerGroupStatus.setText("运行worker组id： " + model.getWorkerGroupId());
+		workerGroupStatus.setWidth(150);
+		bar.add(workerGroupStatus);
 
 		codePanel.add(getCodeMirror(), new VerticalLayoutData(1, 1,
 				new Margins(5)));
 		bar.setLayoutData(new VerticalLayoutData(1, -1));
+		
 		codePanel.add(bar);
 		setCenterWidget(codePanel, new MarginData(0, 0, 5, 0));
 
@@ -153,7 +160,7 @@ public class EditTab extends BorderLayoutContainer {
 				}
 			}
 			if (!newContent.equals(model.getContent())) {
-				context.getFileSystem().updateFileContent(model.getId(),
+				getContext().getFileSystem().updateFileContent(model.getId(),
 						newContent, new PlatformAsyncCallback<Void>() {
 							public void callback(Void t) {
 							}
@@ -177,5 +184,13 @@ public class EditTab extends BorderLayoutContainer {
 
 	public VerticalLayoutContainer getCodePanel() {
 		return codePanel;
+	}
+
+	public void refreshWorkerGroupStatus(String id) {
+		workerGroupStatus.setText("运行worker组id： " + id);
+	}
+
+	public PlatformContext getContext() {
+		return context;
 	}
 }

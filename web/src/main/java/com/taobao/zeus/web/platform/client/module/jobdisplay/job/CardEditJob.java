@@ -165,11 +165,8 @@ public class CardEditJob extends CenterTemplate implements
 			}else {
 				model.getLocalProperties().remove(CardInfo.ENCRYPTION);
 			}
-			if (workerGroup.getCurrentValue()!=null && workerGroup.getCurrentValue().trim().length() !=0 ) {
-				model.setWorkerGroupId(Integer.parseInt(workerGroup.getCurrentValue()));
-			}else {
-				model.setWorkerGroupId(1);
-			}
+			model.setWorkerGroupId(workerGroup.getCurrentValue());
+		
 			
 			// Hive处理器配置
 			/*

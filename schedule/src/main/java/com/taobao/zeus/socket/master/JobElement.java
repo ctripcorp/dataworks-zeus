@@ -4,7 +4,7 @@ public class JobElement {
 	private String jobID;
 //	private String host;
 	private int priorityLevel;
-	private int workerGroupId;
+	private String workerGroupId;
 
 	/**
 	 * @return
@@ -13,9 +13,9 @@ public class JobElement {
 
 	}
 
-	public JobElement(String jobID, String host) {
+	public JobElement(String jobID, String workerGroupId) {
 		this.jobID = jobID;
-//		this.host = host;
+		this.workerGroupId = workerGroupId;
 	}
 	
 //	public JobElement(String jobID, String host, int priorityLevel) {
@@ -24,7 +24,7 @@ public class JobElement {
 //		this.priorityLevel = priorityLevel;
 //	}
 	
-	public JobElement(String jobID, int workerGroupId, int priorityLevel) {
+	public JobElement(String jobID, String workerGroupId, int priorityLevel) {
 		this.jobID = jobID;
 		this.setWorkerGroupId(workerGroupId);
 		this.priorityLevel = priorityLevel;
@@ -59,11 +59,11 @@ public class JobElement {
 		return jobID + ":" + workerGroupId;
 	}
 
-	public int getWorkerGroupId() {
+	public String getWorkerGroupId() {
 		return workerGroupId;
 	}
 
-	public void setWorkerGroupId(int workerGroupId) {
+	public void setWorkerGroupId(String workerGroupId) {
 		this.workerGroupId = workerGroupId;
 	}
 }

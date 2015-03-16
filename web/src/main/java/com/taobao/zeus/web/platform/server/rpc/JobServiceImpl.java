@@ -51,6 +51,7 @@ import com.taobao.zeus.store.mysql.persistence.WorkerGroupPersistence;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.store.mysql.tool.ProcesserUtil;
 import com.taobao.zeus.util.DateUtil;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.Tuple;
 import com.taobao.zeus.web.LoginUser;
 import com.taobao.zeus.web.PermissionGroupManager;
@@ -325,7 +326,12 @@ public class JobServiceImpl implements JobService {
 		jd.setOffRaw(jobModel.getOffRaw());
 		jd.setCycle(jobModel.getJobCycle());
 		jd.setHost(jobModel.getHost());
-		jd.setWorkerGroupId(jobModel.getWorkerGroupId());
+		if (jobModel.getWorkerGroupId() == null) {
+			jd.setWorkerGroupId(Environment.getDefaultWorkerGroupId());
+			log.error("job id: " + jd.getId() + " is not setWorkerGroupId and using the default");
+		}else {
+			jd.setWorkerGroupId(jobModel.getWorkerGroupId());
+		}
 		try {
 			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
 					jd);
@@ -1146,5 +1152,29 @@ public class JobServiceImpl implements JobService {
 		List<WorkerGroupModel> results = new ArrayList<WorkerGroupModel>();
 		results.addAll(tmp);
 		return new PagingLoadResultBean<WorkerGroupModel>(results,total,start);
+	}
+
+	@Override
+	public void syncScriptAndWorkerGroupId(String jobId, String script,
+			String workerGroupId) throws GwtException {
+		JobDescriptorOld jd = permissionGroupManagerOld.getJobDescriptor(jobId)
+				.getX();
+		jd.setScript(script);
+		if (workerGroupId == null) {
+			jd.setWorkerGroupId(Environment.getDefaultWorkerGroupId());
+		}else {
+			jd.setWorkerGroupId(workerGroupId);
+		}
+		try {
+			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
+					jd);
+			permissionGroupManagerOld.updateActionList(jd);
+		} catch (ZeusException e) {
+			log.error("syncScript", e);
+			throw new GwtException(
+					"同步失败，可能是因为目标任务没有配置一些必填项。请去调度中心配置完整的必填项. cause:"
+							+ e.getMessage());
+		}
+		
 	}
 }

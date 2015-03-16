@@ -277,12 +277,11 @@ public class ScheduleDump extends HttpServlet {
 						} else if ("workersgroup".equals(op)) {
 							List<WorkerGroupCache> allWorkerGroupInfomations = context.getWorkersGroupCache();
 							StringBuilder builder = new StringBuilder();
-							builder.append("<h5>缓存的wokers信息：</h5>");
+							builder.append("<h3>wokers信息：</h3>");
 							builder.append("<table border=\"1\">");
 							builder.append("<tr>");
 							builder.append("<th>组id</th>");
 							builder.append("<th>名称</th>");
-							builder.append("<th>是否有效</th>");
 							builder.append("<th>描述</th>");
 							builder.append("<th>workers</th>");
 							builder.append("</tr>");
@@ -290,11 +289,6 @@ public class ScheduleDump extends HttpServlet {
 								builder.append("<tr>");
 								builder.append("<td>" + info.getId() + "</td>");
 								builder.append("<td>" + info.getName() + "</td>");
-								if (info.isEffective()) {
-									builder.append("<td>有效</td>");
-								}else {
-									builder.append("<td>无效</td>");
-								}
 								builder.append("<td>" + info.getDescription() + "</td>");
 								builder.append("<td>");
 								for (String hosts : info.getHosts()) {

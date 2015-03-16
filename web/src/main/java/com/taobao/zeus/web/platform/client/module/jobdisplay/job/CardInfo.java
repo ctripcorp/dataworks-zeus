@@ -255,7 +255,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		((Label)baseCron.getWidget()).setText(model.getCronExpression());
 		((Label)timezone.getWidget()).setText(model.getDefaultTZ());
 //		((Label)host.getWidget()).setText(model.getHost());
-		((Label)workerGroup.getWidget()).setText(String.valueOf(model.getWorkerGroupId()));
+		((Label)workerGroup.getWidget()).setText(model.getWorkerGroupId());
 		((Label)offRaw.getWidget()).setText(model.getOffRaw());
 		((Label)rollTime.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_TIMES));
 		if (model.getAllProperties().get(CardInfo.MAX_TIME) != null) {

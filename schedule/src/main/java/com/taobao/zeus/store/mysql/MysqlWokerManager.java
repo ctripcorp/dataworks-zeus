@@ -38,17 +38,15 @@ public class MysqlWokerManager extends HibernateDaoSupport implements WorkerMana
 		List<WorkerRelationPersistence> relations = getAllWorkerRelations();
 		for(WorkerGroupPersistence wg : workergroups){
 			WorkerGroupCache info = new WorkerGroupCache();
-			info.setId(wg.getId());
-			if (wg.getEffective() == 1) {
-				info.setEffective(true);
-			}else {
-				info.setEffective(false);
+			info.setId(wg.getId().toString());
+			if (wg.getEffective() == 0) {
+				continue;
 			}
 			info.setName(wg.getName());
 			info.setDescription(wg.getDescription());
 			List<String> hosts = new ArrayList<String>();
 			for(WorkerRelationPersistence r : relations){
-				if (wg.getId() == r.getWorkerGroupId()) {
+				if (wg.getId().equals(r.getWorkerGroupId())) {
 					hosts.add(r.getHost());
 				}
 			}

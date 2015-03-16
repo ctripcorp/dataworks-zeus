@@ -43,6 +43,9 @@ public class JobHistoryPersistence {
 	private Date statisEndTime;
 	@Column(name="timezone")
 	private String timezone;
+	@Column(name="worker_group_id")
+	private Integer workerGroupId;
+	
 	
 	@Column
 	private String cycle;
@@ -148,5 +151,11 @@ public class JobHistoryPersistence {
 	}
 	public void setCycle(String cycle) {
 		this.cycle = cycle;
+	}
+	public Integer getWorkerGroupId() {
+		return workerGroupId;
+	}
+	public void setWorkerGroupId(Integer workerGroupId) {
+		this.workerGroupId = workerGroupId;
 	}
 }

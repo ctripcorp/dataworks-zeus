@@ -2,8 +2,8 @@ package com.taobao.zeus.web.platform.client.util.filesystem;
 
 import com.google.gwt.core.shared.GWT;
 import com.taobao.zeus.web.platform.client.module.filemanager.FileModel;
-import com.taobao.zeus.web.platform.client.util.PlatformBus;
 import com.taobao.zeus.web.platform.client.util.PlatformContext;
+import com.taobao.zeus.web.platform.client.util.RPCS;
 import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 import com.taobao.zeus.web.platform.client.util.async.PlatformAsyncCallback;
 import com.taobao.zeus.web.platform.shared.rpc.FileManagerService;
@@ -84,6 +84,19 @@ public class FileSystem {
 	
 	public void moveFile(String sourceId,String targetId,final PlatformAsyncCallback<Void> callback){
 		fileManagerService.moveFile(sourceId, targetId, new AbstractAsyncCallback<Void>() {
+			public void onSuccess(Void arg0) {
+				if(callback!=null){
+					callback.callback(arg0);
+				}
+			}
+		});
+	}
+	
+	public void updateWorkerGroupId(String fileId, String workerGroupId,
+			final PlatformAsyncCallback<Void> callback){
+		RPCS.getFileManagerService().updateWorkerGroupId(fileId, workerGroupId, new AbstractAsyncCallback<Void>() {
+
+			@Override
 			public void onSuccess(Void arg0) {
 				if(callback!=null){
 					callback.callback(arg0);

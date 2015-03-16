@@ -330,7 +330,7 @@ public class Master {
 //
 //	}
 	
-	private MasterWorkerHolder getRunableWorker(int workerGroupId) {
+	private MasterWorkerHolder getRunableWorker(String workerGroupId) {
 		MasterWorkerHolder selectWorker = null;
 		Float selectMemRate = null;
 		Set<String> workersGroup = getWorkersByGroupId(workerGroupId);
@@ -341,11 +341,11 @@ public class Master {
 					if (selectWorker == null) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
-						log.debug("worker b : host " + heart.host + ",heart "+ selectMemRate);
+						log.info("worker b : host " + heart.host + ",heart "+ selectMemRate);
 					} else if (selectMemRate > heart.memRate) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
-						log.debug("worker c : host " + heart.host + ",heart "+ selectMemRate);
+						log.info("worker c : host " + heart.host + ",heart "+ selectMemRate);
 					}
 				}
 			}
@@ -358,10 +358,10 @@ public class Master {
 		return selectWorker;
 	}
 	
-	private Set<String> getWorkersByGroupId(int workerGroupId){
+	private Set<String> getWorkersByGroupId(String workerGroupId){
 		Set<String> workers = new HashSet<String>();
 		for(WorkerGroupCache workergroup : context.getWorkersGroupCache()){
-			if (workergroup.getId() == workerGroupId ) {
+			if (workergroup.getId().equals(workerGroupId) ) {
 				for (String host : workergroup.getHosts()) {
 					workers.add(host);
 				}
@@ -379,11 +379,12 @@ public class Master {
 			final JobElement e = context.getQueue().poll();
 			log.info("priority level :"+e.getPriorityLevel()+"; JobID :"+e.getJobID());
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getWorkerGroupId());
-			log.info("WokerGroupId : "  + e.getWorkerGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
 			if (selectWorker == null) {
 				context.getQueue().offer(e);
+				log.info("WokerGroupId : "  + e.getWorkerGroupId() + " is offered back to queue");
 			} else {
 				runScheduleJob(selectWorker, e.getJobID());
+				log.info("WokerGroupId : "  + e.getWorkerGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
 			}
 		}
 		
@@ -392,11 +393,13 @@ public class Master {
 			final JobElement e = context.getManualQueue().poll();
 			log.info("priority level: "+e.getPriorityLevel()+"; JobID:"+e.getJobID());
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getWorkerGroupId());
-			log.info("WokerGroupId : "  + e.getWorkerGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
+
 			if (selectWorker == null) {
 				context.getManualQueue().offer(e);
+				log.info("WokerGroupId : "  + e.getWorkerGroupId() + " is offered back to queue");
 			} else {
 				runManualJob(selectWorker, e.getJobID());
+				log.info("WokerGroupId : "  + e.getWorkerGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
 			}
 		}
 		
@@ -405,11 +408,12 @@ public class Master {
 			final JobElement e = context.getDebugQueue().poll();
 			log.info("priority level:null; JobID:"+e.getJobID());
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getWorkerGroupId());
-			log.info("WokerGroupId : "  + e.getWorkerGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
 			if (selectWorker == null) {
 				context.getDebugQueue().offer(e);
+				log.info("WokerGroupId : "  + e.getWorkerGroupId() + " is offered back to queue");
 			} else {
 				runDebugJob(selectWorker, e.getJobID());
+				log.info("WokerGroupId : "  + e.getWorkerGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
 			}
 		}
 		
@@ -934,7 +938,7 @@ public class Master {
 	}
 
 	public void debug(DebugHistory debug) {
-		JobElement element = new JobElement(debug.getId(), debug.getHost());
+		JobElement element = new JobElement(debug.getId(), debug.getWorkerGroupId());
 		debug.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
 		debug.setStartTime(new Date());
 		context.getDebugHistoryManager().updateDebugHistory(debug);

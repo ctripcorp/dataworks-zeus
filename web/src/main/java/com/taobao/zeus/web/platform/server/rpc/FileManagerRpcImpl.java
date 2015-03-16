@@ -54,6 +54,7 @@ public class FileManagerRpcImpl implements FileManagerService{
 		fm.setName(fd.getName());
 		fm.setParentId(fd.getParent());
 		fm.setOwner(fd.getOwner());
+		fm.setWorkerGroupId(fd.getWorkerGroupId());
 		if(LoginUser.getUser().getUid().equals(fd.getOwner())){
 			fm.setAdmin(true);
 		}else{
@@ -198,6 +199,7 @@ public class FileManagerRpcImpl implements FileManagerService{
 					model.setName(fd.getName());
 					model.setOwner(fd.getOwner());
 					model.setParentId(fm.getId());
+					model.setWorkerGroupId(fm.getWorkerGroupId());
 					result.add(model);
 				}
 			}
@@ -259,6 +261,19 @@ public class FileManagerRpcImpl implements FileManagerService{
 		} catch (Exception e) {
 			log.error("render error", e);
 			return in;
+		}
+	}
+
+
+	@Override
+	public void updateWorkerGroupId(String fileId, String workerGroupId) {
+		FileDescriptor fd=fileManager.getFile(fileId);
+		String user=LoginUser.getUser().getUid();
+		if(Super.getSupers().contains(user) || fd.getOwner().equalsIgnoreCase(user)){
+			fd.setWorkerGroupId(workerGroupId);
+			fileManager.update(fd);
+		}else{
+			throw new RuntimeException("权限不足");
 		}
 	}
 	  

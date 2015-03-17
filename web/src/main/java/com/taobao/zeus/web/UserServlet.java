@@ -121,7 +121,7 @@ public class UserServlet extends HttpServlet {
 					try {
 						JSONObject obj = JSONObject.fromObject(data.substring(
 								1, data.length() - 1));
-						String uid = getobjvalue(obj, "uid");
+						String uid = getobjvalue(obj, "uid").toLowerCase();
 						ZeusUser user = userManager.findByUid(uid);
 						if (user != null) {
 							out.print("error");

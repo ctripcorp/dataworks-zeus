@@ -22,7 +22,7 @@ $(function() {
 				$('#switch_qlogin').removeClass("switch_btn_focus").addClass(
 						'switch_btn');
 				$('#switch_bottom').animate({
-					left : '154px',
+					left : '199px',
 					width : '70px'
 				});
 
@@ -94,6 +94,34 @@ function validate(event) {
 	}
 
 }
+
+/** 
+ * 鼠标移上去显示层 
+ * @param divId 显示的层ID 
+ * @returns 
+ */  
+$.fn.myHoverTip = function(divId) {  
+    var div = $("#" + divId); //要浮动在这个元素旁边的层  
+    div.css("position", "absolute");//让这个层可以绝对定位  
+    var self = $(this); //当前对象  
+    self.hover(function() {  
+        div.css("display", "block");  
+        var p = self.position(); //获取这个元素的left和top  
+        var x = p.left + self.width();//获取这个浮动层的left  
+        var docWidth = $(document).width();//获取网页的宽  
+        if (x > docWidth - div.width() - 20) {  
+            x = p.left - div.width();  
+        }  
+        div.css("left", x+25);  
+        div.css("top", p.top+25);  
+        div.show();  
+    },  
+    function() {  
+        div.css("display", "none");  
+    }  
+    );  
+    return this;  
+}  
 
 var reMethod = "GET", pwdmin = 6;
 
@@ -212,6 +240,18 @@ $(document)
 											return false;
 										}
 										
+										//申请描述
+										if ($('#description').val() == "") {
+											$('#description').focus().css({
+												border : "1px solid red",
+												boxShadow : "0 0 2px red"
+											});
+											$('#userCue')
+													.html(
+															"<font color='red'><b>×注册说明信息不能为空</b></font>");
+											return false;
+										}
+										
 										//提交
 										$.ajax({
 											url : "register.do",
@@ -254,4 +294,5 @@ $(document)
 											}
 										});
 									});
+					$('#description').myHoverTip('descriptionInfo');
 				});

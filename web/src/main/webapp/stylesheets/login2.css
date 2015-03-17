@@ -47,7 +47,7 @@ input::-ms-clear {
 	font-size:16px;
 }
 .header .switch #switch_qlogin {
-	margin-right:85px;
+	margin-right:130px;
 }
 .header .switch .switch_btn {
 	color:#999;
@@ -126,7 +126,7 @@ input::-ms-clear {
 	
 }
 .web_login .inputstyle {
-	width:200px;
+	width:330px;
 	height:38px;
 	padding-left:5px;
 	line-height:30px;line-height:38px;
@@ -139,7 +139,7 @@ input::-ms-clear {
 }
 .web_login input.inputstyle2:focus,.web_login input.inputstyle:focus{border:1px solid #198BD4;box-shadow:0 0 2px #198BD4;}
 .web_login .inputstyle2 {
-	width:200px;
+	width:330px;
 	height:34px;
 	padding-left:5px;
 	line-height:34px;
@@ -190,7 +190,7 @@ h1 sup{
 background: #fff;
 margin: 0 auto;
 -webkit-box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, .3);
-box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, .3);}
+box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, .3);width:500px;}
 
 .web_login{padding-bottom:20px;}
 
@@ -201,6 +201,7 @@ height: 55px;
 .cue {
 margin-top: 15px;
 margin-bottom: 10px;border:1px solid #eee;border-radius:3px;
+width: 420px;
 }
 .web_login input.inputstyle2:focus, .web_login input.inputstyle:focus {
 border: 1px solid #5796f;
@@ -210,7 +211,7 @@ box-shadow: 0 0 0;
 width: 300px;
 margin: 0 auto;
 }
-.web_login .inputstyle2 {border-radius:2px;width:210px;}
+.web_login .inputstyle2 {border-radius:2px;width:330px;}
 .web_login .input-tips2 {
 padding-right: 5px;
 width: 80px;_width: 75px;_font-size:12px;}
@@ -236,5 +237,5 @@ a.zcxy {text-decoration: underline;line-height:58px;margin-left:15px;color: #959
 .web_login .login_form {margin-top:30px;}
 .web_login .uinArea {
 height: 60px;}
-.header .switch{left:70px;}
+.header .switch{left:120px;}
 

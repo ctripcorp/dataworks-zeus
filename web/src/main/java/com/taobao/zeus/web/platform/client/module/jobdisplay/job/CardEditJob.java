@@ -539,7 +539,7 @@ public class CardEditJob extends CenterTemplate implements
 		if (baseFieldSet == null) {
 			baseFieldSet = new FieldSet();
 			baseFieldSet.setHeadingText("基本信息");
-			baseFieldSet.setHeight(230);
+			baseFieldSet.setHeight(260);
 
 			HorizontalLayoutContainer layoutContainer = new HorizontalLayoutContainer();
 			baseFieldSet.add(layoutContainer);

@@ -18,6 +18,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
@@ -67,6 +68,7 @@ import com.taobao.zeus.web.platform.shared.rpc.JobService;
 
 public class JobServiceImpl implements JobService {
 	private static Logger log = LogManager.getLogger(JobServiceImpl.class);
+	
 	@Autowired
 	private PermissionGroupManagerOld permissionGroupManagerOld;
 	@Autowired
@@ -1180,7 +1182,11 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public String getWorkersGroupNameById(String workerGroupId) {
-		String result = workerManager.getWorkerGroupNameById(workerGroupId).getName();
+		String result = null;
+		if (workerGroupId!=null) {
+			WorkerGroupPersistence persist = workerManager.getWorkerGroupNameById(workerGroupId);
+			result = persist.getName();
+		}
 		return result;
 	}
 }

@@ -34,6 +34,7 @@ import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.store.mysql.persistence.ProfilePersistence;
 import com.taobao.zeus.store.mysql.persistence.ZeusFollowPersistence;
 import com.taobao.zeus.util.DateUtil;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.Tuple;
 
 public class PersistenceAndBeanConvertOld {
@@ -155,7 +156,11 @@ public class PersistenceAndBeanConvertOld {
 		jd.setStatisStartTime(persist.getStatisStartTime()==null?null:DateUtil.date2String(persist.getStatisStartTime()));
 		jd.setStatisEndTime(persist.getStatisEndTime()==null?null:DateUtil.date2String(persist.getStatisEndTime()));
 		jd.setHost(persist.getHost());
-		jd.setWorkerGroupId(persist.getWorkerGroupId().toString());
+		if(persist.getWorkerGroupId()!=null){
+			jd.setWorkerGroupId(String.valueOf(persist.getWorkerGroupId()));
+		}else {
+			jd.setWorkerGroupId(Environment.getDefaultWorkerGroupId());
+		}
 		JobStatus status = new JobStatus();
 		status.setJobId(String.valueOf(persist.getId()));
 		status.setStatus(Status.parser(persist.getStatus()));
@@ -268,7 +273,11 @@ public class PersistenceAndBeanConvertOld {
 			Log.warn("parse str to date failed", e);
 		}
 		persist.setHost(jd.getHost());
-		persist.setWorkerGroupId(Integer.valueOf(jd.getWorkerGroupId()));
+		if (jd.getWorkerGroupId() != null) {
+			persist.setWorkerGroupId(Integer.valueOf(jd.getWorkerGroupId()));
+		}else {
+			persist.setWorkerGroupId(Integer.valueOf(Environment.getDefaultWorkerGroupId()));
+		}
 		return persist;
 	}
 
@@ -371,7 +380,12 @@ public class PersistenceAndBeanConvertOld {
 		history.setStatisEndTime(persist.getStatisEndTime()==null?null:DateUtil.date2String(persist.getStatisEndTime()));
 		history.setTimezone(persist.getTimezone());
 		history.setCycle(persist.getCycle());
-		history.setWorkerGroupId(persist.getWorkerGroupId().toString());
+		if (persist.getWorkerGroupId()!=null) {
+			history.setWorkerGroupId(persist.getWorkerGroupId().toString());
+		}else {
+			history.setWorkerGroupId(Environment.getDefaultWorkerGroupId());
+		}
+		
 		return history;
 	}
 
@@ -412,7 +426,11 @@ public class PersistenceAndBeanConvertOld {
 				Log.warn("parse str to date failed", e);
 			}
 		}
-		persist.setWorkerGroupId(Integer.valueOf(history.getWorkerGroupId()));
+		if (history.getWorkerGroupId()!=null) {
+			persist.setWorkerGroupId(Integer.valueOf(history.getWorkerGroupId()));
+		}else {
+			persist.setWorkerGroupId(Integer.valueOf(Environment.getDefaultWorkerGroupId()));
+		}
 		return persist;
 	}
 

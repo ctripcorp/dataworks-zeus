@@ -27,7 +27,6 @@ import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.ProfileManager;
 import com.taobao.zeus.store.WorkerManager;
-import com.taobao.zeus.store.mysql.persistence.WorkerRelationPersistence;
 
 public class MasterContext {
 	private Map<Channel, MasterWorkerHolder> workers=new ConcurrentHashMap<Channel, MasterWorkerHolder>();
@@ -35,7 +34,7 @@ public class MasterContext {
 	private Master master;
 	private Scheduler scheduler;
 	private Dispatcher dispatcher;
-	private List<WorkerGroupCache> workersGroupCache;
+	private volatile List<WorkerGroupCache> workersGroupCache;
 	//调度任务 jobId
 //	private Queue<JobElement> queue=new ArrayBlockingQueue<JobElement>(10000);
 	private Queue<JobElement> queue=new PriorityBlockingQueue<JobElement>(10000, new Comparator<JobElement>() {
@@ -190,7 +189,7 @@ public class MasterContext {
 		return manualQueue;
 	}
 	
-	public void refreshWorkerGroupCache(){
+	public synchronized void refreshWorkerGroupCache(){
 		try {
 			workersGroupCache = getWorkerManager().getAllWorkerGroupInfomations();
 		} catch (Exception e) {

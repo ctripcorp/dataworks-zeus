@@ -50,12 +50,7 @@ public class JobDebugRpcImpl implements JobDebugService {
 		history.setOwner(uid);
 		history.setJobRunType(JobRunType.parser(mode));
 		history.setScript(script);
-		if (workerGroupId == null) {
-			history.setWorkerGroupId(Environment.getDefaultWorkerGroupId());
-			log.info("using default workersgroup");
-		}else {
-			history.setWorkerGroupId(workerGroupId);
-		}
+		history.setWorkerGroupId(Environment.getDefaultWorkerGroupId());
 		debugHistoryManager.addDebugHistory(history);
 
 		String debugId = history.getId();

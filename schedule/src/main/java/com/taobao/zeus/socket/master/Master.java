@@ -331,6 +331,9 @@ public class Master {
 //	}
 	
 	private MasterWorkerHolder getRunableWorker(String workerGroupId) {
+		if (workerGroupId == null) {
+			workerGroupId = Environment.getDefaultWorkerGroupId();
+		}
 		MasterWorkerHolder selectWorker = null;
 		Float selectMemRate = null;
 		Set<String> workersGroup = getWorkersByGroupId(workerGroupId);
@@ -351,7 +354,7 @@ public class Master {
 			}
 		}
 		if (selectWorker != null) {
-			log.info("select worker: " + selectWorker.getHeart().host + ", for workerGroupId" + workerGroupId);
+			log.info("select worker: " + selectWorker.getHeart().host + ", for workerGroupId " + workerGroupId);
 		}else {
 			log.error("can not find proper workers");
 		}
@@ -1152,6 +1155,7 @@ public class Master {
 							actionPer.setStatisStartTime(statisStartTime);
 							actionPer.setStatisEndTime(statisEndTime);
 							actionPer.setStatus(jobDetail.getStatus());
+							actionPer.setWorkerGroupId(jobDetail.getWorkerGroupId());
 							actionPer.setTimezone(jobDetail.getTimezone());
 							try {
 								//System.out.println("周期任务（天）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
@@ -1215,6 +1219,7 @@ public class Master {
 								actionPer.setStatisEndTime(statisEndTime);
 								actionPer.setStatus(jobDetail.getStatus());
 								actionPer.setTimezone(jobDetail.getTimezone());
+								actionPer.setWorkerGroupId(jobDetail.getWorkerGroupId());
 								try {
 									System.out.println("周期任务（时）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 									//if(actionPer.getId()>Long.parseLong(currentDateStr)){

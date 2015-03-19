@@ -193,7 +193,6 @@ public class EditTab extends BorderLayoutContainer {
 			@Override
 			public void onSuccess(String result) {
 				workerGroupStatus.setText("worker组id: " + id +", 组名: " + result);
-				
 			}
 		});
 		

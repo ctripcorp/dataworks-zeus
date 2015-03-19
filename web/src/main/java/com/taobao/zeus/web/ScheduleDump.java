@@ -2,10 +2,8 @@ package com.taobao.zeus.web;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,24 +18,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.antlr.grammar.v3.ANTLRParser.tree__return;
-import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.jboss.netty.channel.Channel;
-import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.sun.tools.javah.Mangle;
-import com.taobao.zeus.model.JobDescriptor;
-import com.taobao.zeus.model.JobStatus;
-import com.taobao.zeus.model.JobStatus.Status;
 import com.taobao.zeus.model.WorkerGroupCache;
 import com.taobao.zeus.mvc.Controller;
 import com.taobao.zeus.mvc.Dispatcher;
@@ -50,13 +35,8 @@ import com.taobao.zeus.socket.master.JobElement;
 import com.taobao.zeus.socket.master.MasterContext;
 import com.taobao.zeus.socket.master.MasterWorkerHolder;
 import com.taobao.zeus.socket.master.MasterWorkerHolder.HeartBeatInfo;
-import com.taobao.zeus.store.mysql.MysqlGroupManager;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
-import com.taobao.zeus.store.mysql.persistence.JobPersistenceBackup;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
-import com.taobao.zeus.store.mysql.persistence.WorkerRelationPersistence;
-import com.taobao.zeus.store.mysql.tool.PersistenceAndBeanConvert;
-import com.taobao.zeus.util.Tuple;
 
 /**
  * Dump调度系统内的Job状态，用来调试排查问题

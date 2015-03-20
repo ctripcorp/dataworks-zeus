@@ -98,6 +98,7 @@ public class Master {
 		context.setMaster(this);
 		//刷新worker分组关系列表
 		context.refreshWorkerGroupCache();
+		log.info("refresh WorkerGroup Cache");
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
 			
 			@Override

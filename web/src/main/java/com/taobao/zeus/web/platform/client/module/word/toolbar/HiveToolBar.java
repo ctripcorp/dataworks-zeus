@@ -142,11 +142,7 @@ public class HiveToolBar extends AbstractToolBar{
 							sb.append("自动调度:"+ (result.getAuto() ? "开启": "关闭") + "<br/>");
 							sb.append("worker组id：" + (result.getWorkerGroupId()) + "<br/>");
 							final String workerGroupId = hiveWord.getFileModel().getWorkerGroupId();
-							if (workerGroupId != null) {
-								sb.append("您确认要进行同步吗?");
-							}else {
-								sb.append("您的任务worker组id为null，您确认要进行同步吗？");
-							}
+							sb.append("您确认要进行同步吗?");
 							
 							ConfirmMessageBox confirm = new ConfirmMessageBox("同步脚本和worker组id", sb.toString());
 							confirm.addHideHandler(new HideHandler() {

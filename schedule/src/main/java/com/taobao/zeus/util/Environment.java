@@ -36,9 +36,10 @@ public class Environment {
 	private static String accessToken;
 	private static String excludeFile;
 	private static String defaultWorkerGroupId;
+	private static String defaultMasterGroupId;
 	
 	public Environment(String env,String scheduleGroup,String downloadPath,String hadoopHome,String hadoopConfDir,String hiveHome,String hiveConfDir,
-			String host,String port,String username,String password,String sendFrom,String notifyUrl,String accessToken,String excludeFile, String defaultWorkerGroupId){
+			String host,String port,String username,String password,String sendFrom,String notifyUrl,String accessToken,String excludeFile, String defaultWorkerGroupId, String defaultMasterGroupId){
 		Environment.env=env.trim();
 		Environment.scheduleGroup=scheduleGroup.trim();
 		Environment.downloadPath=downloadPath.trim();
@@ -59,6 +60,7 @@ public class Environment {
 		Environment.accessToken=accessToken.trim();
 		Environment.excludeFile=excludeFile.trim();
 		Environment.defaultWorkerGroupId=defaultWorkerGroupId.trim();
+		Environment.defaultMasterGroupId=defaultMasterGroupId.trim();
 		log.info("the env is " + env.trim());
 		log.info("the downloadPath is " + downloadPath.trim());
 		log.info("the hadoopHome is " + hadoopHome.trim());
@@ -69,6 +71,7 @@ public class Environment {
 		log.info("the port is " + port.trim());
 		log.info("the excludeFile is " + excludeFile.trim());
 		log.info("the defaultWorkerGroupId is " + defaultWorkerGroupId.trim());
+		log.info("the defaultMasterGroupId is " + defaultMasterGroupId.trim());
 	}
 	
 	public static String getNotifyUrl() {
@@ -142,4 +145,7 @@ public class Environment {
 		return defaultWorkerGroupId;
 	}
 
+	public static String getDefaultMasterGroupId() {
+		return defaultMasterGroupId;
+	}
 }

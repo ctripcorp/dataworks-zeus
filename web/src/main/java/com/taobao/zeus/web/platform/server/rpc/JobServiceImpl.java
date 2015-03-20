@@ -1184,7 +1184,7 @@ public class JobServiceImpl implements JobService {
 	public String getWorkersGroupNameById(String workerGroupId) {
 		String result = null;
 		if (workerGroupId!=null) {
-			WorkerGroupPersistence persist = workerManager.getWorkerGroupNameById(workerGroupId);
+			WorkerGroupPersistence persist = workerManager.getWorkerGroupName(workerGroupId);
 			result = persist.getName();
 		}
 		return result;

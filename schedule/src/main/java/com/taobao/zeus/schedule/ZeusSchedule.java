@@ -1,10 +1,15 @@
 package com.taobao.zeus.schedule;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import com.taobao.zeus.schedule.mvc.ScheduleInfoLog;
 import com.taobao.zeus.socket.master.MasterContext;
+import com.taobao.zeus.store.WorkerManager;
+import com.taobao.zeus.util.Environment;
 
 /**
  * Zeus 调度系统
@@ -17,21 +22,34 @@ public class ZeusSchedule{
 	
 	private MasterContext context;
 	private ApplicationContext applicationContext;
+	
+	private WorkerManager workerManager;
 	public ZeusSchedule(ApplicationContext applicationContext){
 		this.applicationContext=applicationContext;
+		workerManager = (WorkerManager) applicationContext.getBean("workerManager");
 	}
 	
 	public void startup(int port){
-		if(!running.compareAndSet(false, true)){
+		if(!getRunning().compareAndSet(false, true)){
 			return;
 		}
-		context=new MasterContext(applicationContext);
-		context.init(port);
+		List<String> masterGroup = workerManager.getDefaultMasterHost();
+		if (masterGroup.contains(DistributeLocker.host)) {
+			context=new MasterContext(applicationContext);
+			context.init(port);
+		}else {
+			getRunning().compareAndSet(true, false);
+			ScheduleInfoLog.info(DistributeLocker.host + " is not in master gourp");
+		}
 	}
 	
 	public void shutdown(){
-		if(running.compareAndSet(true, false)){
+		if(getRunning().compareAndSet(true, false)){
 			context.destory();
 		}
+	}
+
+	public AtomicBoolean getRunning() {
+		return running;
 	}
 }

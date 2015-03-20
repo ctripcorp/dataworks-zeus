@@ -106,21 +106,24 @@ public class DistributeLocker extends HibernateDaoSupport{
 		});
 		
 		if(host.equals(lock.getHost())){
-			log.info("hold the locker and update time");
-			lock.setServerUpdate(new Date());
-			getHibernateTemplate().update(lock);
-			
 			zeusSchedule.startup(port);
+			if (zeusSchedule.getRunning().get()) {
+				log.info("hold the locker and update time");
+				lock.setServerUpdate(new Date());
+				getHibernateTemplate().update(lock);
+			}
 		}else{//其他服务器抢占了锁
 			log.info("not my locker");
 			//如果最近更新时间在5分钟以上，则认为抢占的Master服务器已经失去连接，本服务器主动进行抢占
 			if(System.currentTimeMillis()-lock.getServerUpdate().getTime()>1000*60*5L){
-				log.error("rob the locker and update");
-				lock.setHost(host);
-				lock.setServerUpdate(new Date());
-				lock.setSubgroup(Environment.getScheduleGroup());
-				getHibernateTemplate().update(lock);
 				zeusSchedule.startup(port);
+				if (zeusSchedule.getRunning().get()){
+					log.error("rob the locker and update");
+					lock.setHost(host);
+					lock.setServerUpdate(new Date());
+					lock.setSubgroup(Environment.getScheduleGroup());
+					getHibernateTemplate().update(lock);
+				}
 			}else{//如果Master服务器没有问题，本服务器停止server角色
 				zeusSchedule.shutdown();
 			}

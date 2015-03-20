@@ -14,6 +14,7 @@ import com.taobao.zeus.model.WorkerGroupCache;
 import com.taobao.zeus.store.WorkerManager;
 import com.taobao.zeus.store.mysql.persistence.WorkerGroupPersistence;
 import com.taobao.zeus.store.mysql.persistence.WorkerRelationPersistence;
+import com.taobao.zeus.util.Environment;
 @SuppressWarnings("unchecked")
 public class MysqlWorkerManager extends HibernateDaoSupport implements WorkerManager{
 
@@ -29,6 +30,20 @@ public class MysqlWorkerManager extends HibernateDaoSupport implements WorkerMan
 			
 		});		
 	}
+	
+	public List<WorkerRelationPersistence> getWorkerRelations(final String workerGroupId) {
+		return (List<WorkerRelationPersistence>)getHibernateTemplate().execute(new HibernateCallback() {
+
+			@Override
+			public Object doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				Query query = session.createQuery("from com.taobao.zeus.store.mysql.persistence.WorkerRelationPersistence where workerGroupId=" + workerGroupId);
+				return query.list();
+			}
+			
+		});		
+	}
+	
 
 	@Override
 	public List<WorkerGroupCache> getAllWorkerGroupInfomations() {
@@ -69,8 +84,19 @@ public class MysqlWorkerManager extends HibernateDaoSupport implements WorkerMan
 	}
 
 	@Override
-	public WorkerGroupPersistence getWorkerGroupNameById(String workerGroupId) {
+	public WorkerGroupPersistence getWorkerGroupName(String workerGroupId) {
 		return (WorkerGroupPersistence) getHibernateTemplate().get(WorkerGroupPersistence.class, Integer.valueOf(workerGroupId));
+	}
+
+	@Override
+	public List<String> getDefaultMasterHost() {
+		String id = Environment.getDefaultMasterGroupId();
+		List<WorkerRelationPersistence> workerRelations = getWorkerRelations(id);
+		List<String> result = new ArrayList<String>();
+		for(WorkerRelationPersistence workerRalation : workerRelations){
+			result.add(workerRalation.getHost());
+		}
+		return result;
 	}
 
 }

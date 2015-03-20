@@ -188,14 +188,17 @@ public class EditTab extends BorderLayoutContainer {
 	}
 
 	public void refreshWorkerGroupStatus(final String id) {
-		RPCS.getJobService().getWorkersGroupNameById(id, new AbstractAsyncCallback<String>() {
+		if (id!=null) {
+			RPCS.getJobService().getWorkersGroupNameById(id, new AbstractAsyncCallback<String>() {
 
-			@Override
-			public void onSuccess(String result) {
-				workerGroupStatus.setText("worker组id: " + id +", 组名: " + result);
-			}
-		});
-		
+				@Override
+				public void onSuccess(String result) {
+					workerGroupStatus.setText("worker组id: " + id +", 组名: " + result);
+				}
+			});
+		}else {
+			workerGroupStatus.setText("默认worker组");
+		}
 	}
 
 	public PlatformContext getContext() {

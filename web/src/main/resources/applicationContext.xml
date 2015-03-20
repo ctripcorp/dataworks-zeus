@@ -68,6 +68,9 @@
 		<constructor-arg index="15">
 			<value>${zeus.defaultworkergroup.id}</value>
 		</constructor-arg>
+		<constructor-arg index="16">
+			<value>${zeus.defaultmastergroup.id}</value>
+		</constructor-arg>
 	</bean>
 	
 	<bean id="clientWorker" class="com.taobao.zeus.socket.worker.ClientWorker" >

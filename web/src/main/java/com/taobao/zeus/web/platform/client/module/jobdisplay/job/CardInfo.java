@@ -257,18 +257,18 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		((Label)timezone.getWidget()).setText(model.getDefaultTZ());
 //		((Label)host.getWidget()).setText(model.getHost());
 		String workerGroupIdStr = model.getWorkerGroupId();
-		((Label)workerGroupId.getWidget()).setText(workerGroupIdStr);
-		RPCS.getJobService().getWorkersGroupNameById(workerGroupIdStr, new AbstractAsyncCallback<String>() {
+		if (workerGroupIdStr!=null) {
+			((Label)workerGroupId.getWidget()).setText(workerGroupIdStr);
+			RPCS.getJobService().getWorkersGroupNameById(workerGroupIdStr, new AbstractAsyncCallback<String>() {
 
-			@Override
-			public void onSuccess(String result) {
-				((Label)workerGroupName.getWidget()).setText(result);
+				@Override
+				public void onSuccess(String result) {
+					((Label)workerGroupName.getWidget()).setText(result);
+					
+				}
 				
-			}
-			
-		});
-		
-		
+			});
+		}
 		((Label)offRaw.getWidget()).setText(model.getOffRaw());
 		((Label)rollTime.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_TIMES));
 		if (model.getAllProperties().get(CardInfo.MAX_TIME) != null) {

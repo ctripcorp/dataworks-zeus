@@ -14,6 +14,13 @@ public interface TreeService extends RemoteService{
 	public GroupJobTreeModel getTreeData();
 	
 	public GroupJobTreeModel getMyTreeData();
+	
+	/**
+	 * 获取除Id为jobId的任务以外所有依赖任务构成的目录结构
+	 * param jobId 
+	 * @return
+	 */
+	public GroupJobTreeModel getTreeDataOfOtherDependentJob(String jobId);
 	/**
 	 * 任务依赖树结构
 	 * @param jobId

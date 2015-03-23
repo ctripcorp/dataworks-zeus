@@ -53,13 +53,13 @@ public class RegisterPage  extends HttpServlet  {
         response.setCharacterEncoding("utf-8");
         PrintWriter out = response.getWriter();     
         
-		String uid = request.getParameter("user");
+		String uid = request.getParameter("user").toLowerCase();
         ZeusUser u = userManager.findByUid(uid);
 		if(null != u){
 			out.print("exist");
 		}else{
 			try{
-		        ZeusUser diAdmin = userManager.findByUid("diadmin");
+//		        ZeusUser diAdmin = userManager.findByUid("diadmin");
 		        String password = request.getParameter("passwd");
 		        String email = request.getParameter("email");
 		        String phone = request.getParameter("phone");
@@ -81,11 +81,12 @@ public class RegisterPage  extends HttpServlet  {
 				if(null != returnUser){
 					List<String> mailUsers = new ArrayList<String>();
 					mailUsers.add(ZeusUser.ADMIN.getUid());
+					mailUsers.add("diadmin");
 					MailAlarm mailAlarm = new MailAlarm();
 					List<String> emails = getEmailsByUsers(mailUsers);
 					if(emails != null && emails.size()>0){
 						emails.add(returnUser.getEmail());
-						emails.add(diAdmin.getEmail());
+						
 						mailAlarm.sendEmail("", emails, "Zeus新用户注册申请",
 								"Dear All,"+
 								"\r\n	Zeus系统有新用户注册，详细信息如下："+
@@ -94,7 +95,7 @@ public class RegisterPage  extends HttpServlet  {
 								"\r\n		用户姓名："+returnUser.getName()+
 								"\r\n		用户邮箱："+returnUser.getEmail()+
 								"\r\n	请确认并审核。\r\n"+
-								"\r\n	另外，请DI团队开通hive帐号及权限，权限描述如下："+
+								"\r\n	另外，请DI团队开通hive帐号及权限，描述如下："+
 								"\r\n		" + returnUser.getDescription()+
 								"\r\n	\r\n	\r\n谢谢！");
 					}

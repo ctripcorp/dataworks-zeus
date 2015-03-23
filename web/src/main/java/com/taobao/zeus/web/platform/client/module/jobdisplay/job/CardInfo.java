@@ -196,7 +196,9 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 	private FieldLabel timezone;
 	private FieldLabel offRaw;
 	private FieldLabel jobCycle;
-	private FieldLabel host;
+//	private FieldLabel host;
+	private FieldLabel hostGroupId;
+	private FieldLabel hostGroupName;
 	private FieldLabel rollTime;
 	private FieldLabel rollInterval;
 	private FieldLabel jobPriority;
@@ -253,7 +255,20 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		((Label)baseScheduleType.getWidget()).setText(model.getJobScheduleType());
 		((Label)baseCron.getWidget()).setText(model.getCronExpression());
 		((Label)timezone.getWidget()).setText(model.getDefaultTZ());
-		((Label)host.getWidget()).setText(model.getHost());
+//		((Label)host.getWidget()).setText(model.getHost());
+		String idStr = model.getHostGroupId();
+		if (idStr!=null) {
+			((Label)hostGroupId.getWidget()).setText(idStr);
+			RPCS.getJobService().getHostGroupNameById(idStr, new AbstractAsyncCallback<String>() {
+
+				@Override
+				public void onSuccess(String result) {
+					((Label)hostGroupName.getWidget()).setText(result);
+					
+				}
+				
+			});
+		}
 		((Label)offRaw.getWidget()).setText(model.getOffRaw());
 		((Label)rollTime.getWidget()).setText(model.getAllProperties().get(CardInfo.ROLL_TIMES));
 		if (model.getAllProperties().get(CardInfo.MAX_TIME) != null) {
@@ -308,7 +323,9 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			timezone.hide();
 			offRaw.hide();
 			jobCycle.hide();
-			host.show();
+			hostGroupId.show();
+			hostGroupName.show();
+//			host.show();
 		}
 		if(JobModel.INDEPEN_JOB.equals(model.getJobScheduleType())){
 			baseDepJobs.hide();
@@ -317,7 +334,9 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			timezone.hide();
 			offRaw.hide();
 			jobCycle.hide();
-			host.show();
+			hostGroupId.show();
+			hostGroupName.show();
+//			host.show();
 		}
 		if(JobModel.CYCLE_JOB.equals(model.getJobScheduleType())){
 			baseDepCycle.hide();
@@ -326,7 +345,9 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			offRaw.show();
 			jobCycle.show();
 			baseDepJobs.show();
-			host.show();
+			hostGroupId.show();
+			hostGroupName.show();
+//			host.show();
 		}
 		
 		//初始化辅助功能配置
@@ -448,7 +469,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 		if(baseFieldSet==null){
 			baseFieldSet=new FieldSet();
 			baseFieldSet.setHeadingText("基本信息");
-			baseFieldSet.setHeight(230);
+			baseFieldSet.setHeight(260);
 			
 			HorizontalLayoutContainer layoutContainer=new HorizontalLayoutContainer();
 			baseFieldSet.add(layoutContainer);
@@ -475,16 +496,25 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			baseDepCycle=new FieldLabel(getLabel(),"依赖周期");
 			baseFollers=new FieldLabel(getLabel(),"关注人员");
 			baseAdmins=new FieldLabel(getLabel(),"管理员");
-			host=new FieldLabel(getLabel(),"Host");
+//			host=new FieldLabel(getLabel(),"Host");
+			hostGroupId=new FieldLabel(getLabel(),"host组id");
+			hostGroupName=new FieldLabel(getLabel(),"host组名");
 			rollTime = new FieldLabel(getLabel(),"失败重试次数");
 			rollInterval = new FieldLabel(getLabel(),"重试时间间隔");
 			jobPriority = new FieldLabel(getLabel(),"任务优先级");
 			maxTime = new FieldLabel(getLabel(), "预计时长");
 			importantContacts = new FieldLabel(getLabel(), "重要联系人");
+			
 			leftContainer.add(baseId,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(baseName,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(baseOwner,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			leftContainer.add(baseDesc,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			leftContainer.add(importantContacts,new VerticalLayoutContainer.VerticalLayoutData(1,-1));
+			leftContainer.add(baseFollers,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			leftContainer.add(baseAdmins,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			leftContainer.add(hostGroupId,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			leftContainer.add(hostGroupName,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			
 			rightContainer.add(baseJobType,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			rightContainer.add(baseScheduleType,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			rightContainer.add(baseCron,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
@@ -494,14 +524,11 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			rightContainer.add(timezone,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			rightContainer.add(offRaw,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			rightContainer.add(jobCycle,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
-			rightContainer.add(host,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
-			leftContainer.add(importantContacts,new VerticalLayoutContainer.VerticalLayoutData(1,-1));
-			leftContainer.add(baseFollers,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
-			leftContainer.add(baseAdmins,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			rightContainer.add(jobPriority,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			rightContainer.add(rollTime,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			rightContainer.add(rollInterval,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
-			leftContainer.add(jobPriority,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 			rightContainer.add(maxTime, new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+			
 			
 			//leftContainer.add(host,new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 

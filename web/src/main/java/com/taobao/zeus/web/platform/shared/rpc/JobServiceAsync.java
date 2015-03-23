@@ -9,6 +9,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
+import com.taobao.zeus.web.platform.client.util.HostGroupModel;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 
@@ -78,5 +79,16 @@ public interface JobServiceAsync {
 	void getAllContactList(String jobId,
 			AsyncCallback<List<ZUserContactTuple>> callback);
 
+	void getJobDependencies(String jobId, AsyncCallback<List<String>> callback);
 
+	void getHostGroup(PagingLoadConfig config,
+			AsyncCallback<PagingLoadResult<HostGroupModel>> callback);
+
+	void syncScriptAndHostGroupId(String jobId, String script,
+			String hostGroupId, AsyncCallback<Void> callback);
+
+	void getHostGroupNameById(String hostGroupId,
+			AsyncCallback<String> callback);
+
+//	void getHostGroupNameById(String hostGroupId, AsyncCallback<String> callback);
 }

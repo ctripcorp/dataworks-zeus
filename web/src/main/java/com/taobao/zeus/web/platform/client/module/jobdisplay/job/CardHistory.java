@@ -310,7 +310,7 @@ public class CardHistory extends CenterTemplate implements
 
 		loader = new PagingLoader<PagingLoadConfig, PagingLoadResult<JobHistoryModel>>(
 				proxy);
-		loader.setLimit(30);
+		loader.setLimit(50);
 		loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig, JobHistoryModel, PagingLoadResult<JobHistoryModel>>(
 				store));
 
@@ -319,7 +319,7 @@ public class CardHistory extends CenterTemplate implements
 		grid.getView().setForceFit(true);
 		grid.setLoader(loader);
 
-		toolBar = new PagingToolBar(30);
+		toolBar = new PagingToolBar(50);
 		toolBar.bind(loader);
 
 		VerticalLayoutContainer con = new VerticalLayoutContainer();
@@ -346,7 +346,7 @@ public class CardHistory extends CenterTemplate implements
 	public void refresh(JobModel t) {
 		PagingLoadConfig config = new PagingLoadConfigBean();
 		config.setOffset(0);
-		config.setLimit(30);
+		config.setLimit(50);
 		loader.load(config);
 	}
 

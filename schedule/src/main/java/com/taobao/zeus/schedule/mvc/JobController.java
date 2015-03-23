@@ -311,7 +311,8 @@ public class JobController extends Controller {
 						history.setTriggerType(TriggerType.SCHEDULE);
 						history.setJobId(jobId);
 						history.setToJobId(jd.getToJobId());
-						history.setExecuteHost(jd.getHost());
+//						history.setExecuteHost(jd.getHost());
+						history.setHostGroupId(jd.getHostGroupId());
 						if(jd != null){
 							history.setOperator(jd.getOwner() == null ? null : jd.getOwner());
 						}
@@ -417,7 +418,8 @@ public class JobController extends Controller {
 //		System.out.println("依赖任务执行的operator ："+jobDescriptor.getOwner());
 		history.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
 		history.setToJobId(jobDescriptor.getToJobId() == null ? null : jobDescriptor.getToJobId());
-		history.setExecuteHost(jobDescriptor.getHost());
+//		history.setExecuteHost(jobDescriptor.getHost());
+		history.setHostGroupId(jobDescriptor.getHostGroupId());
 		context.getJobHistoryManager().addJobHistory(history);
 		history = master.run(history);
 		if (history.getStatus() == Status.FAILED) {
@@ -765,7 +767,8 @@ public class JobController extends Controller {
 		history.setStatisEndTime(jobDescriptor.getStatisEndTime());
 		history.setTimezone(jobDescriptor.getTimezone());
 		history.setCycle(jobDescriptor.getCycle());
-		history.setExecuteHost(jobDescriptor.getHost());
+//		history.setExecuteHost(jobDescriptor.getHost());
+		history.setHostGroupId(jobDescriptor.getHostGroupId());
 		history.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
 		context.getJobHistoryManager().addJobHistory(history);
 		master.run(history);

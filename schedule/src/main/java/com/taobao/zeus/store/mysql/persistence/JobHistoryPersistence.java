@@ -43,6 +43,9 @@ public class JobHistoryPersistence {
 	private Date statisEndTime;
 	@Column(name="timezone")
 	private String timezone;
+	@Column(name="host_group_id")
+	private Integer hostGroupId;
+	
 	
 	@Column
 	private String cycle;
@@ -148,5 +151,11 @@ public class JobHistoryPersistence {
 	}
 	public void setCycle(String cycle) {
 		this.cycle = cycle;
+	}
+	public Integer getHostGroupId() {
+		return hostGroupId;
+	}
+	public void setHostGroupId(Integer hostGroupId) {
+		this.hostGroupId = hostGroupId;
 	}
 }

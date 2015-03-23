@@ -31,6 +31,8 @@ public class DebugHistory{
 	
 	private String host;
 
+	private String hostGroupId;
+	
 	public LogContent getLog() {
 		return log;
 	}
@@ -126,5 +128,13 @@ public class DebugHistory{
 
 	public void setHost(String host) {
 		this.host = host;
+	}
+
+	public String gethostGroupId() {
+		return hostGroupId;
+	}
+
+	public void setHostGroupId(String hostGroupId) {
+		this.hostGroupId = hostGroupId;
 	}
 }

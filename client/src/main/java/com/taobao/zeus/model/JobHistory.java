@@ -24,6 +24,7 @@ public class JobHistory{
 	private LogContent log=new LogContent();
 	private String timezone;
 	private String cycle;
+	private String hostGroupId;
 
 	private Map<String, String> properties=new HashMap<String, String>();
 	
@@ -150,5 +151,13 @@ public class JobHistory{
 
 	public void setCycle(String cycle) {
 		this.cycle = cycle;
+	}
+
+	public String getHostGroupId() {
+		return hostGroupId;
+	}
+
+	public void setHostGroupId(String hostGroupId) {
+		this.hostGroupId = hostGroupId;
 	}
 }

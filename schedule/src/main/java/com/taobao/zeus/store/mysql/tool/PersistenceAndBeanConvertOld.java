@@ -34,6 +34,7 @@ import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.store.mysql.persistence.ProfilePersistence;
 import com.taobao.zeus.store.mysql.persistence.ZeusFollowPersistence;
 import com.taobao.zeus.util.DateUtil;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.Tuple;
 
 public class PersistenceAndBeanConvertOld {
@@ -155,6 +156,11 @@ public class PersistenceAndBeanConvertOld {
 		jd.setStatisStartTime(persist.getStatisStartTime()==null?null:DateUtil.date2String(persist.getStatisStartTime()));
 		jd.setStatisEndTime(persist.getStatisEndTime()==null?null:DateUtil.date2String(persist.getStatisEndTime()));
 		jd.setHost(persist.getHost());
+		if(persist.getHostGroupId()!=null){
+			jd.setHostGroupId(String.valueOf(persist.getHostGroupId()));
+		}else {
+			jd.setHostGroupId(Environment.getDefaultWorkerGroupId());
+		}
 		JobStatus status = new JobStatus();
 		status.setJobId(String.valueOf(persist.getId()));
 		status.setStatus(Status.parser(persist.getStatus()));
@@ -267,6 +273,11 @@ public class PersistenceAndBeanConvertOld {
 			Log.warn("parse str to date failed", e);
 		}
 		persist.setHost(jd.getHost());
+		if (jd.getHostGroupId() != null) {
+			persist.setHostGroupId(Integer.valueOf(jd.getHostGroupId()));
+		}else {
+			persist.setHostGroupId(Integer.valueOf(Environment.getDefaultWorkerGroupId()));
+		}
 		return persist;
 	}
 
@@ -369,6 +380,12 @@ public class PersistenceAndBeanConvertOld {
 		history.setStatisEndTime(persist.getStatisEndTime()==null?null:DateUtil.date2String(persist.getStatisEndTime()));
 		history.setTimezone(persist.getTimezone());
 		history.setCycle(persist.getCycle());
+		if (persist.getHostGroupId()!=null) {
+			history.setHostGroupId(persist.getHostGroupId().toString());
+		}else {
+			history.setHostGroupId(Environment.getDefaultWorkerGroupId());
+		}
+		
 		return history;
 	}
 
@@ -409,7 +426,11 @@ public class PersistenceAndBeanConvertOld {
 				Log.warn("parse str to date failed", e);
 			}
 		}
-
+		if (history.getHostGroupId()!=null) {
+			persist.setHostGroupId(Integer.valueOf(history.getHostGroupId()));
+		}else {
+			persist.setHostGroupId(Integer.valueOf(Environment.getDefaultWorkerGroupId()));
+		}
 		return persist;
 	}
 

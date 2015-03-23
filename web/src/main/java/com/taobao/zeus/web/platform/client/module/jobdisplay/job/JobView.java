@@ -1,7 +1,6 @@
 package com.taobao.zeus.web.platform.client.module.jobdisplay.job;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.sencha.gxt.core.client.Style.ScrollDirection;
 import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
 
 public class JobView extends CardLayoutContainer implements IsWidget{

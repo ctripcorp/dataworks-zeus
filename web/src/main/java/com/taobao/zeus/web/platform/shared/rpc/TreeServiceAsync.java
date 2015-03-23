@@ -22,4 +22,7 @@ public interface TreeServiceAsync {
 
 	void getDependerTreeJson(String jobId, AsyncCallback<String> callback);
 
+	void getTreeDataOfOtherDependentJob(String jobId,
+			AsyncCallback<GroupJobTreeModel> callback);
+
 }

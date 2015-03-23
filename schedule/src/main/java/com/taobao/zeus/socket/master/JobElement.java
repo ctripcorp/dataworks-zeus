@@ -2,8 +2,9 @@ package com.taobao.zeus.socket.master;
 
 public class JobElement {
 	private String jobID;
-	private String host;
+//	private String host;
 	private int priorityLevel;
+	private String hostGroupId;
 
 	/**
 	 * @return
@@ -12,14 +13,20 @@ public class JobElement {
 
 	}
 
-	public JobElement(String jobID, String host) {
+	public JobElement(String jobID, String hostGroupId) {
 		this.jobID = jobID;
-		this.host = host;
+		this.hostGroupId = hostGroupId;
 	}
 	
-	public JobElement(String jobID, String host, int priorityLevel) {
+//	public JobElement(String jobID, String host, int priorityLevel) {
+//		this.jobID = jobID;
+//		this.host = host;
+//		this.priorityLevel = priorityLevel;
+//	}
+	
+	public JobElement(String jobID, String hostGroupId, int priorityLevel) {
 		this.jobID = jobID;
-		this.host = host;
+		this.hostGroupId = hostGroupId;
 		this.priorityLevel = priorityLevel;
 	}
 
@@ -31,13 +38,13 @@ public class JobElement {
 		this.jobID = jobID;
 	}
 
-	public String getHost() {
-		return host;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
+//	public String getHost() {
+//		return host;
+//	}
+//
+//	public void setHost(String host) {
+//		this.host = host;
+//	}
 
 	public int getPriorityLevel() {
 		return priorityLevel;
@@ -49,6 +56,14 @@ public class JobElement {
 
 	@Override
 	public String toString() {
-		return jobID + ":" + host;
+		return jobID + ":" + hostGroupId;
+	}
+
+	public String getHostGroupId() {
+		return hostGroupId;
+	}
+
+	public void setHostGroupId(String hostGroupId) {
+		this.hostGroupId = hostGroupId;
 	}
 }

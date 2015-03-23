@@ -34,7 +34,7 @@ public class JobDebugRpcImpl implements JobDebugService {
 	private static Logger log = LoggerFactory.getLogger(JobDebugRpcImpl.class);
 
 	@Override
-	public String debug(String fileId, String mode, String script)
+	public String debug(String fileId, String mode, String script, String hostGroupId)
 			throws GwtException {
 
 		String uid = LoginUser.getUser().getUid();
@@ -49,6 +49,7 @@ public class JobDebugRpcImpl implements JobDebugService {
 		history.setOwner(uid);
 		history.setJobRunType(JobRunType.parser(mode));
 		history.setScript(script);
+		history.setHostGroupId(hostGroupId);
 		debugHistoryManager.addDebugHistory(history);
 
 		String debugId = history.getId();

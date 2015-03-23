@@ -27,4 +27,6 @@ public interface FileManagerServiceAsync {
 
 	void getHomeFile(String id, AsyncCallback<FileModel> callback);
 
+	void updateHostGroupId(String fileId, String hostGroupId,
+			AsyncCallback<Void> callback);
 }

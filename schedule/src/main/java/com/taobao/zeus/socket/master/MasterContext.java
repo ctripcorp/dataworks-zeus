@@ -75,7 +75,9 @@ public class MasterContext {
 	}
 	public void init(int port){
 		try {
-			scheduler=new StdSchedulerFactory().getScheduler();
+			StdSchedulerFactory stdSchedulerFactory = new StdSchedulerFactory();
+			stdSchedulerFactory.initialize("zeusQuartz.properties");
+			scheduler = stdSchedulerFactory.getScheduler();
 			scheduler.start();
 		} catch (SchedulerException e) {
 			ScheduleInfoLog.error("schedule start fail", e);

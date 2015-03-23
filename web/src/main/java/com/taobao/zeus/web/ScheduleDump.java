@@ -248,8 +248,7 @@ public class ScheduleDump extends HttpServlet {
 									while(itController.hasNext()){
 										JobController jobc = (JobController) itController.next();
 										String jobId = jobc.getJobId();
-										if (Long.parseLong(jobId) < Long
-												.parseLong(currentDateStr)) {
+										if (Long.parseLong(jobId) < (Long.parseLong(currentDateStr)-15000000)) {
 											try {
 												context.getScheduler()
 														.deleteJob(jobId,
@@ -257,7 +256,7 @@ public class ScheduleDump extends HttpServlet {
 											} catch (SchedulerException e) {
 												e.printStackTrace();
 											}
-										}else{
+										}else if(Long.parseLong(jobId) >= Long.parseLong(currentDateStr)){
 											try {
 												if(!actionDetails.containsKey(Long.valueOf(jobId))){
 													context.getScheduler().deleteJob(jobId, "zeus");

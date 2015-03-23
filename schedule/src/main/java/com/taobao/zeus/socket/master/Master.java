@@ -107,7 +107,7 @@ public class Master {
 					int execHour = Integer.parseInt(df4.format(now));
 					int execMinute = Integer.parseInt(df.format(now));
 					if((execHour == 0 && execMinute == 0) 
-							|| (execHour == 1 && execMinute == 15)
+							|| (execHour == 1 && execMinute == 13)
 							|| (execHour > 7 && execMinute == 21) 
 							|| (execHour > 7 && execMinute == 51)){
 						System.out.println("生成Action，当前时间：" + currentDateStr);
@@ -133,7 +133,7 @@ public class Master {
 												new JobMaintenanceEvent(Events.UpdateJob,
 														id.toString()));
 									}else if(id < (Long.parseLong(currentDateStr)-15000000)){
-										//当前时间20分钟之前JOB的才检测漏跑
+										//当前时间15分钟之前JOB的才检测漏跑
 										int loopCount = 0;
 										rollBackLostJob(id, actionDetails, loopCount, rollBackActionId);
 									}
@@ -147,13 +147,13 @@ public class Master {
 								while(itController.hasNext()){
 									JobController jobc = (JobController)itController.next();
 									String jobId = jobc.getJobId();
-									if(Long.parseLong(jobId)<Long.parseLong(currentDateStr)){
+									if(Long.parseLong(jobId) < (Long.parseLong(currentDateStr)-15000000)){
 										try {
 											context.getScheduler().deleteJob(jobId, "zeus");
 										} catch (SchedulerException e) {
 											e.printStackTrace();
 										}
-									}else{
+									}else if(Long.parseLong(jobId) >= Long.parseLong(currentDateStr)){
 										try {
 											if(!actionDetails.containsKey(Long.valueOf(jobId))){
 												context.getScheduler().deleteJob(jobId, "zeus");

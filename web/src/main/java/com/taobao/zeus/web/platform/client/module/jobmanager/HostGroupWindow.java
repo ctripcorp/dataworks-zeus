@@ -22,17 +22,17 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
-import com.taobao.zeus.web.platform.client.module.jobdisplay.job.WorkerGroupProperties;
+import com.taobao.zeus.web.platform.client.module.jobdisplay.job.HostGroupProperties;
 import com.taobao.zeus.web.platform.client.util.RPCS;
-import com.taobao.zeus.web.platform.client.util.WorkerGroupModel;
+import com.taobao.zeus.web.platform.client.util.HostGroupModel;
 
-public class WorkerGroupWindow extends Window {
-	private ListStore<WorkerGroupModel> store;
-	private Grid<WorkerGroupModel> grid;
+public class HostGroupWindow extends Window {
+	private ListStore<HostGroupModel> store;
+	private Grid<HostGroupModel> grid;
 	private PagingToolBar toolBar;
-	private PagingLoader<PagingLoadConfig, PagingLoadResult<WorkerGroupModel>> loader;
-	private final WorkerGroupProperties props = GWT
-			.create(WorkerGroupProperties.class);
+	private PagingLoader<PagingLoadConfig, PagingLoadResult<HostGroupModel>> loader;
+	private final HostGroupProperties props = GWT
+			.create(HostGroupProperties.class);
 	private VerticalLayoutContainer container;
 	private SelectHandler handler;
 
@@ -40,8 +40,8 @@ public class WorkerGroupWindow extends Window {
 		this.handler = handler;
 	}
 
-	public WorkerGroupWindow() {
-		setHeadingText("worker分组信息");
+	public HostGroupWindow() {
+		setHeadingText("host分组信息");
 		setModal(true);
 		setHeight(600);
 		setWidth(500);
@@ -49,39 +49,39 @@ public class WorkerGroupWindow extends Window {
 		container.setHeight(300);
 		container.setWidth(300);
 		add(container);
-		ColumnConfig<WorkerGroupModel, String> idColumn = new ColumnConfig<WorkerGroupModel, String>(
+		ColumnConfig<HostGroupModel, String> idColumn = new ColumnConfig<HostGroupModel, String>(
 				props.id(), 30, "id");
-		ColumnConfig<WorkerGroupModel, String> nameColumn = new ColumnConfig<WorkerGroupModel, String>(
+		ColumnConfig<HostGroupModel, String> nameColumn = new ColumnConfig<HostGroupModel, String>(
 				props.name(), 30, "组名");
-		ColumnConfig<WorkerGroupModel, String> descriptionColumn = new ColumnConfig<WorkerGroupModel, String>(
+		ColumnConfig<HostGroupModel, String> descriptionColumn = new ColumnConfig<HostGroupModel, String>(
 				props.description(), 60, "描述");
-		ColumnModel<WorkerGroupModel> cm = new ColumnModel(Arrays.asList(
+		ColumnModel<HostGroupModel> cm = new ColumnModel(Arrays.asList(
 				idColumn, nameColumn, descriptionColumn));
 
-		store = new ListStore<WorkerGroupModel>(
-				new ModelKeyProvider<WorkerGroupModel>() {
+		store = new ListStore<HostGroupModel>(
+				new ModelKeyProvider<HostGroupModel>() {
 					@Override
-					public String getKey(WorkerGroupModel item) {
+					public String getKey(HostGroupModel item) {
 						return String.valueOf(item.getId());
 					}
 				});
 
-		RpcProxy<PagingLoadConfig, PagingLoadResult<WorkerGroupModel>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<WorkerGroupModel>>() {
+		RpcProxy<PagingLoadConfig, PagingLoadResult<HostGroupModel>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<HostGroupModel>>() {
 
 			@Override
 			public void load(
 					PagingLoadConfig loadConfig,
-					final AsyncCallback<PagingLoadResult<WorkerGroupModel>> callback) {
-				RPCS.getJobService().getWorkersGroup(loadConfig, callback);
+					final AsyncCallback<PagingLoadResult<HostGroupModel>> callback) {
+				RPCS.getJobService().getHostGroup(loadConfig, callback);
 			}
 		};
 
-		loader = new PagingLoader<PagingLoadConfig, PagingLoadResult<WorkerGroupModel>>(
+		loader = new PagingLoader<PagingLoadConfig, PagingLoadResult<HostGroupModel>>(
 				proxy);
 		loader.setLimit(10);
-		loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig, WorkerGroupModel, PagingLoadResult<WorkerGroupModel>>(
+		loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig, HostGroupModel, PagingLoadResult<HostGroupModel>>(
 				store));
-		grid = new Grid<WorkerGroupModel>(store, cm);
+		grid = new Grid<HostGroupModel>(store, cm);
 		grid.setLoader(loader);
 		grid.setLoadMask(true);
 		grid.getView().setForceFit(true);
@@ -103,7 +103,7 @@ public class WorkerGroupWindow extends Window {
 		refresh();
 	}
 
-	public Grid<WorkerGroupModel> getGrid() {
+	public Grid<HostGroupModel> getGrid() {
 		return grid;
 	}
 	public void refresh() {

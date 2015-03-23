@@ -38,8 +38,8 @@
 				<value>com.taobao.zeus.store.mysql.persistence.TimeZone</value>
 				<value>com.taobao.zeus.store.mysql.persistence.Worker</value>
 				<value>com.taobao.zeus.store.mysql.persistence.LogPersistence</value>
-				<value>com.taobao.zeus.store.mysql.persistence.WorkerGroupPersistence</value>
-				<value>com.taobao.zeus.store.mysql.persistence.WorkerRelationPersistence</value>
+				<value>com.taobao.zeus.store.mysql.persistence.HostGroupPersistence</value>
+				<value>com.taobao.zeus.store.mysql.persistence.HostRelationPersistence</value>
 			</list>
 		</property>
 	</bean>

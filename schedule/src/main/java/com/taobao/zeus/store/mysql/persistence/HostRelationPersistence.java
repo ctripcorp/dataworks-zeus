@@ -5,8 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Entity(name="zeus_worker_relation")
-public class WorkerRelationPersistence {
+@Entity(name="zeus_host_relation")
+public class HostRelationPersistence {
 	
 	@Id
 	@GeneratedValue
@@ -15,8 +15,8 @@ public class WorkerRelationPersistence {
 	@Column(nullable=false)
 	private String host;
 	
-	@Column(name = "worker_group_id", nullable = false)
-	private Integer workerGroupId;
+	@Column(name = "host_group_id", nullable = false)
+	private Integer hostGroupId;
 	
 	public Long getId() {
 		return id;
@@ -34,16 +34,16 @@ public class WorkerRelationPersistence {
 		this.host = host;
 	}
 
-	public Integer getWorkerGroupId() {
-		return workerGroupId;
+	public Integer getHostGroupId() {
+		return hostGroupId;
 	}
 
-	public void setWorkerGroupId(Integer workerGroupId) {
-		this.workerGroupId = workerGroupId;
+	public void setHostGroupId(Integer hostGroupId) {
+		this.hostGroupId = hostGroupId;
 	}
 	
 	@Override
 	public String toString() {
-		return host + " : " + workerGroupId;
+		return host + " : " + hostGroupId;
 	}
 }

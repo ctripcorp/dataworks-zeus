@@ -9,7 +9,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
-import com.taobao.zeus.web.platform.client.util.WorkerGroupModel;
+import com.taobao.zeus.web.platform.client.util.HostGroupModel;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 
@@ -81,12 +81,14 @@ public interface JobServiceAsync {
 
 	void getJobDependencies(String jobId, AsyncCallback<List<String>> callback);
 
-	void getWorkersGroup(PagingLoadConfig config,
-			AsyncCallback<PagingLoadResult<WorkerGroupModel>> callback);
+	void getHostGroup(PagingLoadConfig config,
+			AsyncCallback<PagingLoadResult<HostGroupModel>> callback);
 
-	void syncScriptAndWorkerGroupId(String jobId, String script,
-			String workerGroupId, AsyncCallback<Void> callback);
+	void syncScriptAndHostGroupId(String jobId, String script,
+			String hostGroupId, AsyncCallback<Void> callback);
 
-	void getWorkersGroupNameById(String workerGroupId,
+	void getHostGroupNameById(String hostGroupId,
 			AsyncCallback<String> callback);
+
+//	void getHostGroupNameById(String hostGroupId, AsyncCallback<String> callback);
 }

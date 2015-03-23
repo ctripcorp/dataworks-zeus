@@ -2,7 +2,7 @@ package com.taobao.zeus.model;
 
 import java.util.List;
 
-public class WorkerGroupCache {
+public class HostGroupCache {
 	
 	private String id;
 	

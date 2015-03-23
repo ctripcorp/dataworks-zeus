@@ -45,10 +45,10 @@ import com.taobao.zeus.store.JobBeanOld;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.UserManager;
-import com.taobao.zeus.store.WorkerManager;
+import com.taobao.zeus.store.HostGroupManager;
 import com.taobao.zeus.store.mysql.ReadOnlyGroupManager;
 import com.taobao.zeus.store.mysql.ReadOnlyGroupManagerOld;
-import com.taobao.zeus.store.mysql.persistence.WorkerGroupPersistence;
+import com.taobao.zeus.store.mysql.persistence.HostGroupPersistence;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.store.mysql.tool.ProcesserUtil;
 import com.taobao.zeus.util.DateUtil;
@@ -61,7 +61,7 @@ import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
 import com.taobao.zeus.web.platform.client.util.GwtException;
-import com.taobao.zeus.web.platform.client.util.WorkerGroupModel;
+import com.taobao.zeus.web.platform.client.util.HostGroupModel;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 import com.taobao.zeus.web.platform.shared.rpc.JobService;
@@ -88,7 +88,7 @@ public class JobServiceImpl implements JobService {
 	@Autowired
 	private ClientWorker worker;
 	@Autowired
-	private WorkerManager workerManager;
+	private HostGroupManager hostGroupManager;
 	@Override
 	public JobModel createJob(String jobName, String parentGroupId,
 			String jobType) throws GwtException {
@@ -283,7 +283,7 @@ public class JobServiceImpl implements JobService {
 		jobModel.setOffRaw(jobBean.getJobDescriptor().getOffRaw());
 		jobModel.setJobCycle(jobBean.getJobDescriptor().getCycle());
 		jobModel.setHost(jobBean.getJobDescriptor().getHost());
-		jobModel.setWorkerGroupId(jobBean.getJobDescriptor().getWorkerGroupId());
+		jobModel.setHostGroupId(jobBean.getJobDescriptor().getHostGroupId());
 		return jobModel;
 	}
 
@@ -328,11 +328,11 @@ public class JobServiceImpl implements JobService {
 		jd.setOffRaw(jobModel.getOffRaw());
 		jd.setCycle(jobModel.getJobCycle());
 		jd.setHost(jobModel.getHost());
-		if (jobModel.getWorkerGroupId() == null) {
-			jd.setWorkerGroupId(Environment.getDefaultWorkerGroupId());
-			log.error("job id: " + jd.getId() + " is not setWorkerGroupId and using the default");
+		if (jobModel.getHostGroupId() == null) {
+			jd.setHostGroupId(Environment.getDefaultWorkerGroupId());
+			log.error("job id: " + jd.getId() + " is not setHostGroupId and using the default");
 		}else {
-			jd.setWorkerGroupId(jobModel.getWorkerGroupId());
+			jd.setHostGroupId(jobModel.getHostGroupId());
 		}
 		try {
 			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
@@ -518,7 +518,7 @@ public class JobServiceImpl implements JobService {
 		history.setStatisEndTime(jobDescriptor.getStatisEndTime());
 		history.setTimezone(jobDescriptor.getTimezone());
 //		history.setExecuteHost(jobDescriptor.getHost());
-		history.setWorkerGroupId(jobDescriptor.getWorkerGroupId());
+		history.setHostGroupId(jobDescriptor.getHostGroupId());
 		jobHistoryManager.addJobHistory(history);
 
 		try {
@@ -1124,14 +1124,14 @@ public class JobServiceImpl implements JobService {
 
 
 	@Override
-	public PagingLoadResult<WorkerGroupModel> getWorkersGroup(PagingLoadConfig config) {
+	public PagingLoadResult<HostGroupModel> getHostGroup(PagingLoadConfig config) {
 		int start = config.getOffset();
 		int limit = config.getLimit();
-		List<WorkerGroupModel> tmp = new ArrayList<WorkerGroupModel>();
-		List<WorkerGroupPersistence> workerGroup = workerManager.getAllWorkerGroup();
-		for (WorkerGroupPersistence persist : workerGroup) {
+		List<HostGroupModel> tmp = new ArrayList<HostGroupModel>();
+		List<HostGroupPersistence> hostGroup = hostGroupManager.getAllHostGroup();
+		for (HostGroupPersistence persist : hostGroup) {
 			if (persist.getEffective() == 1) {
-				WorkerGroupModel r = new WorkerGroupModel();
+				HostGroupModel r = new HostGroupModel();
 				r.setId(String.valueOf(persist.getId()));
 				r.setName(persist.getName());
 				r.setDescription(persist.getDescription());
@@ -1139,10 +1139,10 @@ public class JobServiceImpl implements JobService {
 			}
 		}
 		Collections.sort(tmp,
-				new Comparator<WorkerGroupModel>() {
+				new Comparator<HostGroupModel>() {
 					@Override
-					public int compare(WorkerGroupModel o1,
-							WorkerGroupModel o2) {
+					public int compare(HostGroupModel o1,
+							HostGroupModel o2) {
 						return Integer.valueOf(o1.getId()).compareTo(Integer.valueOf(o2.getId()));
 					}
 				});
@@ -1151,21 +1151,21 @@ public class JobServiceImpl implements JobService {
 			start = 0;
 		}
 		tmp = tmp.subList(start,Math.min(start + limit, tmp.size()));
-		List<WorkerGroupModel> results = new ArrayList<WorkerGroupModel>();
+		List<HostGroupModel> results = new ArrayList<HostGroupModel>();
 		results.addAll(tmp);
-		return new PagingLoadResultBean<WorkerGroupModel>(results,total,start);
+		return new PagingLoadResultBean<HostGroupModel>(results,total,start);
 	}
 
 	@Override
-	public void syncScriptAndWorkerGroupId(String jobId, String script,
-			String workerGroupId) throws GwtException {
+	public void syncScriptAndHostGroupId(String jobId, String script,
+			String hostGroupId) throws GwtException {
 		JobDescriptorOld jd = permissionGroupManagerOld.getJobDescriptor(jobId)
 				.getX();
 		jd.setScript(script);
-		if (workerGroupId == null) {
-			jd.setWorkerGroupId(Environment.getDefaultWorkerGroupId());
+		if (hostGroupId == null) {
+			jd.setHostGroupId(Environment.getDefaultWorkerGroupId());
 		}else {
-			jd.setWorkerGroupId(workerGroupId);
+			jd.setHostGroupId(hostGroupId);
 		}
 		try {
 			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
@@ -1181,10 +1181,10 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public String getWorkersGroupNameById(String workerGroupId) {
+	public String getHostGroupNameById(String id) {
 		String result = null;
-		if (workerGroupId!=null) {
-			WorkerGroupPersistence persist = workerManager.getWorkerGroupName(workerGroupId);
+		if (id != null) {
+			HostGroupPersistence persist = hostGroupManager.getHostGroupName(id);
 			result = persist.getName();
 		}
 		return result;

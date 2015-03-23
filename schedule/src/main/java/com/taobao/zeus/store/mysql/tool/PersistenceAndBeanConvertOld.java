@@ -156,10 +156,10 @@ public class PersistenceAndBeanConvertOld {
 		jd.setStatisStartTime(persist.getStatisStartTime()==null?null:DateUtil.date2String(persist.getStatisStartTime()));
 		jd.setStatisEndTime(persist.getStatisEndTime()==null?null:DateUtil.date2String(persist.getStatisEndTime()));
 		jd.setHost(persist.getHost());
-		if(persist.getWorkerGroupId()!=null){
-			jd.setWorkerGroupId(String.valueOf(persist.getWorkerGroupId()));
+		if(persist.getHostGroupId()!=null){
+			jd.setHostGroupId(String.valueOf(persist.getHostGroupId()));
 		}else {
-			jd.setWorkerGroupId(Environment.getDefaultWorkerGroupId());
+			jd.setHostGroupId(Environment.getDefaultWorkerGroupId());
 		}
 		JobStatus status = new JobStatus();
 		status.setJobId(String.valueOf(persist.getId()));
@@ -273,10 +273,10 @@ public class PersistenceAndBeanConvertOld {
 			Log.warn("parse str to date failed", e);
 		}
 		persist.setHost(jd.getHost());
-		if (jd.getWorkerGroupId() != null) {
-			persist.setWorkerGroupId(Integer.valueOf(jd.getWorkerGroupId()));
+		if (jd.getHostGroupId() != null) {
+			persist.setHostGroupId(Integer.valueOf(jd.getHostGroupId()));
 		}else {
-			persist.setWorkerGroupId(Integer.valueOf(Environment.getDefaultWorkerGroupId()));
+			persist.setHostGroupId(Integer.valueOf(Environment.getDefaultWorkerGroupId()));
 		}
 		return persist;
 	}
@@ -380,10 +380,10 @@ public class PersistenceAndBeanConvertOld {
 		history.setStatisEndTime(persist.getStatisEndTime()==null?null:DateUtil.date2String(persist.getStatisEndTime()));
 		history.setTimezone(persist.getTimezone());
 		history.setCycle(persist.getCycle());
-		if (persist.getWorkerGroupId()!=null) {
-			history.setWorkerGroupId(persist.getWorkerGroupId().toString());
+		if (persist.getHostGroupId()!=null) {
+			history.setHostGroupId(persist.getHostGroupId().toString());
 		}else {
-			history.setWorkerGroupId(Environment.getDefaultWorkerGroupId());
+			history.setHostGroupId(Environment.getDefaultWorkerGroupId());
 		}
 		
 		return history;
@@ -426,10 +426,10 @@ public class PersistenceAndBeanConvertOld {
 				Log.warn("parse str to date failed", e);
 			}
 		}
-		if (history.getWorkerGroupId()!=null) {
-			persist.setWorkerGroupId(Integer.valueOf(history.getWorkerGroupId()));
+		if (history.getHostGroupId()!=null) {
+			persist.setHostGroupId(Integer.valueOf(history.getHostGroupId()));
 		}else {
-			persist.setWorkerGroupId(Integer.valueOf(Environment.getDefaultWorkerGroupId()));
+			persist.setHostGroupId(Integer.valueOf(Environment.getDefaultWorkerGroupId()));
 		}
 		return persist;
 	}

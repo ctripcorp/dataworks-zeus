@@ -15,7 +15,7 @@ public class FileModel implements Serializable{
 	private String content;
 	private String owner;
 	private boolean admin;
-	private String workerGroupId;
+	private String hostGroupId;
 	public String getId() {
 		return id;
 	}
@@ -70,10 +70,10 @@ public class FileModel implements Serializable{
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
 	}
-	public String getWorkerGroupId() {
-		return workerGroupId;
+	public String getHostGroupId() {
+		return hostGroupId;
 	}
-	public void setWorkerGroupId(String workerGroupId) {
-		this.workerGroupId = workerGroupId;
+	public void setHostGroupId(String hostGroupId) {
+		this.hostGroupId = hostGroupId;
 	}
 }

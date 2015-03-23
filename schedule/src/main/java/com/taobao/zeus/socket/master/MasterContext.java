@@ -17,7 +17,7 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.taobao.zeus.model.WorkerGroupCache;
+import com.taobao.zeus.model.HostGroupCache;
 import com.taobao.zeus.mvc.Dispatcher;
 import com.taobao.zeus.schedule.mvc.ScheduleInfoLog;
 import com.taobao.zeus.store.DebugHistoryManager;
@@ -26,7 +26,7 @@ import com.taobao.zeus.store.GroupManager;
 import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.ProfileManager;
-import com.taobao.zeus.store.WorkerManager;
+import com.taobao.zeus.store.HostGroupManager;
 
 public class MasterContext {
 	private Map<Channel, MasterWorkerHolder> workers=new ConcurrentHashMap<Channel, MasterWorkerHolder>();
@@ -34,7 +34,7 @@ public class MasterContext {
 	private Master master;
 	private Scheduler scheduler;
 	private Dispatcher dispatcher;
-	private volatile List<WorkerGroupCache> workersGroupCache;
+	private volatile List<HostGroupCache> hostGroupCache;
 	//调度任务 jobId
 //	private Queue<JobElement> queue=new ArrayBlockingQueue<JobElement>(10000);
 	private Queue<JobElement> queue=new PriorityBlockingQueue<JobElement>(10000, new Comparator<JobElement>() {
@@ -125,8 +125,8 @@ public class MasterContext {
 	public void setDispatcher(Dispatcher dispatcher) {
 		this.dispatcher = dispatcher;
 	}
-	public WorkerManager getWorkerManager(){
-		return (WorkerManager) applicationContext.getBean("workerManager");
+	public HostGroupManager getHostGroupManager(){
+		return (HostGroupManager) applicationContext.getBean("hostGroupManager");
 	}
 	public JobHistoryManager getJobHistoryManager() {
 		return (JobHistoryManager) applicationContext.getBean("jobHistoryManager");
@@ -189,18 +189,15 @@ public class MasterContext {
 		return manualQueue;
 	}
 	
-	public synchronized void refreshWorkerGroupCache(){
+	public synchronized void refreshHostGroupCache(){
 		try {
-			workersGroupCache = getWorkerManager().getAllWorkerGroupInfomations();
+			hostGroupCache = getHostGroupManager().getAllHostGroupInfomations();
 		} catch (Exception e) {
-			ScheduleInfoLog.error("refresh workergroupcache error", e);
+			ScheduleInfoLog.error("refresh hostgroupcache error", e);
 		}
 		
 	}
-	public List<WorkerGroupCache> getWorkersGroupCache() {
-		return workersGroupCache;
-	}
-	public void setWorkersGroupCache(List<WorkerGroupCache> workersGroupCache) {
-		this.workersGroupCache = workersGroupCache;
+	public List<HostGroupCache> getHostGroupCache() {
+		return hostGroupCache;
 	}
 }

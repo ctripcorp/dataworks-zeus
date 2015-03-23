@@ -28,7 +28,7 @@ import com.taobao.zeus.model.FileDescriptor;
 import com.taobao.zeus.model.JobDescriptor;
 import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.model.JobStatus;
-import com.taobao.zeus.model.WorkerGroupCache;
+import com.taobao.zeus.model.HostGroupCache;
 import com.taobao.zeus.model.JobStatus.TriggerType;
 import com.taobao.zeus.model.Profile;
 import com.taobao.zeus.mvc.Controller;
@@ -96,15 +96,15 @@ public class Master {
 		// 初始化
 		context.getDispatcher().forwardEvent(Events.Initialize);
 		context.setMaster(this);
-		//刷新worker分组关系列表
-		context.refreshWorkerGroupCache();
-		log.info("refresh WorkerGroup Cache");
+		//刷新host分组关系列表
+		context.refreshHostGroupCache();
+		log.info("refresh HostGroup Cache");
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
 			
 			@Override
 			public void run() {
-				context.refreshWorkerGroupCache();
-				log.info("refresh WorkerGroup Cache");
+				context.refreshHostGroupCache();
+				log.info("refresh HostGroup Cache");
 			}
 		}, 1, 1, TimeUnit.HOURS);
 		
@@ -331,13 +331,13 @@ public class Master {
 //
 //	}
 	
-	private MasterWorkerHolder getRunableWorker(String workerGroupId) {
-		if (workerGroupId == null) {
-			workerGroupId = Environment.getDefaultWorkerGroupId();
+	private MasterWorkerHolder getRunableWorker(String hostGroupId) {
+		if (hostGroupId == null) {
+			hostGroupId = Environment.getDefaultWorkerGroupId();
 		}
 		MasterWorkerHolder selectWorker = null;
 		Float selectMemRate = null;
-		Set<String> workersGroup = getWorkersByGroupId(workerGroupId);
+		Set<String> workersGroup = getWorkersByGroupId(hostGroupId);
 		for (MasterWorkerHolder worker : context.getWorkers().values()) {
 			if (worker!=null && workersGroup.contains(worker.getHeart().host)) {
 				HeartBeatInfo heart = worker.getHeart();
@@ -355,18 +355,18 @@ public class Master {
 			}
 		}
 		if (selectWorker != null) {
-			log.info("select worker: " + selectWorker.getHeart().host + ", for workerGroupId " + workerGroupId);
+			log.info("select worker: " + selectWorker.getHeart().host + ", for HostGroupId " + hostGroupId);
 		}else {
 			log.error("can not find proper workers");
 		}
 		return selectWorker;
 	}
 	
-	private Set<String> getWorkersByGroupId(String workerGroupId){
+	private Set<String> getWorkersByGroupId(String hostGroupId){
 		Set<String> workers = new HashSet<String>();
-		for(WorkerGroupCache workergroup : context.getWorkersGroupCache()){
-			if (workergroup.getId().equals(workerGroupId) ) {
-				for (String host : workergroup.getHosts()) {
+		for(HostGroupCache hostgroup : context.getHostGroupCache()){
+			if (hostgroup.getId().equals(hostGroupId) ) {
+				for (String host : hostgroup.getHosts()) {
 					workers.add(host);
 				}
 				break;
@@ -382,13 +382,13 @@ public class Master {
 			log.info("schedule queue :" +context.getQueue().size());
 			final JobElement e = context.getQueue().poll();
 			log.info("priority level :"+e.getPriorityLevel()+"; JobID :"+e.getJobID());
-			MasterWorkerHolder selectWorker = getRunableWorker(e.getWorkerGroupId());
+			MasterWorkerHolder selectWorker = getRunableWorker(e.getHostGroupId());
 			if (selectWorker == null) {
 				context.getQueue().offer(e);
-				log.info("WokerGroupId : "  + e.getWorkerGroupId() + " is offered back to queue");
+				log.info("HostGroupId : "  + e.getHostGroupId() + " is offered back to queue");
 			} else {
 				runScheduleJob(selectWorker, e.getJobID());
-				log.info("WokerGroupId : "  + e.getWorkerGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
+				log.info("HostGroupId : "  + e.getHostGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
 			}
 		}
 		
@@ -396,14 +396,14 @@ public class Master {
 			log.info("manual queue :" +context.getManualQueue().size());
 			final JobElement e = context.getManualQueue().poll();
 			log.info("priority level: "+e.getPriorityLevel()+"; JobID:"+e.getJobID());
-			MasterWorkerHolder selectWorker = getRunableWorker(e.getWorkerGroupId());
+			MasterWorkerHolder selectWorker = getRunableWorker(e.getHostGroupId());
 
 			if (selectWorker == null) {
 				context.getManualQueue().offer(e);
-				log.info("WokerGroupId : "  + e.getWorkerGroupId() + " is offered back to queue");
+				log.info("HostGroupId : "  + e.getHostGroupId() + " is offered back to queue");
 			} else {
 				runManualJob(selectWorker, e.getJobID());
-				log.info("WokerGroupId : "  + e.getWorkerGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
+				log.info("HostGroupId : "  + e.getHostGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
 			}
 		}
 		
@@ -411,13 +411,13 @@ public class Master {
 			log.info("debug queue :" +context.getDebugQueue().size() );
 			final JobElement e = context.getDebugQueue().poll();
 			log.info("priority level:null; JobID:"+e.getJobID());
-			MasterWorkerHolder selectWorker = getRunableWorker(e.getWorkerGroupId());
+			MasterWorkerHolder selectWorker = getRunableWorker(e.getHostGroupId());
 			if (selectWorker == null) {
 				context.getDebugQueue().offer(e);
-				log.info("WokerGroupId : "  + e.getWorkerGroupId() + " is offered back to queue");
+				log.info("HostGroupId : "  + e.getHostGroupId() + " is offered back to queue");
 			} else {
 				runDebugJob(selectWorker, e.getJobID());
-				log.info("WokerGroupId : "  + e.getWorkerGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
+				log.info("HostGroupId : "  + e.getHostGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
 			}
 		}
 		
@@ -942,7 +942,7 @@ public class Master {
 	}
 
 	public void debug(DebugHistory debug) {
-		JobElement element = new JobElement(debug.getId(), debug.getWorkerGroupId());
+		JobElement element = new JobElement(debug.getId(), debug.gethostGroupId());
 		debug.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
 		debug.setStartTime(new Date());
 		context.getDebugHistoryManager().updateDebugHistory(debug);
@@ -967,7 +967,7 @@ public class Master {
 		}catch(Exception ex){
 			priorityLevel = 3;
 		}
-		JobElement element = new JobElement(jobId, history.getWorkerGroupId(), priorityLevel);
+		JobElement element = new JobElement(jobId, history.getHostGroupId(), priorityLevel);
 		history.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
 		if (history.getTriggerType() == TriggerType.MANUAL_RECOVER) {
 			for (JobElement e : new ArrayList<JobElement>(context.getQueue())) {
@@ -1055,7 +1055,7 @@ public class Master {
 							actionPer.setGroupId(jobDetail.getGroupId());
 							actionPer.setHistoryId(jobDetail.getHistoryId());
 							actionPer.setHost(jobDetail.getHost());
-							actionPer.setWorkerGroupId(jobDetail.getWorkerGroupId());
+							actionPer.setHostGroupId(jobDetail.getHostGroupId());
 							actionPer.setLastEndTime(jobDetail.getLastEndTime());
 							actionPer.setLastResult(jobDetail.getLastResult());
 							actionPer.setName(jobDetail.getName());
@@ -1156,7 +1156,7 @@ public class Master {
 							actionPer.setStatisStartTime(statisStartTime);
 							actionPer.setStatisEndTime(statisEndTime);
 							actionPer.setStatus(jobDetail.getStatus());
-							actionPer.setWorkerGroupId(jobDetail.getWorkerGroupId());
+							actionPer.setHostGroupId(jobDetail.getHostGroupId());
 							actionPer.setTimezone(jobDetail.getTimezone());
 							try {
 								//System.out.println("周期任务（天）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
@@ -1220,7 +1220,7 @@ public class Master {
 								actionPer.setStatisEndTime(statisEndTime);
 								actionPer.setStatus(jobDetail.getStatus());
 								actionPer.setTimezone(jobDetail.getTimezone());
-								actionPer.setWorkerGroupId(jobDetail.getWorkerGroupId());
+								actionPer.setHostGroupId(jobDetail.getHostGroupId());
 								try {
 									System.out.println("周期任务（时）JobId: " + jobDetail.getId()+";  ActionId: " +actionPer.getId());
 									//if(actionPer.getId()>Long.parseLong(currentDateStr)){
@@ -1343,7 +1343,7 @@ public class Master {
 									actionPer.setGroupId(jobDetail.getGroupId());
 									actionPer.setHistoryId(jobDetail.getHistoryId());
 									actionPer.setHost(jobDetail.getHost());
-									actionPer.setWorkerGroupId(jobDetail.getWorkerGroupId());
+									actionPer.setHostGroupId(jobDetail.getHostGroupId());
 									actionPer.setLastEndTime(jobDetail.getLastEndTime());
 									actionPer.setLastResult(jobDetail.getLastResult());
 									actionPer.setName(jobDetail.getName());

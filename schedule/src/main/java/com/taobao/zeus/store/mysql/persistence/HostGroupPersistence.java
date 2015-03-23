@@ -7,8 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Entity(name="zeus_worker_group")
-public class WorkerGroupPersistence {
+@Entity(name="zeus_host_group")
+public class HostGroupPersistence {
 	@Id
 	@GeneratedValue
 	private Integer id;

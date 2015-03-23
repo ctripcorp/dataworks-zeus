@@ -15,7 +15,7 @@ import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
 import com.taobao.zeus.web.platform.client.util.GwtException;
-import com.taobao.zeus.web.platform.client.util.WorkerGroupModel;
+import com.taobao.zeus.web.platform.client.util.HostGroupModel;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
@@ -152,9 +152,9 @@ public interface JobService extends RemoteService {
 	
 	List<String> getJobDependencies(String jobId) throws GwtException;
 	
-	PagingLoadResult<WorkerGroupModel> getWorkersGroup(PagingLoadConfig config);
+	PagingLoadResult<HostGroupModel> getHostGroup(PagingLoadConfig config);
 
-	void syncScriptAndWorkerGroupId(String jobId, String script, String workerGroupId) throws GwtException;
+	void syncScriptAndHostGroupId(String jobId, String script, String hostGroupId) throws GwtException;
 	
-	String getWorkersGroupNameById(String workerGroupId);
+	String getHostGroupNameById(String hostGroupId);
 }

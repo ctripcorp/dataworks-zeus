@@ -40,7 +40,7 @@ public class EditTab extends BorderLayoutContainer {
 
 	private Status status;
 	private Status charCount;
-	private Status workerGroupStatus;
+	private Status hostGroupStatus;
 	private LogTabPanel logTabPanel = new LogTabPanel();
 	private VerticalLayoutContainer codePanel = new VerticalLayoutContainer();
 	private ContentPanel logPanel = new ContentPanel();
@@ -75,11 +75,11 @@ public class EditTab extends BorderLayoutContainer {
 		status.setWidth(100);
 		bar.add(status);
 		bar.add(new LabelToolItem(" "));
-		workerGroupStatus = new Status(
+		hostGroupStatus = new Status(
 				GWT.<StatusAppearance> create(BlueBoxStatusAppearance.class));
-		workerGroupStatus.setWidth(300);
-		bar.add(workerGroupStatus);
-		refreshWorkerGroupStatus(model.getWorkerGroupId());
+		hostGroupStatus.setWidth(300);
+		bar.add(hostGroupStatus);
+		refreshHostGroupStatus(model.getHostGroupId());
 
 		codePanel.add(getCodeMirror(), new VerticalLayoutData(1, 1,
 				new Margins(5)));
@@ -187,17 +187,17 @@ public class EditTab extends BorderLayoutContainer {
 		return codePanel;
 	}
 
-	public void refreshWorkerGroupStatus(final String id) {
+	public void refreshHostGroupStatus(final String id) {
 		if (id!=null) {
-			RPCS.getJobService().getWorkersGroupNameById(id, new AbstractAsyncCallback<String>() {
+			RPCS.getJobService().getHostGroupNameById(id, new AbstractAsyncCallback<String>() {
 
 				@Override
 				public void onSuccess(String result) {
-					workerGroupStatus.setText("worker组id: " + id +", 组名: " + result);
+					hostGroupStatus.setText("host组id: " + id +", 组名: " + result);
 				}
 			});
 		}else {
-			workerGroupStatus.setText("默认worker组");
+			hostGroupStatus.setText("默认host组");
 		}
 	}
 

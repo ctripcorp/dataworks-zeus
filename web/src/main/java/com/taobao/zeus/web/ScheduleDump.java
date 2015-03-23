@@ -23,7 +23,7 @@ import org.quartz.SchedulerException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.taobao.zeus.model.WorkerGroupCache;
+import com.taobao.zeus.model.HostGroupCache;
 import com.taobao.zeus.mvc.Controller;
 import com.taobao.zeus.mvc.Dispatcher;
 import com.taobao.zeus.schedule.DistributeLocker;
@@ -254,18 +254,18 @@ public class ScheduleDump extends HttpServlet {
 								}
 							}
 							resp.getWriter().println("Action生成完毕！");
-						} else if ("workersgroup".equals(op)) {
-							List<WorkerGroupCache> allWorkerGroupInfomations = context.getWorkersGroupCache();
+						} else if ("hostgroup".equals(op)) {
+							List<HostGroupCache> allHostGroupInfomations = context.getHostGroupCache();
 							StringBuilder builder = new StringBuilder();
-							builder.append("<h3>wokers信息：</h3>");
+							builder.append("<h3>host组信息：</h3>");
 							builder.append("<table border=\"1\">");
 							builder.append("<tr>");
 							builder.append("<th>组id</th>");
 							builder.append("<th>名称</th>");
 							builder.append("<th>描述</th>");
-							builder.append("<th>workers</th>");
+							builder.append("<th>host</th>");
 							builder.append("</tr>");
-							for (WorkerGroupCache info : allWorkerGroupInfomations) {
+							for (HostGroupCache info : allHostGroupInfomations) {
 								builder.append("<tr>");
 								builder.append("<td>" + info.getId() + "</td>");
 								builder.append("<td>" + info.getName() + "</td>");
@@ -279,17 +279,17 @@ public class ScheduleDump extends HttpServlet {
 							}
 							builder.append("</table>");
 							resp.getWriter().println(builder.toString());
-						}else if ("refreshworkersgroup".equals(op)) {
-							context.refreshWorkerGroupCache();
-							resp.sendRedirect("dump.do?op=workersgroup");
+						}else if ("refreshhostgroup".equals(op)) {
+							context.refreshHostGroupCache();
+							resp.sendRedirect("dump.do?op=hostgroup");
 						}
 						else {
 							resp.getWriter().println("<a href='dump.do?op=jobstatus'>查看Job调度状态</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=workers'>查看master-worker 状态</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=queue'>等待队列任务</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=action'>生成Action版本</a>&nbsp;&nbsp;&nbsp;&nbsp;");
-							resp.getWriter().println("<a href='dump.do?op=workersgroup'>查看workers分组信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
-							resp.getWriter().println("<a href='dump.do?op=refreshworkersgroup'>刷新workers分组信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
+							resp.getWriter().println("<a href='dump.do?op=hostgroup'>查看host分组信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
+							resp.getWriter().println("<a href='dump.do?op=refreshhostgroup'>刷新host分组信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 						}
 					}
 

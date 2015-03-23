@@ -50,12 +50,12 @@ import com.taobao.zeus.web.platform.client.module.jobdisplay.job.FileUploadWidge
 import com.taobao.zeus.web.platform.client.module.jobmanager.DependencyConfigWindow;
 import com.taobao.zeus.web.platform.client.module.jobmanager.GroupJobTreeModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
-import com.taobao.zeus.web.platform.client.module.jobmanager.WorkerGroupWindow;
+import com.taobao.zeus.web.platform.client.module.jobmanager.HostGroupWindow;
 import com.taobao.zeus.web.platform.client.module.jobmanager.event.TreeNodeChangeEvent;
 import com.taobao.zeus.web.platform.client.util.Callback;
 import com.taobao.zeus.web.platform.client.util.RPCS;
 import com.taobao.zeus.web.platform.client.util.Refreshable;
-import com.taobao.zeus.web.platform.client.util.WorkerGroupModel;
+import com.taobao.zeus.web.platform.client.util.HostGroupModel;
 import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 
 /**
@@ -165,7 +165,7 @@ public class CardEditJob extends CenterTemplate implements
 			}else {
 				model.getLocalProperties().remove(CardInfo.ENCRYPTION);
 			}
-			model.setWorkerGroupId(workerGroup.getCurrentValue());
+			model.setHostGroupId(hostGroupField.getCurrentValue());
 		
 			
 			// Hive处理器配置
@@ -269,7 +269,7 @@ public class CardEditJob extends CenterTemplate implements
 	private FieldLabel cycleWapper;
 	private ComboBox<Map<String, String>> jobCycle;
 //	private TextField hostField;
-	private TextField workerGroup;
+	private TextField hostGroupField;
 	private TextField maxTimeField;
 
 	// private ZKProcesserWindow zkWindow = new ZKProcesserWindow(zk);
@@ -388,7 +388,7 @@ public class CardEditJob extends CenterTemplate implements
 		}
 		baseDepJobs.setValue(depcode);
 //		hostField.setValue(t.getHost());
-		workerGroup.setValue(String.valueOf(t.getWorkerGroupId()));
+		hostGroupField.setValue(String.valueOf(t.getHostGroupId()));
 		
 		String cycle = t.getAllProperties().get(CardInfo.DEPENDENCY_CYCLE);
 		if (cycle == null) {
@@ -566,21 +566,21 @@ public class CardEditJob extends CenterTemplate implements
 //			hostField = new TextField();
 //			hostField.setWidth(150);
 
-			workerGroup = new TextField();
-			workerGroup.setWidth(150);
-			workerGroup.setReadOnly(true);
-			workerGroup.addHandler(new ClickHandler(){
+			hostGroupField = new TextField();
+			hostGroupField.setWidth(150);
+			hostGroupField.setReadOnly(true);
+			hostGroupField.addHandler(new ClickHandler(){
 
 				@Override
 				public void onClick(ClickEvent event) {
-					final WorkerGroupWindow chdwnd = new WorkerGroupWindow();
+					final HostGroupWindow chdwnd = new HostGroupWindow();
 					chdwnd.setSelectHandler(new SelectHandler() {
 						
 						@Override
 						public void onSelect(SelectEvent event) {
 							if (chdwnd.getGrid().getSelectionModel()!=null) {
 								String id = chdwnd.getGrid().getSelectionModel().getSelectedItem().getId();
-								workerGroup.setValue(id);
+								hostGroupField.setValue(id);
 							}
 							chdwnd.hide();
 						}
@@ -631,7 +631,7 @@ public class CardEditJob extends CenterTemplate implements
 								offWapper.hide();
 								cycleWapper.hide();
 //								hostField.show();
-								workerGroup.show();
+								hostGroupField.show();
 							}
 							if (event.getValue().equals(JobModel.DEPEND_JOB)) {
 								cronWapper.hide();
@@ -643,7 +643,7 @@ public class CardEditJob extends CenterTemplate implements
 								depJobsWapper.show();
 								baseDepJobs.setAllowBlank(false);
 //								hostField.show();
-								workerGroup.show();
+								hostGroupField.show();
 							}
 							if (event.getValue().equals(JobModel.CYCLE_JOB)) {
 								cronWapper.hide();
@@ -655,7 +655,7 @@ public class CardEditJob extends CenterTemplate implements
 								depJobsWapper.show();
 								baseDepJobs.setAllowBlank(true);
 //								hostField.show();
-								workerGroup.show();
+								hostGroupField.show();
 							}
 						}
 					});
@@ -1015,7 +1015,7 @@ public class CardEditJob extends CenterTemplate implements
 			rightContainer.add(depJobsWapper, new VerticalLayoutData(1, -1));
 			rightContainer.add(depCycleWapper, new VerticalLayoutData(1, -1));
 			rightContainer.add(offWapper, new VerticalLayoutData(1, -1));
-			rightContainer.add(new FieldLabel(workerGroup, "worker组id"),
+			rightContainer.add(new FieldLabel(hostGroupField, "host组id"),
 					new VerticalLayoutData(1, -1));
 			rightContainer.add(isEncryptionWapper,
 					new VerticalLayoutData(1, -1));

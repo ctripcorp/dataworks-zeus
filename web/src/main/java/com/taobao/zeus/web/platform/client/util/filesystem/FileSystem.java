@@ -92,9 +92,9 @@ public class FileSystem {
 		});
 	}
 	
-	public void updateWorkerGroupId(String fileId, String workerGroupId,
+	public void updateHostGroupId(String fileId, String id,
 			final PlatformAsyncCallback<Void> callback){
-		RPCS.getFileManagerService().updateWorkerGroupId(fileId, workerGroupId, new AbstractAsyncCallback<Void>() {
+		RPCS.getFileManagerService().updateHostGroupId(fileId, id, new AbstractAsyncCallback<Void>() {
 
 			@Override
 			public void onSuccess(Void arg0) {

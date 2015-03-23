@@ -66,10 +66,10 @@
 			<value>${dos2unix.exclude.file}</value>
 		</constructor-arg>
 		<constructor-arg index="15">
-			<value>${zeus.defaultworkergroup.id}</value>
+			<value>${zeus.defaultWorkerGroup.id}</value>
 		</constructor-arg>
 		<constructor-arg index="16">
-			<value>${zeus.defaultmastergroup.id}</value>
+			<value>${zeus.preemptionMasterGroup.id}</value>
 		</constructor-arg>
 	</bean>
 	
@@ -104,7 +104,7 @@
 	<bean id="tableManager" class="com.taobao.zeus.store.CliTableManager" />
 	<bean id="reportManager" class="com.taobao.zeus.store.mysql.MysqlReportManager" />
 	<bean id="zeusLogManager" class="com.taobao.zeus.store.mysql.MysqlLogManager" />
-	<bean id="workerManager" class="com.taobao.zeus.store.mysql.MysqlWorkerManager" />
+	<bean id="hostGroupManager" class="com.taobao.zeus.store.mysql.MysqlHostGroupManager" />
 	<bean id="readOnlyGroupManager" class="com.taobao.zeus.store.mysql.ReadOnlyGroupManager" >
 		<property name="groupManager" ref="groupManager" />
 	</bean>

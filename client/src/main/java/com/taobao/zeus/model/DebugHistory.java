@@ -31,7 +31,7 @@ public class DebugHistory{
 	
 	private String host;
 
-	private String workerGroupId;
+	private String hostGroupId;
 	
 	public LogContent getLog() {
 		return log;
@@ -130,11 +130,11 @@ public class DebugHistory{
 		this.host = host;
 	}
 
-	public String getWorkerGroupId() {
-		return workerGroupId;
+	public String gethostGroupId() {
+		return hostGroupId;
 	}
 
-	public void setWorkerGroupId(String workerGroupId) {
-		this.workerGroupId = workerGroupId;
+	public void setHostGroupId(String hostGroupId) {
+		this.hostGroupId = hostGroupId;
 	}
 }

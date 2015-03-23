@@ -11,7 +11,7 @@ import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
 import com.taobao.zeus.web.platform.client.util.GwtException;
-import com.taobao.zeus.web.platform.client.util.WorkerGroupModel;
+import com.taobao.zeus.web.platform.client.util.HostGroupModel;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 import com.taobao.zeus.web.platform.shared.rpc.JobService;
@@ -178,19 +178,19 @@ public class FilterJobServiceImpl implements JobService{
 	}
 
 	@Override
-	public PagingLoadResult<WorkerGroupModel> getWorkersGroup(
+	public PagingLoadResult<HostGroupModel> getHostGroup(
 			PagingLoadConfig config) {
-		return jobService.getWorkersGroup(config);
+		return jobService.getHostGroup(config);
 	}
 
 	@Override
-	public void syncScriptAndWorkerGroupId(String jobId, String script,
-			String workerGroupId) throws GwtException {
-		jobService.syncScriptAndWorkerGroupId(jobId, script, workerGroupId);
+	public void syncScriptAndHostGroupId(String jobId, String script,
+			String hostGroupId) throws GwtException {
+		jobService.syncScriptAndHostGroupId(jobId, script, hostGroupId);
 	}
 
 	@Override
-	public String getWorkersGroupNameById(String workerGroupId) {
-		return jobService.getWorkersGroupNameById(workerGroupId);
+	public String getHostGroupNameById(String hostGroupId) {
+		return jobService.getHostGroupNameById(hostGroupId);
 	}
 }

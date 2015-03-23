@@ -2,7 +2,7 @@ package com.taobao.zeus.web.platform.client.util;
 
 import java.io.Serializable;
 
-public class WorkerGroupModel implements Serializable{
+public class HostGroupModel implements Serializable{
 	
 	/**
 	 * 

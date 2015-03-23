@@ -42,7 +42,7 @@ public class ShellToolBar extends AbstractToolBar{
 		Menu menu=new Menu();
 		menu.add(upload);
 		menu.add(lingoes);
-		menu.add(workgroup);
+		menu.add(hostgroup);
 		extend.setMenu(menu);
 		add(extend);
 		add(new SeparatorToolItem());
@@ -120,9 +120,9 @@ public class ShellToolBar extends AbstractToolBar{
 					sb.append("名称:"+result.getName()+"<br/>");
 					sb.append("所有人:"+result.getOwnerName()+"("+result.getOwner()+")<br/>");
 					sb.append("自动调度:"+(result.getAuto()?"开启":"关闭")+"<br/>");
-					sb.append("worker组id：" + (result.getWorkerGroupId()) + "<br/>");
+					sb.append("host组id：" + (result.getHostGroupId()) + "<br/>");
 					sb.append("您确认要进行同步吗?");
-					ConfirmMessageBox confirm=new ConfirmMessageBox("同步脚本和worker组id", sb.toString());
+					ConfirmMessageBox confirm=new ConfirmMessageBox("同步脚本和host组id", sb.toString());
 					confirm.addHideHandler(new HideHandler() {
 						public void onHide(HideEvent event) {
 							Dialog dialog=(Dialog)event.getSource();
@@ -131,8 +131,8 @@ public class ShellToolBar extends AbstractToolBar{
 									shellWord.getEditTab().getCodeMirror().setValue("#sync["+shellWord.getFileModel().getId()+"->"
 											+jobId+"]\n"+shellWord.getEditTab().getNewContent());
 								}
-								String workerGroupId = shellWord.getFileModel().getWorkerGroupId();
-								RPCS.getJobService().syncScriptAndWorkerGroupId(jobId, shellWord.getEditTab().getNewContent(), workerGroupId,
+								String hostGroupId = shellWord.getFileModel().getHostGroupId();
+								RPCS.getJobService().syncScriptAndHostGroupId(jobId, shellWord.getEditTab().getNewContent(), hostGroupId,
 									new AbstractAsyncCallback<Void>() {
 										@Override
 										public void onSuccess(

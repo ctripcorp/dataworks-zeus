@@ -312,7 +312,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		persist.setStatus(orgPersist.getStatus());
 		persist.setReadyDependency(orgPersist.getReadyDependency());
 		persist.setHost(job.getHost());
-		persist.setWorkerGroupId(Integer.valueOf(job.getWorkerGroupId()));
+		persist.setHostGroupId(Integer.valueOf(job.getHostGroupId()));
 		// 如果是用户从界面上更新，开始时间、统计周期等均为空，用原来的值
 		if (job.getStartTime() == null || "".equals(job.getStartTime())) {
 			persist.setStartTime(orgPersist.getStartTime());
@@ -649,7 +649,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		String resources = persist.getResources();
 		String configs = persist.getConfigs();
 		String host = persist.getHost();
-		Integer workGroupId = persist.getWorkerGroupId();
+		Integer workGroupId = persist.getHostGroupId();
 		logger.info("begin updateActionList.");
 		HibernateTemplate template = getHibernateTemplate();
 		List<JobPersistence> actionList = template.find("from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId='"+ jobId +"' order by id desc");
@@ -662,7 +662,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 					actionPer.setConfigs(configs);
 					actionPer.setHost(host);
 					actionPer.setGmtModified(new Date());
-					actionPer.setWorkerGroupId(workGroupId);
+					actionPer.setHostGroupId(workGroupId);
 					template.saveOrUpdate(actionPer);
 //				}
 			}

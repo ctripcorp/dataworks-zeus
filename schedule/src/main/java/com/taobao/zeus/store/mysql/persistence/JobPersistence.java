@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity(name = "zeus_action")
@@ -120,15 +119,15 @@ public class JobPersistence implements Serializable {
 	@Column(name="host")
 	private String host;
 	
-	@Column(name="worker_group_id")
-	private Integer workerGroupId;
+	@Column(name="host_group_id")
+	private Integer hostGroupId;
 	
-	public Integer getWorkerGroupId() {
-		return workerGroupId;
+	public Integer getHostGroupId() {
+		return hostGroupId;
 	}
 
-	public void setWorkerGroupId(Integer workerGroupId) {
-		this.workerGroupId = workerGroupId;
+	public void setHostGroupId(Integer hostGroupId) {
+		this.hostGroupId = hostGroupId;
 	}
 	
 	public Long getToJobId() {

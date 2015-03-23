@@ -22,7 +22,7 @@ import com.taobao.zeus.web.platform.client.module.filemanager.FileModel;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.DefaultPanel;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.FileUploadWidget;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.FileUploadWidget.UploadCallback;
-import com.taobao.zeus.web.platform.client.module.jobmanager.WorkerGroupWindow;
+import com.taobao.zeus.web.platform.client.module.jobmanager.HostGroupWindow;
 import com.taobao.zeus.web.platform.client.module.profile.QuickHadoopConfig;
 import com.taobao.zeus.web.platform.client.module.word.Word;
 import com.taobao.zeus.web.platform.client.module.word.component.EditTab;
@@ -51,7 +51,7 @@ public abstract class AbstractToolBar extends ToolBar{
 			}
 			if(mode!=null){
 				RPCS.getJobDebugService().debug(getFileModel().getId(),mode,
-						content, getFileModel().getWorkerGroupId(), new AbstractAsyncCallback<String>() {
+						content, getFileModel().getHostGroupId(), new AbstractAsyncCallback<String>() {
 					@Override
 					public void onSuccess(final String debugId) {
 						getEditTab().getLogTabPanel().onStartDebug(debugId);
@@ -112,18 +112,18 @@ public abstract class AbstractToolBar extends ToolBar{
 					}).show();
 		}
 	});
-	protected MenuItem workgroup=new MenuItem("选择worker组",new SelectionHandler<MenuItem>() {
+	protected MenuItem hostgroup=new MenuItem("选择host组",new SelectionHandler<MenuItem>() {
 		@Override
 		public void onSelection(SelectionEvent<MenuItem> event) {
-			final WorkerGroupWindow chdwnd = new WorkerGroupWindow();
+			final HostGroupWindow chdwnd = new HostGroupWindow();
 			chdwnd.setSelectHandler(new SelectHandler() {
 				@Override
 				public void onSelect(SelectEvent event) {
 					if (chdwnd.getGrid().getSelectionModel()!=null) {
 						String id = chdwnd.getGrid().getSelectionModel().getSelectedItem().getId();
-						getFileModel().setWorkerGroupId(id);
-						getEditTab().refreshWorkerGroupStatus(id);
-						getEditTab().getContext().getFileSystem().updateWorkerGroupId(getFileModel().getId(), id, new PlatformAsyncCallback<Void>() {
+						getFileModel().setHostGroupId(id);
+						getEditTab().refreshHostGroupStatus(id);
+						getEditTab().getContext().getFileSystem().updateHostGroupId(getFileModel().getId(), id, new PlatformAsyncCallback<Void>() {
 							public void callback(Void t) {
 							}
 						});

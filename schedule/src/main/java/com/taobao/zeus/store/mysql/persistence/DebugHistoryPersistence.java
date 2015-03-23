@@ -34,6 +34,8 @@ public class DebugHistoryPersistence {
 	private String log;
 	@Column(name="owner")
 	private String owner;
+	@Column(name="host_group_id")
+	private Integer hostGroupId;
 	
 	
 	public String getOwner() {
@@ -107,5 +109,11 @@ public class DebugHistoryPersistence {
 	}
 	public void setFileId(Long fileId) {
 		this.fileId = fileId;
+	}
+	public Integer getHostGroupId() {
+		return hostGroupId;
+	}
+	public void setHostGroupId(Integer hostGroupId) {
+		this.hostGroupId = hostGroupId;
 	}
 }

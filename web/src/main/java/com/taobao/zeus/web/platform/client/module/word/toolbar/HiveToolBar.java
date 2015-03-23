@@ -44,6 +44,7 @@ public class HiveToolBar extends AbstractToolBar{
 		Menu menu=new Menu();
 		menu.add(upload);
 		menu.add(lingoes);
+		menu.add(hostgroup);
 		extend.setMenu(menu);
 		add(extend);
 		add(new SeparatorToolItem());
@@ -103,6 +104,7 @@ public class HiveToolBar extends AbstractToolBar{
 			}
 			if (!exist) {
 				final CheckableJobTree tree = new CheckableJobTree();
+				tree.setHeadingText("同步任务");
 				tree.getTree().setCheckable(false);
 				tree.getTree().getSelectionModel()
 						.setSelectionMode(SelectionMode.SINGLE);
@@ -138,8 +140,11 @@ public class HiveToolBar extends AbstractToolBar{
 							sb.append("名称:" + result.getName()+ "<br/>");
 							sb.append("所有人:"+ result.getOwnerName()+ "(" + result.getOwner()+ ")<br/>");
 							sb.append("自动调度:"+ (result.getAuto() ? "开启": "关闭") + "<br/>");
+							sb.append("host组id：" + (result.getHostGroupId()) + "<br/>");
+							final String hostGroupId = hiveWord.getFileModel().getHostGroupId();
 							sb.append("您确认要进行同步吗?");
-							ConfirmMessageBox confirm = new ConfirmMessageBox("同步脚本", sb.toString());
+							
+							ConfirmMessageBox confirm = new ConfirmMessageBox("同步脚本和host组id", sb.toString());
 							confirm.addHideHandler(new HideHandler() {
 								@Override
 								public void onHide(HideEvent event) {
@@ -150,7 +155,8 @@ public class HiveToolBar extends AbstractToolBar{
 													"--sync["+ getFileModel().getId()+ "->"+ jobId+ "]\n"+ hiveWord.getEditTab()
 													.getNewContent());
 										}
-										RPCS.getJobService().syncScript(jobId,hiveWord.getEditTab().getNewContent(),
+										
+										RPCS.getJobService().syncScriptAndHostGroupId(jobId, hiveWord.getEditTab().getNewContent(), hostGroupId,
 											new AbstractAsyncCallback<Void>() {
 												@Override
 												public void onSuccess(

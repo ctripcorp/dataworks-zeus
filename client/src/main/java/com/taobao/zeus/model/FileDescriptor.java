@@ -14,6 +14,7 @@ public class FileDescriptor implements Serializable{
 	private String content;
 	private Date gmtCreate=new Date();
 	private Date gmtModified=new Date();
+	private String hostGroupId;
 	public String getId() {
 		return id;
 	}
@@ -61,5 +62,11 @@ public class FileDescriptor implements Serializable{
 	}
 	public void setGmtModified(Date gmtModified) {
 		this.gmtModified = gmtModified;
+	}
+	public String getHostGroupId() {
+		return hostGroupId;
+	}
+	public void setHostGroupId(String hostGroupId) {
+		this.hostGroupId = hostGroupId;
 	}
 }

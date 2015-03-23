@@ -9,7 +9,7 @@ import com.taobao.zeus.web.platform.client.util.GwtException;
 @RemoteServiceRelativePath("debug.rpc")
 public interface JobDebugService extends RemoteService{
 
-	String debug(String fileId,String mode,String content)throws GwtException;
+	String debug(String fileId,String mode,String content, String hostGroupId)throws GwtException;
 	
 	
 	String getLog(String debugId);

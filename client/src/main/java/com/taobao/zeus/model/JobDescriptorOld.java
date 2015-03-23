@@ -45,6 +45,8 @@ public class JobDescriptorOld implements Serializable {
 	private String statisEndTime;
 	
 	private String host;
+	
+	private String hostGroupId;
 
 	public JobDescriptorOld getCopy() {
 		JobDescriptorOld jobDescriptor = new JobDescriptorOld();
@@ -71,6 +73,7 @@ public class JobDescriptorOld implements Serializable {
 		jobDescriptor.setStatisEndTime(this.getStatisEndTime());
 		jobDescriptor.setStatisStartTime(this.getStatisStartTime());
 		jobDescriptor.setTimezone(this.getTimezone());
+		jobDescriptor.setHostGroupId(this.getHostGroupId());
 		return jobDescriptor;
 	}
 
@@ -331,5 +334,13 @@ public class JobDescriptorOld implements Serializable {
 
 	public void setHost(String host) {
 		this.host = host;
+	}
+
+	public String getHostGroupId() {
+		return hostGroupId;
+	}
+
+	public void setHostGroupId(String hostGroupId) {
+		this.hostGroupId = hostGroupId;
 	}
 }

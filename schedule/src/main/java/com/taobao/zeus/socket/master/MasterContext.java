@@ -1,6 +1,7 @@
 package com.taobao.zeus.socket.master;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -16,6 +17,7 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.context.ApplicationContext;
 
+import com.taobao.zeus.model.HostGroupCache;
 import com.taobao.zeus.mvc.Dispatcher;
 import com.taobao.zeus.schedule.mvc.ScheduleInfoLog;
 import com.taobao.zeus.store.DebugHistoryManager;
@@ -24,6 +26,7 @@ import com.taobao.zeus.store.GroupManager;
 import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.ProfileManager;
+import com.taobao.zeus.store.HostGroupManager;
 
 public class MasterContext {
 	private Map<Channel, MasterWorkerHolder> workers=new ConcurrentHashMap<Channel, MasterWorkerHolder>();
@@ -31,6 +34,7 @@ public class MasterContext {
 	private Master master;
 	private Scheduler scheduler;
 	private Dispatcher dispatcher;
+	private volatile List<HostGroupCache> hostGroupCache;
 	//调度任务 jobId
 //	private Queue<JobElement> queue=new ArrayBlockingQueue<JobElement>(10000);
 	private Queue<JobElement> queue=new PriorityBlockingQueue<JobElement>(10000, new Comparator<JobElement>() {
@@ -123,6 +127,9 @@ public class MasterContext {
 	public void setDispatcher(Dispatcher dispatcher) {
 		this.dispatcher = dispatcher;
 	}
+	public HostGroupManager getHostGroupManager(){
+		return (HostGroupManager) applicationContext.getBean("hostGroupManager");
+	}
 	public JobHistoryManager getJobHistoryManager() {
 		return (JobHistoryManager) applicationContext.getBean("jobHistoryManager");
 	}
@@ -182,5 +189,17 @@ public class MasterContext {
 	}
 	public Queue<JobElement> getManualQueue() {
 		return manualQueue;
+	}
+	
+	public synchronized void refreshHostGroupCache(){
+		try {
+			hostGroupCache = getHostGroupManager().getAllHostGroupInfomations();
+		} catch (Exception e) {
+			ScheduleInfoLog.error("refresh hostgroupcache error", e);
+		}
+		
+	}
+	public List<HostGroupCache> getHostGroupCache() {
+		return hostGroupCache;
 	}
 }

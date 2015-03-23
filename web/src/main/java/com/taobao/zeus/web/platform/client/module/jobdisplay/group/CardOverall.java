@@ -98,7 +98,10 @@ public class CardOverall extends CenterTemplate implements Refreshable<GroupMode
 				if (!start.validate() || !end.validate()) {
 					return;
 				}else {
-					toolBar.refresh();
+					PagingLoadConfig config = new PagingLoadConfigBean();
+					config.setOffset(0);
+					config.setLimit(50);
+					loader.load(config);
 				}
 				
 			}

@@ -25,6 +25,8 @@ import com.taobao.zeus.web.platform.client.lib.codemirror.CodeMirror.OnChangeLis
 import com.taobao.zeus.web.platform.client.module.filemanager.FileModel;
 import com.taobao.zeus.web.platform.client.module.word.WordPresenter;
 import com.taobao.zeus.web.platform.client.util.PlatformContext;
+import com.taobao.zeus.web.platform.client.util.RPCS;
+import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 import com.taobao.zeus.web.platform.client.util.async.PlatformAsyncCallback;
 
 public class EditTab extends BorderLayoutContainer {
@@ -38,16 +40,15 @@ public class EditTab extends BorderLayoutContainer {
 
 	private Status status;
 	private Status charCount;
+	private Status hostGroupStatus;
 	private LogTabPanel logTabPanel = new LogTabPanel();
-
 	private VerticalLayoutContainer codePanel = new VerticalLayoutContainer();
 	private ContentPanel logPanel = new ContentPanel();
 
 	private String newContent;
 
 	private PlatformContext context;
-
-
+	
 	public EditTab(PlatformContext context, WordPresenter presenter,
 			final FileModel model) {
 		this.context = context;
@@ -71,12 +72,19 @@ public class EditTab extends BorderLayoutContainer {
 		status = new Status(
 				GWT.<StatusAppearance> create(BlueBoxStatusAppearance.class));
 		status.setText("已保存");
-		status.setWidth(150);
+		status.setWidth(100);
 		bar.add(status);
+		bar.add(new LabelToolItem(" "));
+		hostGroupStatus = new Status(
+				GWT.<StatusAppearance> create(BlueBoxStatusAppearance.class));
+		hostGroupStatus.setWidth(300);
+		bar.add(hostGroupStatus);
+		refreshHostGroupStatus(model.getHostGroupId());
 
 		codePanel.add(getCodeMirror(), new VerticalLayoutData(1, 1,
 				new Margins(5)));
 		bar.setLayoutData(new VerticalLayoutData(1, -1));
+		
 		codePanel.add(bar);
 		setCenterWidget(codePanel, new MarginData(0, 0, 5, 0));
 
@@ -153,7 +161,7 @@ public class EditTab extends BorderLayoutContainer {
 				}
 			}
 			if (!newContent.equals(model.getContent())) {
-				context.getFileSystem().updateFileContent(model.getId(),
+				getContext().getFileSystem().updateFileContent(model.getId(),
 						newContent, new PlatformAsyncCallback<Void>() {
 							public void callback(Void t) {
 							}
@@ -177,5 +185,23 @@ public class EditTab extends BorderLayoutContainer {
 
 	public VerticalLayoutContainer getCodePanel() {
 		return codePanel;
+	}
+
+	public void refreshHostGroupStatus(final String id) {
+		if (id!=null) {
+			RPCS.getJobService().getHostGroupNameById(id, new AbstractAsyncCallback<String>() {
+
+				@Override
+				public void onSuccess(String result) {
+					hostGroupStatus.setText("host组id: " + id +", 组名: " + result);
+				}
+			});
+		}else {
+			hostGroupStatus.setText("默认host组");
+		}
+	}
+
+	public PlatformContext getContext() {
+		return context;
 	}
 }

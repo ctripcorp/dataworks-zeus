@@ -18,6 +18,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
@@ -44,11 +45,14 @@ import com.taobao.zeus.store.JobBeanOld;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.PermissionManager;
 import com.taobao.zeus.store.UserManager;
+import com.taobao.zeus.store.HostGroupManager;
 import com.taobao.zeus.store.mysql.ReadOnlyGroupManager;
 import com.taobao.zeus.store.mysql.ReadOnlyGroupManagerOld;
+import com.taobao.zeus.store.mysql.persistence.HostGroupPersistence;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 import com.taobao.zeus.store.mysql.tool.ProcesserUtil;
 import com.taobao.zeus.util.DateUtil;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.Tuple;
 import com.taobao.zeus.web.LoginUser;
 import com.taobao.zeus.web.PermissionGroupManager;
@@ -57,12 +61,14 @@ import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
 import com.taobao.zeus.web.platform.client.util.GwtException;
+import com.taobao.zeus.web.platform.client.util.HostGroupModel;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
 import com.taobao.zeus.web.platform.shared.rpc.JobService;
 
 public class JobServiceImpl implements JobService {
 	private static Logger log = LogManager.getLogger(JobServiceImpl.class);
+	
 	@Autowired
 	private PermissionGroupManagerOld permissionGroupManagerOld;
 	@Autowired
@@ -81,7 +87,8 @@ public class JobServiceImpl implements JobService {
 	private PermissionManager permissionManager;
 	@Autowired
 	private ClientWorker worker;
-
+	@Autowired
+	private HostGroupManager hostGroupManager;
 	@Override
 	public JobModel createJob(String jobName, String parentGroupId,
 			String jobType) throws GwtException {
@@ -276,6 +283,7 @@ public class JobServiceImpl implements JobService {
 		jobModel.setOffRaw(jobBean.getJobDescriptor().getOffRaw());
 		jobModel.setJobCycle(jobBean.getJobDescriptor().getCycle());
 		jobModel.setHost(jobBean.getJobDescriptor().getHost());
+		jobModel.setHostGroupId(jobBean.getJobDescriptor().getHostGroupId());
 		return jobModel;
 	}
 
@@ -320,6 +328,12 @@ public class JobServiceImpl implements JobService {
 		jd.setOffRaw(jobModel.getOffRaw());
 		jd.setCycle(jobModel.getJobCycle());
 		jd.setHost(jobModel.getHost());
+		if (jobModel.getHostGroupId() == null) {
+			jd.setHostGroupId(Environment.getDefaultWorkerGroupId());
+			log.error("job id: " + jd.getId() + " is not setHostGroupId and using the default");
+		}else {
+			jd.setHostGroupId(jobModel.getHostGroupId());
+		}
 		try {
 			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
 					jd);
@@ -503,7 +517,8 @@ public class JobServiceImpl implements JobService {
 		history.setStatus(Status.RUNNING);
 		history.setStatisEndTime(jobDescriptor.getStatisEndTime());
 		history.setTimezone(jobDescriptor.getTimezone());
-		history.setExecuteHost(jobDescriptor.getHost());
+//		history.setExecuteHost(jobDescriptor.getHost());
+		history.setHostGroupId(jobDescriptor.getHostGroupId());
 		jobHistoryManager.addJobHistory(history);
 
 		try {
@@ -1107,4 +1122,71 @@ public class JobServiceImpl implements JobService {
 		return dependencies;
 	}
 
+
+	@Override
+	public PagingLoadResult<HostGroupModel> getHostGroup(PagingLoadConfig config) {
+		int start = config.getOffset();
+		int limit = config.getLimit();
+		List<HostGroupModel> tmp = new ArrayList<HostGroupModel>();
+		List<HostGroupPersistence> hostGroup = hostGroupManager.getAllHostGroup();
+		for (HostGroupPersistence persist : hostGroup) {
+			if (persist.getEffective() == 1) {
+				HostGroupModel r = new HostGroupModel();
+				r.setId(String.valueOf(persist.getId()));
+				r.setName(persist.getName());
+				r.setDescription(persist.getDescription());
+				tmp.add(r);
+			}
+		}
+		Collections.sort(tmp,
+				new Comparator<HostGroupModel>() {
+					@Override
+					public int compare(HostGroupModel o1,
+							HostGroupModel o2) {
+						return Integer.valueOf(o1.getId()).compareTo(Integer.valueOf(o2.getId()));
+					}
+				});
+		int total = tmp.size();
+		if (start >= tmp.size()) {
+			start = 0;
+		}
+		tmp = tmp.subList(start,Math.min(start + limit, tmp.size()));
+		List<HostGroupModel> results = new ArrayList<HostGroupModel>();
+		results.addAll(tmp);
+		return new PagingLoadResultBean<HostGroupModel>(results,total,start);
+	}
+
+	@Override
+	public void syncScriptAndHostGroupId(String jobId, String script,
+			String hostGroupId) throws GwtException {
+		JobDescriptorOld jd = permissionGroupManagerOld.getJobDescriptor(jobId)
+				.getX();
+		jd.setScript(script);
+		if (hostGroupId == null) {
+			jd.setHostGroupId(Environment.getDefaultWorkerGroupId());
+		}else {
+			jd.setHostGroupId(hostGroupId);
+		}
+		try {
+			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
+					jd);
+			permissionGroupManagerOld.updateActionList(jd);
+		} catch (ZeusException e) {
+			log.error("syncScript", e);
+			throw new GwtException(
+					"同步失败，可能是因为目标任务没有配置一些必填项。请去调度中心配置完整的必填项. cause:"
+							+ e.getMessage());
+		}
+		
+	}
+
+	@Override
+	public String getHostGroupNameById(String id) {
+		String result = null;
+		if (id != null) {
+			HostGroupPersistence persist = hostGroupManager.getHostGroupName(id);
+			result = persist.getName();
+		}
+		return result;
+	}
 }

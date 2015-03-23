@@ -8,7 +8,7 @@ import com.taobao.zeus.web.platform.client.module.word.model.DebugHistoryModel;
 public interface JobDebugServiceAsync {
 
 	void debug(String fileId, String mode, String content,
-			AsyncCallback<String> callback);
+			String hostGroupId, AsyncCallback<String> callback);
 
 	void getLog(String debugId, AsyncCallback<String> callback);
 

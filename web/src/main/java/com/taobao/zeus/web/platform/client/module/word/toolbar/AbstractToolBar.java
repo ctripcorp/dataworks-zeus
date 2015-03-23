@@ -22,12 +22,14 @@ import com.taobao.zeus.web.platform.client.module.filemanager.FileModel;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.DefaultPanel;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.FileUploadWidget;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.FileUploadWidget.UploadCallback;
+import com.taobao.zeus.web.platform.client.module.jobmanager.HostGroupWindow;
 import com.taobao.zeus.web.platform.client.module.profile.QuickHadoopConfig;
 import com.taobao.zeus.web.platform.client.module.word.Word;
 import com.taobao.zeus.web.platform.client.module.word.component.EditTab;
 import com.taobao.zeus.web.platform.client.theme.ResourcesTool;
 import com.taobao.zeus.web.platform.client.util.RPCS;
 import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
+import com.taobao.zeus.web.platform.client.util.async.PlatformAsyncCallback;
 
 public abstract class AbstractToolBar extends ToolBar{
 	
@@ -49,7 +51,7 @@ public abstract class AbstractToolBar extends ToolBar{
 			}
 			if(mode!=null){
 				RPCS.getJobDebugService().debug(getFileModel().getId(),mode,
-						content, new AbstractAsyncCallback<String>() {
+						content, getFileModel().getHostGroupId(), new AbstractAsyncCallback<String>() {
 					@Override
 					public void onSuccess(final String debugId) {
 						getEditTab().getLogTabPanel().onStartDebug(debugId);
@@ -108,6 +110,28 @@ public abstract class AbstractToolBar extends ToolBar{
 							getCodeMirror().setValue(sb.toString());
 						}
 					}).show();
+		}
+	});
+	protected MenuItem hostgroup=new MenuItem("选择host组",new SelectionHandler<MenuItem>() {
+		@Override
+		public void onSelection(SelectionEvent<MenuItem> event) {
+			final HostGroupWindow chdwnd = new HostGroupWindow();
+			chdwnd.setSelectHandler(new SelectHandler() {
+				@Override
+				public void onSelect(SelectEvent event) {
+					if (chdwnd.getGrid().getSelectionModel()!=null) {
+						String id = chdwnd.getGrid().getSelectionModel().getSelectedItem().getId();
+						getFileModel().setHostGroupId(id);
+						getEditTab().refreshHostGroupStatus(id);
+						getEditTab().getContext().getFileSystem().updateHostGroupId(getFileModel().getId(), id, new PlatformAsyncCallback<Void>() {
+							public void callback(Void t) {
+							}
+						});
+					}
+					chdwnd.hide();
+				}
+			});
+			chdwnd.show();
 		}
 	});
 	protected MouseUpHandler mouseUpHandler=new MouseUpHandler() {

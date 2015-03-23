@@ -7,7 +7,6 @@ import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.Window;
-import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 
 public class DependencyConfigWindow extends Window{
 	

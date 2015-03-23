@@ -34,6 +34,7 @@ import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.ProfilePersistence;
 import com.taobao.zeus.store.mysql.persistence.ZeusFollowPersistence;
 import com.taobao.zeus.util.DateUtil;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.Tuple;
 
 public class PersistenceAndBeanConvert {
@@ -166,6 +167,11 @@ public class PersistenceAndBeanConvert {
 		jd.setStatisStartTime(persist.getStatisStartTime()==null?null:DateUtil.date2String(persist.getStatisStartTime()));
 		jd.setStatisEndTime(persist.getStatisEndTime()==null?null:DateUtil.date2String(persist.getStatisEndTime()));
 		jd.setHost(persist.getHost());
+		if (persist.getHostGroupId()!=null) {
+			jd.setHostGroupId(String.valueOf(persist.getHostGroupId()));
+		}else {
+			jd.setHostGroupId(String.valueOf(Environment.getDefaultWorkerGroupId()));
+		}
 		JobStatus status = new JobStatus();
 		status.setJobId(String.valueOf(persist.getId()));
 		status.setStatus(Status.parser(persist.getStatus()));
@@ -279,6 +285,11 @@ public class PersistenceAndBeanConvert {
 			Log.warn("parse str to date failed", e);
 		}
 		persist.setHost(jd.getHost());
+		if (jd.getHostGroupId()!=null) {
+			persist.setHostGroupId(Integer.valueOf(jd.getHostGroupId()));
+		}else {
+			persist.setHostGroupId(Integer.valueOf(Environment.getDefaultWorkerGroupId()));
+		}
 		return persist;
 	}
 
@@ -381,6 +392,11 @@ public class PersistenceAndBeanConvert {
 		history.setStatisEndTime(persist.getStatisEndTime()==null?null:DateUtil.date2String(persist.getStatisEndTime()));
 		history.setTimezone(persist.getTimezone());
 		history.setCycle(persist.getCycle());
+		if (persist.getHostGroupId()!=null) {
+			history.setHostGroupId(String.valueOf(persist.getHostGroupId()));
+		}else {
+			history.setHostGroupId(Environment.getDefaultWorkerGroupId());
+		}
 		return history;
 	}
 
@@ -421,7 +437,11 @@ public class PersistenceAndBeanConvert {
 				Log.warn("parse str to date failed", e);
 			}
 		}
-
+		if (history.getHostGroupId()!=null) {
+			persist.setHostGroupId(Integer.valueOf(history.getHostGroupId()));
+		}else {
+			persist.setHostGroupId(Integer.valueOf(Environment.getDefaultWorkerGroupId()));
+		}
 		return persist;
 	}
 
@@ -441,6 +461,9 @@ public class PersistenceAndBeanConvert {
 				.getParent().toString());
 		file.setGmtCreate(persistence.getGmtCreate());
 		file.setGmtModified(persistence.getGmtModified());
+		if (persistence.getHostGroupId() != null) {
+			file.setHostGroupId(String.valueOf(persistence.getHostGroupId()));
+		}
 		return file;
 	}
 
@@ -460,6 +483,9 @@ public class PersistenceAndBeanConvert {
 				: FilePersistence.FILE);
 		persistence.setGmtCreate(file.getGmtCreate());
 		persistence.setGmtModified(file.getGmtModified());
+		if (file.getHostGroupId() != null) {
+			persistence.setHostGroupId(Integer.valueOf(file.getHostGroupId()));
+		}
 		return persistence;
 	}
 
@@ -479,6 +505,11 @@ public class PersistenceAndBeanConvert {
 		debug.setJobRunType(JobRunType.parser(persistence.getRuntype()));
 		debug.setLog(persistence.getLog());
 		debug.setOwner(persistence.getOwner());
+		if (persistence.getHostGroupId()!=null) {
+			debug.setHostGroupId(persistence.getHostGroupId().toString());
+		}else {
+			debug.setHostGroupId(Environment.getDefaultWorkerGroupId());
+		}
 		return debug;
 	}
 
@@ -503,6 +534,11 @@ public class PersistenceAndBeanConvert {
 				.getJobRunType().toString());
 		persist.setLog(debug.getLog().getContent());
 		persist.setOwner(debug.getOwner() == null ? null : debug.getOwner());
+		if (debug.gethostGroupId()!=null) {
+			persist.setHostGroupId(Integer.valueOf(debug.gethostGroupId()));
+		}else {
+			persist.setHostGroupId(Integer.valueOf(Environment.getDefaultWorkerGroupId()));
+		}
 		return persist;
 	}
 

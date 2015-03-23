@@ -22,6 +22,7 @@ public class DependencyConfigWindow extends Window{
 	private void Init() {
 		setHeight(600);
 		setWidth(500);
+		setModal(true);
 		tabPanel = new TabPanel();
 		tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
 	        @Override

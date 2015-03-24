@@ -39,7 +39,7 @@ public class DependencyConfigWindow extends Window{
 		checkablePanel = new JobTreePanel();
 		checkablePanel.setHeadingText("选择依赖任务(可以多选)");
 		copyPanel = new JobTreePanel();
-		copyPanel.setHeadingText("复制其它依赖任务的依赖到本任务");
+		copyPanel.setHeadingText("复制所选依赖任务的依赖到本任务");
 		copyPanel.getTree().setCheckable(false);
 		copyPanel.getTree().getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		tabPanel.add(checkablePanel,new TabItemConfig("选择依赖任务",false));

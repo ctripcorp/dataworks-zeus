@@ -1,7 +1,6 @@
 package com.taobao.zeus.web.platform.client.module.jobdisplay.job;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,19 +12,12 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
-import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
-import com.sencha.gxt.data.shared.Store;
-import com.sencha.gxt.data.shared.loader.LoadResultListStoreBinding;
-import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
-import com.sencha.gxt.data.shared.loader.PagingLoadResult;
-import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
@@ -55,7 +47,6 @@ import com.taobao.zeus.web.platform.client.module.jobmanager.event.TreeNodeChang
 import com.taobao.zeus.web.platform.client.util.Callback;
 import com.taobao.zeus.web.platform.client.util.RPCS;
 import com.taobao.zeus.web.platform.client.util.Refreshable;
-import com.taobao.zeus.web.platform.client.util.HostGroupModel;
 import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 
 /**
@@ -66,6 +57,9 @@ import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
  */
 public class CardEditJob extends CenterTemplate implements
 		Refreshable<JobModel> {
+	public static final String isVisible = "可见";
+	public static final String isNotVisible = "不可见";
+	
 	private TextButton upload = new TextButton("上传资源文件", new SelectHandler() {
 		@Override
 		public void onSelect(final SelectEvent event) {
@@ -159,7 +153,7 @@ public class CardEditJob extends CenterTemplate implements
 				model.getLocalProperties().put(CardInfo.MAX_TIME, maxTimeSet);
 			}
 			
-			String isEncryptionText = isEncryptionBox.getValue();
+			String isEncryptionText = isEncryptionBox.getValue().get("value");
 			if ("no".equals(isEncryptionText)) {
 				model.getLocalProperties().put(CardInfo.ENCRYPTION,"true");
 			}else {
@@ -236,7 +230,7 @@ public class CardEditJob extends CenterTemplate implements
 	private ComboBox<String> rollIntervalBox;
 	private ComboBox<Map<String, String>> jobPriorityBox;
 
-	private ComboBox<String> isEncryptionBox;
+	private ComboBox<Map<String, String>> isEncryptionBox;
 
 	private FieldLabel depCycleWapper;
 	private FieldLabel depJobsWapper;
@@ -427,12 +421,12 @@ public class CardEditJob extends CenterTemplate implements
 		}
 		String isEncryptionStr = t.getAllProperties().get(CardInfo.ENCRYPTION);
 		if (isEncryptionStr == null) {
-			isEncryptionBox.setValue("yes", true);
+			isEncryptionBox.setValue(isEncryptionBox.getStore().get(0), true);
 		} else {
 			if ("true".equals(isEncryptionStr)) {
-				isEncryptionBox.setValue("no", true);
+				isEncryptionBox.setValue(isEncryptionBox.getStore().get(1), true);
 			} else {
-				isEncryptionBox.setValue("yes", true);
+				isEncryptionBox.setValue(isEncryptionBox.getStore().get(0), true);
 			}
 		}
 
@@ -940,28 +934,38 @@ public class CardEditJob extends CenterTemplate implements
 						}
 					});
 
-			ListStore<String> isEncryptionStore = new ListStore<String>(
-					new ModelKeyProvider<String>() {
+			ListStore<Map<String, String>> isEncryptionStore = new ListStore<Map<String, String>>(
+					new ModelKeyProvider<Map<String, String>>() {
 						@Override
-						public String getKey(String item) {
-							return item.toString();
+						public String getKey(Map<String, String> item) {
+							return item.get("key");
 						}
 					});
-			isEncryptionStore.add("yes");
-			isEncryptionStore.add("no");
-			isEncryptionBox = new ComboBox<String>(isEncryptionStore,
-					new LabelProvider<String>() {
-						public String getLabel(String item) {
-							return item;
-						}
-					}, new AbstractSafeHtmlRenderer<String>() {
-						@Override
-						public SafeHtml render(String object) {
-							ComboBoxTemplates t = GWT
-									.create(ComboBoxTemplates.class);
-							return t.display(object);
-						}
-					});
+			Map<String, String> isEncryptionItem = new HashMap<String, String>();
+			isEncryptionItem.put("key", isVisible);
+			isEncryptionItem.put("value", "yes");
+			Map<String, String> isEncryptionItem1 = new HashMap<String, String>();
+			isEncryptionItem1.put("key", isNotVisible);
+			isEncryptionItem1.put("value", "no");
+			isEncryptionStore.add(isEncryptionItem);
+			isEncryptionStore.add(isEncryptionItem1);
+			isEncryptionBox = new ComboBox<Map<String, String>>(isEncryptionStore,
+					new LabelProvider<Map<String, String>>() {
+
+				@Override
+				public String getLabel(Map<String, String> item) {
+					// TODO Auto-generated method stub
+					return item.get("key");
+				}
+			}, new AbstractSafeHtmlRenderer<Map<String, String>>() {
+
+				@Override
+				public SafeHtml render(Map<String, String> object) {
+					ComboBoxTemplates t = GWT
+							.create(ComboBoxTemplates.class);
+					return t.display(object.get("key"));
+				}
+			});
 
 			baseDepCycle.setWidth(150);
 			baseDepCycle.setTriggerAction(TriggerAction.ALL);
@@ -988,7 +992,7 @@ public class CardEditJob extends CenterTemplate implements
 			rollTimeWapper = new FieldLabel(rollTimeBox, "失败重试次数");
 			rollIntervalWapper = new FieldLabel(rollIntervalBox, "重试间隔（分）");
 			jobPriorityWapper = new FieldLabel(jobPriorityBox, "任务优先级");
-			isEncryptionWapper = new FieldLabel(isEncryptionBox, "脚本可见");
+			isEncryptionWapper = new FieldLabel(isEncryptionBox, "脚本是否可见");
 			maxTimeWapper = new FieldLabel(maxTimeField, "预计时长(分)");
 
 			depCycleWapper = new FieldLabel(baseDepCycle, "依赖周期");

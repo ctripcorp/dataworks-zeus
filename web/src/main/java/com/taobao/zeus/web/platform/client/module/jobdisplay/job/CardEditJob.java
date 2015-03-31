@@ -857,14 +857,14 @@ public class CardEditJob extends CenterTemplate implements
 			Map<String, String> highmap = new HashMap<String, String>();
 			highmap.put("key", "high");
 			highmap.put("value", "3");
-			Map<String, String> midmap = new HashMap<String, String>();
-			midmap.put("key", "middle");
-			midmap.put("value", "2");
+			Map<String, String> mediummap = new HashMap<String, String>();
+			mediummap.put("key", "medium");
+			mediummap.put("value", "2");
 			Map<String, String> lowmap = new HashMap<String, String>();
 			lowmap.put("key", "low");
 			lowmap.put("value", "1");
 			levelStore.add(highmap);
-			levelStore.add(midmap);
+			levelStore.add(mediummap);
 			levelStore.add(lowmap);
 			jobPriorityBox = new ComboBox<Map<String, String>>(levelStore,
 					new LabelProvider<Map<String, String>>() {
@@ -991,9 +991,12 @@ public class CardEditJob extends CenterTemplate implements
 
 			rollTimeWapper = new FieldLabel(rollTimeBox, "失败重试次数");
 			rollIntervalWapper = new FieldLabel(rollIntervalBox, "重试间隔（分）");
+			rollIntervalWapper.setToolTip("单位：分钟");
 			jobPriorityWapper = new FieldLabel(jobPriorityBox, "任务优先级");
 			isEncryptionWapper = new FieldLabel(isEncryptionBox, "脚本是否可见");
+			isEncryptionWapper.setToolTip("对没有该任务相应权限的用户，脚本是否可见");
 			maxTimeWapper = new FieldLabel(maxTimeField, "预计时长(分)");
+			maxTimeWapper.setToolTip("单位：分钟");
 
 			depCycleWapper = new FieldLabel(baseDepCycle, "依赖周期");
 			depJobsWapper = new FieldLabel(baseDepJobs, "依赖任务");

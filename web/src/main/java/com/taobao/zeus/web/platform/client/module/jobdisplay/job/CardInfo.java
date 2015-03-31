@@ -287,7 +287,7 @@ public class CardInfo extends CenterTemplate implements Refreshable<JobModel>{
 			((Label)jobPriority.getWidget()).setText("low");
 		}
 		if ("2".equals(level)) {
-			((Label)jobPriority.getWidget()).setText("middle");
+			((Label)jobPriority.getWidget()).setText("medium");
 		}
 		if ("3".equals(level)) {
 			((Label)jobPriority.getWidget()).setText("high");

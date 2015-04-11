@@ -121,7 +121,7 @@ public class Master {
 					int execHour = Integer.parseInt(df4.format(now));
 					int execMinute = Integer.parseInt(df.format(now));
 					if((execHour == 0 && execMinute == 0) 
-							|| (execHour == 1 && execMinute == 13)
+							|| (execHour == 0 && execMinute == 35)
 							|| (execHour > 7 && execMinute == 21) 
 							|| (execHour > 7 && execMinute == 51)){
 						System.out.println("生成Action，当前时间：" + currentDateStr);

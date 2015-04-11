@@ -102,7 +102,7 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 			@Override
 			public Object doInHibernate(Session session) throws HibernateException,
 					SQLException {
-				Query query=session.createQuery("select id,groupId from com.taobao.zeus.store.mysql.persistence.JobPersistence where gmt_modified>?");
+				Query query=session.createQuery("select id,groupId from com.taobao.zeus.store.mysql.persistence.JobPersistenceOld where gmt_modified>?");
 				query.setDate(0, ignoreContentJobJudge.lastModified);
 				List<Object[]> list=query.list();
 				List<JobDescriptorOld> result=new ArrayList<JobDescriptorOld>();
@@ -429,7 +429,7 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 		@Override
 		public GroupBeanOld getDownstreamGroupBean(GroupBeanOld parent) {
 			try {
-				return getDownstreamGroupBean(parent, 99).get(2000,TimeUnit.MILLISECONDS);
+				return getDownstreamGroupBean(parent, 99).get(10,TimeUnit.SECONDS);
 			} catch (Exception e) {
 				log.error("getDownstreamGroupBean failed", e);
 				return null;
@@ -461,7 +461,7 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 							parent.getChildrenGroupBeans().add(childBean);
 						}
 						for(Future<GroupBeanOld> f:futures){
-							f.get(2000,TimeUnit.MILLISECONDS);
+							f.get(10,TimeUnit.SECONDS);
 						}
 					}else{
 						List<Tuple<JobDescriptorOld, JobStatus>> jobs=getChildrenJob(parent.getGroupDescriptor().getId());

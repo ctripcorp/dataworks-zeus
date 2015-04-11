@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.hadoop.hive.ql.parse.HiveParser.booleanValue_return;
 import org.jboss.netty.channel.Channel;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
@@ -844,7 +843,7 @@ public class Master {
 				if("1".equals(plevel)){
 					content.append("\nJob任务优先级: ").append("low");
 				}else if("2".equals(plevel)){
-					content.append("\nJob任务优先级: ").append("middle");
+					content.append("\nJob任务优先级: ").append("medium");
 				}else if("3".equals(plevel)){
 					content.append("\nJob任务优先级: ").append("high");
 				}

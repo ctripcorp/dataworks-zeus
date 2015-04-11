@@ -24,7 +24,7 @@ public class JobManagerViewImpl implements JobManagerView{
 			container=new AccordionLayoutContainer();
 			container.add(getMyTreePanel());
 			container.add(getAllTreePanel());
-			container.setActiveWidget(getAllTreePanel());
+			container.setActiveWidget(getMyTreePanel());
 		}
 		return container;
 	}

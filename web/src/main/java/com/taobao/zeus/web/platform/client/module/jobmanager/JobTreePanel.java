@@ -131,7 +131,7 @@ public class JobTreePanel extends ContentPanel{
 							if(item.getId().equals(c)){
 								return true;
 							}
-							if (item.getName().contains(c)) {
+							if (item.getName().toLowerCase().contains(c.toLowerCase())) {
 								return true;
 							}
 						}
@@ -147,7 +147,7 @@ public class JobTreePanel extends ContentPanel{
 						if(item.getId().equals(filter)){
 							return true;
 						}
-						if (item.getName().contains(filter)) {
+						if (item.getName().toLowerCase().contains(filter.toLowerCase())) {
 							return true;
 						}
 					}

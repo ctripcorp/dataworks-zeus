@@ -78,7 +78,7 @@ public class HostGroupWindow extends Window {
 
 		loader = new PagingLoader<PagingLoadConfig, PagingLoadResult<HostGroupModel>>(
 				proxy);
-		loader.setLimit(10);
+		loader.setLimit(20);
 		loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig, HostGroupModel, PagingLoadResult<HostGroupModel>>(
 				store));
 		grid = new Grid<HostGroupModel>(store, cm);
@@ -86,7 +86,7 @@ public class HostGroupWindow extends Window {
 		grid.setLoadMask(true);
 		grid.getView().setForceFit(true);
 
-		toolBar = new PagingToolBar(10);
+		toolBar = new PagingToolBar(20);
 		toolBar.bind(loader);
 
 		container.add(grid,new VerticalLayoutData(1, 1));
@@ -109,7 +109,7 @@ public class HostGroupWindow extends Window {
 	public void refresh() {
 		PagingLoadConfig config = new PagingLoadConfigBean();
 		config.setOffset(0);
-		config.setLimit(10);
+		config.setLimit(20);
 		loader.load(config);
 	}
 }

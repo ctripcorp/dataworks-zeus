@@ -91,7 +91,7 @@ public class JobFailListener extends DispatcherListener{
 								if("1".equals(plevel)){
 									sb.append("Job任务优先级: ").append("low").append("，");
 								}else if("2".equals(plevel)){
-									sb.append("Job任务优先级: ").append("middle").append("，");
+									sb.append("Job任务优先级: ").append("medium").append("，");
 								}else if("3".equals(plevel)){
 									sb.append("Job任务优先级: ").append("high").append("，");
 								}

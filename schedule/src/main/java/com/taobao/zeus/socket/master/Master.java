@@ -384,7 +384,7 @@ public class Master {
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHostGroupId());
 			if (selectWorker == null) {
 				context.getQueue().offer(e);
-				log.info("HostGroupId : "  + e.getHostGroupId() + " is offered back to queue");
+				log.info("HostGroupId : "  + e.getHostGroupId() + ","+e.getJobID() +" is offered back to queue");
 			} else {
 				runScheduleJob(selectWorker, e.getJobID());
 				log.info("HostGroupId : "  + e.getHostGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
@@ -399,7 +399,7 @@ public class Master {
 
 			if (selectWorker == null) {
 				context.getManualQueue().offer(e);
-				log.info("HostGroupId : "  + e.getHostGroupId() + " is offered back to queue");
+				log.info("HostGroupId : "  + e.getHostGroupId() + ","+e.getJobID() +" is offered back to queue");
 			} else {
 				runManualJob(selectWorker, e.getJobID());
 				log.info("HostGroupId : "  + e.getHostGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
@@ -413,7 +413,7 @@ public class Master {
 			MasterWorkerHolder selectWorker = getRunableWorker(e.getHostGroupId());
 			if (selectWorker == null) {
 				context.getDebugQueue().offer(e);
-				log.info("HostGroupId : "  + e.getHostGroupId() + " is offered back to queue");
+				log.info("HostGroupId : "  + e.getHostGroupId() + ","+e.getJobID() +" is offered back to queue");
 			} else {
 				runDebugJob(selectWorker, e.getJobID());
 				log.info("HostGroupId : "  + e.getHostGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);

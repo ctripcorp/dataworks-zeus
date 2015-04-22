@@ -14,6 +14,7 @@ public class MasterWorkerHolder{
 		public List<String> debugRunnings;
 		public Date timestamp;
 		public String host;
+		public Float cpuLoadPerCore;
 		public HeartBeatInfo(){}
 	}
 	private final Channel channel;

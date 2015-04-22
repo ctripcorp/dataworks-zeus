@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.taobao.zeus.broadcast.alarm.MailAlarm;
 import com.taobao.zeus.broadcast.alarm.SMSAlarm;
 import com.taobao.zeus.client.ZeusException;
+import com.taobao.zeus.jobs.sub.tool.HostIndex;
 import com.taobao.zeus.model.DebugHistory;
 import com.taobao.zeus.model.FileDescriptor;
 import com.taobao.zeus.model.JobDescriptor;
@@ -278,7 +279,7 @@ public class Master {
 			if(worker != null){
 				HeartBeatInfo heart = worker.getHeart();
 				log.info("worker a : heart :" + heart.memRate);
-				if (heart != null && heart.memRate != null && heart.memRate < 0.8) {
+				if (heart != null && heart.memRate != null && heart.memRate < HostIndex.MAX_MEM_RATE && heart.cpuLoadPerCore < HostIndex.MAX_CPULOAD_PER_CORE) {
 					if (selectWorker == null) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;

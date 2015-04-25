@@ -37,6 +37,7 @@ import com.taobao.zeus.socket.master.MasterWorkerHolder;
 import com.taobao.zeus.socket.master.MasterWorkerHolder.HeartBeatInfo;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
+import com.taobao.zeus.util.Environment;
 
 /**
  * Dump调度系统内的Job状态，用来调试排查问题
@@ -85,14 +86,10 @@ public class ScheduleDump extends HttpServlet {
 							StringBuilder builder = new StringBuilder();
 							builder.append("<table border=\"1\">");
 							for (Channel channel : workers.keySet()) {
-								MasterWorkerHolder holder = workers
-										.get(channel);
-								Set<String> runnings = holder.getRunnings()
-										.keySet();
-								Set<String> manualRunnings = holder
-										.getManualRunnings().keySet();
-								Set<String> debugRunnings = holder
-										.getDebugRunnings().keySet();
+								MasterWorkerHolder holder = workers.get(channel);
+								Set<String> runnings = holder.getRunnings().keySet();
+								Set<String> manualRunnings = holder.getManualRunnings().keySet();
+								Set<String> debugRunnings = holder.getDebugRunnings().keySet();
 								HeartBeatInfo heart = holder.getHeart();
 								builder.append("<tr>");
 								builder.append("<td>");
@@ -103,8 +100,16 @@ public class ScheduleDump extends HttpServlet {
 								builder.append("<br>" + "\t heart beat: ");
 								if (heart != null) {
 									builder.append("<br>"+ "\t\t last heartbeat:"+ format.format(heart.timestamp));
-									builder.append("<br>" + "\t\t mem use rate:"+ heart.memRate);
-									builder.append("<br>" + "\t\t cpu load per core:"+ heart.cpuLoadPerCore);
+									if (heart.memRate < Environment.getMaxMemRate()) {
+										builder.append("<br>" + "\t\t mem use rate:"+ heart.memRate);
+									}else {
+										builder.append("<br>" + "\t\t <font color=\"red\"> mem use rate:"+ heart.memRate+"</font>");
+									}
+									if (heart.cpuLoadPerCore < Environment.getMaxCpuLoadPerCore()) {
+										builder.append("<br>" + "\t\t  cpu load per core:"+ heart.cpuLoadPerCore);
+									}else {
+										builder.append("<br>" + "\t\t <font color=\"red\"> cpu load per core:"+ heart.cpuLoadPerCore+"</font>");
+									}
 									builder.append("<br>"+ "\t\t runnings:"+ heart.runnings.toString());
 									builder.append("<br>"+ "\t\t manual runnings:"+ heart.manualRunnings.toString());
 									builder.append("<br>"+ "\t\t debug runnings:"+ heart.debugRunnings.toString());
@@ -112,29 +117,36 @@ public class ScheduleDump extends HttpServlet {
 								builder.append("</td>");
 								builder.append("</tr>");
 							}
+							builder.append("<tr>");
+							builder.append("<td>");
+							builder.append("\t\t Max Mem use Rate:"+ Environment.getMaxMemRate());
+							builder.append("<br>" + "\t\t Max Cpu Load Per Core:"+ Environment.getMaxCpuLoadPerCore());
+							builder.append("</td>");
+							builder.append("</tr>");
 							builder.append("</table>");
 							resp.getWriter().println(builder.toString());
 						} else if ("queue".equals(op)) {
 							Queue<JobElement> queue = context.getQueue();
-							Queue<JobElement> debugQueue = context
-									.getDebugQueue();
-							Queue<JobElement> manualQueue = context
-									.getManualQueue();
-							resp.getWriter().println(
-									"<br>" + "schedule jobs in queue:");
+							Queue<JobElement> exceptionQueue = context.getExceptionQueue();
+							Queue<JobElement> debugQueue = context.getDebugQueue();
+							Queue<JobElement> manualQueue = context.getManualQueue();
+							resp.getWriter().println("<br>" + "schedule jobs in queue:");
 							for (JobElement jobId : queue) {
 								resp.getWriter().print(jobId.getJobID() + "\t");
 							}
-							resp.getWriter().println(
-									"<br>" + "manual jobs in queue:");
+							resp.getWriter().println("<br>" + "exception jobs in queue:");
+							for (JobElement jobId : exceptionQueue) {
+								resp.getWriter().print(jobId.getJobID() + "\t");
+							}
+							resp.getWriter().println("<br>" + "manual jobs in queue:");
 							for (JobElement jobId : manualQueue) {
 								resp.getWriter().print(jobId.getJobID() + "\t");
 							}
-							resp.getWriter().println(
-									"<br>" + "debug jobs in queue:");
+							resp.getWriter().println("<br>" + "debug jobs in queue:");
 							for (JobElement jobId : debugQueue) {
 								resp.getWriter().print(jobId.getJobID() + "\t");
 							}
+							
 						} else if ("jobstatus".equals(op)) {
 							Dispatcher dispatcher = context.getDispatcher();
 							if (dispatcher != null) {

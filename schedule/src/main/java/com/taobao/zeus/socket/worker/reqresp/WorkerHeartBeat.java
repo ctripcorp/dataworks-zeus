@@ -9,7 +9,6 @@ import org.jboss.netty.channel.ChannelFuture;
 
 import com.taobao.zeus.jobs.JobContext;
 import com.taobao.zeus.jobs.sub.tool.CpuLoadPerCoreJob;
-import com.taobao.zeus.jobs.sub.tool.HostIndex;
 import com.taobao.zeus.jobs.sub.tool.MemUseRateJob;
 import com.taobao.zeus.schedule.mvc.ScheduleInfoLog;
 import com.taobao.zeus.socket.master.AtomicIncrease;
@@ -19,6 +18,7 @@ import com.taobao.zeus.socket.protocol.Protocol.Request;
 import com.taobao.zeus.socket.protocol.Protocol.SocketMessage;
 import com.taobao.zeus.socket.protocol.Protocol.SocketMessage.Kind;
 import com.taobao.zeus.socket.worker.WorkerContext;
+import com.taobao.zeus.util.Environment;
 
 public class WorkerHeartBeat {
 	public static String host = UUID.randomUUID().toString();
@@ -83,7 +83,7 @@ public class WorkerHeartBeat {
 			if (exitCode != 0) {
 				ScheduleInfoLog.error("HeartBeat Shell Error", new Exception(" error occurs during get cpu load "));
 				// 防止后面NPE
-				jobContext.putData("cpuLoadPerCore", HostIndex.MAX_CPULOAD_PER_CORE);
+				jobContext.putData("cpuLoadPerCore",Environment.getMaxCpuLoadPerCore());
 			}
 		} catch (Exception e) {
 			ScheduleInfoLog.error("cpuLoadPerCore", e);

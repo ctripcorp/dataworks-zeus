@@ -22,13 +22,12 @@ import org.slf4j.LoggerFactory;
 import com.taobao.zeus.broadcast.alarm.MailAlarm;
 import com.taobao.zeus.broadcast.alarm.SMSAlarm;
 import com.taobao.zeus.client.ZeusException;
-import com.taobao.zeus.jobs.sub.tool.HostIndex;
 import com.taobao.zeus.model.DebugHistory;
 import com.taobao.zeus.model.FileDescriptor;
+import com.taobao.zeus.model.HostGroupCache;
 import com.taobao.zeus.model.JobDescriptor;
 import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.model.JobStatus;
-import com.taobao.zeus.model.HostGroupCache;
 import com.taobao.zeus.model.JobStatus.TriggerType;
 import com.taobao.zeus.model.Profile;
 import com.taobao.zeus.mvc.Controller;
@@ -206,6 +205,20 @@ public class Master {
 				}
 			}
 		}, 0, 3, TimeUnit.SECONDS);
+		
+		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					//log.info("start scan exceptionqueue");
+					scanExceptionQueue();
+					//log.info("end scan exceptionqueue");
+				} catch (Exception e) {
+					log.error("get job from queue failed!", e);
+				}
+			}
+		}, 0, 3, TimeUnit.SECONDS);
+		
 		// 定时扫描worker channel，心跳超过1分钟没有连接就主动断掉
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
 			@Override
@@ -272,28 +285,28 @@ public class Master {
 	}
 	
 	//获取可用的worker
-	private MasterWorkerHolder getRunableWorker() {
-		MasterWorkerHolder selectWorker = null;
-		Float selectMemRate = null;
-		for (MasterWorkerHolder worker : context.getWorkers().values()) {
-			if(worker != null){
-				HeartBeatInfo heart = worker.getHeart();
-				log.info("worker a : heart :" + heart.memRate);
-				if (heart != null && heart.memRate != null && heart.memRate < HostIndex.MAX_MEM_RATE && heart.cpuLoadPerCore < HostIndex.MAX_CPULOAD_PER_CORE) {
-					if (selectWorker == null) {
-						selectWorker = worker;
-						selectMemRate = heart.memRate;
-						log.info("worker b : heart :"+ selectMemRate);
-					} else if (selectMemRate > heart.memRate) {
-						selectWorker = worker;
-						selectMemRate = heart.memRate;
-						log.info("worker c : heart :"+ selectMemRate);
-					}
-				}
-			}
-		}
-		return selectWorker;
-	}
+//	private MasterWorkerHolder getRunableWorker() {
+//		MasterWorkerHolder selectWorker = null;
+//		Float selectMemRate = null;
+//		for (MasterWorkerHolder worker : context.getWorkers().values()) {
+//			if(worker != null){
+//				HeartBeatInfo heart = worker.getHeart();
+//				log.info("worker a : heart :" + heart.memRate);
+//				if (heart != null && heart.memRate != null && heart.memRate < HostIndex.MAX_MEM_RATE && heart.cpuLoadPerCore < HostIndex.MAX_CPULOAD_PER_CORE) {
+//					if (selectWorker == null) {
+//						selectWorker = worker;
+//						selectMemRate = heart.memRate;
+//						log.info("worker b : heart :"+ selectMemRate);
+//					} else if (selectMemRate > heart.memRate) {
+//						selectWorker = worker;
+//						selectMemRate = heart.memRate;
+//						log.info("worker c : heart :"+ selectMemRate);
+//					}
+//				}
+//			}
+//		}
+//		return selectWorker;
+//	}
 
 //	private MasterWorkerHolder getRunableWorker(String host) {
 //		MasterWorkerHolder selectWorker = null;
@@ -341,7 +354,7 @@ public class Master {
 		for (MasterWorkerHolder worker : context.getWorkers().values()) {
 			if (worker!=null && workersGroup.contains(worker.getHeart().host)) {
 				HeartBeatInfo heart = worker.getHeart();
-				if (heart != null && heart.memRate != null && heart.memRate < 0.8 ) {
+				if (heart != null && heart.memRate != null && heart.memRate < Environment.getMaxMemRate() && heart.cpuLoadPerCore < Environment.getMaxCpuLoadPerCore() ) {
 					if (selectWorker == null) {
 						selectWorker = worker;
 						selectMemRate = heart.memRate;
@@ -362,6 +375,16 @@ public class Master {
 		return selectWorker;
 	}
 	
+	private Boolean hasWorkerInHostGroup(String id){
+		Set<String> workersGroup = getWorkersByGroupId(id);
+		for (MasterWorkerHolder worker : context.getWorkers().values()) {
+			if (worker!=null && workersGroup.contains(worker.getHeart().host)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private Set<String> getWorkersByGroupId(String hostGroupId){
 		Set<String> workers = new HashSet<String>();
 		for(HostGroupCache hostgroup : context.getHostGroupCache()){
@@ -375,6 +398,7 @@ public class Master {
 		return workers;
 	}
 	
+	
  	//扫描可用的worker，给worker分配JOB任务
 	private void scan() {
 
@@ -382,14 +406,7 @@ public class Master {
 			log.info("schedule queue :" +context.getQueue().size());
 			final JobElement e = context.getQueue().poll();
 			log.info("priority level :"+e.getPriorityLevel()+"; JobID :"+e.getJobID());
-			MasterWorkerHolder selectWorker = getRunableWorker(e.getHostGroupId());
-			if (selectWorker == null) {
-				context.getQueue().offer(e);
-				log.info("HostGroupId : "  + e.getHostGroupId() + ","+e.getJobID() +" is offered back to queue");
-			} else {
-				runScheduleJob(selectWorker, e.getJobID());
-				log.info("HostGroupId : "  + e.getHostGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
-			}
+			runScheduleAction(e);
 		}
 		
 		if (!context.getManualQueue().isEmpty()) {
@@ -423,6 +440,25 @@ public class Master {
 		
 		// 检测任务超时
 		checkTimeOver();
+	}
+
+	private void runScheduleAction(final JobElement e) {
+		MasterWorkerHolder selectWorker = getRunableWorker(e.getHostGroupId());
+		if (selectWorker == null) {
+				context.getExceptionQueue().offer(e);
+				log.info("HostGroupId : "  + e.getHostGroupId() + ","+e.getJobID() +" is offered to exceptionQueue");
+		} else {
+			runScheduleJob(selectWorker, e.getJobID());
+			log.info("HostGroupId : "  + e.getHostGroupId() + ",schedule selectWorker : " +selectWorker+",host :"+selectWorker.getHeart().host);
+		}
+	}
+	
+	private void scanExceptionQueue(){
+		if(!context.getExceptionQueue().isEmpty()){
+			log.info("exception queue :" +context.getExceptionQueue().size());
+			final JobElement e = context.getExceptionQueue().poll();
+			runScheduleAction(e);
+		}
 	}
 
 	private void runDebugJob(MasterWorkerHolder selectWorker, final String jobID) {
@@ -932,6 +968,7 @@ public class Master {
 						history.setTriggerType(his.getTriggerType());
 						history.setIllustrate("worker断线，重新跑任务");
 						history.setOperator(his.getOperator());
+						history.setHostGroupId(his.getHostGroupId());
 						context.getJobHistoryManager().addJobHistory(history);
 						Master.this.run(history);
 					}

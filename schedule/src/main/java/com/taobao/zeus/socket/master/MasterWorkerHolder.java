@@ -14,7 +14,7 @@ public class MasterWorkerHolder{
 		public List<String> debugRunnings;
 		public Date timestamp;
 		public String host;
-		public Float cpuLoadPerCore;
+		public Float cpuLoadPerCore;//cpu load per core等于最近1分钟系统的平均cpu负载÷cpu核心数量
 		public HeartBeatInfo(){}
 	}
 	private final Channel channel;

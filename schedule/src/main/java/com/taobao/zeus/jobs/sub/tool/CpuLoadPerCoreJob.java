@@ -5,6 +5,7 @@ import java.util.Date;
 import com.taobao.zeus.jobs.JobContext;
 import com.taobao.zeus.schedule.mvc.ScheduleInfoLog;
 import com.taobao.zeus.socket.worker.WorkerContext;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.RunShell;
 
 public class CpuLoadPerCoreJob {
@@ -20,7 +21,7 @@ public class CpuLoadPerCoreJob {
 		String os=System.getProperties().getProperty("os.name");
 		if(os!=null && (os.startsWith("win") || os.startsWith("Win") || os.startsWith("Mac"))){
 			//放一个假的数字，方便开发
-			jobContext.putData("cpuLoadPerCore", HostIndex.MAX_CPULOAD_PER_CORE);
+			jobContext.putData("cpuLoadPerCore",Environment.getMaxCpuLoadPerCore());
 			return 0;
 		}
 		RunShell shell = new RunShell("uptime");
@@ -30,7 +31,7 @@ public class CpuLoadPerCoreJob {
 			String[] tmps = result.split("\\s+");
 			int len = tmps[9].length();
 			String cpuloadstr = tmps[9].substring(0,len-1);
-			Float cpuload = Float.valueOf(cpuloadstr);
+			Float cpuload = Float.valueOf(cpuloadstr);//最近1分钟系统的平均cpu负载
 			Integer coreNum = workerContext.getCpuCoreNum();
 			if (coreNum == null) {
 				return -1;

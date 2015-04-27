@@ -41,10 +41,12 @@ public class ShellToolBar extends AbstractToolBar{
 		add(new SeparatorToolItem());
 		Menu menu=new Menu();
 		menu.add(upload);
-		menu.add(lingoes);
+		//menu.add(lingoes);
 		menu.add(hostgroup);
 		extend.setMenu(menu);
 		add(extend);
+		add(new SeparatorToolItem());
+		add(lingoes);
 		add(new SeparatorToolItem());
 		add(config);
 	}

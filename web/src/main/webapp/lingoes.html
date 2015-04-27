@@ -10,9 +10,70 @@
 	
 	<title>携程数据管理平台</title>
 
-	<link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+	
 <style type="text/css">
-	.form-horizontal .control-label{text-align: left;}
+
+	@charset "utf-8";
+/********rest.css start******* */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1;font:12px/1.5 tahoma,arial,'Hiragino Sans GB',\5b8b\4f53,sans-serif}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outline:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}body{margin:0px;padding:0px;font-size:12px;line-height:1.8em;font-family:Verdana,Simsun,"Arial Unicode MS",Mingliu,Arial,Helvetica;color:#000}*{margin:0;padding:0}div,table,img,form{border:0}.clear{clear:both}ul,li,dl,dd,dt{list-style:none;padding:0;margin:0}p,div,table{margin:0px;padding:0px}h1,h2,h3,h4,h5,ul,P{margin:0px;padding:0px}h1,h2,h3,h4,h5{font-family:"Microsoft yahei";font-size:16px;line-height:24px;margin:0px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px}img{border:none}ul{list-style:none}a{color:#069;text-decoration:none}a:hover{color:#F30}.clearfloat{clear:both;height:0;font-size:1px;line-height:0px}font{font-size:9pt;line-height:1.8em;font-weight:normal}p{margin-top:0em;margin-bottom:1em}
+
+.fl{ float:left}
+.fr{ float:right}
+body{width: 566px;}
+.even,.estimate-form table tr:nth-of-type(even){background: #e8eff2}
+.estimate-form table {
+  line-height: 30px;
+  width: 100%;
+   table-layout:fixed;
+   word-wrap: break-word; word-break: break-all;
+}
+.estimate-form table td {
+  text-align: left;
+  vertical-align: middle;
+ padding: 2px 2px 2px 0px; 
+}
+.estimate-form table td.title{ padding-left: 5px; }
+.estimate-form thead .left, #estimate-form tbody .left {
+  text-align: left;
+  padding-left: 15px;
+  width: 260px;
+}
+input,select,textarea,button {
+	width: 100%;
+  font-size: 12px;
+  line-height: 12px;
+  padding: 3px 0px 3px 0px;
+  border-top: 1px solid #999999;
+  border-left: 1px solid #999999;
+  border-right: 1px solid #eeeeee;
+  border-bottom: 1px solid #eeeeee;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.15) inset;
+  -moz-box-shadow: 1px 1px 1px rgba(0,0,0,.15) inset;
+  box-shadow: 1px 1px 1px rgba(0,0,0,.15) inset;
+}
+caption{background: #937754; color: #fff}
+.btn-info {
+  color: #fff;
+  background-color: #5bc0de;
+  border-color: #46b8da;
+  width: 100px;
+  height: 30px;
+  margin-top: 10px;
+  margin-bottom: 10px;cursor: pointer;
+}
+.btn-info:hover {
+  padding: 5px;
+  background: darkgreen;
+  /* height: 40px; */
+}
+.estimate-form table td.has-error,.estimate-form table td.error{
+	color: red
+}
+textarea{ font-size: 14px; line-height: 20px;}
+
 </style>
 	
 </head>
@@ -22,128 +83,15 @@
 <body>
 	
 	<!-- Begin Page Content -->
+	<form id="hiveform" name="hiveform" class='estimate-form'>
+		<div id="table">
+		</div>
+
 	
-	<div id="container">
-		<form class="form-horizontal" role="form" id="hiveform" name="hiveform">
-		  <div class="form-group">
-		    <label for="srcip" class="col-sm-1 control-label">源数据库IP</label>
-		    <div class="col-sm-2">
-		      <input type="text" class="form-control" id="srcip" name='srcip' placeholder="源数据库IP">
-		    </div>
-		    <label for="srcport" class="col-sm-1 control-label">源数据库端口</label>
-		    <div class="col-sm-2">
-		      <input type="text" class="form-control" id="srcport" name='srcport' placeholder="源数据库端口">
-		    </div>
-		    <label for="srcdb" class="col-sm-1 control-label">源数据库名</label>
-		    <div class="col-sm-2">
-		      <input type="text" class="form-control" id="srcdb" name='srcdb' placeholder="源数据库名">
-		    </div>
-		  </div>
-		  <div class="form-group">
-		    <label for="srcusername" class="col-sm-1 control-label">源数据库用户名</label>
-		    <div class="col-sm-2">
-		      <input type="text" class="form-control" id="srcusername" name='srcusername' placeholder="源数据库用户名">
-		    </div>
-		    <label for="srcpasswd" class="col-sm-1 control-label">源数据库密码</label>
-		    <div class="col-sm-2">
-		      <input type="text" class="form-control" id="srcpasswd" name="srcpasswd" placeholder="源数据库密码">
-		    </div>
-		  </div>
-		  <div class="form-group">
-		    <label for="srctblnames" class="col-sm-1 control-label">源数据库表名（逗号分隔）</label>
-		    <div class="col-sm-10">
-		      <input type="text" class="form-control" id="srctblnames" name="srctblnames" placeholder="源数据库表名（逗号分隔）">
-		    </div>
-		  </div>
-		  <div class="form-group">
-		    <label for="tardb" class="col-sm-1 control-label">目标数据库名</label>
-		    <div class="col-sm-10">
-		      <input type="text" class="form-control" id="tardb" name="tardb" placeholder="目标数据库名">
-		    </div>
-		  </div>
-		  <div class="form-group">
-		    <label for="tartblnames" class="col-sm-1 control-label">目标数据库表名（逗号分隔）</label>
-		    <div class="col-sm-10">
-		      <input type="text" class="form-control" id="tartblnames" name="tartblnames" placeholder="目标数据库表名（逗号分隔）">
-		    </div>
-		  </div>
-		  <div class="form-group">
-		    <label for="src" class="col-sm-1 control-label">源（【sqlserver|mysql】）</label>
-		    <div class="col-sm-2">
-		    <select class="form-control" name="src" id="src">
-			  <option value="sqlserver">sqlserver</option>
-			  <option value="mysql">mysql</option>
-			  <option value="hive">hive</option>
-			</select>
-		    </div>
-		    <label for="tar" class="col-sm-1 control-label">目标</label>
-		    <div class="col-sm-2">
-		    <select class="form-control" name="tar" id="tar">
-			  <option value="sqlserver">sqlserver</option>
-			  <option value="mysql">mysql</option>
-			  <option value="hive">hive</option>
-			</select>
-		    </div>
-		  </div>
-		  
-		  <h1>高级选项</h1>
-		  <div class="form-group">
-		    <label for="querys" class="col-sm-1 control-label">源sql查询</label>
-		    <div class="col-sm-10">
-		      <input type="text" class="form-control" id="querys" name="querys" placeholder="源sql查询">
-		    </div>
-		  </div>
-		  <div class="form-group">
-		    <label for="filetype" class="col-sm-1 control-label">hive文件类型</label>
-		    <div class="col-sm-2">
-		    <select class="form-control" name="filetype" id="filetype">
-			  <option value="TXT">TXT</option>
-			  <option value="SEQ">SEQ</option>
-			  <option value="TXT_COMP">TXT_COMP</option>
-			  <option value="SEQ_COMP">SEQ_COMP</option>
-			  <option value="RCF">RCF</option>
-			  <option value="RCF_COMP">RCF_COMP</option>
-			</select>
-		    </div>
-		    <label for="fieldsplit" class="col-sm-1 control-label">hive文化分隔符</label>
-		    <div class="col-sm-2">
-		      <input type="text" class="form-control" id="fieldsplit" name='fieldsplit' placeholder="hive文化分隔符" value='\t'>
-		    </div>
-		    <label for="prefixname" class="col-sm-1 control-label">hive文件前缀</label>
-		    <div class="col-sm-2">
-		      <input type="text" class="form-control" id="prefixname" name='prefixname' placeholder="hive文件前缀">
-		    </div>
-		    <label for="concurrency" class="col-sm-1 control-label">hive任务并发数</label>
-		    <div class="col-sm-2">
-		      <input type="text" class="form-control" id="concurrency" name='concurrency' placeholder="hive任务并发数" value=3>
-		    </div>
-		  </div>
-		  <div class="form-group">
-		    <label for="codecclass" class="col-sm-1 control-label">hive文件压缩编码类</label>
-		    <div class="col-sm-2">
-		    <select class="form-control" name="codecclass" id="codecclass">
-			  <option value="org.apache.hadoop.io.compress.BZip2Codec">org.apache.hadoop.io.compress.BZip2Codec</option>
-			  <option value="org.apache.hadoop.io.compress.DefaultCodec">org.apache.hadoop.io.compress.DefaultCodec</option>
-			  <option value="org.apache.hadoop.io.compress.GzipCodec">org.apache.hadoop.io.compress.GzipCodec</option>
-			  <option value="org.apache.hadoop.io.compress.SnappyCodec ">org.apache.hadoop.io.compress.SnappyCodec </option>
-			</select>
-		    </div>
-		    <label for="delmode" class="col-sm-1 control-label">hive删除模式</label>
-		    <div class="col-sm-2">
-		    <select class="form-control" name="delmode" id="delmode">
-			  <option value="0">覆盖写前缀名一致的文件</option>
-			  <option value="1">写之前存在相同文件名就报错</option>
-			  <option value="2">删除单个文件</option>
-			  <option value="3">删除前缀名一致的文件</option>
-			  <option value="4">删除所有文件</option>
-			</select>
-		    </div>
-		  </div>
+
 		  <button type="button" class="btn btn-info" id="secure">生成脚本</button>
-		</form>
-			
-		</div><!--/ container-->
-		<textarea id="response" class="form-control" rows="10" cols="5"></textarea>
+	</form><!--/ container-->
+	<textarea id="response" class="form-control" rows="20" cols="5"></textarea>
 	
 	<!-- End Page Content -->
 	
@@ -151,9 +99,390 @@
 
 </html>
 <script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+
+<script type="text/html" id="hiveFormSrc">
+	<table class='form'>
+		<thead>
+			<td width="60px" class='title'></td><td width="100px"></td>
+			<td width="120px" class='title'></td><td width="140px"></td>
+		</thead>
+		<caption>源</caption>
+		<tbody>
+
+			<tr>
+				<td class='title' colspan="2">源（【sqlserver|mysql】）</td><td  colspan="2"><select class="form-control" name="src" id="src">
+														  <option value="sqlserver">sqlserver</option>
+														  <option value="mysql">mysql</option>
+														  <option value="hive">hive</option>
+													  </select></td>
+			</tr>		
+			<tr>
+				<td class='title'>源数据库名</td><td><input type="text" id="srcdb" name='srcdb'></td>
+				<td class='title'>源数据库表名（逗号分隔）</td><td><input type="text" id="srctblnames" name='srctblnames'></td>
+			</tr>
+			<tr>
+				<td class='title'  width="70px"  colspan="1">源sql查询</td><td  colspan="3"  width="100px"><textarea id="querys" name='querys' rows="5" cols="5"></textarea></td>
+				
+			</tr>
+			<tr>
+				<td class='title'>querysplit</td><td><input type="text" id="querysplit" name='querysplit'></td>
+				<td colspan="2" id="error_response"></td>
+			</tr>
+
+			
+								
+		</tbody>
+	</table>
+</script>
+<script type="text/html" id="hiveFormTar">	
+	<table class='form'>
+			<thead>
+				<td width="60px" class='title'></td><td width="100px"></td>
+				<td width="120px" class='title'></td><td width="140px"></td>
+			</thead>
+			<caption>目标</caption>
+			<tr>
+				<td class='title'>目标</td><td><select class="form-control" name="tar" id="tar">
+									  <option value="sqlserver">sqlserver</option>
+									  <option value="mysql">mysql</option>
+									  <option value="hive">hive</option>
+									</select></td>
+			</tr>
+			<tr>
+				<td class='title'>目标数据库名</td><td><input type="text" id="tardb" name='tardb'></td>
+				<td class='title'>目标数据库表名（逗号分隔）</td><td><input type="text" id="tartblnames" name='tartblnames'></td>
+			</tr>
+			<tr>
+				<td class='title' colspan="2">hive导入模式</td><td colspan="2"><select class="form-control" name="loadtype" id="loadtype">
+											  <option value="1">全量不分区</option>
+											  <option value="2">全量一级分区</option>
+											  <option value="3">增量一级分区</option>
+											  <option value="4">增量二级分区</option>
+											  <option value="5">追加文件到hive表</option>
+											  <option value="6">写文件到HDFS</option>
+											</select></td>
+				
+			</tr>	
+			<tr>
+				<td class='title' style="display:none">pks</td><td style="display:none"><input type="text" id="pks" name='pks'></td>
+				<td class='title' style="display:none">datenow</td><td style="display:none"><input type="text" id="datenow" name='datenow'></td>		
+			</tr>
+			<tr>
+				<td class='title' style="display:none">datepre</td><td style="display:none"><input type="text" id="datepre" name='datepre'></td>
+				<td class='title' style="display:none">parttime</td><td style="display:none"><input type="text" id="parttime" name='parttime'></td>		
+			</tr>
+			<tr>
+				<td class='title' style="display:none">Fieldsplit</td><td style="display:none"><input type="text" id="Fieldsplit" name='Fieldsplit' value="\001 \t"></td>
+				<td class='title' style="display:none">hdfsdir</td><td style="display:none"><input type="text" id="hdfsdir" name='hdfsdir'></td>		
+			</tr
+			<tr>
+				<td class='title'  width="120px">hive文件类型</td><td  width="140px"><select class="form-control" name="filetype" id="filetype">
+											  <option value="TXT">TXT</option>
+											  <option value="SEQ">SEQ</option>
+											  <option value="TXT_COMP">TXT_COMP</option>
+											  <option value="SEQ_COMP">SEQ_COMP</option>
+											  <option value="RCF">RCF</option>
+											  <option value="RCF_COMP">RCF_COMP</option>
+											</select></td>
+				<td class='title'>任务并发数</td><td><input type="text" id="concurrency" name='concurrency'></td>
+			</tr>
+			<tr>
+				<td class='title' colspan="2" style="display:none">hive文件压缩编码类</td><td colspan="2" style="display:none"> <select class="form-control" name="codecclass" id="codecclass">
+			  <option value="org.apache.hadoop.io.compress.BZip2Codec">org.apache.hadoop.io.compress.BZip2Codec</option>
+			  <option value="org.apache.hadoop.io.compress.DefaultCodec">org.apache.hadoop.io.compress.DefaultCodec</option>
+			  <option value="org.apache.hadoop.io.compress.GzipCodec">org.apache.hadoop.io.compress.GzipCodec</option>
+			  <option value="org.apache.hadoop.io.compress.SnappyCodec ">org.apache.hadoop.io.compress.SnappyCodec </option>
+			</select></td>
+			</tr>
+	</table>
+</script>
+<script type="text/html" id="normalFormSrc">
+	<table class='form'>
+		<thead>
+			<td width="60px" class='title'></td><td width="100px"></td>
+			<td width="120px" class='title'></td><td width="140px"></td>
+		</thead>
+		<caption>源</caption>
+		<tbody>
+			<tr>
+				<td class='title' colspan="2">源（【sqlserver|mysql】）</td><td  colspan="2"><select class="form-control" name="src" id="src">
+														  <option value="sqlserver">sqlserver</option>
+														  <option value="mysql">mysql</option>
+														  <option value="hive">hive</option>
+													  </select></td>
+			</tr>		
+			<tr>
+				<td width="60px" class='title'>源数据库IP</td><td width="100px"><input type="text" id="srcip" name='srcip'></td>
+				<td width="120px" class='title'>源数据库端口</td><td width="140px"><input type="text" id="srcport" name='srcport'></td>
+			</tr>
+			<tr>
+				<td class='title'>源数据库名</td><td><input type="text" id="srcdb" name='srcdb'></td>
+				<td class='title'>源数据库用户名</td><td><input type="text" id="srcusername" name='srcusername'></td>
+			</tr>
+			<tr>
+				<td class='title'>源数据库密码</td><td><input type="text" id="srcpasswd" name='srcpasswd'></td>
+				<td class='title'>源数据库表名（逗号分隔）</td><td><input type="text" id="srctblnames" name='srctblnames'></td>
+			</tr>
+			<tr>
+				<td class='title'  width="70px"  colspan="1">源sql查询</td><td  colspan="3"  width="100px"><textarea id="querys" name='querys' rows="5" cols="5"></textarea></td>
+				
+			</tr>
+			<tr>
+				<td class='title'>querysplit</td><td><input type="text" id="querysplit" name='querysplit'></td>
+				<td colspan="2" id="error_response"></td>
+			</tr>					
+		</tbody>
+	</table>
+</script>
+<script type="text/html" id="normalFormTar">
+	<table class='form'>
+			<caption>目标</caption>
+			<tr>
+				<td class='title'>目标</td><td><select class="form-control" name="tar" id="tar">
+									  <option value="sqlserver">sqlserver</option>
+									  <option value="mysql">mysql</option>
+									  <option value="hive">hive</option>
+									</select></td>
+			</tr>	
+			<tr>
+				<td class='title'>目标数据库IP</td><td><input type="text" id="tarip" name='tarip'></td>
+				<td class='title'>目标数据库端口</td><td><input type="text" id="tarport" name='tarport'></td>
+			</tr>
+			<tr>
+				<td class='title'>目标数据库名</td><td><input type="text" id="tardb" name='tardb'></td>
+				<td class='title'>目标数据库用户名</td><td><input type="text" id="tarusername" name='tarusername'></td>
+			</tr>	
+			<tr>
+				<td class='title'>目标数据库密码</td><td><input type="text" id="tarpassword" name='tarpassword'></td>
+				<td class='title'>目标数据库表名（逗号分隔）</td><td><input type="text" id="tartblnames" name='tartblnames'></td>
+			</tr>
+			<tr>
+				<td class='title' colspan="2">插入数据库前SQL</td><td colspan="2"><input type="text" id="tarpresqls" name='tarpresqls'></td>
+			</tr>
+			<tr>
+				<td class='title' colspan="2">插入数据库后SQL</td><td colspan="2"><input type="text" id="tarpostsqls" name='tarpostsqls'></td>
+			</tr>
+			<tr>
+				<td class='title' colspan="2">目标表的字段名称</td><td colspan="2"><input type="text" id="tarcolorders" name='tarcolorders'></td>
+			</tr>
+			<tr>
+				<td class='title' colspan="2" style="display:none">mysqlmethodtype([jdbc|infile|jdbc_replace])</td><td colspan="2" style="display:none"><select class="form-control" name="mysqlmethodtype" id="mysqlmethodtype">
+									  <option value="jdbc">jdbc</option>
+									  <option value="infile">infile</option>
+									  <option value="jdbc_replace">jdbc_replace</option>
+									</select></td>
+			</tr>
+			<tr>
+				<td class='title'>任务并发数</td><td><input type="text" id="concurrency" name='concurrency'></td>
+				<td class='title'>forcecut(true|false)</td><td><select class="form-control" name="forcecut" id="forcecut">
+									  <option value="true">true</option>
+									  <option value="false" selected>false</option>
+									</select></td>
+			</tr>
+	</table>
+</script>
 <script type="text/javascript">
-var serialize = function(form) {
-    var parts = {};
+
+function validate(event){
+		this.hiveHiddenInput = ["srcip","srcport","srcusername","srcpasswd"];
+}
+validate.countSpecifiedChar = function(string,char){
+	return string.split(char).length -1;
+}
+validate.prototype={
+	getForm : function(proto){
+		return document.hiveform[proto];
+	},
+	getSrcTableCount : function(val){
+		if(val.lastIndexOf(",") == val.length-1){//,在最后
+			val = val.substring(0,val.length-1);
+		}
+		return val.split(",").length;
+	},
+	rules:{
+		"querys":function(val,target){
+			var querysCount = validate.countSpecifiedChar(val,";");
+			var srctblnames = this.getForm('srctblnames');
+			var srctblnamesCount = this.getSrcTableCount(srctblnames.value);
+			if(querysCount > srctblnamesCount){
+				$("#error_response").addClass('error').html("请使用querysplit参数");
+				console.log("请使用querysplit参数");
+			}else{
+				$("#error_response").removeClass('error').html("");
+			}
+		},
+		"srctblnames":function(val,target){
+			var srctblnamesCount = this.getSrcTableCount(val);
+			var querysnames = this.getForm('querys');
+			var querysCount = validate.countSpecifiedChar(querysnames.value,";");
+			if(querysCount > srctblnamesCount){
+				$("#error_response").addClass('error').html("请使用querysplit参数");
+				console.log("请使用querysplit参数");
+			}else{
+				$("#error_response").removeClass('error').html("");
+			}
+		},
+		"src" : function(val,target){
+			var self = this;
+			switch(val){
+				case 'sqlserver':
+					self.Form.reset();
+				break;
+				case 'mysql':
+					self.Form.reset();
+					
+				break;
+				case 'hive':
+					self.Form.reset();
+				break;
+			}
+		},
+		"tar" : function(val,target){
+			var self = this;
+			switch(val){
+				case 'sqlserver':
+					self.Form.reset();
+				break;
+				case 'mysql':
+					self.Form.reset();
+					self.Form.show("mysqlmethodtype");
+				break;
+				case 'hive':
+					self.Form.reset();
+				break;
+			}
+		},
+		"loadtype":function(val,target){
+			var self = this;
+			switch(val){
+				case '1':
+					self.Form.hide(["datenow","pks","datepre","parttime","Fieldsplit","hdfsdir"]);
+				break;
+				case '2':
+					self.Form.show("datenow").hide(["pks","datepre","parttime","Fieldsplit","hdfsdir"]);
+				break;
+				case '3':
+					self.Form.show(["pks","datenow","datepre"]).hide(["Fieldsplit","parttime","hdfsdir"]);
+				break;
+				case '4':
+					self.Form.show(["pks","parttime","datenow","datepre"]).hide(["Fieldsplit","hdfsdir"]);
+				break;
+				case '5':
+					self.Form.hide(["datenow","pks","datepre","parttime","Fieldsplit","hdfsdir"]);
+				break;
+				case '6':
+					self.Form.show(["Fieldsplit","hdfsdir"]).hide(["pks","parttime","datenow","datepre"]);
+				break;
+			}
+		},
+		"filetype":function(val,target){
+			var self = this;
+			switch(val){
+				case 'TXT_COMP':
+				case 'SEQ_COMP':
+				case 'RCF_COMP':
+					self.Form.show("codecclass");
+				break;
+				default:
+					self.Form.hide("codecclass");
+				break;
+			}
+		}
+	},
+	check:function(event){
+			var target =$(event.target),reg=target.attr("data-reg"),val = target.val(),id=target.attr("id");
+			if(reg){
+				this.checkReg(reg,target);
+		    }else if(this.rules.hasOwnProperty(id)){
+		    	this.rules[id].call(this,val,target);	
+		    }
+	},
+	checkReg:function(reg,target){
+			var status=true;
+			switch(reg){
+				case 'email':
+				if(!/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/.test(val)){
+					status = false;
+				}
+				break;
+				case 'noempty':
+				if(val=='' || /^\s+$/.test(val)){
+					status = false;
+				}
+				break;
+				case 'number':
+				if(val=='' || !/^\d+$/.test(val)){
+					status = false;
+				}
+				break;
+	    	}
+		    if(!status){
+		    	target.removeClass('has-success').addClass('has-error');
+		    }else{
+		    	target.removeClass('has-error').addClass('has-success');
+		    }
+	}
+}
+
+var Form = function(){
+	(this.data  || (this.data={}))['tar']='hive';
+	this.setTemplate();
+
+	this.table = $("#table");
+	this.form = document.hiveform;
+	this.init();
+	this.bindEvent();
+	this.validateInstance = new validate();
+	this.validateInstance.Form = this;
+}
+
+Form.prototype.init = function(){
+	this.table.html(document.getElementById(this.htmlTemplateSrc).innerHTML+document.getElementById(this.htmlTemplateTar).innerHTML);
+	if(this.data){
+		for(var i in this.data){
+			
+			this.form[i] && (this.form[i].value = this.data[i]);
+		}
+	}
+	return this;
+}
+Form.prototype.reset = function(){
+	this.serialize().setTemplate().init();
+	return this;
+}
+Form.prototype.show = function(ele){
+	var self = this;
+	if(Object.prototype.toString.call(ele)=='[object Array]'){
+		ele.forEach(function(elem){
+			self.show(elem);
+		});
+	}else{
+		var element = $(this.form[ele]).parent();
+		element.show();
+		element.prev().show();
+	}
+	return this;
+}	
+Form.prototype.hide = function(ele){
+	var self = this;
+	if(Object.prototype.toString.call(ele)=='[object Array]'){
+		ele.forEach(function(elem){
+			self.hide(elem);
+		});
+	}else{
+		var element = $(this.form[ele]).parent();
+		element.hide();
+		element.prev().hide();
+	}
+	return this;
+}					
+Form.prototype.setTemplate = function(){
+	this.htmlTemplateSrc = this.data && this.data.src=='hive' ? "hiveFormSrc":"normalFormSrc";
+	this.htmlTemplateTar = this.data && this.data.tar=='hive' ? "hiveFormTar":"normalFormTar";
+	return this;
+}
+Form.prototype.serialize = function() {
+    var parts = {},form =this.form;
     var field = null;
     for (var i = 0,
     len = form.elements.length; i < len; i++) {
@@ -193,87 +522,56 @@ var serialize = function(form) {
             parts[field.name] = field.value;// != '' ? encodeURIComponent(field.value) : 1
         }
     };
-    return parts;
+    this.data = parts;
+    return this;
 }
 
-
-
-		     	function validate(event){
-	     		  var target =$(event.target),
-                  reg=target.attr("data-reg"),val = target.val(),status=true,disabled = false;
-	              if(reg){
-	                switch(reg){
-	                  case 'email':
-	                    if(!/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/.test(val)){
-	                      status = false;
-	                    }
-	                    break;
-	                    case 'noempty':
-	                    if(val=='' || /^\s+$/.test(val)){
-	                      status = false;
-	                    }
-	                    break;
-	                    case 'number':
-	                    if(val=='' || !/^\d+$/.test(val)){
-	                      status = false;
-	                    }
-	                    break;
-	                }
-                }
-                if(!status){
-                	target.removeClass('has-success').addClass('has-error');
-                }else{
-                	target.removeClass('has-error').addClass('has-success');
-                }
-               
-	     	}
+Form.prototype.getShell = function(){
+	var str = "sh datax_run.sh \\\r\n";
+	var index = 1,contiueFlag=false;
+	for(var key in this.data){
+		if($(this.form[key]).parent().css("display")=='none')continue;
+		if(key=='mysqlmethodtype' && this.data[key]=='jdbc'){
+			continue;
+		}else if(key=='concurrency' && this.data[key]==3){
+			continue;
+		}else if(key=='forcecut' && this.data[key]=='false'){
+			continue;
+		}else if(key=='filetype' && this.data[key]=='TXT'){
+			continue;
+		}else if(key=='querys'){
+			str+=" \\\r\n-"+key+" \""+this.data[key]+"\" ";
+			str+=" \\\r\n";
+			index = 1;
+			continue;
+		}
+		str+="-"+key+" "+this.data[key]+" ";
+		if(index%2==0){
+			str+=" \\\r\n";
+		}
+		index++;
+	}
+	return str;
+}
+Form.prototype.bindEvent = function(){
+	var self = this;
 	$("#secure").click(function(){
-		//var username = $("#username").val();
-		//var password = $("#password").val();
-		//if(username==""){
-		//	 $("#username").addClass("has-error");
-		//	 return false;
-		//}
-		//if(password==""){
-		//	 $("#password").addClass("has-error");
-		//	 return false;
-		//}
-		
-		//$.ajax({url:"login.do",async:false,data:{
-		//		username:username,password:password
-		//	},type:"post",
-
-		//	error: function(response){ 
-		//		alert("请求发送失败");
-                      
-        //    },
-         //   success: function(response){ console.log(response);
-         //   	if(response=="null"){
-          //  		alert("用户名不存在");
-         //   	}else if(response=="error"){
-         //   		alert("账户错误");
-         //   	}else{
-         //   		window.location.href='/zeus-web';
-         //   	}
-         //   }
-		//});
-
-		var data  =  serialize(document.hiveform);
-		console.log(data);
-		var str = "sh datax_run.sh \\\r\n"+
-			"-srcip "+data.srcip+" -srcport "+data.srcport+" -srcdb "+data.srcdb+" -srcusername "+data.srcusername+" -srcpasswd "+data.srcpasswd+"\\\r\n"+
-			"-srctblnames "+data.srctblnames+" \\\r\n"+
-			"-tardb "+data.tardb+" \\\r\n"+
-			"-tartblnames "+data.tartblnames+" \\\r\n"+
-			"-src "+data.src+" -tar "+data.tar+"";
+		if($("#error_response").hasClass("error")){
+			alert("请检查错误");
+			return;
+		}
+		self.serialize();
+		var str = self.getShell();
 		console.log(str);
 		$("#response").html(str);
 	});
-	$("#container input,textarea,select").on('input propertychange',function(event){
-        validate(event);
+	$("#table").on('input propertychange',"input,textarea,select",function(event){
+        self.validateInstance.check(event);
     });
+	return this;
+}
+var formInstance = new Form();    
 </script>
-	
 	
 	
 	

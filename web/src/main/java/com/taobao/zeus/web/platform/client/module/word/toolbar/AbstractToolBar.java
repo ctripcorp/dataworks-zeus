@@ -89,9 +89,8 @@ public abstract class AbstractToolBar extends ToolBar{
 	
 	protected TextButton extend=new TextButton("扩展功能",ResourcesTool.iconResources.icon_extends());
 	
-	protected MenuItem lingoes=new MenuItem("生成脚本",new SelectionHandler<MenuItem>() {
-		@Override
-		public void onSelection(SelectionEvent<MenuItem> event) {
+	protected TextButton lingoes=new TextButton("生成脚本",new SelectHandler() {
+		public void onSelect(SelectEvent event) {
 
 			new DefaultPanel(getFileModel().getId()).show();
 		}
@@ -148,6 +147,7 @@ public abstract class AbstractToolBar extends ToolBar{
 		run.setIcon(ResourcesTool.iconResources.icon_run());
 		selectRun.setIcon(ResourcesTool.iconResources.icon_run());
 		config.setIcon(ResourcesTool.iconResources.icon_config());
+		lingoes.setIcon(ResourcesTool.iconResources.icon_code());
 		upload.setIcon(ResourcesTool.iconResources.icon_upload());
 		syncJump.setIcon(ResourcesTool.iconResources.icon_jump());
 	}

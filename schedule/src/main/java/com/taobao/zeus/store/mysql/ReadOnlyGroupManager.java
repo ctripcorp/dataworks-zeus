@@ -855,7 +855,7 @@ public class ReadOnlyGroupManager extends HibernateDaoSupport{
 			throw new UnsupportedOperationException();
 		}
 
-		@Override
+		/*@Override
 		public String getScript() {
 			return jd.getScript();
 		}
@@ -863,7 +863,7 @@ public class ReadOnlyGroupManager extends HibernateDaoSupport{
 		@Override
 		public void setScript(String script) {
 			throw new UnsupportedOperationException();
-		}
+		}*/
 		@Override
 		public List<Processer> getPreProcessers() {
 			return new ArrayList<Processer>(jd.getPreProcessers());

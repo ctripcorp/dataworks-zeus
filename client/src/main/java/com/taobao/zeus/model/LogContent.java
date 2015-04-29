@@ -10,7 +10,19 @@ public class LogContent {
 	public void appendConsole(String log) {
 		if (lines < 10000) {
 			lines++;
-			content.append("CONSOLE# ").append(log).append("\n");
+			if (log.toLowerCase().contains("error")
+					|| log.toLowerCase().contains("failed")
+					|| log.contains("FileNotFoundException")
+					|| log.contains("NullPointException")
+					|| log.contains("No such file or directory")
+					|| log.contains("command not found")
+					|| log.contains("Permission denied")) {
+				content.append("CONSOLE# ").append("<font style=\"color:red\">")
+						.append(log).append("</font>")
+						.append("\n");
+			} else {
+				content.append("CONSOLE# ").append(log).append("\n");
+			}
 			if (lines == 10000) {
 				content.append("ZEUS# 控制台输出信息过多，停止记录，建议您优化自己的Job");
 			}

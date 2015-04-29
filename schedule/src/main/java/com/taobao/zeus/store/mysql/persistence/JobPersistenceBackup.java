@@ -120,6 +120,8 @@ public class JobPersistenceBackup {
 	@Column(name="store_time")
 	private Date storeDate;
 	
+	@Column(name="host_group_id")
+	private int hostGroupId;
 	
 	public Long getToJobId() {
 		return toJobId;
@@ -377,6 +379,22 @@ public class JobPersistenceBackup {
 		this.host = host;
 	}
 	
+	public int getHostGroupId() {
+		return hostGroupId;
+	}
+
+	public void setHostGroupId(int hostGroupId) {
+		this.hostGroupId = hostGroupId;
+	}
+
+	public Date getStoreDate() {
+		return storeDate;
+	}
+
+	public void setStoreDate(Date storeDate) {
+		this.storeDate = storeDate;
+	}
+
 	public JobPersistenceBackup() {
 	}
 	public JobPersistenceBackup(JobPersistence persist) {
@@ -413,5 +431,6 @@ public class JobPersistenceBackup {
 		this.cycle = persist.getCycle();
 		this.host = persist.getHost();
 		this.storeDate = new Date();
+		this.hostGroupId = persist.getHostGroupId();
 	}
 }

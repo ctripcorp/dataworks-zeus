@@ -90,6 +90,7 @@ public class WorkerHandler extends SimpleChannelUpstreamHandler{
 	public void channelDisconnected(ChannelHandlerContext ctx,
 			ChannelStateEvent e) throws Exception {
 		super.channelDisconnected(ctx, e);
+		this.context.setServerChannel(null);
 		SocketLog.info("worker disconnect to master");
 		//断开连接，如果还有运行中的job，将这些job取消掉
 		for(String jobId:new HashSet<String>(context.getRunnings().keySet())){
@@ -105,7 +106,6 @@ public class WorkerHandler extends SimpleChannelUpstreamHandler{
 			context.getClientWorker().cancelManualJob(historyId);
 		}
 		SocketLog.info("job cancel successfully");
-		this.context.setServerChannel(null);
 	}
 	private List<ResponseListener> listeners=new CopyOnWriteArrayList<ResponseListener>();
 	public static interface ResponseListener{

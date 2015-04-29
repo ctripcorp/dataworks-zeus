@@ -1035,11 +1035,11 @@ public class Master {
 							log.error("无法生成Cron表达式：日期," + cronDate + ";不符合规则cron表达式：" + jobCronExpression);
 						}
 						for (int i = 0; i < lTime.size(); i++) {
-							String actionDateStr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "yyyyMMddHHmmss");
-							String actionCronExpr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "s m H d M") + " ?";
+							String actionDateStr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "yyyyMMddHHmm");
+							String actionCronExpr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "0 m H d M") + " ?";
 							
 							JobPersistence actionPer = new JobPersistence();
-							actionPer.setId(Long.parseLong(actionDateStr)*10000+jobDetail.getId());//update action id
+							actionPer.setId(Long.parseLong(actionDateStr)*1000000+jobDetail.getId());//update action id
 							actionPer.setToJobId(jobDetail.getId());
 							actionPer.setAuto(jobDetail.getAuto());
 							actionPer.setConfigs(jobDetail.getConfigs());
@@ -1092,7 +1092,8 @@ public class Master {
 					log.error("定时任务生成Action失败",ex);
 				}
 			}
-
+			/**
+			 * 取消生成周期任务
 			if(jobDetail.getScheduleType() != null && jobDetail.getScheduleType()==2){
 				try{
 					if(jobDetail.getDependencies()==null || jobDetail.getDependencies().trim().length()==0){
@@ -1238,7 +1239,7 @@ public class Master {
 				}catch(Exception ex){
 					log.error("周期任务生成Action失败",ex);
 				}
-			}
+			}*/
 		}
 	}
 	
@@ -1323,12 +1324,12 @@ public class Master {
 											if(actionDependencies.trim().length()>0){
 												actionDependencies += ",";
 											}
-											actionDependencies += String.valueOf((actionOtherId/10000)*10000 + Long.parseLong(deps));
+											actionDependencies += String.valueOf((actionOtherId/1000000)*1000000 + Long.parseLong(deps));
 										}
 									}
 									//保存多版本的action
 									JobPersistence actionPer = new JobPersistence();
-									actionPer.setId((actionModel.getId()/10000)*10000+jobDetail.getId());//update action id
+									actionPer.setId((actionModel.getId()/1000000)*1000000+jobDetail.getId());//update action id
 									actionPer.setToJobId(jobDetail.getId());
 									actionPer.setAuto(jobDetail.getAuto());
 									actionPer.setConfigs(jobDetail.getConfigs());

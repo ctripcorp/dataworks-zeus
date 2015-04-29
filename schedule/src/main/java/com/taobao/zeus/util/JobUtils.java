@@ -111,7 +111,7 @@ public class JobUtils {
 		List<Map<String, String>> resources = jobBean.getHierarchyResources();
 		String script = jobBean.getJobDescriptor().getScript();
 		///*************************update run date  2014-09-18**************
-		String dateStr = history.getJobId().substring(0,14);
+		String dateStr = history.getJobId().substring(0,12)+"00";
 		System.out.println("Manual Job run date :"+dateStr);
 		if(dateStr != null && dateStr.length() == 14){
 			script = RenderHierarchyProperties.render(script, dateStr);

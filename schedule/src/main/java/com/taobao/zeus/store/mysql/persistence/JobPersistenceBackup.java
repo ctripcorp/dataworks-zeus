@@ -63,8 +63,8 @@ public class JobPersistenceBackup {
 	@Column(length=4096)
 	private String resources;
 	
-	@Column(length=16777215)
-	private String script;
+/*	@Column(length=16777215)
+	private String script;*/
 	
 	@Column(name = "gmt_create", nullable = false)
 	private Date gmtCreate = new Date();
@@ -243,13 +243,13 @@ public class JobPersistenceBackup {
 		this.groupId = groupId;
 	}
 
-	public String getScript() {
+/*	public String getScript() {
 		return script;
 	}
 
 	public void setScript(String script) {
 		this.script = script;
-	}
+	}*/
 
 	public Long getId() {
 		return id;
@@ -412,7 +412,7 @@ public class JobPersistenceBackup {
 		this.groupId = persist.getGroupId();
 		this.owner = persist.getOwner();
 		this.resources = persist.getResources();
-		this.script = persist.getScript();
+/*		this.script = persist.getScript();*/
 		this.gmtCreate = persist.getGmtCreate();
 		this.gmtModified = persist.getGmtModified();
 		this.historyId = persist.getHistoryId();

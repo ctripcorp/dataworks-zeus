@@ -43,9 +43,11 @@ import com.taobao.zeus.model.processer.WangWangProcesser;
 import com.taobao.zeus.model.processer.ZooKeeperProcesser;
 import com.taobao.zeus.store.FileManager;
 import com.taobao.zeus.store.GroupManager;
+import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.HierarchyProperties;
 import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.ProfileManager;
+import com.taobao.zeus.store.mysql.MysqlGroupManagerOld;
 
 public class JobUtils {
 
@@ -109,7 +111,12 @@ public class JobUtils {
 		}
 		jobContext.setProperties(new RenderHierarchyProperties(hp));
 		List<Map<String, String>> resources = jobBean.getHierarchyResources();
-		String script = jobBean.getJobDescriptor().getScript();
+/*		String script = jobBean.getJobDescriptor().getScript();*/
+		String tojobId = jobBean.getJobDescriptor().getToJobId();
+		GroupManagerOld groupManagerOld = (GroupManagerOld) applicationContext
+				.getBean("groupManagerOld");
+		String script = groupManagerOld.getJobDescriptor(tojobId).getX().getScript();
+//		System.out.println(script);
 		///*************************update run date  2014-09-18**************
 		String dateStr = history.getJobId().substring(0,12)+"00";
 		System.out.println("Manual Job run date :"+dateStr);
@@ -123,7 +130,7 @@ public class JobUtils {
 				|| jobBean.getJobDescriptor().getJobType()
 						.equals(JobRunType.Hive)) {
 			script = resolvScriptResource(resources, script, applicationContext);
-			jobBean.getJobDescriptor().setScript(script);
+/*			jobBean.getJobDescriptor().setScript(script);*/
 		}
 		jobContext.setResources(resources);
 		if(dateStr != null && dateStr.length() == 14){

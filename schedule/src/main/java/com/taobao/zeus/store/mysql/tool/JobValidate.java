@@ -58,7 +58,7 @@ public class JobValidate {
 				}
 
 			}
-		}else if(job.getJobType()==JobRunType.Shell){
+		}/*else if(job.getJobType()==JobRunType.Shell){
 			if(job.getScript()==null){
 				throw new ZeusException("Shell 脚本不得为空");
 			}
@@ -66,7 +66,7 @@ public class JobValidate {
 			if(job.getScript()==null){
 				throw new ZeusException("Hive 脚本不得为空");
 			}
-		}
+		}*/
 		
 		if(job.getCronExpression()!=null && !job.getCronExpression().trim().equals("")){
 			try {

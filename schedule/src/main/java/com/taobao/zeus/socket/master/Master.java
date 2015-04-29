@@ -1066,7 +1066,7 @@ public class Master {
 							actionPer.setResources(jobDetail.getResources());
 							actionPer.setRunType(jobDetail.getRunType());
 							actionPer.setScheduleType(jobDetail.getScheduleType());
-							actionPer.setScript(jobDetail.getScript());
+/*							actionPer.setScript(jobDetail.getScript());*/
 							actionPer.setStartTime(jobDetail.getStartTime());
 							actionPer.setStartTimestamp(jobDetail.getStartTimestamp());
 							actionPer.setStatisStartTime(jobDetail.getStatisStartTime());
@@ -1355,7 +1355,7 @@ public class Master {
 									actionPer.setResources(jobDetail.getResources());
 									actionPer.setRunType(jobDetail.getRunType());
 									actionPer.setScheduleType(jobDetail.getScheduleType());
-									actionPer.setScript(jobDetail.getScript());
+/*									actionPer.setScript(jobDetail.getScript());*/
 									actionPer.setStartTime(jobDetail.getStartTime());
 									actionPer.setStartTimestamp(jobDetail.getStartTimestamp());
 									actionPer.setStatisStartTime(jobDetail.getStatisStartTime());

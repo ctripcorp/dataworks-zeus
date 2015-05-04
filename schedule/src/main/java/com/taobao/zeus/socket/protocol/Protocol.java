@@ -3406,6 +3406,10 @@ public final class Protocol {
     // optional string host = 6;
     boolean hasHost();
     String getHost();
+    
+    // optional float cpu_load_per_core = 7;
+    boolean hasCpuLoadPerCore();
+    float getCpuLoadPerCore();
   }
   public static final class HeartBeatMessage extends
       com.google.protobuf.GeneratedMessage
@@ -3530,6 +3534,16 @@ public final class Protocol {
       }
     }
     
+    // optional float cpu_load_per_core = 7;
+    public static final int CPU_LOAD_PER_CORE_FIELD_NUMBER = 7;
+    private float cpuLoadPerCore_;
+    public boolean hasCpuLoadPerCore() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public float getCpuLoadPerCore() {
+      return cpuLoadPerCore_;
+    }
+    
     private void initFields() {
       runnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       debugRunnings_ = com.google.protobuf.LazyStringArrayList.EMPTY;
@@ -3537,6 +3551,7 @@ public final class Protocol {
       timestamp_ = 0L;
       memRate_ = 0F;
       host_ = "";
+      cpuLoadPerCore_ = 0F;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3567,6 +3582,9 @@ public final class Protocol {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeBytes(6, getHostBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeFloat(7, cpuLoadPerCore_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -3615,6 +3633,10 @@ public final class Protocol {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(6, getHostBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(7, cpuLoadPerCore_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3750,6 +3772,8 @@ public final class Protocol {
         bitField0_ = (bitField0_ & ~0x00000010);
         host_ = "";
         bitField0_ = (bitField0_ & ~0x00000020);
+        cpuLoadPerCore_ = 0F;
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
       
@@ -3818,6 +3842,10 @@ public final class Protocol {
           to_bitField0_ |= 0x00000004;
         }
         result.host_ = host_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.cpuLoadPerCore_ = cpuLoadPerCore_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3872,6 +3900,9 @@ public final class Protocol {
         }
         if (other.hasHost()) {
           setHost(other.getHost());
+        }
+        if (other.hasCpuLoadPerCore()) {
+          setCpuLoadPerCore(other.getCpuLoadPerCore());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -3932,6 +3963,11 @@ public final class Protocol {
             case 50: {
               bitField0_ |= 0x00000020;
               host_ = input.readBytes();
+              break;
+            }
+            case 61: {
+              bitField0_ |= 0x00000040;
+              cpuLoadPerCore_ = input.readFloat();
               break;
             }
           }
@@ -4184,6 +4220,27 @@ public final class Protocol {
         bitField0_ |= 0x00000020;
         host_ = value;
         onChanged();
+      }
+      
+      // optional float cpu_load_per_core = 7;
+      private float cpuLoadPerCore_ ;
+      public boolean hasCpuLoadPerCore() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      public float getCpuLoadPerCore() {
+        return cpuLoadPerCore_;
+      }
+      public Builder setCpuLoadPerCore(float value) {
+        bitField0_ |= 0x00000040;
+        cpuLoadPerCore_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearCpuLoadPerCore() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        cpuLoadPerCore_ = 0F;
+        onChanged();
+        return this;
       }
       
       // @@protoc_insertion_point(builder_scope:com.taobao.zeus.socket.protocol.HeartBeatMessage)
@@ -6047,24 +6104,25 @@ public final class Protocol {
       "\030\001 \002(\0162\'.com.taobao.zeus.socket.protocol",
       ".Status\022\013\n\003rid\030\002 \002(\021\0229\n\007operate\030\003 \002(\0162(." +
       "com.taobao.zeus.socket.protocol.Operate\022" +
-      "\021\n\terrorText\030\004 \001(\t\022\014\n\004body\030\005 \001(\014\"\206\001\n\020Hea" +
+      "\021\n\terrorText\030\004 \001(\t\022\014\n\004body\030\005 \001(\014\"\241\001\n\020Hea" +
       "rtBeatMessage\022\020\n\010runnings\030\001 \003(\t\022\025\n\rdebug" +
       "Runnings\030\002 \003(\t\022\026\n\016manualRunnings\030\003 \003(\t\022\021" +
       "\n\ttimestamp\030\004 \001(\003\022\020\n\010mem_rate\030\005 \001(\002\022\014\n\004h" +
-      "ost\030\006 \001(\t\"1\n\016ExecuteMessage\022\r\n\005jobId\030\001 \002" +
-      "(\t\022\020\n\010exitCode\030\002 \001(\021\"U\n\rCancelMessage\0228\n" +
-      "\002ek\030\001 \002(\0162,.com.taobao.zeus.socket.proto" +
-      "col.ExecuteKind\022\n\n\002id\030\002 \002(\t\"1\n\014DebugMess",
-      "age\022\017\n\007debugId\030\001 \002(\t\022\020\n\010exitCode\030\002 \001(\021\"4" +
-      "\n\rManualMessage\022\021\n\thistoryId\030\001 \002(\t\022\020\n\010ex" +
-      "itCode\030\002 \001(\021*\033\n\006Status\022\006\n\002OK\020\000\022\t\n\005ERROR\020" +
-      "\001*>\n\013ExecuteKind\022\020\n\014ScheduleKind\020\000\022\016\n\nMa" +
-      "nualKind\020\001\022\r\n\tDebugKind\020\002*L\n\nWebOperate\022" +
-      "\r\n\tUpdateJob\020\001\022\016\n\nExecuteJob\020\002\022\r\n\tCancel" +
-      "Job\020\003\022\020\n\014ExecuteDebug\020\004*I\n\007Operate\022\r\n\tHe" +
-      "artBeat\020\000\022\014\n\010Schedule\020\001\022\n\n\006Cancel\020\002\022\t\n\005D" +
-      "ebug\020\003\022\n\n\006Manual\020\004B-\n\037com.taobao.zeus.so" +
-      "cket.protocolB\010ProtocolH\001"
+      "ost\030\006 \001(\t\022\031\n\021cpu_load_per_core\030\007 \001(\002\"1\n\016" +
+      "ExecuteMessage\022\r\n\005jobId\030\001 \002(\t\022\020\n\010exitCod" +
+      "e\030\002 \001(\021\"U\n\rCancelMessage\0228\n\002ek\030\001 \002(\0162,.c" +
+      "om.taobao.zeus.socket.protocol.ExecuteKi",
+      "nd\022\n\n\002id\030\002 \002(\t\"1\n\014DebugMessage\022\017\n\007debugI" +
+      "d\030\001 \002(\t\022\020\n\010exitCode\030\002 \001(\021\"4\n\rManualMessa" +
+      "ge\022\021\n\thistoryId\030\001 \002(\t\022\020\n\010exitCode\030\002 \001(\021*" +
+      "\033\n\006Status\022\006\n\002OK\020\000\022\t\n\005ERROR\020\001*>\n\013ExecuteK" +
+      "ind\022\020\n\014ScheduleKind\020\000\022\016\n\nManualKind\020\001\022\r\n" +
+      "\tDebugKind\020\002*L\n\nWebOperate\022\r\n\tUpdateJob\020" +
+      "\001\022\016\n\nExecuteJob\020\002\022\r\n\tCancelJob\020\003\022\020\n\014Exec" +
+      "uteDebug\020\004*I\n\007Operate\022\r\n\tHeartBeat\020\000\022\014\n\010" +
+      "Schedule\020\001\022\n\n\006Cancel\020\002\022\t\n\005Debug\020\003\022\n\n\006Man" +
+      "ual\020\004B-\n\037com.taobao.zeus.socket.protocol",
+      "B\010ProtocolH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -6116,7 +6174,7 @@ public final class Protocol {
           internal_static_com_taobao_zeus_socket_protocol_HeartBeatMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_taobao_zeus_socket_protocol_HeartBeatMessage_descriptor,
-              new java.lang.String[] { "Runnings", "DebugRunnings", "ManualRunnings", "Timestamp", "MemRate", "Host", },
+              new java.lang.String[] { "Runnings", "DebugRunnings", "ManualRunnings", "Timestamp", "MemRate", "Host", "CpuLoadPerCore", },
               com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage.class,
               com.taobao.zeus.socket.protocol.Protocol.HeartBeatMessage.Builder.class);
           internal_static_com_taobao_zeus_socket_protocol_ExecuteMessage_descriptor =

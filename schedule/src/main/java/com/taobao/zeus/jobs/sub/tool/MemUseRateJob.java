@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import com.taobao.zeus.jobs.JobContext;
 import com.taobao.zeus.jobs.sub.ShellJob;
 import com.taobao.zeus.schedule.mvc.ScheduleInfoLog;
+import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.RunningJobKeys;
 
 public class MemUseRateJob extends ShellJob{
@@ -28,7 +29,7 @@ public class MemUseRateJob extends ShellJob{
 		String os=System.getProperties().getProperty("os.name");
 		if(os!=null && (os.startsWith("win") || os.startsWith("Win") || os.startsWith("Mac"))){
 			//放一个假的数字，方便开发
-			jobContext.putData("mem", 0.799999);
+			jobContext.putData("mem", Environment.getMaxMemRate());
 			return 0;
 		}
 		Integer exitCode=super.run();

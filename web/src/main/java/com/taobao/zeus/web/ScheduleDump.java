@@ -37,6 +37,7 @@ import com.taobao.zeus.socket.master.MasterWorkerHolder;
 import com.taobao.zeus.socket.master.MasterWorkerHolder.HeartBeatInfo;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
+import com.taobao.zeus.util.Environment;
 
 /**
  * Dump调度系统内的Job状态，用来调试排查问题
@@ -82,73 +83,70 @@ public class ScheduleDump extends HttpServlet {
 									.getWorkers();
 							SimpleDateFormat format = new SimpleDateFormat(
 									"yyyy-MM-dd HH:mm:ss");
+							StringBuilder builder = new StringBuilder();
+							builder.append("<table border=\"1\">");
 							for (Channel channel : workers.keySet()) {
-								MasterWorkerHolder holder = workers
-										.get(channel);
-								Set<String> runnings = holder.getRunnings()
-										.keySet();
-								Set<String> manualRunnings = holder
-										.getManualRunnings().keySet();
-								Set<String> debugRunnings = holder
-										.getDebugRunnings().keySet();
+								MasterWorkerHolder holder = workers.get(channel);
+								Set<String> runnings = holder.getRunnings().keySet();
+								Set<String> manualRunnings = holder.getManualRunnings().keySet();
+								Set<String> debugRunnings = holder.getDebugRunnings().keySet();
 								HeartBeatInfo heart = holder.getHeart();
-								resp.getWriter().println(
-										"<br>" + channel.getRemoteAddress()
-												+ ":");
-								resp.getWriter().println(
-										"<br>" + "\t runnings:"
-												+ runnings.toString());
-								resp.getWriter().println(
-										"<br>" + "\t manual runnings:"
-												+ manualRunnings.toString());
-								resp.getWriter().println(
-										"<br>" + "\t debug runnings:"
-												+ debugRunnings.toString());
-								resp.getWriter().println(
-										"<br>" + "\t heart beat: ");
-								resp.getWriter()
-										.println(
-												"<br>"
-														+ "\t\t last heartbeat:"
-														+ format.format(heart.timestamp));
-								resp.getWriter().println(
-										"<br>" + "\t\t mem use rate:"
-												+ heart.memRate);
-								resp.getWriter().println(
-										"<br>" + "\t\t runnings:"
-												+ heart.runnings.toString());
-								resp.getWriter().println(
-										"<br>"
-												+ "\t\t manual runnings:"
-												+ heart.manualRunnings
-														.toString());
-								resp.getWriter().println(
-										"<br>"
-												+ "\t\t debug runnings:"
-												+ heart.debugRunnings
-														.toString());
+								builder.append("<tr>");
+								builder.append("<td>");
+								builder.append(channel.getRemoteAddress()+ ":");
+								builder.append("<br>" + "\t runnings:"+ runnings.toString());
+								builder.append("<br>" + "\t manual runnings:"+ manualRunnings.toString());
+								builder.append("<br>" + "\t debug runnings:"+ debugRunnings.toString());
+								builder.append("<br>" + "\t heart beat: ");
+								if (heart != null) {
+									builder.append("<br>"+ "\t\t last heartbeat:"+ format.format(heart.timestamp));
+									if (heart.memRate < Environment.getMaxMemRate()) {
+										builder.append("<br>" + "\t\t mem use rate:"+ heart.memRate);
+									}else {
+										builder.append("<br>" + "\t\t <font color=\"red\"> mem use rate:"+ heart.memRate+"</font>");
+									}
+									if (heart.cpuLoadPerCore < Environment.getMaxCpuLoadPerCore()) {
+										builder.append("<br>" + "\t\t  cpu load per core:"+ heart.cpuLoadPerCore);
+									}else {
+										builder.append("<br>" + "\t\t <font color=\"red\"> cpu load per core:"+ heart.cpuLoadPerCore+"</font>");
+									}
+									builder.append("<br>"+ "\t\t runnings:"+ heart.runnings.toString());
+									builder.append("<br>"+ "\t\t manual runnings:"+ heart.manualRunnings.toString());
+									builder.append("<br>"+ "\t\t debug runnings:"+ heart.debugRunnings.toString());
+								}
+								builder.append("</td>");
+								builder.append("</tr>");
 							}
+							builder.append("<tr>");
+							builder.append("<td>");
+							builder.append("\t\t Max Mem use Rate:"+ Environment.getMaxMemRate());
+							builder.append("<br>" + "\t\t Max Cpu Load Per Core:"+ Environment.getMaxCpuLoadPerCore());
+							builder.append("</td>");
+							builder.append("</tr>");
+							builder.append("</table>");
+							resp.getWriter().println(builder.toString());
 						} else if ("queue".equals(op)) {
 							Queue<JobElement> queue = context.getQueue();
-							Queue<JobElement> debugQueue = context
-									.getDebugQueue();
-							Queue<JobElement> manualQueue = context
-									.getManualQueue();
-							resp.getWriter().println(
-									"<br>" + "schedule jobs in queue:");
+							Queue<JobElement> exceptionQueue = context.getExceptionQueue();
+							Queue<JobElement> debugQueue = context.getDebugQueue();
+							Queue<JobElement> manualQueue = context.getManualQueue();
+							resp.getWriter().println("<br>" + "schedule jobs in queue:");
 							for (JobElement jobId : queue) {
 								resp.getWriter().print(jobId.getJobID() + "\t");
 							}
-							resp.getWriter().println(
-									"<br>" + "manual jobs in queue:");
+							resp.getWriter().println("<br>" + "exception jobs in queue:");
+							for (JobElement jobId : exceptionQueue) {
+								resp.getWriter().print(jobId.getJobID() + "\t");
+							}
+							resp.getWriter().println("<br>" + "manual jobs in queue:");
 							for (JobElement jobId : manualQueue) {
 								resp.getWriter().print(jobId.getJobID() + "\t");
 							}
-							resp.getWriter().println(
-									"<br>" + "debug jobs in queue:");
+							resp.getWriter().println("<br>" + "debug jobs in queue:");
 							for (JobElement jobId : debugQueue) {
 								resp.getWriter().print(jobId.getJobID() + "\t");
 							}
+							
 						} else if ("jobstatus".equals(op)) {
 							Dispatcher dispatcher = context.getDispatcher();
 							if (dispatcher != null) {
@@ -157,31 +155,24 @@ public class ScheduleDump extends HttpServlet {
 											"<br>" + c.toString());
 								}
 							}
-						}/* else if ("clearschedule".equals(op)) {
-							Date now = new Date();
-							SimpleDateFormat df = new SimpleDateFormat(
-									"yyyyMMddHHmmss");
-							String currentDateStr = df.format(now) + "0000";
-							Dispatcher dispatcher = context.getDispatcher();
-							if (dispatcher != null) {
-								List<Controller> controllers = dispatcher
-										.getControllers();
-								if (controllers != null
-										&& controllers.size() > 0) {
-									for (Controller c : controllers) {
-										JobController jobc = (JobController) c;
-										String jobId = jobc.getJobId();
-										if (Long.parseLong(jobId) < Long
-												.parseLong(currentDateStr)) {
-											context.getScheduler().deleteJob(
-													jobId, "zeus");
-										}
-									}
-								}
-							}
-							resp.getWriter().println("清理完毕！");
-
-						}*/ else if ("action".equals(op)) {
+						}/*
+						 * else if ("clearschedule".equals(op)) { Date now = new
+						 * Date(); SimpleDateFormat df = new SimpleDateFormat(
+						 * "yyyyMMddHHmmss"); String currentDateStr =
+						 * df.format(now) + "0000"; Dispatcher dispatcher =
+						 * context.getDispatcher(); if (dispatcher != null) {
+						 * List<Controller> controllers = dispatcher
+						 * .getControllers(); if (controllers != null &&
+						 * controllers.size() > 0) { for (Controller c :
+						 * controllers) { JobController jobc = (JobController)
+						 * c; String jobId = jobc.getJobId(); if
+						 * (Long.parseLong(jobId) < Long
+						 * .parseLong(currentDateStr)) {
+						 * context.getScheduler().deleteJob( jobId, "zeus"); } }
+						 * } } resp.getWriter().println("清理完毕！");
+						 * 
+						 * }
+						 */else if ("action".equals(op)) {
 							Date now = new Date();
 							SimpleDateFormat df2 = new SimpleDateFormat(
 									"yyyy-MM-dd");
@@ -210,12 +201,19 @@ public class ScheduleDump extends HttpServlet {
 																.getMaster(),
 														id.toString()));
 										if (id > Long.parseLong(currentDateStr)) {
-											context.getDispatcher().forwardEvent(
-													new JobMaintenanceEvent(Events.UpdateJob,
-															id.toString()));
-										}else if(id < (Long.parseLong(currentDateStr)-15000000)){
+											context.getDispatcher()
+													.forwardEvent(
+															new JobMaintenanceEvent(
+																	Events.UpdateJob,
+																	id.toString()));
+										} else if (id < (Long
+												.parseLong(currentDateStr) - 15000000)) {
 											int loopCount = 0;
-											context.getMaster().rollBackLostJob(id, actionDetails, loopCount, rollBackActionId);
+											context.getMaster()
+													.rollBackLostJob(id,
+															actionDetails,
+															loopCount,
+															rollBackActionId);
 
 										}
 									}
@@ -226,11 +224,14 @@ public class ScheduleDump extends HttpServlet {
 										.getControllers();
 								if (controllers != null
 										&& controllers.size() > 0) {
-									Iterator<Controller> itController = controllers.iterator();
-									while(itController.hasNext()){
-										JobController jobc = (JobController) itController.next();
+									Iterator<Controller> itController = controllers
+											.iterator();
+									while (itController.hasNext()) {
+										JobController jobc = (JobController) itController
+												.next();
 										String jobId = jobc.getJobId();
-										if (Long.parseLong(jobId) < (Long.parseLong(currentDateStr)-15000000)) {
+										if (Long.parseLong(jobId) < (Long
+												.parseLong(currentDateStr) - 15000000)) {
 											try {
 												context.getScheduler()
 														.deleteJob(jobId,
@@ -238,11 +239,18 @@ public class ScheduleDump extends HttpServlet {
 											} catch (SchedulerException e) {
 												e.printStackTrace();
 											}
-										}else if(Long.parseLong(jobId) >= Long.parseLong(currentDateStr)){
+										} else if (Long.parseLong(jobId) >= Long
+												.parseLong(currentDateStr)) {
 											try {
-												if(!actionDetails.containsKey(Long.valueOf(jobId))){
-													context.getScheduler().deleteJob(jobId, "zeus");
-													context.getGroupManager().removeJob(Long.valueOf(jobId));
+												if (!actionDetails
+														.containsKey(Long
+																.valueOf(jobId))) {
+													context.getScheduler()
+															.deleteJob(jobId,
+																	"zeus");
+													context.getGroupManager()
+															.removeJob(
+																	Long.valueOf(jobId));
 													itController.remove();
 												}
 											} catch (Exception e) {
@@ -254,7 +262,8 @@ public class ScheduleDump extends HttpServlet {
 							}
 							resp.getWriter().println("Action生成完毕！");
 						} else if ("hostgroup".equals(op)) {
-							List<HostGroupCache> allHostGroupInfomations = context.getHostGroupCache();
+							List<HostGroupCache> allHostGroupInfomations = context
+									.getHostGroupCache();
 							StringBuilder builder = new StringBuilder();
 							builder.append("<h3>host组信息：</h3>");
 							builder.append("<table border=\"1\">");
@@ -267,18 +276,21 @@ public class ScheduleDump extends HttpServlet {
 							for (HostGroupCache info : allHostGroupInfomations) {
 								builder.append("<tr>");
 								builder.append("<td>" + info.getId() + "</td>");
-								builder.append("<td>" + info.getName() + "</td>");
-								builder.append("<td>" + info.getDescription() + "</td>");
+								builder.append("<td>" + info.getName()
+										+ "</td>");
+								builder.append("<td>" + info.getDescription()
+										+ "</td>");
 								builder.append("<td>");
 								for (String hosts : info.getHosts()) {
-									builder.append(hosts+"<br/>");
+									builder.append(hosts + "<br/>");
 								}
 								builder.append("</td>");
 								builder.append("</tr>");
 							}
 							builder.append("</table>");
+							builder.append("<br><a href='dump.do?op=refreshhostgroup'>刷新</a>");
 							resp.getWriter().println(builder.toString());
-						}else if ("refreshhostgroup".equals(op)) {
+						} else if ("refreshhostgroup".equals(op)) {
 							context.refreshHostGroupCache();
 							resp.sendRedirect("dump.do?op=hostgroup");
 						}
@@ -288,7 +300,6 @@ public class ScheduleDump extends HttpServlet {
 							resp.getWriter().println("<a href='dump.do?op=queue'>等待队列任务</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=action'>生成Action版本</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=hostgroup'>查看host分组信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
-							resp.getWriter().println("<a href='dump.do?op=refreshhostgroup'>刷新host分组信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 						}
 					}
 

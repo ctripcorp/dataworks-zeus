@@ -87,6 +87,7 @@ message HeartBeatMessage{
 	optional int64 timestamp=4;//时间戳
 	optional float mem_rate=5;//内存占用比例
 	optional string host=6;//发送心跳的主机
+	optional float cpu_load_per_core=7;//每个核心的cpu负载
 }
 message ExecuteMessage{
 	required string jobId=1;

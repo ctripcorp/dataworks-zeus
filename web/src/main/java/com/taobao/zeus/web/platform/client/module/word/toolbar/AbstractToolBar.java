@@ -89,7 +89,7 @@ public abstract class AbstractToolBar extends ToolBar{
 	
 	protected TextButton extend=new TextButton("扩展功能",ResourcesTool.iconResources.icon_extends());
 	
-	protected TextButton lingoes=new TextButton("生成脚本",new SelectHandler() {
+	protected TextButton lingoes=new TextButton("datax配置工具",new SelectHandler() {
 		public void onSelect(SelectEvent event) {
 
 			new DefaultPanel(getFileModel().getId()).show();

@@ -19,7 +19,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 
 .fl{ float:left}
 .fr{ float:right}
-body{width: 566px;}
+body{ width: 747px; background: #fff}
 .even,.estimate-form table tr:nth-of-type(even){background: #e8eff2}
 .estimate-form table {
   line-height: 30px;
@@ -73,7 +73,36 @@ caption{background: #937754; color: #fff}
 	color: red
 }
 textarea{ font-size: 14px; line-height: 20px;}
-
+em.info{  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAEeSURBVCjPddExS1thGMXx3/teRUQpJC5y60UkCoI6RfwAhVA6Oznod8hHEBRHJ526dc5edJCWrhGEDCrUQu4gokbI4OQ1Luk1i892Duc8/HmeANSJMqsy5Dpyr20QqENm26ZMBU9yLT/ktIU6LDvUkHifwqmmS5KUOUe+iqDnTFAV1Sz6pR8FOxrCsPnHlu8GCBp2hCSdt+tzuXrKrG9SEFX8HBuSw4tLF75YK+OZ1ShTHcqBOwea7stAVRZHyMet+KQw6olyvVJ1/bVuptQ9edSRl8a5Zxsj9Vwn6mopSopx1yVDoaWbpPyzoiagZkNq1jQGTuzpJyl9bYsWRJOWLJlG4UTTDcmtlAe/9VSMmfDq0ZVj+25o/z/xx+9+AyePTyIq+EV8AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE0LTA3LTAzVDE3OjE2OjE0KzA4OjAwlJO3vQAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNC0wNy0wM1QxNzoxNjoxNCswODowMOXODwEAAABNdEVYdHNvZnR3YXJlAEltYWdlTWFnaWNrIDYuOC44LTcgUTE2IHg4Nl82NCAyMDE0LTAyLTI4IGh0dHA6Ly93d3cuaW1hZ2VtYWdpY2sub3JnWaRffwAAABh0RVh0VGh1bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABd0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQAMjY2gg2sAAAAFnRFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADI2zi3NIQAAABl0RVh0VGh1bWI6Ok1pbWV0eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNDA0Mzc4OTc0bkuc9gAAABF0RVh0VGh1bWI6OlNpemUANDgwQkKOmXArAAAAYnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vaG9tZS9mdHAvMTUyMC9lYXN5aWNvbi5jbi9lYXN5aWNvbi5jbi9jZG4taW1nLmVhc3lpY29uLmNuL3BuZy8xMTcyNS8xMTcyNTE3LnBuZ28XrVEAAAAASUVORK5CYII=") no-repeat center center;
+   width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  /* float: right; */
+  margin-left: 3px;cursor: pointer;}
+  .abs{  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: auto;
+  /* height: 16px; */
+  line-height: 18px;
+  padding: 3px 0px 3px 5px;
+  background: #484848;
+  color: #fff;
+  border-radius: 5px;
+  max-width: 250px;
+  word-wrap: break-word; display: none
+}
+em.important{ display: inline-block;color: red; margin-right: 10px; font-weight: bold;}
+.tip{ color: red; margin-left: 20px;}
+input.error,textarea.error {
+  border-color: rgb(204, 0, 0);
+  border-color: #E82300;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #E82300;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #E82300;
+}
+.abc{ color: #999999}
 </style>
 	
 </head>
@@ -89,10 +118,10 @@ textarea{ font-size: 14px; line-height: 20px;}
 
 	
 
-		  <button type="button" class="btn btn-info" id="secure">生成脚本</button>
+		  <div id="foot"><button type="button" class="btn btn-info" id="secure">生成脚本</button><span class="tip">提示：需要拷贝生成的代码到编辑器中</span></div>
 	</form><!--/ container-->
 	<textarea id="response" class="form-control" rows="20" cols="5"></textarea>
-	
+	<div class="abs" id="abs"></div>
 	<!-- End Page Content -->
 	
 </body>
@@ -103,8 +132,8 @@ textarea{ font-size: 14px; line-height: 20px;}
 <script type="text/html" id="hiveFormSrc">
 	<table class='form'>
 		<thead>
-			<td width="60px" class='title'></td><td width="100px"></td>
-			<td width="120px" class='title'></td><td width="140px"></td>
+			<td width="14.2587%" class='title'></td><td width="20.8095%"></td>
+			<td width="28.5714%" class='title'></td><td width="33.3333%"></td>
 		</thead>
 		<caption>源</caption>
 		<tbody>
@@ -114,11 +143,11 @@ textarea{ font-size: 14px; line-height: 20px;}
 														  <option value="sqlserver">sqlserver</option>
 														  <option value="mysql">mysql</option>
 														  <option value="hive">hive</option>
-													  </select></td>
+													  </select></td><td></td><td></td>
 			</tr>		
 			<tr>
-				<td class='title'>源数据库名</td><td><input type="text" id="srcdb" name='srcdb'></td>
-				<td class='title'>源数据库表名（逗号分隔）</td><td><input type="text" id="srctblnames" name='srctblnames'></td>
+				<td class='title'>源数据库名<em class="important">*</em></td><td><input type="text" id="srcdb" name='srcdb'></td>
+				<td class='title'>源数据库表名（逗号分隔）<em class="important">*</em></td><td><input type="text" id="srctblnames" name='srctblnames'></td>
 			</tr>
 			<tr>
 				<td class='title'  width="70px"  colspan="1">源sql查询</td><td  colspan="3"  width="100px"><textarea id="querys" name='querys' rows="5" cols="5"></textarea></td>
@@ -137,8 +166,8 @@ textarea{ font-size: 14px; line-height: 20px;}
 <script type="text/html" id="hiveFormTar">	
 	<table class='form'>
 			<thead>
-				<td width="60px" class='title'></td><td width="100px"></td>
-				<td width="120px" class='title'></td><td width="140px"></td>
+				<td width="14.2587%" class='title'></td><td width="20.8095%"></td>
+				<td width="28.5714%" class='title'></td><td width="33.3333%"></td>
 			</thead>
 			<caption>目标</caption>
 			<tr>
@@ -146,11 +175,11 @@ textarea{ font-size: 14px; line-height: 20px;}
 									  <option value="sqlserver">sqlserver</option>
 									  <option value="mysql">mysql</option>
 									  <option value="hive">hive</option>
-									</select></td>
+									</select></td><td></td><td></td>
 			</tr>
 			<tr>
-				<td class='title'>目标数据库名</td><td><input type="text" id="tardb" name='tardb'></td>
-				<td class='title'>目标数据库表名（逗号分隔）</td><td><input type="text" id="tartblnames" name='tartblnames'></td>
+				<td class='title'>目标数据库名<em class="important">*</em></td><td><input type="text" id="tardb" name='tardb'></td>
+				<td class='title'>目标数据库表名（逗号分隔）<em class="important">*</em></td><td><input type="text" id="tartblnames" name='tartblnames'></td>
 			</tr>
 			<tr>
 				<td class='title' colspan="2">hive导入模式</td><td colspan="2"><select class="form-control" name="loadtype" id="loadtype">
@@ -164,16 +193,16 @@ textarea{ font-size: 14px; line-height: 20px;}
 				
 			</tr>	
 			<tr>
-				<td class='title' style="display:none">pks</td><td style="display:none"><input type="text" id="pks" name='pks'></td>
-				<td class='title' style="display:none">datenow</td><td style="display:none"><input type="text" id="datenow" name='datenow'></td>		
+				<td class='title' style="display:none">pks<em class="info" data-title="源表主键，多个主键以英文逗号（,）作为分隔符"></em><em class="important">*</em></td><td style="display:none"><input type="text" id="pks" name='pks'></td>
+				<td class='title' style="display:none">datenow<em class="info" data-title="指定将数据落到hive目标表的哪个时间分区，不指定默认为当天。只指定datepre的值，datenow默认取datepre的后一天"></em><em class="important">*</em></td><td style="display:none"><input type="text" id="datenow" name='datenow'></td>		
 			</tr>
 			<tr>
-				<td class='title' style="display:none">datepre</td><td style="display:none"><input type="text" id="datepre" name='datepre'></td>
-				<td class='title' style="display:none">parttime</td><td style="display:none"><input type="text" id="parttime" name='parttime'></td>		
+				<td class='title' style="display:none">datepre<em class="info" data-title="为本次增量任务做之前的全量的时间分区，与源增量表做比较操作，默认为datenow的前一天。只指定datenow的值，datepre默认取datenow的前一天"></em><em class="important">*</em></td><td style="display:none"><input type="text" id="datepre" name='datepre'></td>
+				<td class='title' style="display:none">parttime<em class="info" data-title="源表时间字段，作为二级分区的参考字段substr(partime,0,10)，增量一级分区方案不用指定"></em><em class="important">*</em></td><td style="display:none"><input type="text" id="parttime" name='parttime'></td>		
 			</tr>
 			<tr>
-				<td class='title' style="display:none">Fieldsplit</td><td style="display:none"><input type="text" id="Fieldsplit" name='Fieldsplit' value="\001 \t"></td>
-				<td class='title' style="display:none">hdfsdir</td><td style="display:none"><input type="text" id="hdfsdir" name='hdfsdir'></td>		
+				<td class='title' style="display:none">Fieldsplit<em class="info" data-title="写到hdfs的分隔符，默认’\t’，可选'\001' 已改成自动判断分隔符。(loadtype为6的时候需要指定)"></em><em class="important">*</em></td><td style="display:none"><input type="text" id="Fieldsplit" name='Fieldsplit' value="\001 \t"></td>
+				<td class='title' style="display:none">hdfsdir<em class="important">*</em></td><td style="display:none"><input type="text" id="hdfsdir" name='hdfsdir'></td>		
 			</tr
 			<tr>
 				<td class='title'  width="120px">hive文件类型</td><td  width="140px"><select class="form-control" name="filetype" id="filetype">
@@ -184,7 +213,7 @@ textarea{ font-size: 14px; line-height: 20px;}
 											  <option value="RCF">RCF</option>
 											  <option value="RCF_COMP">RCF_COMP</option>
 											</select></td>
-				<td class='title'>任务并发数</td><td><input type="text" id="concurrency" name='concurrency'></td>
+				<td class='title'>任务并发数</td><td><input type="text" id="concurrency" name='concurrency' value=3></td>
 			</tr>
 			<tr>
 				<td class='title' colspan="2" style="display:none">hive文件压缩编码类</td><td colspan="2" style="display:none"> <select class="form-control" name="codecclass" id="codecclass">
@@ -199,8 +228,8 @@ textarea{ font-size: 14px; line-height: 20px;}
 <script type="text/html" id="normalFormSrc">
 	<table class='form'>
 		<thead>
-			<td width="60px" class='title'></td><td width="100px"></td>
-			<td width="120px" class='title'></td><td width="140px"></td>
+				<td width="14.2587%" class='title'></td><td width="20.8095%"></td>
+				<td width="28.5714%" class='title'></td><td width="33.3333%"></td>
 		</thead>
 		<caption>源</caption>
 		<tbody>
@@ -209,26 +238,26 @@ textarea{ font-size: 14px; line-height: 20px;}
 														  <option value="sqlserver">sqlserver</option>
 														  <option value="mysql">mysql</option>
 														  <option value="hive">hive</option>
-													  </select></td>
+													  </select></td><td></td><td></td>
 			</tr>		
 			<tr>
-				<td width="60px" class='title'>源数据库IP</td><td width="100px"><input type="text" id="srcip" name='srcip'></td>
-				<td width="120px" class='title'>源数据库端口</td><td width="140px"><input type="text" id="srcport" name='srcport'></td>
+				<td width="60px" class='title'>源数据库域名<em class="important">*</em></td><td width="100px"><input type="text" id="srcip" name='srcip' placeholder="请填写域名，不要使用IP"></td>
+				<td width="120px" class='title'>源数据库端口<em class="important">*</em></td><td width="140px"><input type="text" id="srcport" name='srcport'></td>
 			</tr>
 			<tr>
-				<td class='title'>源数据库名</td><td><input type="text" id="srcdb" name='srcdb'></td>
-				<td class='title'>源数据库用户名</td><td><input type="text" id="srcusername" name='srcusername'></td>
+				<td class='title'>源数据库名<em class="important">*</em></td><td><input type="text" id="srcdb" name='srcdb'></td>
+				<td class='title'>源数据库用户名<em class="important">*</em></td><td><input type="text" id="srcusername" name='srcusername'></td>
 			</tr>
 			<tr>
-				<td class='title'>源数据库密码</td><td><input type="text" id="srcpasswd" name='srcpasswd'></td>
-				<td class='title'>源数据库表名（逗号分隔）</td><td><input type="text" id="srctblnames" name='srctblnames'></td>
+				<td class='title'>源数据库密码<em class="important">*</em></td><td><input type="text" id="srcpasswd" name='srcpasswd'></td>
+				<td class='title'>源数据库表名（逗号分隔）<em class="important">*</em></td><td><input type="text" id="srctblnames" name='srctblnames'></td>
 			</tr>
 			<tr>
 				<td class='title'  width="70px"  colspan="1">源sql查询</td><td  colspan="3"  width="100px"><textarea id="querys" name='querys' rows="5" cols="5"></textarea></td>
 				
 			</tr>
 			<tr>
-				<td class='title'>querysplit</td><td><input type="text" id="querysplit" name='querysplit'></td>
+				<td class='title'>querysplit<em class='info' data-title='querys参数可能包含分号，配置querysplit参数，指定不包含在sql里的分隔符，即可排除。如-querysplit "#"'></em></td><td><input type="text" id="querysplit" name='querysplit'></td>
 				<td colspan="2" id="error_response"></td>
 			</tr>					
 		</tbody>
@@ -236,25 +265,29 @@ textarea{ font-size: 14px; line-height: 20px;}
 </script>
 <script type="text/html" id="normalFormTar">
 	<table class='form'>
+			<thead>
+				<td width="14.2587%" class='title'></td><td width="20.8095%"></td>
+				<td width="28.5714%" class='title'></td><td width="33.3333%"></td>
+			</thead>
 			<caption>目标</caption>
 			<tr>
 				<td class='title'>目标</td><td><select class="form-control" name="tar" id="tar">
 									  <option value="sqlserver">sqlserver</option>
 									  <option value="mysql">mysql</option>
 									  <option value="hive">hive</option>
-									</select></td>
+									</select></td><td></td><td></td>
 			</tr>	
 			<tr>
-				<td class='title'>目标数据库IP</td><td><input type="text" id="tarip" name='tarip'></td>
-				<td class='title'>目标数据库端口</td><td><input type="text" id="tarport" name='tarport'></td>
+				<td class='title'>目标数据库域名<em class="important">*</em></td><td><input type="text" id="tarip" name='tarip' placeholder="请填写域名，不要使用IP"></td>
+				<td class='title'>目标数据库端口<em class="important">*</em></td><td><input type="text" id="tarport" name='tarport'></td>
 			</tr>
 			<tr>
-				<td class='title'>目标数据库名</td><td><input type="text" id="tardb" name='tardb'></td>
-				<td class='title'>目标数据库用户名</td><td><input type="text" id="tarusername" name='tarusername'></td>
+				<td class='title'>目标数据库名<em class="important">*</em></td><td><input type="text" id="tardb" name='tardb'></td>
+				<td class='title'>目标数据库用户名<em class="important">*</em></td><td><input type="text" id="tarusername" name='tarusername'></td>
 			</tr>	
 			<tr>
-				<td class='title'>目标数据库密码</td><td><input type="text" id="tarpassword" name='tarpassword'></td>
-				<td class='title'>目标数据库表名（逗号分隔）</td><td><input type="text" id="tartblnames" name='tartblnames'></td>
+				<td class='title'>目标数据库密码<em class="important">*</em></td><td><input type="text" id="tarpassword" name='tarpassword'></td>
+				<td class='title'>目标数据库表名（逗号分隔）<em class="important">*</em></td><td><input type="text" id="tartblnames" name='tartblnames'></td>
 			</tr>
 			<tr>
 				<td class='title' colspan="2">插入数据库前SQL</td><td colspan="2"><input type="text" id="tarpresqls" name='tarpresqls'></td>
@@ -273,7 +306,7 @@ textarea{ font-size: 14px; line-height: 20px;}
 									</select></td>
 			</tr>
 			<tr>
-				<td class='title'>任务并发数</td><td><input type="text" id="concurrency" name='concurrency'></td>
+				<td class='title'>任务并发数</td><td><input type="text" id="concurrency" name='concurrency' value=3></td>
 				<td class='title'>forcecut(true|false)</td><td><select class="form-control" name="forcecut" id="forcecut">
 									  <option value="true">true</option>
 									  <option value="false" selected>false</option>
@@ -282,7 +315,11 @@ textarea{ font-size: 14px; line-height: 20px;}
 	</table>
 </script>
 <script type="text/javascript">
-
+var ISIE = !!document.all;
+var HUANHANG="\r\n";
+if(ISIE){
+	HUANHANG="\n";
+}
 function validate(event){
 		this.hiveHiddenInput = ["srcip","srcport","srcusername","srcpasswd"];
 }
@@ -305,9 +342,11 @@ validate.prototype={
 			var srctblnames = this.getForm('srctblnames');
 			var srctblnamesCount = this.getSrcTableCount(srctblnames.value);
 			if(querysCount > srctblnamesCount){
+				target.addClass('error');
 				$("#error_response").addClass('error').html("请使用querysplit参数");
-				console.log("请使用querysplit参数");
+				//console.log("请使用querysplit参数");
 			}else{
+				target.removeClass('error');
 				$("#error_response").removeClass('error').html("");
 			}
 		},
@@ -316,10 +355,27 @@ validate.prototype={
 			var querysnames = this.getForm('querys');
 			var querysCount = validate.countSpecifiedChar(querysnames.value,";");
 			if(querysCount > srctblnamesCount){
+				target.addClass('error');
 				$("#error_response").addClass('error').html("请使用querysplit参数");
-				console.log("请使用querysplit参数");
+				//console.log("请使用querysplit参数");
 			}else{
+				target.removeClass('error');
 				$("#error_response").removeClass('error').html("");
+
+			}
+		},
+		"srcip":function(val,target){
+			if(!/[a-zA-Z]/.test(val)){
+				target.addClass('error');
+			}else{
+				target.removeClass('error');
+			}
+		},
+		"tarip":function(val,target){
+			if(!/[a-zA-Z]/.test(val)){
+				target.addClass('error');
+			}else{
+				target.removeClass('error');
 			}
 		},
 		"src" : function(val,target){
@@ -421,7 +477,52 @@ validate.prototype={
 		    }else{
 		    	target.removeClass('has-error').addClass('has-success');
 		    }
+	},
+	PlaceHolder : {
+		    _support: (function() {
+		        return 'placeholder' in document.createElement('input');
+		    })(),
+		 
+		    //提示文字的样式，需要在页面中其他位置定义
+		    className: 'abc',
+		 
+		    init: function() {
+		        if (!this._support) {
+		            //未对textarea处理，需要的自己加上
+		            var inputs = $('input[placeholder]');
+		            this._setValue(inputs);
+		            this.create(inputs);
+		        }
+		    },
+		 
+		    create: function(inputs) {
+
+		        inputs.each(function(index,item){
+		       		$(item).on('focus',function(event){
+		       			var target = $(event.target);
+		       			if(target.val() == target.attr('placeholder')){
+		       				target.val('').removeClass('abc');
+		       			}
+		       		});
+		       		$(item).on('blur',function(event){
+		       			var target = $(event.target);
+		       			setTimeout(function(){//针对wdatepicker 做了延迟处理 防止纠错提示
+			       			if(target.val() == ''){
+			       				target.val(target.attr('placeholder')).addClass('abc');
+			       			}
+			       		},100);
+		       		});
+		        });
+		    },
+		 
+		    _setValue: function(input) {
+		       input.each(function(index,item){
+		       		$(item).val($(item).attr("placeholder")).addClass('abc');
+		       });
+		    
+		    }
 	}
+
 }
 
 var Form = function(){
@@ -434,6 +535,7 @@ var Form = function(){
 	this.bindEvent();
 	this.validateInstance = new validate();
 	this.validateInstance.Form = this;
+	this.validateInstance.PlaceHolder.init();
 }
 
 Form.prototype.init = function(){
@@ -519,6 +621,7 @@ Form.prototype.serialize = function() {
         default:
             //if (field.type === 'text' && field.value === '') break;
         	if (field.name === '') break;
+        	if(ISIE && field.className=='abc')break;
             parts[field.name] = field.value;// != '' ? encodeURIComponent(field.value) : 1
         }
     };
@@ -527,7 +630,7 @@ Form.prototype.serialize = function() {
 }
 
 Form.prototype.getShell = function(){
-	var str = "sh datax_run.sh \\\r\n";
+	var str = "sh datax_run.sh \\"+HUANHANG;
 	var index = 1,contiueFlag=false;
 	for(var key in this.data){
 		if($(this.form[key]).parent().css("display")=='none')continue;
@@ -540,14 +643,14 @@ Form.prototype.getShell = function(){
 		}else if(key=='filetype' && this.data[key]=='TXT'){
 			continue;
 		}else if(key=='querys'){
-			str+=" \\\r\n-"+key+" \""+this.data[key]+"\" ";
-			str+=" \\\r\n";
+			str+=" \\"+HUANHANG+"-"+key+" \""+this.data[key]+"\" ";
+			str+=" \\"+HUANHANG;
 			index = 1;
 			continue;
 		}
 		str+="-"+key+" "+this.data[key]+" ";
 		if(index%2==0){
-			str+=" \\\r\n";
+			str+=" \\"+HUANHANG;
 		}
 		index++;
 	}
@@ -562,19 +665,27 @@ Form.prototype.bindEvent = function(){
 		}
 		self.serialize();
 		var str = self.getShell();
-		console.log(str);
+		//console.log(str);
 		$("#response").html(str);
 	});
-	$("#table").on('input propertychange',"input,textarea,select",function(event){
+	$("#table").on('input propertychange',"input,textarea",function(event){
         self.validateInstance.check(event);
+    });
+    $("#table").on('change',"select",function(event){
+        	self.validateInstance.check(event);
+    });
+    
+    var abs= $("#abs");
+    $("#table").on('mouseover',"em.info",function(event){
+    	event.preventDefault();
+    	abs.html($(this).attr("data-title"));
+    	abs.css({"left":event.pageX+8,"top":event.pageY+8}).show();
+    });
+    $("#table").on('mouseout',"em.info",function(event){
+    	event.preventDefault();
+    	abs.hide();
     });
 	return this;
 }
-var formInstance = new Form();    
+var formInstance = new Form();  
 </script>
-	
-	
-	
-	
-		
-	

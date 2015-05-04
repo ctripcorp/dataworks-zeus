@@ -22,10 +22,10 @@ import com.sencha.gxt.widget.core.client.form.FormPanel.Method;
 public class DefaultPanel extends Window {
 	public DefaultPanel(final String id){
 		setModal(true);
-		setSize("600", "500");
+		setSize("800", "800");
 //		setBorders(hidden);
 //		setBodyStyle("border:none");
-		setHeadingText("自动生成脚本");
+		setHeadingText("datax配置工具");
 		
 		FramedPanel fp=new FramedPanel();
 		fp.setHeaderVisible(false);

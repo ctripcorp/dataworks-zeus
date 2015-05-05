@@ -353,25 +353,29 @@ public class Master {
 		Float selectMemRate = null;
 		Set<String> workersGroup = getWorkersByGroupId(hostGroupId);
 		for (MasterWorkerHolder worker : context.getWorkers().values()) {
-			if (worker!=null && worker.getHeart()!=null && workersGroup.contains(worker.getHeart().host)) {
-				HeartBeatInfo heart = worker.getHeart();
-				if (heart != null && heart.memRate != null && heart.memRate < Environment.getMaxMemRate() && heart.cpuLoadPerCore < Environment.getMaxCpuLoadPerCore() ) {
-					if (selectWorker == null) {
-						selectWorker = worker;
-						selectMemRate = heart.memRate;
-						log.info("worker b : host " + heart.host + ",heart "+ selectMemRate);
-					} else if (selectMemRate > heart.memRate) {
-						selectWorker = worker;
-						selectMemRate = heart.memRate;
-						log.info("worker c : host " + heart.host + ",heart "+ selectMemRate);
+			try {
+				if (worker!=null && worker.getHeart()!=null && workersGroup.contains(worker.getHeart().host)) {
+					HeartBeatInfo heart = worker.getHeart();
+					if (heart != null && heart.memRate != null && heart.memRate < Environment.getMaxMemRate() && heart.cpuLoadPerCore < Environment.getMaxCpuLoadPerCore() ) {
+						if (selectWorker == null) {
+							selectWorker = worker;
+							selectMemRate = heart.memRate;
+							log.info("worker b : host " + heart.host + ",heart "+ selectMemRate);
+						} else if (selectMemRate > heart.memRate) {
+							selectWorker = worker;
+							selectMemRate = heart.memRate;
+							log.info("worker c : host " + heart.host + ",heart "+ selectMemRate);
+						}
+					}
+				}else {
+					if(worker == null){
+						log.error("worker is null");
+					}else if(worker!=null && worker.getHeart()==null){
+						log.error("worker " + worker.getChannel().toString()+" heart is null");
 					}
 				}
-			}else {
-				if(worker == null){
-					log.error("worker is null");
-				}else if(worker!=null && worker.getHeart()==null){
-					log.error("worker " + worker.getChannel().toString()+" heart is null");
-				}
+			} catch (Exception e) {
+				log.error("worker failed",e);
 			}
 		}
 		if (selectWorker != null) {

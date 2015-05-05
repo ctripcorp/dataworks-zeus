@@ -29,7 +29,7 @@ public class MemUseRateJob extends ShellJob{
 		String os=System.getProperties().getProperty("os.name");
 		if(os!=null && (os.startsWith("win") || os.startsWith("Win") || os.startsWith("Mac"))){
 			//放一个假的数字，方便开发
-			jobContext.putData("mem", Environment.getMaxMemRate());
+			jobContext.putData("mem", Environment.getMaxMemRate().doubleValue());
 			return 0;
 		}
 		Integer exitCode=super.run();

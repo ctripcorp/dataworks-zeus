@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
 import org.jboss.netty.channel.Channel;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
@@ -352,7 +353,7 @@ public class Master {
 		Float selectMemRate = null;
 		Set<String> workersGroup = getWorkersByGroupId(hostGroupId);
 		for (MasterWorkerHolder worker : context.getWorkers().values()) {
-			if (worker!=null && workersGroup.contains(worker.getHeart().host)) {
+			if (worker!=null && worker.getHeart()!=null && workersGroup.contains(worker.getHeart().host)) {
 				HeartBeatInfo heart = worker.getHeart();
 				if (heart != null && heart.memRate != null && heart.memRate < Environment.getMaxMemRate() && heart.cpuLoadPerCore < Environment.getMaxCpuLoadPerCore() ) {
 					if (selectWorker == null) {
@@ -364,6 +365,12 @@ public class Master {
 						selectMemRate = heart.memRate;
 						log.info("worker c : host " + heart.host + ",heart "+ selectMemRate);
 					}
+				}
+			}else {
+				if(worker == null){
+					log.error("worker is null");
+				}else if(worker!=null && worker.getHeart()==null){
+					log.error("worker " + worker.getChannel().toString()+" heart is null");
 				}
 			}
 		}

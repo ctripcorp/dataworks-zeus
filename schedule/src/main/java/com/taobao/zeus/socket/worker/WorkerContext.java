@@ -19,10 +19,10 @@ import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.util.RunShell;
 
 public class WorkerContext {
-	private final static Logger log  = LoggerFactory.getLogger(WorkerContext.class);
+	private static final Logger log  = LoggerFactory.getLogger(WorkerContext.class);
 	public static String host;
 	private static Integer cpuCoreNum;
-	private final static String findCpuCoreNumber="grep 'model name' /proc/cpuinfo | wc -l";
+	private static final String findCpuCoreNumber="grep 'model name' /proc/cpuinfo | wc -l";
 	static{
 		try {
 			host=InetAddress.getLocalHost().getHostAddress();

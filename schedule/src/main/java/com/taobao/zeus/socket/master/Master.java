@@ -228,11 +228,16 @@ public class Master {
 				for (MasterWorkerHolder holder : new ArrayList<MasterWorkerHolder>(
 						context.getWorkers().values())) {
 //					log.info("schedule worker start:"+holder.getDebugRunnings().size());
-					if (holder.getHeart().timestamp == null
-							|| (now.getTime() - holder.getHeart().timestamp
-									.getTime()) > 1000 * 60) {
-						holder.getChannel().close();
+					try {
+						if (holder.getHeart().timestamp == null
+								|| (now.getTime() - holder.getHeart().timestamp
+										.getTime()) > 1000 * 60) {
+							holder.getChannel().close();
+						}
+					} catch (Exception e) {
+						log.error("holder:"+holder+" is in error",e);
 					}
+					
 //					log.info("schedule worker end:"+holder.getDebugRunnings().size());
 				}
 			}

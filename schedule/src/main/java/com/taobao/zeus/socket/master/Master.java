@@ -1,6 +1,5 @@
 package com.taobao.zeus.socket.master;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,10 +23,10 @@ import com.taobao.zeus.broadcast.alarm.SMSAlarm;
 import com.taobao.zeus.client.ZeusException;
 import com.taobao.zeus.model.DebugHistory;
 import com.taobao.zeus.model.FileDescriptor;
+import com.taobao.zeus.model.HostGroupCache;
 import com.taobao.zeus.model.JobDescriptor;
 import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.model.JobStatus;
-import com.taobao.zeus.model.HostGroupCache;
 import com.taobao.zeus.model.JobStatus.TriggerType;
 import com.taobao.zeus.model.Profile;
 import com.taobao.zeus.mvc.Controller;
@@ -59,7 +58,6 @@ import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.util.CronExpParser;
-import com.taobao.zeus.util.DateUtil;
 import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.Tuple;
 import com.taobao.zeus.util.ZeusDateTool;
@@ -902,6 +900,7 @@ public class Master {
 	public void workerDisconnectProcess(Channel channel) {
 		MasterWorkerHolder holder = context.getWorkers().get(channel);
 		if (holder != null) {
+			SocketLog.info("worker disconnect, ip:" + channel.getRemoteAddress().toString());
 			context.getWorkers().remove(channel);
 			final List<JobHistory> hiss = new ArrayList<JobHistory>();
 			Map<String, Tuple<JobDescriptor, JobStatus>> map = context
@@ -910,11 +909,14 @@ public class Master {
 			for (String key : map.keySet()) {
 				JobStatus js = map.get(key).getY();
 				if (js.getHistoryId() != null) {
-					hiss.add(context.getJobHistoryManager().findJobHistory(
-							js.getHistoryId()));
+					JobHistory his = context.getJobHistoryManager().findJobHistory(
+							js.getHistoryId());
+					if(his != null){
+						hiss.add(his);
+					}
 				}
-				js.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
-				context.getGroupManager().updateJobStatus(js);
+				/*js.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
+				context.getGroupManager().updateJobStatus(js);*/
 			}
 			new Thread() {
 				@Override

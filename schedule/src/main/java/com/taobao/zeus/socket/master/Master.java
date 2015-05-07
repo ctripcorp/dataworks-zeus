@@ -670,6 +670,7 @@ public class Master {
 			his.setToJobId(jobDescriptor.getToJobId() == null ? null : jobDescriptor.getToJobId());
 			his.setTimezone(jobDescriptor.getTimezone());
 			his.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
+			his.setHostGroupId(jobDescriptor.getHostGroupId());
 			context.getJobHistoryManager().addJobHistory(his);
 			his.getLog().appendZeus(
 					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")

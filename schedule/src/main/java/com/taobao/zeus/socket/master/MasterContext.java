@@ -61,20 +61,20 @@ public class MasterContext {
 	//调试任务  debugId
 	private Queue<JobElement> debugQueue=new ArrayBlockingQueue<JobElement>(1000);
 	//手动任务  historyId
-//	private Queue<JobElement> manualQueue=new ArrayBlockingQueue<JobElement>(1000);
-	private Queue<JobElement> manualQueue=new PriorityBlockingQueue<JobElement>(1000, new Comparator<JobElement>() {
-		public int compare(JobElement je1, JobElement je2) {
-			int numbera = je1.getPriorityLevel();
-			int numberb = je2.getPriorityLevel();
-			if (numberb > numbera) {
-				return 1;
-			} else if (numberb < numbera) {
-				return -1;
-			} else {
-				return 0;
-			}
-		}
-	});
+	private Queue<JobElement> manualQueue=new ArrayBlockingQueue<JobElement>(1000);
+//	private Queue<JobElement> manualQueue=new PriorityBlockingQueue<JobElement>(1000, new Comparator<JobElement>() {
+//		public int compare(JobElement je1, JobElement je2) {
+//			int numbera = je1.getPriorityLevel();
+//			int numberb = je2.getPriorityLevel();
+//			if (numberb > numbera) {
+//				return 1;
+//			} else if (numberb < numbera) {
+//				return -1;
+//			} else {
+//				return 0;
+//			}
+//		}
+//	});
 	private MasterHandler handler;
 	private MasterServer server;
 	private ExecutorService threadPool=Executors.newCachedThreadPool();

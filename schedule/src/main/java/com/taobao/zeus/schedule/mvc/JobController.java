@@ -118,17 +118,26 @@ public class JobController extends Controller {
 				log.error("jobId=" + jobId
 						+ " 处于RUNNING状态，说明该JOB状态丢失，立即进行重试操作...");
 				// 搜索上一次运行的日志，从日志中提取jobid 进行kill
-				String operator = null;
 				if (jobStatus.getHistoryId() != null) {
 					JobHistory history = jobHistoryManager
 							.findJobHistory(jobStatus.getHistoryId());
 					// 特殊情况下，有可能history查询为空
-					if (history != null
-							&& history.getStatus() == Status.RUNNING) {
-						operator = history.getOperator();
+					if (history != null && history.getStatus() == Status.RUNNING){
 						try {
 							JobContext temp = JobContext.getTempJobContext(JobContext.MANUAL_RUN);
 							history.setIllustrate("启动服务器发现正在running状态，判断状态已经丢失，进行重试操作");
+							temp.setJobHistory(history);
+							new CancelHadoopJob(temp).run();
+							master.run(history);
+						} catch (Exception e) {
+							// 忽略
+						}
+					}else if(history != null 
+							&& history.getStatus() == Status.FAILED 
+							&& history.getIllustrate().equals("worker断开连接，主动取消该任务")){
+						try {
+							JobContext temp = JobContext.getTempJobContext(JobContext.MANUAL_RUN);
+							history.setIllustrate("启动服务器发现worker与master断开连接，worker主动取消该任务，进行重试操作");
 							temp.setJobHistory(history);
 							new CancelHadoopJob(temp).run();
 							master.run(history);
@@ -139,7 +148,6 @@ public class JobController extends Controller {
 				}else{
 					JobHistory history = new JobHistory();
 					history.setIllustrate("启动服务器发现正在running状态，判断状态已经丢失，进行重试操作");
-					history.setOperator(operator);
 					history.setTriggerType(TriggerType.MANUAL_RECOVER);
 					history.setJobId(jobId);
 					JobDescriptor jobDescriptor = groupManager.getUpstreamJobBean(jobId).getJobDescriptor();

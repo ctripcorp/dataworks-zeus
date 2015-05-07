@@ -22,6 +22,6 @@ public interface IconResources extends ClientBundle {
 	ImageResource icon_config();
 	ImageResource icon_upload();
 	ImageResource icon_jump();
-	
+	ImageResource icon_code();
 	ImageResource user();
 }

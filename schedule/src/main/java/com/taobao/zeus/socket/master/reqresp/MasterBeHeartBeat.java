@@ -24,6 +24,7 @@ public class MasterBeHeartBeat {
 			newbeat.manualRunnings=hbm.getManualRunningsList();
 			newbeat.timestamp=new Date(hbm.getTimestamp());
 			newbeat.host=hbm.getHost();
+			newbeat.cpuLoadPerCore=hbm.getCpuLoadPerCore();
 			if(worker.heart==null || newbeat.timestamp.getTime()>worker.heart.timestamp.getTime()){
 				worker.heart=newbeat;
 			}

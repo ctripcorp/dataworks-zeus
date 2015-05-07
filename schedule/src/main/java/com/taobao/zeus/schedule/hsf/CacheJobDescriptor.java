@@ -25,7 +25,7 @@ public class CacheJobDescriptor {
 	
 
 	public JobDescriptor getJobDescriptor() {
-		if(jobDescriptor==null || System.currentTimeMillis()-lastTime.getTime()>60*1000L){
+		if(jobDescriptor==null/* || System.currentTimeMillis()-lastTime.getTime()>60*1000L*/){
 			try {
 				Tuple<JobDescriptor, JobStatus> job=groupManager.getJobDescriptor(jobId);
 				if(job!=null){
@@ -33,7 +33,7 @@ public class CacheJobDescriptor {
 				}else{
 					jobDescriptor=null;
 				}
-				lastTime=new Date();
+				/*lastTime=new Date();*/
 			} catch (Exception e) {
 				log.error("load job descriptor fail",e);
 			}

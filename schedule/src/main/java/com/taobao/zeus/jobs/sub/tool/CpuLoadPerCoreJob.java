@@ -12,6 +12,9 @@ public class CpuLoadPerCoreJob {
 	private WorkerContext workerContext;
 	private JobContext jobContext;
 	private static Date date=new Date();
+	private static final String loadStr = "load average:";
+	private static int len = loadStr.length();
+
 	public CpuLoadPerCoreJob(WorkerContext workerContext, JobContext jobContext){
 		this.workerContext = workerContext;
 		this.jobContext = jobContext;
@@ -28,9 +31,7 @@ public class CpuLoadPerCoreJob {
 		int exitCode = shell.run();
 		if(exitCode==0){
 			String result = shell.getResult();
-			String[] tmps = result.split("\\s+");
-			int len = tmps[9].length();
-			String cpuloadstr = tmps[9].substring(0,len-1);
+			String cpuloadstr = getCpuload(result);
 			Float cpuload = Float.valueOf(cpuloadstr);//最近1分钟系统的平均cpu负载
 			Integer coreNum = workerContext.getCpuCoreNum();
 			if (coreNum == null) {
@@ -41,10 +42,14 @@ public class CpuLoadPerCoreJob {
 				ScheduleInfoLog.info("cpu load:"+ cpuloadstr +" core Number:"+coreNum+" rate:"+cpuloadpercore.toString());
 				date=new Date();
 			}
-					// 可能迭代不到，迭代到的话这里就会return，所以最后面应该return -1
 			jobContext.putData("cpuLoadPerCore", cpuloadpercore);
 			return 0;
 		}
 		return -1;
+	}
+	private String getCpuload(String result){
+		String sub = result.substring(result.indexOf(loadStr)).substring(len).trim();
+		String[] tmps = sub.split(",");
+		return tmps[0].trim();
 	}
 }

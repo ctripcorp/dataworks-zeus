@@ -643,7 +643,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 	public void updateActionList(JobDescriptorOld job) {
 		JobPersistenceOld persist = PersistenceAndBeanConvertOld.convert(job);
 		Long jobId = persist.getId();
-		String script = persist.getScript();
+/*		String script = persist.getScript();*/
 		String resources = persist.getResources();
 		String configs = persist.getConfigs();
 		String host = persist.getHost();
@@ -655,7 +655,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		if (actionList != null && actionList.size() > 0 ){
 			for(JobPersistence actionPer : actionList){
 //				if(!"running".equalsIgnoreCase(actionPer.getStatus())){
-					actionPer.setScript(script);
+/*					actionPer.setScript(script);*/
 					actionPer.setResources(resources);
 					actionPer.setConfigs(configs);
 					actionPer.setHost(host);

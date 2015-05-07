@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,12 +19,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.jboss.netty.channel.Channel;
 import org.quartz.SchedulerException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.taobao.zeus.model.HostGroupCache;
+import com.taobao.zeus.model.JobDescriptor;
+import com.taobao.zeus.model.JobStatus;
+import com.taobao.zeus.model.JobStatus.Status;
 import com.taobao.zeus.mvc.Controller;
 import com.taobao.zeus.mvc.Dispatcher;
 import com.taobao.zeus.schedule.DistributeLocker;
@@ -35,9 +45,14 @@ import com.taobao.zeus.socket.master.JobElement;
 import com.taobao.zeus.socket.master.MasterContext;
 import com.taobao.zeus.socket.master.MasterWorkerHolder;
 import com.taobao.zeus.socket.master.MasterWorkerHolder.HeartBeatInfo;
+import com.taobao.zeus.store.mysql.MysqlGroupManager;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
+import com.taobao.zeus.store.mysql.persistence.JobPersistenceBackup;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
+import com.taobao.zeus.store.mysql.tool.PersistenceAndBeanConvert;
+import com.taobao.zeus.util.Tuple;
 import com.taobao.zeus.util.Environment;
+
 
 /**
  * Dump调度系统内的Job状态，用来调试排查问题
@@ -293,6 +308,87 @@ public class ScheduleDump extends HttpServlet {
 						} else if ("refreshhostgroup".equals(op)) {
 							context.refreshHostGroupCache();
 							resp.sendRedirect("dump.do?op=hostgroup");
+						}else if("clearactions".equals(op)){
+							int before7day = -7;
+							int cnt = 0;
+							int sum = 0;
+							Calendar cal = Calendar.getInstance();
+							cal.add(Calendar.DATE, before7day);
+							Date date = cal.getTime();
+							SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd000000");
+							String dateStr = df.format(date) + "0000";
+							Dispatcher dispatcher = context.getDispatcher();
+							if (dispatcher != null) {
+								List<Controller> controllers = dispatcher.getControllers();
+								if (controllers != null&& controllers.size() > 0) {
+									resp.getWriter().println("开始清理内存中controller id为" + dateStr + "以前的controller：");
+									List<JobDescriptor> toBeTransferred = new ArrayList<JobDescriptor>();
+									Iterator<Controller> iter = controllers.iterator();
+									while (iter.hasNext()) {
+										sum ++ ;
+										JobController jobc = (JobController) iter.next();
+										String jobId = jobc.getJobId();
+										if (Long.parseLong(jobId) < Long.parseLong(dateStr)) {
+											Tuple<JobDescriptor, JobStatus> tuple = context.getGroupManager().getJobDescriptor(jobId);
+											JobStatus status = tuple.getY();
+											if (!Status.RUNNING.equals(status.getStatus())) {
+												toBeTransferred.add(tuple.getX());
+												iter.remove();
+												//resp.getWriter().println("<br>成功清理了id为" + jobId + "的controller");
+												cnt++;
+											}
+										}
+									}
+									resp.getWriter().println("<br>内存中共"+ sum +"个controllers，清理了一周前" + cnt+ "个controllers");
+									if (toBeTransferred != null && toBeTransferred.size() > 0) {
+										int bakCount = 0;
+										MysqlGroupManager manager = ( MysqlGroupManager ) context.getApplicationContext ().getBean( "groupManager" );
+										HibernateTemplate template = manager.getHibernateTemplate();
+										SessionFactory factory = template.getSessionFactory();
+										Session session = factory.openSession();
+										Transaction tx = null;
+										tx = session.beginTransaction();
+										try {
+											//String sqlBak = "insert into JobPersistenceBackup (id,toJobId) select c.id, c.toJobId from JobPersistence c where c.id<"+dateStr+" and c.status<>'running'";
+											//bakCount = session.createSQLQuery(sqlBak).executeUpdate();
+											//String sqlDel = "delete JobPersistence where id<" + dateStr + " and status<>'running'";
+											//delCount = session.createSQLQuery(sqlDel).executeUpdate();
+											resp.getWriter().println("<br><br>开始备份action表");
+											for (JobDescriptor job : toBeTransferred) {
+												JobPersistence persist = PersistenceAndBeanConvert.convert(job);
+												JobPersistenceBackup backup = new JobPersistenceBackup(persist);
+												//resp.getWriter().println("<br>备份数据库中id为" + job.getId() + "的action");
+												
+												session.delete(persist);
+												session.saveOrUpdate(backup);
+												bakCount ++;
+											}
+											tx.commit();
+											resp.getWriter().println("<br>完成数据库备份， 共备份" + bakCount + "条数据");
+										} catch (RuntimeException e) {
+											try {
+												tx.rollback();
+											} catch (Exception e2) {
+												resp.getWriter().println(e2.getMessage());
+											}
+											resp.getWriter().println(e.getMessage());
+										} finally {
+											try {
+												if (session != null) {
+													session.close();
+												}
+												if (factory != null) {
+													factory.close();
+												}
+											} catch (Exception e3) {
+												resp.getWriter().print(e3.getMessage());
+											}
+										}
+									}
+
+								}
+							}
+
 						}
 						else {
 							resp.getWriter().println("<a href='dump.do?op=jobstatus'>查看Job调度状态</a>&nbsp;&nbsp;&nbsp;&nbsp;");
@@ -300,6 +396,7 @@ public class ScheduleDump extends HttpServlet {
 							resp.getWriter().println("<a href='dump.do?op=queue'>等待队列任务</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=action'>生成Action版本</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 							resp.getWriter().println("<a href='dump.do?op=hostgroup'>查看host分组信息</a>&nbsp;&nbsp;&nbsp;&nbsp;");
+							resp.getWriter().println("<a href='dump.do?op=clearactions'>清理一周前的action</a>&nbsp;&nbsp;&nbsp;&nbsp;");
 						}
 					}
 
@@ -312,4 +409,5 @@ public class ScheduleDump extends HttpServlet {
 		// req.getRequestDispatcher("/login.jsp").forward(req, resp);
 		// resp.sendRedirect("/login.jsp");
 	}
+	 
 }

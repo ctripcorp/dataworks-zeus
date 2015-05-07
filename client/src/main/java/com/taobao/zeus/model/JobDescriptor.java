@@ -69,7 +69,7 @@ public class JobDescriptor implements Serializable {
 		jobDescriptor.setProperties(this.getProperties());
 		jobDescriptor.setResources(this.getResources());
 		jobDescriptor.setScheduleType(this.getScheduleType());
-		jobDescriptor.setScript(this.getScript());
+/*		jobDescriptor.setScript(this.getScript());*/
 		jobDescriptor.setStartTime(this.getStartTime());
 		jobDescriptor.setStartTimestamp(this.getStartTimestamp());
 		jobDescriptor.setStatisEndTime(this.getStatisEndTime());
@@ -187,13 +187,13 @@ public class JobDescriptor implements Serializable {
 		this.auto = auto;
 	}
 
-	public String getScript() {
+	/*public String getScript() {
 		return script;
 	}
 
 	public void setScript(String script) {
 		this.script = script;
-	}
+	}*/
 
 	public enum JobRunType {
 		MapReduce("main"), Shell("shell"), Hive("hive");

@@ -1,6 +1,5 @@
 package com.taobao.zeus.socket.master;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +13,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
 import org.jboss.netty.channel.Channel;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
@@ -59,7 +59,6 @@ import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.util.CronExpParser;
-import com.taobao.zeus.util.DateUtil;
 import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.Tuple;
 import com.taobao.zeus.util.ZeusDateTool;
@@ -227,11 +226,16 @@ public class Master {
 				for (MasterWorkerHolder holder : new ArrayList<MasterWorkerHolder>(
 						context.getWorkers().values())) {
 //					log.info("schedule worker start:"+holder.getDebugRunnings().size());
-					if (holder.getHeart().timestamp == null
-							|| (now.getTime() - holder.getHeart().timestamp
-									.getTime()) > 1000 * 60) {
-						holder.getChannel().close();
+					try {
+						if (holder.getHeart().timestamp == null
+								|| (now.getTime() - holder.getHeart().timestamp
+										.getTime()) > 1000 * 60) {
+							holder.getChannel().close();
+						}
+					} catch (Exception e) {
+						log.error("holder:"+holder+" is in error",e);
 					}
+					
 //					log.info("schedule worker end:"+holder.getDebugRunnings().size());
 				}
 			}
@@ -352,19 +356,29 @@ public class Master {
 		Float selectMemRate = null;
 		Set<String> workersGroup = getWorkersByGroupId(hostGroupId);
 		for (MasterWorkerHolder worker : context.getWorkers().values()) {
-			if (worker!=null && workersGroup.contains(worker.getHeart().host)) {
-				HeartBeatInfo heart = worker.getHeart();
-				if (heart != null && heart.memRate != null && heart.memRate < Environment.getMaxMemRate() && heart.cpuLoadPerCore < Environment.getMaxCpuLoadPerCore() ) {
-					if (selectWorker == null) {
-						selectWorker = worker;
-						selectMemRate = heart.memRate;
-						log.info("worker b : host " + heart.host + ",heart "+ selectMemRate);
-					} else if (selectMemRate > heart.memRate) {
-						selectWorker = worker;
-						selectMemRate = heart.memRate;
-						log.info("worker c : host " + heart.host + ",heart "+ selectMemRate);
+			try {
+				if (worker!=null && worker.getHeart()!=null && workersGroup.contains(worker.getHeart().host)) {
+					HeartBeatInfo heart = worker.getHeart();
+					if (heart != null && heart.memRate != null && heart.memRate < Environment.getMaxMemRate() && heart.cpuLoadPerCore < Environment.getMaxCpuLoadPerCore() ) {
+						if (selectWorker == null) {
+							selectWorker = worker;
+							selectMemRate = heart.memRate;
+							log.info("worker b : host " + heart.host + ",heart "+ selectMemRate);
+						} else if (selectMemRate > heart.memRate) {
+							selectWorker = worker;
+							selectMemRate = heart.memRate;
+							log.info("worker c : host " + heart.host + ",heart "+ selectMemRate);
+						}
+					}
+				}else {
+					if(worker == null){
+						log.error("worker is null");
+					}else if(worker!=null && worker.getHeart()==null){
+						log.error("worker " + worker.getChannel().toString()+" heart is null");
 					}
 				}
+			} catch (Exception e) {
+				log.error("worker failed",e);
 			}
 		}
 		if (selectWorker != null) {
@@ -939,6 +953,7 @@ public class Master {
 	public void workerDisconnectProcess(Channel channel) {
 		MasterWorkerHolder holder = context.getWorkers().get(channel);
 		if (holder != null) {
+			SocketLog.info("worker disconnect, ip:" + channel.getRemoteAddress().toString());
 			context.getWorkers().remove(channel);
 			final List<JobHistory> hiss = new ArrayList<JobHistory>();
 			Map<String, Tuple<JobDescriptor, JobStatus>> map = context
@@ -947,11 +962,14 @@ public class Master {
 			for (String key : map.keySet()) {
 				JobStatus js = map.get(key).getY();
 				if (js.getHistoryId() != null) {
-					hiss.add(context.getJobHistoryManager().findJobHistory(
-							js.getHistoryId()));
+					JobHistory his = context.getJobHistoryManager().findJobHistory(
+							js.getHistoryId());
+					if(his != null){
+						hiss.add(his);
+					}
 				}
-				js.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
-				context.getGroupManager().updateJobStatus(js);
+				/*js.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
+				context.getGroupManager().updateJobStatus(js);*/
 			}
 			new Thread() {
 				@Override
@@ -1073,11 +1091,11 @@ public class Master {
 							log.error("无法生成Cron表达式：日期," + cronDate + ";不符合规则cron表达式：" + jobCronExpression);
 						}
 						for (int i = 0; i < lTime.size(); i++) {
-							String actionDateStr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "yyyyMMddHHmmss");
-							String actionCronExpr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "s m H d M") + " ?";
+							String actionDateStr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "yyyyMMddHHmm");
+							String actionCronExpr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "0 m H d M") + " ?";
 							
 							JobPersistence actionPer = new JobPersistence();
-							actionPer.setId(Long.parseLong(actionDateStr)*10000+jobDetail.getId());//update action id
+							actionPer.setId(Long.parseLong(actionDateStr)*1000000+jobDetail.getId());//update action id
 							actionPer.setToJobId(jobDetail.getId());
 							actionPer.setAuto(jobDetail.getAuto());
 							actionPer.setConfigs(jobDetail.getConfigs());
@@ -1104,7 +1122,7 @@ public class Master {
 							actionPer.setResources(jobDetail.getResources());
 							actionPer.setRunType(jobDetail.getRunType());
 							actionPer.setScheduleType(jobDetail.getScheduleType());
-							actionPer.setScript(jobDetail.getScript());
+/*							actionPer.setScript(jobDetail.getScript());*/
 							actionPer.setStartTime(jobDetail.getStartTime());
 							actionPer.setStartTimestamp(jobDetail.getStartTimestamp());
 							actionPer.setStatisStartTime(jobDetail.getStatisStartTime());
@@ -1130,7 +1148,8 @@ public class Master {
 					log.error("定时任务生成Action失败",ex);
 				}
 			}
-
+			/**
+			 * 取消生成周期任务
 			if(jobDetail.getScheduleType() != null && jobDetail.getScheduleType()==2){
 				try{
 					if(jobDetail.getDependencies()==null || jobDetail.getDependencies().trim().length()==0){
@@ -1276,7 +1295,7 @@ public class Master {
 				}catch(Exception ex){
 					log.error("周期任务生成Action失败",ex);
 				}
-			}
+			}*/
 		}
 	}
 	
@@ -1361,12 +1380,12 @@ public class Master {
 											if(actionDependencies.trim().length()>0){
 												actionDependencies += ",";
 											}
-											actionDependencies += String.valueOf((actionOtherId/10000)*10000 + Long.parseLong(deps));
+											actionDependencies += String.valueOf((actionOtherId/1000000)*1000000 + Long.parseLong(deps));
 										}
 									}
 									//保存多版本的action
 									JobPersistence actionPer = new JobPersistence();
-									actionPer.setId((actionModel.getId()/10000)*10000+jobDetail.getId());//update action id
+									actionPer.setId((actionModel.getId()/1000000)*1000000+jobDetail.getId());//update action id
 									actionPer.setToJobId(jobDetail.getId());
 									actionPer.setAuto(jobDetail.getAuto());
 									actionPer.setConfigs(jobDetail.getConfigs());
@@ -1392,7 +1411,7 @@ public class Master {
 									actionPer.setResources(jobDetail.getResources());
 									actionPer.setRunType(jobDetail.getRunType());
 									actionPer.setScheduleType(jobDetail.getScheduleType());
-									actionPer.setScript(jobDetail.getScript());
+/*									actionPer.setScript(jobDetail.getScript());*/
 									actionPer.setStartTime(jobDetail.getStartTime());
 									actionPer.setStartTimestamp(jobDetail.getStartTimestamp());
 									actionPer.setStatisStartTime(jobDetail.getStatisStartTime());

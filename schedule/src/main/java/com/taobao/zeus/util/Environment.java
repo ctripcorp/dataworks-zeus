@@ -38,8 +38,15 @@ public class Environment {
 	private static String defaultWorkerGroupId;
 	private static String defaultMasterGroupId;
 	
+
+
+	private static Float maxMemRate;//默认值
+	private static Float maxCpuLoadPerCore;//默认值
+	
+
 	public Environment(String env,String scheduleGroup,String downloadPath,String hadoopHome,String hadoopConfDir,String hiveHome,String hiveConfDir,
-			String host,String port,String username,String password,String sendFrom,String notifyUrl,String accessToken,String excludeFile, String defaultWorkerGroupId, String defaultMasterGroupId){
+			String host,String port,String username,String password,String sendFrom,String notifyUrl,String accessToken,String excludeFile, String defaultWorkerGroupId, String defaultMasterGroupId
+			,String maxMemRate, String maxCpuLoadPerCore){
 		Environment.env=env.trim();
 		Environment.scheduleGroup=scheduleGroup.trim();
 		Environment.downloadPath=downloadPath.trim();
@@ -61,6 +68,20 @@ public class Environment {
 		Environment.excludeFile=excludeFile.trim();
 		Environment.defaultWorkerGroupId=defaultWorkerGroupId.trim();
 		Environment.defaultMasterGroupId=defaultMasterGroupId.trim();
+		try {
+			Environment.maxMemRate=0.8f;//默认值
+			Environment.maxMemRate=Float.valueOf(maxMemRate);
+		} catch (Exception e) {
+			Environment.maxMemRate=0.8f;//默认值
+			log.error("MaxMemRate initialize error, using default value", e);
+		}
+		try {
+			Environment.maxCpuLoadPerCore=3.0f;//默认值
+			Environment.maxCpuLoadPerCore=Float.valueOf(maxCpuLoadPerCore);
+		} catch (Exception e) {
+			Environment.maxCpuLoadPerCore=3.0f;//默认值
+			log.error("MaxCpuLoadPerCore initialize error, using default value", e);
+		}
 		log.info("the env is " + env.trim());
 		log.info("the downloadPath is " + downloadPath.trim());
 		log.info("the hadoopHome is " + hadoopHome.trim());
@@ -72,6 +93,8 @@ public class Environment {
 		log.info("the excludeFile is " + excludeFile.trim());
 		log.info("the defaultWorkerGroupId is " + defaultWorkerGroupId.trim());
 		log.info("the defaultMasterGroupId is " + defaultMasterGroupId.trim());
+		log.info("the maxMemRate is " + maxMemRate.toString());
+		log.info("the maxCpuLoadPerCore is " + maxCpuLoadPerCore.toString());
 	}
 	
 	public static String getNotifyUrl() {
@@ -147,5 +170,20 @@ public class Environment {
 
 	public static String getDefaultMasterGroupId() {
 		return defaultMasterGroupId;
+	}
+	public static Float getMaxMemRate() {
+		return maxMemRate;
+	}
+
+	public static void setMaxMemRate(Float maxMemRate) {
+		Environment.maxMemRate = maxMemRate;
+	}
+
+	public static Float getMaxCpuLoadPerCore() {
+		return maxCpuLoadPerCore;
+	}
+
+	public static void setMaxCpuLoadPerCore(Float maxCpuLoadPerCore) {
+		Environment.maxCpuLoadPerCore = maxCpuLoadPerCore;
 	}
 }

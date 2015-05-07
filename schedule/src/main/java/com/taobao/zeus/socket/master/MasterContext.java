@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,6 +16,8 @@ import org.jboss.netty.util.internal.ConcurrentHashMap;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.taobao.zeus.model.HostGroupCache;
@@ -29,6 +32,7 @@ import com.taobao.zeus.store.ProfileManager;
 import com.taobao.zeus.store.HostGroupManager;
 
 public class MasterContext {
+	private static Logger log = LoggerFactory.getLogger(MasterContext.class);
 	private Map<Channel, MasterWorkerHolder> workers=new ConcurrentHashMap<Channel, MasterWorkerHolder>();
 	private ApplicationContext applicationContext;
 	private Master master;
@@ -51,33 +55,36 @@ public class MasterContext {
 					}
 				});
 	
+	private Queue<JobElement> exceptionQueue = new LinkedBlockingQueue<JobElement>();
+	
 	
 	//调试任务  debugId
 	private Queue<JobElement> debugQueue=new ArrayBlockingQueue<JobElement>(1000);
 	//手动任务  historyId
-//	private Queue<JobElement> manualQueue=new ArrayBlockingQueue<JobElement>(1000);
-	private Queue<JobElement> manualQueue=new PriorityBlockingQueue<JobElement>(1000, new Comparator<JobElement>() {
-		public int compare(JobElement je1, JobElement je2) {
-			int numbera = je1.getPriorityLevel();
-			int numberb = je2.getPriorityLevel();
-			if (numberb > numbera) {
-				return 1;
-			} else if (numberb < numbera) {
-				return -1;
-			} else {
-				return 0;
-			}
-		}
-	});
+	private Queue<JobElement> manualQueue=new ArrayBlockingQueue<JobElement>(1000);
+//	private Queue<JobElement> manualQueue=new PriorityBlockingQueue<JobElement>(1000, new Comparator<JobElement>() {
+//		public int compare(JobElement je1, JobElement je2) {
+//			int numbera = je1.getPriorityLevel();
+//			int numberb = je2.getPriorityLevel();
+//			if (numberb > numbera) {
+//				return 1;
+//			} else if (numberb < numbera) {
+//				return -1;
+//			} else {
+//				return 0;
+//			}
+//		}
+//	});
 	private MasterHandler handler;
 	private MasterServer server;
 	private ExecutorService threadPool=Executors.newCachedThreadPool();
-	private ScheduledExecutorService schedulePool=Executors.newScheduledThreadPool(8);
+	private ScheduledExecutorService schedulePool=Executors.newScheduledThreadPool(10);
 	
 	public MasterContext(ApplicationContext applicationContext){
 		this.applicationContext=applicationContext;
 	}
 	public void init(int port){
+		log.info("init begin");
 		try {
 			StdSchedulerFactory stdSchedulerFactory = new StdSchedulerFactory();
 			stdSchedulerFactory.initialize("zeusQuartz.properties");
@@ -91,7 +98,7 @@ public class MasterContext {
 		server=new MasterServer(handler);
 		server.start(port);
 		master=new Master(this);
-		ScheduleInfoLog.info("init finish");
+		log.info("init finish");
 	}
 	public void destory(){
 		threadPool.shutdown();
@@ -201,5 +208,8 @@ public class MasterContext {
 	}
 	public List<HostGroupCache> getHostGroupCache() {
 		return hostGroupCache;
+	}
+	public Queue<JobElement> getExceptionQueue() {
+		return exceptionQueue;
 	}
 }

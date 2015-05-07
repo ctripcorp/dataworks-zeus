@@ -154,6 +154,7 @@ public class JobController extends Controller {
 					history.setToJobId(jobDescriptor.getToJobId());
 					if(jobDescriptor != null){
 						history.setOperator(jobDescriptor.getOwner() == null ? null : jobDescriptor.getOwner());
+						history.setHostGroupId(jobDescriptor.getHostGroupId());
 					}
 					context.getJobHistoryManager().addJobHistory(history);
 					master.run(history);

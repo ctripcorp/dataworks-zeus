@@ -109,33 +109,43 @@ public class ScheduleDump extends HttpServlet {
 								builder.append("<tr>");
 								builder.append("<td>");
 								builder.append(channel.getRemoteAddress()+ ":");
-								builder.append("<br>" + "\t runnings:"+ runnings.toString());
-								builder.append("<br>" + "\t manual runnings:"+ manualRunnings.toString());
-								builder.append("<br>" + "\t debug runnings:"+ debugRunnings.toString());
-								builder.append("<br>" + "\t heart beat: ");
+								builder.append("<br>" + "runnings:"+ runnings.toString());
+								builder.append("<br>" + "manual runnings:"+ manualRunnings.toString());
+								builder.append("<br>" + "debug runnings:"+ debugRunnings.toString());
+								builder.append("<br>" + "heart beat: ");
 								if (heart != null) {
-									builder.append("<br>"+ "\t\t last heartbeat:"+ format.format(heart.timestamp));
+									Date now = new Date();
+									if (heart.timestamp == null) {
+										builder.append("<br>"+ "<font color=\"red\">last heartbeat: null</font>");
+									}
+									else if ((now.getTime() - heart.timestamp.getTime()) > 1000 * 60) {
+										builder.append("<br>"+ "<font color=\"red\">last heartbeat:"+ format.format(heart.timestamp)+"</font>");
+									}
+									else {
+										builder.append("<br>"+ "last heartbeat:"+ format.format(heart.timestamp));
+									}
 									if (heart.memRate < Environment.getMaxMemRate()) {
-										builder.append("<br>" + "\t\t mem use rate:"+ heart.memRate);
+										builder.append("<br>" + "mem use rate:"+ heart.memRate);
 									}else {
-										builder.append("<br>" + "\t\t <font color=\"red\"> mem use rate:"+ heart.memRate+"</font>");
+										builder.append("<br>" + "<font color=\"red\">mem use rate:"+ heart.memRate+"</font>");
 									}
 									if (heart.cpuLoadPerCore < Environment.getMaxCpuLoadPerCore()) {
-										builder.append("<br>" + "\t\t  cpu load per core:"+ heart.cpuLoadPerCore);
+										builder.append("<br>" + "cpu load per core:"+ heart.cpuLoadPerCore);
 									}else {
-										builder.append("<br>" + "\t\t <font color=\"red\"> cpu load per core:"+ heart.cpuLoadPerCore+"</font>");
+										builder.append("<br>" + "<font color=\"red\">cpu load per core:"+ heart.cpuLoadPerCore+"</font>");
 									}
-									builder.append("<br>"+ "\t\t runnings:"+ heart.runnings.toString());
-									builder.append("<br>"+ "\t\t manual runnings:"+ heart.manualRunnings.toString());
-									builder.append("<br>"+ "\t\t debug runnings:"+ heart.debugRunnings.toString());
+									builder.append("<br>"+ "runnings:"+ heart.runnings.toString());
+									builder.append("<br>"+ "manual runnings:"+ heart.manualRunnings.toString());
+									builder.append("<br>"+ "debug runnings:"+ heart.debugRunnings.toString());
 								}
 								builder.append("</td>");
 								builder.append("</tr>");
 							}
 							builder.append("<tr>");
 							builder.append("<td>");
-							builder.append("\t\t Max Mem use Rate:"+ Environment.getMaxMemRate());
-							builder.append("<br>" + "\t\t Max Cpu Load Per Core:"+ Environment.getMaxCpuLoadPerCore());
+							builder.append("Max Mem use Rate:"+ Environment.getMaxMemRate());
+							builder.append("<br>" + "Max Cpu Load Per Core:"+ Environment.getMaxCpuLoadPerCore());
+							builder.append("<br>" + "Number of hosts:"+ workers.size());
 							builder.append("</td>");
 							builder.append("</tr>");
 							builder.append("</table>");

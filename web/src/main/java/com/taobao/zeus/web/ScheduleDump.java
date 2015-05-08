@@ -117,11 +117,9 @@ public class ScheduleDump extends HttpServlet {
 									Date now = new Date();
 									if (heart.timestamp == null) {
 										builder.append("<br>"+ "<font color=\"red\">last heartbeat: null</font>");
-									}
-									else if ((now.getTime() - heart.timestamp.getTime()) > 1000 * 60) {
+									}else if ((now.getTime() - heart.timestamp.getTime()) > 1000 * 60) {
 										builder.append("<br>"+ "<font color=\"red\">last heartbeat:"+ format.format(heart.timestamp)+"</font>");
-									}
-									else {
+									}else {
 										builder.append("<br>"+ "last heartbeat:"+ format.format(heart.timestamp));
 									}
 									if (heart.memRate < Environment.getMaxMemRate()) {

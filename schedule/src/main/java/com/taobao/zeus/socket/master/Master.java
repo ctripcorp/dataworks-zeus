@@ -389,15 +389,15 @@ public class Master {
 		return selectWorker;
 	}
 	
-	private Boolean hasWorkerInHostGroup(String id){
-		Set<String> workersGroup = getWorkersByGroupId(id);
-		for (MasterWorkerHolder worker : context.getWorkers().values()) {
-			if (worker!=null && workersGroup.contains(worker.getHeart().host)){
-				return true;
-			}
-		}
-		return false;
-	}
+//	private Boolean hasWorkerInHostGroup(String id){
+//		Set<String> workersGroup = getWorkersByGroupId(id);
+//		for (MasterWorkerHolder worker : context.getWorkers().values()) {
+//			if (worker!=null && workersGroup.contains(worker.getHeart().host)){
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 	
 	private Set<String> getWorkersByGroupId(String hostGroupId){
 		Set<String> workers = new HashSet<String>();

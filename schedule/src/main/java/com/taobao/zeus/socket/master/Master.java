@@ -68,7 +68,6 @@ public class Master {
 
 	private MasterContext context;
 	private static Logger log = LoggerFactory.getLogger(Master.class);
-	private Date lastTime=new Date();
 
 	public Master(final MasterContext context) {
 		this.context = context;

@@ -306,7 +306,7 @@ public class JobController extends Controller {
 	private void lostEventHandle(JobLostEvent event) {
 		if (event.getType() == Events.UpdateJob
 				&& jobId.equals(event.getJobId())) {
-			cache.refresh();
+			//cache.refresh();
 			JobDescriptor jd = cache.getJobDescriptor();
 			if(jd!=null && jd.getAuto()){
 				JobStatus jobStatus = groupManager.getJobStatus(jobId);

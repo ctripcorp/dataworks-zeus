@@ -1,6 +1,5 @@
 package com.taobao.zeus.socket.master;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,7 +59,6 @@ import com.taobao.zeus.store.JobBean;
 import com.taobao.zeus.store.mysql.persistence.JobPersistence;
 import com.taobao.zeus.store.mysql.persistence.JobPersistenceOld;
 import com.taobao.zeus.util.CronExpParser;
-import com.taobao.zeus.util.DateUtil;
 import com.taobao.zeus.util.Environment;
 import com.taobao.zeus.util.Tuple;
 import com.taobao.zeus.util.ZeusDateTool;
@@ -133,6 +131,7 @@ public class Master {
 						runScheduleJobToAction(jobDetails, now, df2, actionDetails, currentDateStr);
 						//其次，生成依赖任务action
 						runDependencesJobToAction(jobDetails, actionDetails, currentDateStr, 0);
+						log.info("run job to action ok");
 						
 						Dispatcher dispatcher=context.getDispatcher();  
 						if(dispatcher != null){
@@ -154,7 +153,7 @@ public class Master {
 									}
 								}
 							}
-						
+							log.info("add controller and update job event ok");
 							//清理schedule
 							List<Controller> controllers = dispatcher.getControllers();
 							if(controllers!=null && controllers.size()>0){
@@ -181,18 +180,17 @@ public class Master {
 									}
 								}
 							}
+							log.info("clear job scheduler ok");
 						}
 						System.out.println("Action版本生成完毕！");
-						log.info("job to action ok !");
+						log.info("job to action all works ok !");
 					}
 				}catch(Exception e){
 					log.error("job to action failed !", e);
 				}
 			}
 		}, 0, 60, TimeUnit.SECONDS);
-		
-		//*********************************************************************
-		
+				
 		// 定时扫描等待队列
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
 			@Override
@@ -391,15 +389,15 @@ public class Master {
 		return selectWorker;
 	}
 	
-	private Boolean hasWorkerInHostGroup(String id){
-		Set<String> workersGroup = getWorkersByGroupId(id);
-		for (MasterWorkerHolder worker : context.getWorkers().values()) {
-			if (worker!=null && workersGroup.contains(worker.getHeart().host)){
-				return true;
-			}
-		}
-		return false;
-	}
+//	private Boolean hasWorkerInHostGroup(String id){
+//		Set<String> workersGroup = getWorkersByGroupId(id);
+//		for (MasterWorkerHolder worker : context.getWorkers().values()) {
+//			if (worker!=null && workersGroup.contains(worker.getHeart().host)){
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 	
 	private Set<String> getWorkersByGroupId(String hostGroupId){
 		Set<String> workers = new HashSet<String>();
@@ -672,6 +670,7 @@ public class Master {
 			his.setToJobId(jobDescriptor.getToJobId() == null ? null : jobDescriptor.getToJobId());
 			his.setTimezone(jobDescriptor.getTimezone());
 			his.setStatus(com.taobao.zeus.model.JobStatus.Status.RUNNING);
+			his.setHostGroupId(jobDescriptor.getHostGroupId());
 			context.getJobHistoryManager().addJobHistory(his);
 			his.getLog().appendZeus(
 					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -955,6 +954,7 @@ public class Master {
 	public void workerDisconnectProcess(Channel channel) {
 		MasterWorkerHolder holder = context.getWorkers().get(channel);
 		if (holder != null) {
+//			SocketLog.info("worker disconnect, ip:" + channel.getRemoteAddress().toString());
 			context.getWorkers().remove(channel);
 			final List<JobHistory> hiss = new ArrayList<JobHistory>();
 			Map<String, Tuple<JobDescriptor, JobStatus>> map = context
@@ -963,11 +963,14 @@ public class Master {
 			for (String key : map.keySet()) {
 				JobStatus js = map.get(key).getY();
 				if (js.getHistoryId() != null) {
-					hiss.add(context.getJobHistoryManager().findJobHistory(
-							js.getHistoryId()));
+					JobHistory his = context.getJobHistoryManager().findJobHistory(
+							js.getHistoryId());
+					if(his != null){
+						hiss.add(his);
+					}
 				}
-				js.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
-				context.getGroupManager().updateJobStatus(js);
+				/*js.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
+				context.getGroupManager().updateJobStatus(js);*/
 			}
 			new Thread() {
 				@Override
@@ -978,6 +981,10 @@ public class Master {
 					}
 					for (JobHistory his : hiss) {
 						String jobId = his.getJobId();
+						his.setEndTime(new Date());
+						his.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
+						his.setIllustrate("worker断线，任务失败");
+						context.getJobHistoryManager().updateJobHistory(his);
 						JobHistory history = new JobHistory();
 						history.setJobId(jobId);
 						history.setToJobId(his.getToJobId());
@@ -1089,11 +1096,11 @@ public class Master {
 							log.error("无法生成Cron表达式：日期," + cronDate + ";不符合规则cron表达式：" + jobCronExpression);
 						}
 						for (int i = 0; i < lTime.size(); i++) {
-							String actionDateStr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "yyyyMMddHHmmss");
-							String actionCronExpr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "s m H d M") + " ?";
+							String actionDateStr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "yyyyMMddHHmm");
+							String actionCronExpr = ZeusDateTool.StringToDateStr(lTime.get(i), "yyyy-MM-dd HH:mm:ss", "0 m H d M") + " ?";
 							
 							JobPersistence actionPer = new JobPersistence();
-							actionPer.setId(Long.parseLong(actionDateStr)*10000+jobDetail.getId());//update action id
+							actionPer.setId(Long.parseLong(actionDateStr)*1000000+jobDetail.getId());//update action id
 							actionPer.setToJobId(jobDetail.getId());
 							actionPer.setAuto(jobDetail.getAuto());
 							actionPer.setConfigs(jobDetail.getConfigs());
@@ -1120,7 +1127,7 @@ public class Master {
 							actionPer.setResources(jobDetail.getResources());
 							actionPer.setRunType(jobDetail.getRunType());
 							actionPer.setScheduleType(jobDetail.getScheduleType());
-							actionPer.setScript(jobDetail.getScript());
+/*							actionPer.setScript(jobDetail.getScript());*/
 							actionPer.setStartTime(jobDetail.getStartTime());
 							actionPer.setStartTimestamp(jobDetail.getStartTimestamp());
 							actionPer.setStatisStartTime(jobDetail.getStatisStartTime());
@@ -1146,7 +1153,8 @@ public class Master {
 					log.error("定时任务生成Action失败",ex);
 				}
 			}
-
+			/**
+			 * 取消生成周期任务
 			if(jobDetail.getScheduleType() != null && jobDetail.getScheduleType()==2){
 				try{
 					if(jobDetail.getDependencies()==null || jobDetail.getDependencies().trim().length()==0){
@@ -1292,7 +1300,7 @@ public class Master {
 				}catch(Exception ex){
 					log.error("周期任务生成Action失败",ex);
 				}
-			}
+			}*/
 		}
 	}
 	
@@ -1377,12 +1385,12 @@ public class Master {
 											if(actionDependencies.trim().length()>0){
 												actionDependencies += ",";
 											}
-											actionDependencies += String.valueOf((actionOtherId/10000)*10000 + Long.parseLong(deps));
+											actionDependencies += String.valueOf((actionOtherId/1000000)*1000000 + Long.parseLong(deps));
 										}
 									}
 									//保存多版本的action
 									JobPersistence actionPer = new JobPersistence();
-									actionPer.setId((actionModel.getId()/10000)*10000+jobDetail.getId());//update action id
+									actionPer.setId((actionModel.getId()/1000000)*1000000+jobDetail.getId());//update action id
 									actionPer.setToJobId(jobDetail.getId());
 									actionPer.setAuto(jobDetail.getAuto());
 									actionPer.setConfigs(jobDetail.getConfigs());
@@ -1408,7 +1416,7 @@ public class Master {
 									actionPer.setResources(jobDetail.getResources());
 									actionPer.setRunType(jobDetail.getRunType());
 									actionPer.setScheduleType(jobDetail.getScheduleType());
-									actionPer.setScript(jobDetail.getScript());
+/*									actionPer.setScript(jobDetail.getScript());*/
 									actionPer.setStartTime(jobDetail.getStartTime());
 									actionPer.setStartTimestamp(jobDetail.getStartTimestamp());
 									actionPer.setStatisStartTime(jobDetail.getStatisStartTime());

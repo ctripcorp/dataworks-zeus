@@ -643,11 +643,12 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 	public void updateActionList(JobDescriptorOld job) {
 		JobPersistenceOld persist = PersistenceAndBeanConvertOld.convert(job);
 		Long jobId = persist.getId();
-		String script = persist.getScript();
+/*		String script = persist.getScript();*/
 		String resources = persist.getResources();
 		String configs = persist.getConfigs();
 		String host = persist.getHost();
 		Integer workGroupId = persist.getHostGroupId();
+		Integer auto = persist.getAuto();
 		logger.info("begin updateActionList.");
 		HibernateTemplate template = getHibernateTemplate();
 		List<JobPersistence> actionList = template.find("from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId='"+ jobId +"' order by id desc");
@@ -655,12 +656,13 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		if (actionList != null && actionList.size() > 0 ){
 			for(JobPersistence actionPer : actionList){
 //				if(!"running".equalsIgnoreCase(actionPer.getStatus())){
-					actionPer.setScript(script);
+/*					actionPer.setScript(script);*/
 					actionPer.setResources(resources);
 					actionPer.setConfigs(configs);
 					actionPer.setHost(host);
 					actionPer.setGmtModified(new Date());
 					actionPer.setHostGroupId(workGroupId);
+					actionPer.setAuto(auto);
 					template.saveOrUpdate(actionPer);
 //				}
 			}

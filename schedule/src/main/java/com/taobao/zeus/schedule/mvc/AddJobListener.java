@@ -39,25 +39,26 @@ public class AddJobListener extends DispatcherListener{
 		
 		if(mvce.getAppEvent() instanceof JobMaintenanceEvent){
 			JobMaintenanceEvent event=(JobMaintenanceEvent)mvce.getAppEvent();
-			String jobId=event.getJobId();
-			boolean exist=false;
-			for(Controller c:new ArrayList<Controller>(context.getDispatcher().getControllers())){
-				if(c instanceof JobController){
-					JobController jc=(JobController)c;
-					if(jc.getJobId().equals(jobId)){
-						exist=true;
-						break;
+			if (event.getType() != Events.UpdateActions) {
+				String jobId=event.getId();
+				boolean exist=false;
+				for(Controller c:new ArrayList<Controller>(context.getDispatcher().getControllers())){
+					if(c instanceof JobController){
+						JobController jc=(JobController)c;
+						if(jc.getJobId().equals(jobId)){
+							exist=true;
+							break;
+						}
 					}
 				}
+				if(!exist){//新增操作
+					JobController controller=new JobController(context,master, jobId);
+					context.getDispatcher().addController(controller);
+					controller.handleEvent(new AppEvent(Events.Initialize));
+					mvce.setCancelled(true);
+					log.error("schedule add job with jobId:"+jobId);
+				}
 			}
-			if(!exist){//新增操作
-				JobController controller=new JobController(context,master, jobId);
-				context.getDispatcher().addController(controller);
-				controller.handleEvent(new AppEvent(Events.Initialize));
-				mvce.setCancelled(true);
-				log.error("schedule add job with jobId:"+jobId);
-			}
-			
 		}
 	}
 }

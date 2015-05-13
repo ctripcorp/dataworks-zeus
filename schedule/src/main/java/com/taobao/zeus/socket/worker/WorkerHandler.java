@@ -14,6 +14,8 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
+import com.taobao.zeus.model.DebugHistory;
+import com.taobao.zeus.model.JobHistory;
 import com.taobao.zeus.schedule.mvc.ScheduleInfoLog;
 import com.taobao.zeus.socket.SocketLog;
 import com.taobao.zeus.socket.protocol.Protocol.Operate;
@@ -90,22 +92,39 @@ public class WorkerHandler extends SimpleChannelUpstreamHandler{
 	public void channelDisconnected(ChannelHandlerContext ctx,
 			ChannelStateEvent e) throws Exception {
 		super.channelDisconnected(ctx, e);
+		this.context.setServerChannel(null);
 		SocketLog.info("worker disconnect to master");
 		//断开连接，如果还有运行中的job，将这些job取消掉
-		for(String jobId:new HashSet<String>(context.getRunnings().keySet())){
-			context.getRunnings().get(jobId).getJobContext().getJobHistory().getLog().appendZeus("worker与master断开连接，worker主动取消该任务");
-			context.getClientWorker().cancelScheduleJob(jobId);
+		try{
+			for(String jobId:new HashSet<String>(context.getRunnings().keySet())){
+				JobHistory his = context.getRunnings().get(jobId).getJobContext().getJobHistory();
+				if(his != null){
+					his.setIllustrate("worker断开连接，主动取消该任务");
+					his.getLog().appendZeus("worker与master断开连接，worker主动取消该任务");
+					context.getClientWorker().cancelScheduleJob(jobId);
+				}
+	
+			}
+			for(String debugId:new HashSet<String>(context.getDebugRunnings().keySet())){
+				DebugHistory his = context.getDebugRunnings().get(debugId).getJobContext().getDebugHistory();
+				if(his != null){
+					his.getLog().appendZeus("worker与master断开连接，worker主动取消该任务");
+					context.getClientWorker().cancelDebugJob(debugId);
+				}
+			}
+			for(String historyId:new HashSet<String>(context.getManualRunnings().keySet())){
+				JobHistory his = context.getManualRunnings().get(historyId).getJobContext().getJobHistory();
+				if(his != null){
+					his.setIllustrate("worker断开连接，主动取消该任务");
+					his.getLog().appendZeus("worker与master断开连接，worker主动取消该任务");
+					context.getClientWorker().cancelManualJob(historyId);
+				}
+			}
+			SocketLog.info("job cancel successfully");
+		}catch(Exception ex){
+			SocketLog.error("job cancel exception failed");
+			ex.printStackTrace();
 		}
-		for(String debugId:new HashSet<String>(context.getDebugRunnings().keySet())){
-			context.getDebugRunnings().get(debugId).getJobContext().getJobHistory().getLog().appendZeus("worker与master断开连接，worker主动取消该任务");
-			context.getClientWorker().cancelDebugJob(debugId);
-		}
-		for(String historyId:new HashSet<String>(context.getManualRunnings().keySet())){
-			context.getManualRunnings().get(historyId).getJobContext().getJobHistory().getLog().appendZeus("worker与master断开连接，worker主动取消该任务");
-			context.getClientWorker().cancelManualJob(historyId);
-		}
-		SocketLog.info("job cancel successfully");
-		this.context.setServerChannel(null);
 	}
 	private List<ResponseListener> listeners=new CopyOnWriteArrayList<ResponseListener>();
 	public static interface ResponseListener{

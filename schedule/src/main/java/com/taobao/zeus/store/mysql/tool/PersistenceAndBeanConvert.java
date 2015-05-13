@@ -130,7 +130,7 @@ public class PersistenceAndBeanConvert {
 			jd.setResources(tempRes);
 		}
 
-		jd.setScript(persist.getScript());
+/*		jd.setScript(persist.getScript());*/
 
 		if (persist.getPreProcessers() != null
 				&& !"".equals(persist.getPreProcessers().trim())) {
@@ -243,7 +243,7 @@ public class PersistenceAndBeanConvert {
 		persist.setScheduleType(jd.getScheduleType() == null ? null : jd
 				.getScheduleType().getType());
 
-		persist.setScript(jd.getScript());
+/*		persist.setScript(jd.getScript());*/
 
 		persist.setTimezone(jd.getTimezone());
 

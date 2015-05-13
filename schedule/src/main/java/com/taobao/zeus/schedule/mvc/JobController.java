@@ -291,12 +291,25 @@ public class JobController extends Controller {
 	 * 
 	 * @param event
 	 */
+	
 	private void maintenanceEventHandle(JobMaintenanceEvent event) {
 		if (event.getType() == Events.UpdateJob
-				&& jobId.equals(event.getJobId())) {
+				&& jobId.equals(event.getId())) {
+			autofix();
+		}
+		//根据任务Id批量更新action
+		if (event.getType() == Events.UpdateActions && isBelongTo(event.getId())) {
 			autofix();
 		}
 	}
+	
+	private boolean isBelongTo(String id){
+		String substr = jobId.substring(12);
+		Integer id1 = Integer.valueOf(substr);
+		Integer id2 = Integer.valueOf(id);
+		return id1.equals(id2);
+	}
+	
 	
 	/**
 	 * 漏跑JOB，重新依赖调度

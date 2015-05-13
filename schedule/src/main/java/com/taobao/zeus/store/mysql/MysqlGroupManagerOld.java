@@ -648,6 +648,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		String configs = persist.getConfigs();
 		String host = persist.getHost();
 		Integer workGroupId = persist.getHostGroupId();
+		Integer auto = persist.getAuto();
 		logger.info("begin updateActionList.");
 		HibernateTemplate template = getHibernateTemplate();
 		List<JobPersistence> actionList = template.find("from com.taobao.zeus.store.mysql.persistence.JobPersistence where toJobId='"+ jobId +"' order by id desc");
@@ -661,6 +662,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 					actionPer.setHost(host);
 					actionPer.setGmtModified(new Date());
 					actionPer.setHostGroupId(workGroupId);
+					actionPer.setAuto(auto);
 					template.saveOrUpdate(actionPer);
 //				}
 			}

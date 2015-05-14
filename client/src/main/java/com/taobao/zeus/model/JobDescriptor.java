@@ -26,7 +26,7 @@ public class JobDescriptor implements Serializable {
 	private JobRunType jobRunType;
 	private JobScheduleType jobScheduleType;
 
-	private String script;
+/*	private String script;*/
 
 	private String timezone;
 

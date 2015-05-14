@@ -131,6 +131,7 @@ public class Master {
 						runScheduleJobToAction(jobDetails, now, df2, actionDetails, currentDateStr);
 						//其次，生成依赖任务action
 						runDependencesJobToAction(jobDetails, actionDetails, currentDateStr, 0);
+						log.info("run job to action ok");
 						
 						Dispatcher dispatcher=context.getDispatcher();  
 						if(dispatcher != null){
@@ -152,7 +153,7 @@ public class Master {
 									}
 								}
 							}
-						
+							log.info("add controller and update job event ok");
 							//清理schedule
 							List<Controller> controllers = dispatcher.getControllers();
 							if(controllers!=null && controllers.size()>0){
@@ -179,18 +180,17 @@ public class Master {
 									}
 								}
 							}
+							log.info("clear job scheduler ok");
 						}
 						System.out.println("Action版本生成完毕！");
-						log.info("job to action ok !");
+						log.info("job to action all works ok !");
 					}
 				}catch(Exception e){
 					log.error("job to action failed !", e);
 				}
 			}
 		}, 0, 60, TimeUnit.SECONDS);
-		
-		//*********************************************************************
-		
+				
 		// 定时扫描等待队列
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
 			@Override
@@ -954,7 +954,7 @@ public class Master {
 	public void workerDisconnectProcess(Channel channel) {
 		MasterWorkerHolder holder = context.getWorkers().get(channel);
 		if (holder != null) {
-			SocketLog.info("worker disconnect, ip:" + channel.getRemoteAddress().toString());
+//			SocketLog.info("worker disconnect, ip:" + channel.getRemoteAddress().toString());
 			context.getWorkers().remove(channel);
 			final List<JobHistory> hiss = new ArrayList<JobHistory>();
 			Map<String, Tuple<JobDescriptor, JobStatus>> map = context
@@ -981,6 +981,10 @@ public class Master {
 					}
 					for (JobHistory his : hiss) {
 						String jobId = his.getJobId();
+						his.setEndTime(new Date());
+						his.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
+						his.setIllustrate("worker断线，任务失败");
+						context.getJobHistoryManager().updateJobHistory(his);
 						JobHistory history = new JobHistory();
 						history.setJobId(jobId);
 						history.setToJobId(his.getToJobId());

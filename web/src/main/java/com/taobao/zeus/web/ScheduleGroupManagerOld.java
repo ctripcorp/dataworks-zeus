@@ -118,13 +118,14 @@ public class ScheduleGroupManagerOld implements GroupManagerOld{
 	@Override
 	public void updateJob(String user, JobDescriptorOld job) throws ZeusException {
 		groupManager.updateJob(user, job);
-//		try {
-//			worker.updateJobFromWeb(job.getId());
-//		} catch (Exception e) {
-//			String msg="更新Job成功，但是调度Job失败";
-//			log.error(msg,e);
-//			throw new ZeusException(msg,e);
-//		}
+		groupManager.updateActionList(job);
+		try {
+			worker.updateJobFromWeb(job.getId());
+		} catch (Exception e) {
+			String msg="更新Job成功，但是调度Job失败";
+			log.error(msg,e);
+			throw new ZeusException(msg,e);
+		}
 	}
 
 	@Override

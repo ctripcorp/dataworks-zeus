@@ -5,13 +5,13 @@ import com.taobao.zeus.mvc.EventType;
 
 public class JobMaintenanceEvent extends AppEvent {
 	
-	private final String jobId;
-	public JobMaintenanceEvent(EventType type,String jobId){
+	private final String id;
+	public JobMaintenanceEvent(EventType type,String id){
 		super(type);
-		this.jobId=jobId;
+		this.id=id;
 	}
-	public String getJobId() {
-		return jobId;
+	public String getId() {
+		return id;
 	}
 
 }

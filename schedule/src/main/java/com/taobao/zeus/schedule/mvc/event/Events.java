@@ -16,6 +16,8 @@ public class Events {
 //	public static final EventType AddJob=new EventType();
 	//更新一个Job
 	public static final EventType UpdateJob=new EventType();
+	//根据批量更新属于该JobId的Actions
+	public static final EventType UpdateActions=new EventType();
 	//删除一个Job
 //	public static final EventType DeleteJob=new EventType();
 	

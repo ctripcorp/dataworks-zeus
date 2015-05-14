@@ -337,7 +337,7 @@ public class JobServiceImpl implements JobService {
 		try {
 			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
 					jd);
-			permissionGroupManagerOld.updateActionList(jd);
+//			permissionGroupManagerOld.updateActionList(jd);
 			return getUpstreamJob(jd.getId());
 		} catch (ZeusException e) {
 			log.error(e);
@@ -467,19 +467,19 @@ public class JobServiceImpl implements JobService {
 		try {
 			permissionGroupManagerOld.updateJob(LoginUser.getUser().getUid(),
 					jd);
-			List<Tuple<JobDescriptor, JobStatus>> actionlst = permissionGroupManager
-					.getActionList(jd.getId());
-			if (actionlst != null && actionlst.size() != 0) {
-				for (Tuple<JobDescriptor, JobStatus> actionPer : actionlst) {
-					if (!Status.RUNNING.equals(actionPer.getY().getStatus())){
-						actionPer.getX().setAuto(auto);
-						permissionGroupManager.updateAction(actionPer.getX());
-						log.info("Change the action " + actionPer.getX().getId() + " auto " + auto + ".");
-					}else {
-						log.warn("The job is running, and cannnot switchauto.");
-					}
-				}
-			}
+//			List<Tuple<JobDescriptor, JobStatus>> actionlst = permissionGroupManager
+//					.getActionList(jd.getId());
+//			if (actionlst != null && actionlst.size() != 0) {
+//				for (Tuple<JobDescriptor, JobStatus> actionPer : actionlst) {
+//					if (!Status.RUNNING.equals(actionPer.getY().getStatus())){
+//						actionPer.getX().setAuto(auto);
+//						permissionGroupManager.updateAction(actionPer.getX());
+//						log.info("Change the action " + actionPer.getX().getId() + " auto " + auto + ".");
+//					}else {
+//						log.warn("The job is running, and cannnot switchauto.");
+//					}
+//				}
+//			}
 		} catch (ZeusException e) {
 			log.error(e);
 			throw new GwtException(e.getMessage());

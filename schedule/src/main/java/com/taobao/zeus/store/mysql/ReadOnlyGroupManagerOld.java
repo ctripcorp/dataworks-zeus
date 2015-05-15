@@ -165,7 +165,7 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 		});
 		
 		if(grouprealtime!=null && grouprealtime.count.equals(ignoreContentGroupJudge.count) && grouprealtime.maxId.equals(ignoreContentGroupJudge.maxId)
-				&& isAllGroupsNotChangeParentAndExisted(ignoreGlobe, changedGroups)){
+				&& isAllGroupsNotChangeThese(ignoreGlobe, changedGroups)){
 			ignoreContentGroupJudge.stamp=new Date();
 			groupChanged= false;
 		}else{
@@ -233,7 +233,8 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 		}
 		return true;
 	}
-	private boolean isAllGroupsNotChangeParentAndExisted(GroupBeanOld gb,List<GroupDescriptor> list){
+
+	private boolean isAllGroupsNotChangeThese(GroupBeanOld gb,List<GroupDescriptor> list){
 		Map<String, GroupBeanOld> allGroups=gb.getAllSubGroupBeans();
 		for(GroupDescriptor gd:list){
 			GroupBeanOld bean=allGroups.get(gd.getId());

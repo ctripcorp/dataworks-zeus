@@ -14,8 +14,8 @@
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<prop key="hibernate.show_sql">false</prop>
-				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
 				<prop key="hibernate.jdbc.fetch_size">80</prop>
 				<prop key="hibernate.jdbc.batch_size">35</prop>
 				<prop key="hibernate.hbm2ddl.auto" >update</prop>
@@ -46,7 +46,7 @@
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://10.3.8.88:3306/zeus_test2?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;autoReconnectForPools=true"/>
+		<property name="url" value="jdbc:mysql://10.3.8.88:3306/zeus_lky1?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;autoReconnectForPools=true"/>
 		<property name="username" value="biuser"/>
 		<property name="password" value="biuser"/>
 		<property name="maxActive" value="50" />

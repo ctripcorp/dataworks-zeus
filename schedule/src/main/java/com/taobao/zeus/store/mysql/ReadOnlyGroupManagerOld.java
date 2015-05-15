@@ -165,7 +165,7 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 		});
 		
 		if(grouprealtime!=null && grouprealtime.count.equals(ignoreContentGroupJudge.count) && grouprealtime.maxId.equals(ignoreContentGroupJudge.maxId)
-				&& isAllGroupsNotChangeParent(ignoreGlobe, changedGroups)){
+				&& isAllGroupsNotChangeParentAndExisted(ignoreGlobe, changedGroups)){
 			ignoreContentGroupJudge.stamp=new Date();
 			groupChanged= false;
 		}else{
@@ -198,13 +198,42 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 		}
 		return true;
 	}
-	/**
-	 * 判断变动的Group中，是否全部不涉及parent节点的变化
-	 * @param gb
-	 * @param list
-	 * @return
-	 */
-	private boolean isAllGroupsNotChangeParent(GroupBeanOld gb,List<GroupDescriptor> list){
+//	/**
+//	 * 判断变动的Group中，是否全部不涉及parent节点的变化
+//	 * @param gb
+//	 * @param list
+//	 * @return
+//	 */
+//	private boolean isAllGroupsNotChangeParent(GroupBeanOld gb,List<GroupDescriptor> list){
+//		Map<String, GroupBeanOld> allGroups=gb.getAllSubGroupBeans();
+//		for(GroupDescriptor gd:list){
+//			GroupBeanOld bean=allGroups.get(gd.getId());
+//			if(gd.getId().equals(gb.getGroupDescriptor().getId())){
+//				break;
+//			}
+//			if(bean==null){
+//				DebugInfoLog.info("isAllGroupsNotChangeParent group id="+ gd.getId()+" has changed");
+//				return false;
+//			}
+//			GroupDescriptor old=bean.getGroupDescriptor();
+//			if(!old.getParent().equals(gd.getParent())){
+//				DebugInfoLog.info("isAllGroupsNotChangeParent group id="+ gd.getId()+" has changed");
+//				return false;
+//			}
+//		}
+//		return true;
+//	}
+	
+	private boolean isGroupsNotChangeExisted(Map<String, GroupBeanOld> allGroups,List<GroupDescriptor> list){
+		for(GroupDescriptor tmp:list){
+			GroupBeanOld bean=allGroups.get(tmp.getId());
+			if (bean!=null && bean.isExisted()!=tmp.isExisted()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	private boolean isAllGroupsNotChangeParentAndExisted(GroupBeanOld gb,List<GroupDescriptor> list){
 		Map<String, GroupBeanOld> allGroups=gb.getAllSubGroupBeans();
 		for(GroupDescriptor gd:list){
 			GroupBeanOld bean=allGroups.get(gd.getId());
@@ -221,7 +250,7 @@ public class ReadOnlyGroupManagerOld extends HibernateDaoSupport{
 				return false;
 			}
 		}
-		return true;
+		return isGroupsNotChangeExisted(allGroups,list);
 	}
 	
 	/**

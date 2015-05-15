@@ -74,6 +74,7 @@ public class MysqlGroupManagerOld extends HibernateDaoSupport implements
 		GroupPersistence object = (GroupPersistence)getHibernateTemplate().get(GroupPersistence.class,
 				Integer.valueOf(groupId));
 		object.setExisted(0);
+		object.setGmtModified(new Date());
 		getHibernateTemplate().update(object);
 	}
 

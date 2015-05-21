@@ -2,7 +2,9 @@ package com.taobao.zeus.store.mysql;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -46,16 +48,18 @@ public class MysqlHostGroupManager extends HibernateDaoSupport implements HostGr
 	
 
 	@Override
-	public List<HostGroupCache> getAllHostGroupInfomations() {
-		List<HostGroupCache> informations = new ArrayList<HostGroupCache>();
+	public Map<String,HostGroupCache> getAllHostGroupInfomations() {
+		Map<String,HostGroupCache> informations = new HashMap<String,HostGroupCache>();
 		List<HostGroupPersistence> hostgroups = getAllHostGroup();
 		List<HostRelationPersistence> relations = getAllHostRelations();
 		for(HostGroupPersistence wg : hostgroups){
-			HostGroupCache info = new HostGroupCache();
-			info.setId(wg.getId().toString());
 			if (wg.getEffective() == 0) {
 				continue;
 			}
+			HostGroupCache info = new HostGroupCache();
+			String id = wg.getId().toString();
+			info.setId(id);
+			info.setCurrentPositon(0);
 			info.setName(wg.getName());
 			info.setDescription(wg.getDescription());
 			List<String> hosts = new ArrayList<String>();
@@ -65,7 +69,8 @@ public class MysqlHostGroupManager extends HibernateDaoSupport implements HostGr
 				}
 			}
 			info.setHosts(hosts);
-			informations.add(info);
+//			informations.add(info);
+			informations.put(id, info);
 		}
 		return informations;
 	}

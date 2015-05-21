@@ -77,6 +77,9 @@
 		<constructor-arg index="18">
 			<value>${zeus.cpuLoadPerCore}</value>
 		</constructor-arg>
+		<constructor-arg index="19">
+			<value>${zeus.scanRate}</value>
+		</constructor-arg>
 	</bean>
 	
 	<bean id="clientWorker" class="com.taobao.zeus.socket.worker.ClientWorker" >
@@ -134,7 +137,7 @@
 	
 	<bean id="jobValidateOld" class="com.taobao.zeus.store.mysql.tool.JobValidateOld"></bean>
 	
-	<bean id="distributeLocker" class="com.taobao.zeus.schedule.DistributeLocker" init-method="init" >
+	<bean id="distributeLocker" class="com.taobao.zeus.schedule.DistributeLocker" init-method="init" depends-on="environment">
 		<constructor-arg>
 			<value>${zeus.connect.port}</value>
 		</constructor-arg>

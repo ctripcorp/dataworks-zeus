@@ -190,8 +190,9 @@ public class Master {
 				}
 			}
 		}, 0, 60, TimeUnit.SECONDS);
-				
+		
 		// 定时扫描等待队列
+		log.info("The scan rate is " + Environment.getScanRate());
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
@@ -203,7 +204,7 @@ public class Master {
 					log.error("get job from queue failed!", e);
 				}
 			}
-		}, 0, 3, TimeUnit.SECONDS);
+		}, 0, Environment.getScanRate(), TimeUnit.MILLISECONDS);
 		
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
 			@Override
@@ -240,6 +241,16 @@ public class Master {
 				}
 			}
 		}, 30, 30, TimeUnit.SECONDS);
+		
+		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
+			
+			@Override
+			public void run() {
+				// 检测任务超时
+				checkTimeOver();
+				
+			}
+		}, 0, 3, TimeUnit.SECONDS);
 	}
 
 	//重新调度漏跑的JOB
@@ -348,46 +359,46 @@ public class Master {
 //
 //	}
 	
-	private MasterWorkerHolder getRunableWorker(String hostGroupId) {
-		if (hostGroupId == null) {
-			hostGroupId = Environment.getDefaultWorkerGroupId();
-		}
-		MasterWorkerHolder selectWorker = null;
-		Float selectMemRate = null;
-		Set<String> workersGroup = getWorkersByGroupId(hostGroupId);
-		for (MasterWorkerHolder worker : context.getWorkers().values()) {
-			try {
-				if (worker!=null && worker.getHeart()!=null && workersGroup.contains(worker.getHeart().host)) {
-					HeartBeatInfo heart = worker.getHeart();
-					if (heart != null && heart.memRate != null && heart.memRate < Environment.getMaxMemRate() && heart.cpuLoadPerCore < Environment.getMaxCpuLoadPerCore() ) {
-						if (selectWorker == null) {
-							selectWorker = worker;
-							selectMemRate = heart.memRate;
-							log.info("worker b : host " + heart.host + ",heart "+ selectMemRate);
-						} else if (selectMemRate > heart.memRate) {
-							selectWorker = worker;
-							selectMemRate = heart.memRate;
-							log.info("worker c : host " + heart.host + ",heart "+ selectMemRate);
-						}
-					}
-				}else {
-					if(worker == null){
-						log.error("worker is null");
-					}else if(worker!=null && worker.getHeart()==null){
-						log.error("worker " + worker.getChannel().toString()+" heart is null");
-					}
-				}
-			} catch (Exception e) {
-				log.error("worker failed",e);
-			}
-		}
-		if (selectWorker != null) {
-			log.info("select worker: " + selectWorker.getHeart().host + ", for HostGroupId " + hostGroupId);
-		}else {
-			log.error("can not find proper workers");
-		}
-		return selectWorker;
-	}
+//	private MasterWorkerHolder getRunableWorker(String hostGroupId) {
+//		if (hostGroupId == null) {
+//			hostGroupId = Environment.getDefaultWorkerGroupId();
+//		}
+//		MasterWorkerHolder selectWorker = null;
+//		Float selectMemRate = null;
+//		Set<String> workersGroup = getWorkersByGroupId(hostGroupId);
+//		for (MasterWorkerHolder worker : context.getWorkers().values()) {
+//			try {
+//				if (worker!=null && worker.getHeart()!=null && workersGroup.contains(worker.getHeart().host)) {
+//					HeartBeatInfo heart = worker.getHeart();
+//					if (heart != null && heart.memRate != null && heart.memRate < Environment.getMaxMemRate() && heart.cpuLoadPerCore < Environment.getMaxCpuLoadPerCore() ) {
+//						if (selectWorker == null) {
+//							selectWorker = worker;
+//							selectMemRate = heart.memRate;
+//							log.info("worker b : host " + heart.host + ",heart "+ selectMemRate);
+//						} else if (selectMemRate > heart.memRate) {
+//							selectWorker = worker;
+//							selectMemRate = heart.memRate;
+//							log.info("worker c : host " + heart.host + ",heart "+ selectMemRate);
+//						}
+//					}
+//				}else {
+//					if(worker == null){
+//						log.error("worker is null");
+//					}else if(worker!=null && worker.getHeart()==null){
+//						log.error("worker " + worker.getChannel().toString()+" heart is null");
+//					}
+//				}
+//			} catch (Exception e) {
+//				log.error("worker failed",e);
+//			}
+//		}
+//		if (selectWorker != null) {
+//			log.info("select worker: " + selectWorker.getHeart().host + ", for HostGroupId " + hostGroupId);
+//		}else {
+//			log.error("can not find proper workers");
+//		}
+//		return selectWorker;
+//	}
 	
 //	private Boolean hasWorkerInHostGroup(String id){
 //		Set<String> workersGroup = getWorkersByGroupId(id);
@@ -399,17 +410,59 @@ public class Master {
 //		return false;
 //	}
 	
-	private Set<String> getWorkersByGroupId(String hostGroupId){
-		Set<String> workers = new HashSet<String>();
-		for(HostGroupCache hostgroup : context.getHostGroupCache()){
-			if (hostgroup.getId().equals(hostGroupId) ) {
-				for (String host : hostgroup.getHosts()) {
-					workers.add(host);
+//	private Set<String> getWorkersByGroupId(String hostGroupId){
+//		Set<String> workers = new HashSet<String>();
+//		for(HostGroupCache hostgroup : context.getHostGroupCache()){
+//			if (hostgroup.getId().equals(hostGroupId) ) {
+//				for (String host : hostgroup.getHosts()) {
+//					workers.add(host);
+//				}
+//				break;
+//			}
+//		}
+//		return workers;
+//	}
+	
+	private MasterWorkerHolder getRunableWorker(String hostGroupId) {
+		if (hostGroupId == null) {
+			hostGroupId = Environment.getDefaultWorkerGroupId();
+		}
+		MasterWorkerHolder selectWorker = null;
+		if (context.getHostGroupCache()!=null) {
+			HostGroupCache hostGroupCache = context.getHostGroupCache().get(hostGroupId);
+			if (hostGroupCache != null && hostGroupCache.getHosts()!=null && hostGroupCache.getHosts().size()>0 && hostGroupCache.selectHost()!=null) {
+				String host = hostGroupCache.selectHost();
+				int size = hostGroupCache.getHosts().size();
+				for (int i = 0; i < size && selectWorker == null; i++) {
+					for (MasterWorkerHolder worker : context.getWorkers().values()) {
+						try {
+							if (worker!=null && worker.getHeart()!=null && worker.getHeart().host.equals(host)) {
+								HeartBeatInfo heart = worker.getHeart();
+								if (heart != null && heart.memRate != null && heart.cpuLoadPerCore!=null && heart.memRate < Environment.getMaxMemRate() && heart.cpuLoadPerCore < Environment.getMaxCpuLoadPerCore()){
+									selectWorker = worker;
+									break;
+								}
+							}
+							else {
+								if(worker == null){
+									log.error("worker is null");
+								}else if(worker!=null && worker.getHeart()==null && worker.getChannel()!=null){
+									log.error("worker " + worker.getChannel().toString()+" heart is null");
+								}
+							}	
+						} catch (Exception e) {
+							log.error("worker failed",e);
+						}
+					}
 				}
-				break;
 			}
 		}
-		return workers;
+		if (selectWorker != null) {
+			log.info("select worker: " + selectWorker.getHeart().host + ", for HostGroupId " + hostGroupId);
+		}else {
+			log.error("can not find proper workers for hostGroupId:"+hostGroupId);
+		}
+		return selectWorker;
 	}
 	
 	
@@ -452,8 +505,8 @@ public class Master {
 			}
 		}
 		
-		// 检测任务超时
-		checkTimeOver();
+//		 检测任务超时
+//		checkTimeOver();
 	}
 
 	private void runScheduleAction(final JobElement e) {

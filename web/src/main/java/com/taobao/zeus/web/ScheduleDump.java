@@ -283,8 +283,7 @@ public class ScheduleDump extends HttpServlet {
 							}
 							resp.getWriter().println("Action生成完毕！");
 						} else if ("hostgroup".equals(op)) {
-							List<HostGroupCache> allHostGroupInfomations = context
-									.getHostGroupCache();
+							Map<String,HostGroupCache> allHostGroupInfomations = context.getHostGroupCache();
 							StringBuilder builder = new StringBuilder();
 							builder.append("<h3>host组信息：</h3>");
 							builder.append("<table border=\"1\">");
@@ -294,7 +293,7 @@ public class ScheduleDump extends HttpServlet {
 							builder.append("<th>描述</th>");
 							builder.append("<th>host</th>");
 							builder.append("</tr>");
-							for (HostGroupCache info : allHostGroupInfomations) {
+							for (HostGroupCache info : allHostGroupInfomations.values()) {
 								builder.append("<tr>");
 								builder.append("<td>" + info.getId() + "</td>");
 								builder.append("<td>" + info.getName()

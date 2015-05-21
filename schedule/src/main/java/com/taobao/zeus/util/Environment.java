@@ -37,16 +37,12 @@ public class Environment {
 	private static String excludeFile;
 	private static String defaultWorkerGroupId;
 	private static String defaultMasterGroupId;
-	
-
-
-	private static Float maxMemRate;//默认值
-	private static Float maxCpuLoadPerCore;//默认值
-	
-
+    private static Float maxMemRate = Float.valueOf(0.8F);
+    private static Float maxCpuLoadPerCore = Float.valueOf(3F);
+    private static Integer scanRate = Integer.valueOf(3000);
 	public Environment(String env,String scheduleGroup,String downloadPath,String hadoopHome,String hadoopConfDir,String hiveHome,String hiveConfDir,
 			String host,String port,String username,String password,String sendFrom,String notifyUrl,String accessToken,String excludeFile, String defaultWorkerGroupId, String defaultMasterGroupId
-			,String maxMemRate, String maxCpuLoadPerCore){
+			,String maxMemRate, String maxCpuLoadPerCore, String scanRate){
 		Environment.env=env.trim();
 		Environment.scheduleGroup=scheduleGroup.trim();
 		Environment.downloadPath=downloadPath.trim();
@@ -69,18 +65,22 @@ public class Environment {
 		Environment.defaultWorkerGroupId=defaultWorkerGroupId.trim();
 		Environment.defaultMasterGroupId=defaultMasterGroupId.trim();
 		try {
-			Environment.maxMemRate=0.8f;//默认值
-			Environment.maxMemRate=Float.valueOf(maxMemRate);
+			Environment.maxMemRate=Float.valueOf(maxMemRate.trim());
 		} catch (Exception e) {
-			Environment.maxMemRate=0.8f;//默认值
+			Environment.maxMemRate=0.8F;//默认值
 			log.error("MaxMemRate initialize error, using default value", e);
 		}
 		try {
-			Environment.maxCpuLoadPerCore=3.0f;//默认值
-			Environment.maxCpuLoadPerCore=Float.valueOf(maxCpuLoadPerCore);
+			Environment.maxCpuLoadPerCore=Float.valueOf(maxCpuLoadPerCore.trim());
 		} catch (Exception e) {
-			Environment.maxCpuLoadPerCore=3.0f;//默认值
+			Environment.maxCpuLoadPerCore=3.0F;//默认值
 			log.error("MaxCpuLoadPerCore initialize error, using default value", e);
+		}
+		try {
+			Environment.scanRate = Integer.valueOf(scanRate.trim());
+		} catch (Exception e) {
+			Environment.scanRate = 3000;//默认值
+			log.error("scanRate initialize error, using default value", e);
 		}
 		log.info("the env is " + env.trim());
 		log.info("the downloadPath is " + downloadPath.trim());
@@ -93,8 +93,9 @@ public class Environment {
 		log.info("the excludeFile is " + excludeFile.trim());
 		log.info("the defaultWorkerGroupId is " + defaultWorkerGroupId.trim());
 		log.info("the defaultMasterGroupId is " + defaultMasterGroupId.trim());
-		log.info("the maxMemRate is " + maxMemRate.toString());
-		log.info("the maxCpuLoadPerCore is " + maxCpuLoadPerCore.toString());
+		log.info("the maxMemRate is " + maxMemRate.trim().toString());
+		log.info("the maxCpuLoadPerCore is " + maxCpuLoadPerCore.trim().toString());
+		log.info("the scanRate is " + scanRate.trim().toString());
 	}
 	
 	public static String getNotifyUrl() {
@@ -185,5 +186,13 @@ public class Environment {
 
 	public static void setMaxCpuLoadPerCore(Float maxCpuLoadPerCore) {
 		Environment.maxCpuLoadPerCore = maxCpuLoadPerCore;
+	}
+
+	public static Integer getScanRate() {
+		return scanRate;
+	}
+
+	public static void setScanRate(Integer scanRate) {
+		Environment.scanRate = scanRate;
 	}
 }

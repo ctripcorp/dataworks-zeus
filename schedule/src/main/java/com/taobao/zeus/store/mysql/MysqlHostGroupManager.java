@@ -69,7 +69,6 @@ public class MysqlHostGroupManager extends HibernateDaoSupport implements HostGr
 				}
 			}
 			info.setHosts(hosts);
-//			informations.add(info);
 			informations.put(id, info);
 		}
 		return informations;

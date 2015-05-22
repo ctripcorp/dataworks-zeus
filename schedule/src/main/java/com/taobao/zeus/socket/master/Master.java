@@ -423,17 +423,20 @@ public class Master {
 //		return workers;
 //	}
 	
-	private MasterWorkerHolder getRunableWorker(String hostGroupId) {
+	private synchronized MasterWorkerHolder getRunableWorker(String hostGroupId) {
 		if (hostGroupId == null) {
 			hostGroupId = Environment.getDefaultWorkerGroupId();
 		}
 		MasterWorkerHolder selectWorker = null;
 		if (context.getHostGroupCache()!=null) {
 			HostGroupCache hostGroupCache = context.getHostGroupCache().get(hostGroupId);
-			if (hostGroupCache != null && hostGroupCache.getHosts()!=null && hostGroupCache.getHosts().size()>0 && hostGroupCache.selectHost()!=null) {
-				String host = hostGroupCache.selectHost();
+			if (hostGroupCache != null && hostGroupCache.getHosts()!=null && hostGroupCache.getHosts().size()>0) {
 				int size = hostGroupCache.getHosts().size();
 				for (int i = 0; i < size && selectWorker == null; i++) {
+					String host = hostGroupCache.selectHost();
+					if (host == null) {
+						break;
+					}
 					for (MasterWorkerHolder worker : context.getWorkers().values()) {
 						try {
 							if (worker!=null && worker.getHeart()!=null && worker.getHeart().host.equals(host)) {

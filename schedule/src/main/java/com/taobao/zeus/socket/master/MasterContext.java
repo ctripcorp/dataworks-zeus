@@ -22,7 +22,6 @@ import org.springframework.context.ApplicationContext;
 import com.taobao.zeus.model.HostGroupCache;
 import com.taobao.zeus.mvc.Dispatcher;
 import com.taobao.zeus.schedule.mvc.ScheduleInfoLog;
-import com.taobao.zeus.socket.master.MasterWorkerHolder.HeartBeatInfo;
 import com.taobao.zeus.store.DebugHistoryManager;
 import com.taobao.zeus.store.FileManager;
 import com.taobao.zeus.store.GroupManager;
@@ -30,7 +29,6 @@ import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.ProfileManager;
 import com.taobao.zeus.store.HostGroupManager;
-import com.taobao.zeus.util.Environment;
 public class MasterContext {
 
 	private static Logger log = LoggerFactory.getLogger(MasterContext.class);
@@ -39,7 +37,7 @@ public class MasterContext {
 	private Master master;
 	private Scheduler scheduler;
 	private Dispatcher dispatcher;
-	private volatile Map<String,HostGroupCache> hostGroupCache;
+	private Map<String,HostGroupCache> hostGroupCache;
 	//调度任务 jobId
 //	private Queue<JobElement> queue=new ArrayBlockingQueue<JobElement>(10000);
 	private Queue<JobElement> queue=new PriorityBlockingQueue<JobElement>(10000, new Comparator<JobElement>() {
@@ -207,7 +205,7 @@ public class MasterContext {
 		}
 		
 	}
-	public Map<String,HostGroupCache> getHostGroupCache() {
+	public synchronized Map<String,HostGroupCache> getHostGroupCache() {
 		return hostGroupCache;
 	}
 	public Queue<JobElement> getExceptionQueue() {

@@ -144,7 +144,7 @@ public class ScheduleDump extends HttpServlet {
 							builder.append("scheduled below Mem use Rate:"+ Environment.getMaxMemRate());
 							builder.append("<br>" + "scheduled below Cpu Load Per Core:"+ Environment.getMaxCpuLoadPerCore());
 							builder.append("<br>" + "scan rate:" + Environment.getScanRate());
-							builder.append("<br>" + "Number of hosts:"+ workers.size());
+							builder.append("<br>" + "number of hosts:"+ workers.size());
 							builder.append("</td>");
 							builder.append("</tr>");
 							builder.append("</table>");

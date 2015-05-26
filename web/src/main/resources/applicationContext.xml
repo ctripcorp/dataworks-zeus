@@ -80,6 +80,9 @@
 		<constructor-arg index="19">
 			<value>${zeus.scanRate}</value>
 		</constructor-arg>
+		<constructor-arg index="20">
+			<value>${zeus.scanExceptionRate}</value>
+		</constructor-arg>
 	</bean>
 	
 	<bean id="clientWorker" class="com.taobao.zeus.socket.worker.ClientWorker" >

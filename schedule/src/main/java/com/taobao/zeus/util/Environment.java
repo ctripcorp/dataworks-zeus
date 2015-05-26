@@ -35,14 +35,18 @@ public class Environment {
 	private static String notifyUrl;
 	private static String accessToken;
 	private static String excludeFile;
+	
 	private static String defaultWorkerGroupId;
 	private static String defaultMasterGroupId;
-    private static Float maxMemRate = Float.valueOf(0.8F);
+    
+	private static Float maxMemRate = Float.valueOf(0.8F);
     private static Float maxCpuLoadPerCore = Float.valueOf(3F);
     private static Integer scanRate = Integer.valueOf(3000);
-	public Environment(String env,String scheduleGroup,String downloadPath,String hadoopHome,String hadoopConfDir,String hiveHome,String hiveConfDir,
+    private static Integer scanExceptionRate = Integer.valueOf(3000);
+	
+    public Environment(String env,String scheduleGroup,String downloadPath,String hadoopHome,String hadoopConfDir,String hiveHome,String hiveConfDir,
 			String host,String port,String username,String password,String sendFrom,String notifyUrl,String accessToken,String excludeFile, String defaultWorkerGroupId, String defaultMasterGroupId
-			,String maxMemRate, String maxCpuLoadPerCore, String scanRate){
+			,String maxMemRate, String maxCpuLoadPerCore, String scanRate,String scanExceptionRate){
 		Environment.env=env.trim();
 		Environment.scheduleGroup=scheduleGroup.trim();
 		Environment.downloadPath=downloadPath.trim();
@@ -82,6 +86,12 @@ public class Environment {
 			Environment.scanRate = 3000;//默认值
 			log.error("scanRate initialize error, using default value", e);
 		}
+		try {
+			Environment.scanExceptionRate = Integer.valueOf(scanExceptionRate.trim());
+		} catch (Exception e) {
+			Environment.scanExceptionRate = 3000;//默认值
+			log.error("scanExceptionRate initialize error, using default value", e);
+		}
 		log.info("the env is " + env.trim());
 		log.info("the downloadPath is " + downloadPath.trim());
 		log.info("the hadoopHome is " + hadoopHome.trim());
@@ -96,6 +106,7 @@ public class Environment {
 		log.info("the maxMemRate is " + maxMemRate.trim().toString());
 		log.info("the maxCpuLoadPerCore is " + maxCpuLoadPerCore.trim().toString());
 		log.info("the scanRate is " + scanRate.trim().toString());
+		log.info("the scanExceptionRate is " + scanExceptionRate.trim().toString());
 	}
 	
 	public static String getNotifyUrl() {
@@ -194,5 +205,13 @@ public class Environment {
 
 	public static void setScanRate(Integer scanRate) {
 		Environment.scanRate = scanRate;
+	}
+
+	public static Integer getScanExceptionRate() {
+		return scanExceptionRate;
+	}
+
+	public static void setScanExceptionRate(Integer scanExceptionRate) {
+		Environment.scanExceptionRate = scanExceptionRate;
 	}
 }

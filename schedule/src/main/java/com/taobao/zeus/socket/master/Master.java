@@ -197,27 +197,24 @@ public class Master {
 			@Override
 			public void run() {
 				try {
-//					log.info("start scan");
 					scan();
-//					log.info("end scan");
 				} catch (Exception e) {
 					log.error("get job from queue failed!", e);
 				}
 			}
 		}, 0, Environment.getScanRate(), TimeUnit.MILLISECONDS);
-		
+	
+		log.info("The scan exception rate is " + Environment.getScanExceptionRate());
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					//log.info("start scan exceptionqueue");
 					scanExceptionQueue();
-					//log.info("end scan exceptionqueue");
 				} catch (Exception e) {
-					log.error("get job from queue failed!", e);
+					log.error("get job from exception queue failed!", e);
 				}
 			}
-		}, 0, 3, TimeUnit.SECONDS);
+		}, 0, Environment.getScanExceptionRate(), TimeUnit.MILLISECONDS);
 		
 		// 定时扫描worker channel，心跳超过1分钟没有连接就主动断掉
 		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
@@ -246,9 +243,12 @@ public class Master {
 			
 			@Override
 			public void run() {
-				// 检测任务超时
-				checkTimeOver();
-				
+				try {
+					// 检测任务超时
+					checkTimeOver();
+				} catch (Exception e) {
+					log.error("error occurs in checkTimeOver",e);
+				}
 			}
 		}, 0, 3, TimeUnit.SECONDS);
 	}

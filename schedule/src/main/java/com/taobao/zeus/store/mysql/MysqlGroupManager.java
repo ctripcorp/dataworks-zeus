@@ -570,9 +570,11 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 						actionPer = action;
 					}
 			}else{
-				SimpleDateFormat df=new SimpleDateFormat("yyyyMMddHHmmss");
+				SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+				SimpleDateFormat df2 = new SimpleDateFormat("HH");
 				String currentDateStr = df.format(new Date())+"0000";
-				if (actionPer.getId() < Long.parseLong(currentDateStr)) {
+				String currentHourStr = df2.format(new Date());
+				if (Integer.parseInt(currentHourStr) > 8 && actionPer.getId() < Long.parseLong(currentDateStr)) {
 					actionPer.setStatus("failed");
 				}
 			}

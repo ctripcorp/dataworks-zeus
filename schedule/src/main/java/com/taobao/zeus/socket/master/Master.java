@@ -122,7 +122,7 @@ public class Master {
 					if((execHour == 0 && execMinute == 0) 
 							|| (execHour == 0 && execMinute == 35)
 							|| (execHour > 7 && execMinute == 21) 
-							|| (execHour > 7 && execHour < 10 && execMinute == 51)){
+							|| (execHour > 7 && execHour < 22 && execMinute == 51)){
 						System.out.println("生成Action，当前时间：" + currentDateStr);
 						log.info("start to action, current date：" + currentDateStr);
 						List<JobPersistenceOld> jobDetails = context.getGroupManagerOld().getAllJobs();

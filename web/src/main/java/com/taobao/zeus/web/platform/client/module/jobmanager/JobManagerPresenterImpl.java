@@ -40,6 +40,7 @@ public class JobManagerPresenterImpl implements JobManagerPresenter {
 				for(GroupJobTreeModel model:list){
 					if(model.isJob() && model.getId().equals(job.getId())){
 						model.setName(job.getName());
+						jobManagerView.getMyTreePanel().getTree().refresh(model);
 						break;
 					}
 				}
@@ -47,6 +48,7 @@ public class JobManagerPresenterImpl implements JobManagerPresenter {
 				for(GroupJobTreeModel model:list){
 					if(model.isJob() && model.getId().equals(job.getId())){
 						model.setName(job.getName());
+						jobManagerView.getAllTreePanel().getTree().refresh(model);
 						break;
 					}
 				}
@@ -56,6 +58,7 @@ public class JobManagerPresenterImpl implements JobManagerPresenter {
 				for(GroupJobTreeModel model:list){
 					if(model.isGroup() && model.getId().equals(group.getId())){
 						model.setName(group.getName());
+						jobManagerView.getMyTreePanel().getTree().refresh(model);
 						break;
 					}
 				}
@@ -63,6 +66,7 @@ public class JobManagerPresenterImpl implements JobManagerPresenter {
 				for(GroupJobTreeModel model:list){
 					if(model.isGroup() && model.getId().equals(group.getId())){
 						model.setName(group.getName());
+						jobManagerView.getAllTreePanel().getTree().refresh(model);
 						break;
 					}
 				}

@@ -323,24 +323,26 @@ public class JobController extends Controller {
 			JobDescriptor jd = cache.getJobDescriptor();
 			if(jd!=null && jd.getAuto()){
 				JobStatus jobStatus = groupManager.getJobStatus(jobId);
-				if(jobStatus.getStatus() == null || jobStatus.getStatus() == Status.WAIT){
-					Date now = new Date();
-					SimpleDateFormat df=new SimpleDateFormat("yyyyMMddHHmmss");
-					String currentDateStr = df.format(now)+"0000";
-					if(Long.parseLong(jobId) < Long.parseLong(currentDateStr)){
-						JobHistory history = new JobHistory();
-						history.setIllustrate("漏跑任务,自动恢复执行");
-						history.setTriggerType(TriggerType.SCHEDULE);
-						history.setJobId(jobId);
-						history.setToJobId(jd.getToJobId());
-//						history.setExecuteHost(jd.getHost());
-						history.setHostGroupId(jd.getHostGroupId());
-						if(jd != null){
-							history.setOperator(jd.getOwner() == null ? null : jd.getOwner());
+				if(jobStatus != null){
+					if(jobStatus.getStatus() == null || jobStatus.getStatus() == Status.WAIT){
+						Date now = new Date();
+						SimpleDateFormat df=new SimpleDateFormat("yyyyMMddHHmmss");
+						String currentDateStr = df.format(now)+"0000";
+						if(Long.parseLong(jobId) < Long.parseLong(currentDateStr)){
+							JobHistory history = new JobHistory();
+							history.setIllustrate("漏跑任务,自动恢复执行");
+							history.setTriggerType(TriggerType.SCHEDULE);
+							history.setJobId(jobId);
+							history.setToJobId(jd.getToJobId());
+	//						history.setExecuteHost(jd.getHost());
+							history.setHostGroupId(jd.getHostGroupId());
+							if(jd != null){
+								history.setOperator(jd.getOwner() == null ? null : jd.getOwner());
+							}
+							context.getJobHistoryManager().addJobHistory(history);
+							master.run(history);
+							ScheduleInfoLog.info("JobId:" + jobId + " roll lost back lost ");
 						}
-						context.getJobHistoryManager().addJobHistory(history);
-						master.run(history);
-						ScheduleInfoLog.info("JobId:" + jobId + " roll lost back lost ");
 					}
 				}
 			}

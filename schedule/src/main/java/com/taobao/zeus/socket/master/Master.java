@@ -122,7 +122,7 @@ public class Master {
 					if((execHour == 0 && execMinute == 0) 
 							|| (execHour == 0 && execMinute == 35)
 							|| (execHour > 7 && execMinute == 21) 
-							|| (execHour > 7 && execMinute == 51)){
+							|| (execHour > 7 && execHour < 10 && execMinute == 51)){
 						System.out.println("生成Action，当前时间：" + currentDateStr);
 						log.info("start to action, current date：" + currentDateStr);
 						List<JobPersistenceOld> jobDetails = context.getGroupManagerOld().getAllJobs();
@@ -146,8 +146,8 @@ public class Master {
 										context.getDispatcher().forwardEvent(
 												new JobMaintenanceEvent(Events.UpdateJob,
 														id.toString()));
-									}else if(id < (Long.parseLong(currentDateStr)-15000000)){
-										//当前时间15分钟之前JOB的才检测漏跑
+									}else if(id < (Long.parseLong(currentDateStr)-10000000)){
+										//当前时间10分钟之前JOB的才检测漏跑
 										int loopCount = 0;
 										rollBackLostJob(id, actionDetails, loopCount, rollBackActionId);
 									}
@@ -161,7 +161,7 @@ public class Master {
 								while(itController.hasNext()){
 									JobController jobc = (JobController)itController.next();
 									String jobId = jobc.getJobId();
-									if(Long.parseLong(jobId) < (Long.parseLong(currentDateStr)-15000000)){
+									if(Long.parseLong(jobId) < (Long.parseLong(currentDateStr)-10000000)){
 										try {
 											context.getScheduler().deleteJob(jobId, "zeus");
 										} catch (SchedulerException e) {
@@ -252,16 +252,20 @@ public class Master {
 				if (jobDependStr != null && jobDependStr.trim().length() > 0) {
 					String[] jobDependencies = jobDependStr.split(",");
 					boolean isAllComplete = true;
-					for (String jobDepend : jobDependencies) {
-						if (actionDetails.get(Long.parseLong(jobDepend)).getStatus() == null
-								|| actionDetails.get(Long.parseLong(jobDepend)).getStatus().equals("wait")) {
-							isAllComplete = false;
-							// 递归查询
-							if (loopCount < 100 && rollBackActionId.contains(Long.parseLong(jobDepend))) {
-								rollBackLostJob(Long.parseLong(jobDepend), actionDetails, loopCount, rollBackActionId);
+					if(jobDependencies != null && jobDependencies.length > 0){
+						for (String jobDepend : jobDependencies) {
+							if(actionDetails.get(Long.parseLong(jobDepend)) != null){
+								if (actionDetails.get(Long.parseLong(jobDepend)).getStatus() == null
+										|| actionDetails.get(Long.parseLong(jobDepend)).getStatus().equals("wait")) {
+									isAllComplete = false;
+									// 递归查询
+									if (loopCount < 30 && rollBackActionId.contains(Long.parseLong(jobDepend))) {
+										rollBackLostJob(Long.parseLong(jobDepend), actionDetails, loopCount, rollBackActionId);
+									}
+								} else if (actionDetails.get(Long.parseLong(jobDepend)).getStatus().equals("failed")) {
+									isAllComplete = false;
+								}
 							}
-						} else if (actionDetails.get(Long.parseLong(jobDepend)).getStatus().equals("failed")) {
-							isAllComplete = false;
 						}
 					}
 					if(isAllComplete){
@@ -1331,7 +1335,7 @@ public class Master {
 								}
 							}
 							dependActionList.put(deps, dependActions);
-							if(loopCount > 40){
+							if(loopCount > 20){
 								if(!jobDetail.getConfigs().contains("sameday")){
 									if(dependActionList.get(deps).size()==0){
 										List<JobPersistence> lastJobActions = context.getGroupManager().getLastJobAction(deps);
@@ -1445,7 +1449,7 @@ public class Master {
 			}
 		}
 
-		if(noCompleteCount > 0 && loopCount < 60){
+		if(noCompleteCount > 0 && loopCount < 40){
 			runDependencesJobToAction(jobDetails, actionDetails, currentDateStr, loopCount);
 		}
 	}

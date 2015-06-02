@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.gson.Gson;
-import com.taobao.zeus.model.LogDescriptor;
 import com.taobao.zeus.store.UserManager;
 import com.taobao.zeus.store.mysql.MysqlLogManager;
 import com.taobao.zeus.store.mysql.persistence.ZeusUser;
@@ -39,7 +38,7 @@ public class SMSAlarm extends AbstractZeusAlarm{
 			throws Exception {
 		String srcId = "BI-Zeus调度系统";
 		String devId = InetAddress.getLocalHost().getHostName();
-		String itemId = title;
+		String itemId = "宙斯报警";
 		String level = "high";
 		String message = title;
 		List<ZeusUser> userList = userManager.findListByUidByOrder(uids);

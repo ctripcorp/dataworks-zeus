@@ -213,7 +213,7 @@ public class ScheduleDump extends HttpServlet {
 							Dispatcher dispatcher = context.getDispatcher();
 							if (dispatcher != null) {
 								// 增加controller，并修改event
-								if (actionDetails.size() > 0) {
+								if (actionDetails != null && actionDetails.size() > 0) {
 									List<Long> rollBackActionId = new ArrayList<Long>();
 									for (Long id : actionDetails.keySet()) {
 										dispatcher
@@ -238,44 +238,50 @@ public class ScheduleDump extends HttpServlet {
 
 										}
 									}
-								}
 
-								// 清理schedule
-								List<Controller> controllers = dispatcher
-										.getControllers();
-								if (controllers != null
-										&& controllers.size() > 0) {
-									Iterator<Controller> itController = controllers
-											.iterator();
-									while (itController.hasNext()) {
-										JobController jobc = (JobController) itController
-												.next();
-										String jobId = jobc.getJobId();
-										if (Long.parseLong(jobId) < (Long
-												.parseLong(currentDateStr) - 15000000)) {
-											try {
-												context.getScheduler()
-														.deleteJob(jobId,
-																"zeus");
-											} catch (SchedulerException e) {
-												e.printStackTrace();
-											}
-										} else if (Long.parseLong(jobId) >= Long
-												.parseLong(currentDateStr)) {
-											try {
-												if (!actionDetails
-														.containsKey(Long
-																.valueOf(jobId))) {
+									//取当前日期的后一天. 
+									Calendar cal = Calendar.getInstance();
+									cal.add(Calendar.DAY_OF_MONTH, +1);  
+									SimpleDateFormat dfNextDate=new SimpleDateFormat("yyyyMMdd0000000000");
+									String nextDateStr = dfNextDate.format(cal.getTime());
+									
+									// 清理schedule
+									List<Controller> controllers = dispatcher
+											.getControllers();
+									if (controllers != null
+											&& controllers.size() > 0) {
+										Iterator<Controller> itController = controllers
+												.iterator();
+										while (itController.hasNext()) {
+											JobController jobc = (JobController) itController
+													.next();
+											String jobId = jobc.getJobId();
+											if (Long.parseLong(jobId) < (Long
+													.parseLong(currentDateStr) - 15000000)) {
+												try {
 													context.getScheduler()
 															.deleteJob(jobId,
 																	"zeus");
-													context.getGroupManager()
-															.removeJob(
-																	Long.valueOf(jobId));
-													itController.remove();
+												} catch (SchedulerException e) {
+													e.printStackTrace();
 												}
-											} catch (Exception e) {
-												e.printStackTrace();
+											} else if (Long.parseLong(jobId) >= Long
+													.parseLong(currentDateStr) && Long.parseLong(jobId) < Long.parseLong(nextDateStr)) {
+												try {
+													if (!actionDetails
+															.containsKey(Long
+																	.valueOf(jobId))) {
+														context.getScheduler()
+																.deleteJob(jobId,
+																		"zeus");
+														context.getGroupManager()
+																.removeJob(
+																		Long.valueOf(jobId));
+														itController.remove();
+													}
+												} catch (Exception e) {
+													e.printStackTrace();
+												}
 											}
 										}
 									}

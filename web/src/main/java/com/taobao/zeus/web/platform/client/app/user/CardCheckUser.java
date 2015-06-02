@@ -16,15 +16,20 @@ import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadConfigBean;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
+import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
+import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.CenterTemplate;
 import com.taobao.zeus.web.platform.client.util.RPCS;
@@ -150,16 +155,36 @@ public class CardCheckUser extends CenterTemplate implements Refreshable<ZUser> 
 			public void onSelect(SelectEvent event) {
 				List<ZUser> zulst = grid.getSelectionModel().getSelectedItems();
 				if (zulst != null && zulst.size()>0) {
-					List<String> uids = new ArrayList<String>();
+					final List<String> uids = new ArrayList<String>();
 					for(ZUser zu : zulst){
 						uids.add(zu.getUid());
 					}
-					RPCS.getUserService().delete(uids, new AbstractAsyncCallback<Void>() {
-						@Override
-						public void onSuccess(Void result) {
-							load();
+					ConfirmMessageBox box = new ConfirmMessageBox(
+							"删除", "你确认删除选中记录?");
+					box.addHideHandler(new HideHandler() {
+						public void onHide(HideEvent event) {
+							Dialog btn = (Dialog) event.getSource();
+							if (btn.getHideButton().getText()
+									.equalsIgnoreCase("yes")) {
+								grid.mask("操作中，请稍后...");
+								RPCS.getUserService().delete(uids, new AbstractAsyncCallback<Void>() {
+									@Override
+									public void onSuccess(Void result) {
+										load();
+										grid.unmask();
+										Info.display("删除", "操作成功");
+									}
+									@Override
+									public void onFailure(Throwable caught) {
+										super.onFailure(caught);
+										load();
+										grid.unmask();
+									}
+								});
+							}
 						}
 					});
+					box.show();
 				}else {
 					AlertMessageBox alert=new AlertMessageBox("警告", "请选中至少一条记录");
 					alert.show();
@@ -174,16 +199,37 @@ public class CardCheckUser extends CenterTemplate implements Refreshable<ZUser> 
 			public void onSelect(SelectEvent event) {
 				List<ZUser> zulst = grid.getSelectionModel().getSelectedItems();
 				if (zulst != null && zulst.size()>0) {
-					List<String> uids = new ArrayList<String>();
+					final List<String> uids = new ArrayList<String>();
 					for(ZUser zu : zulst){
 						uids.add(zu.getUid());
 					}
-					RPCS.getUserService().checkpass(uids, new AbstractAsyncCallback<Void>() {
-						@Override
-						public void onSuccess(Void result) {
-							load();
+					ConfirmMessageBox box = new ConfirmMessageBox(
+							"审核", "确定选中的记录通过了审核?");
+					box.addHideHandler(new HideHandler() {
+						public void onHide(HideEvent event) {
+							Dialog btn = (Dialog) event.getSource();
+							if (btn.getHideButton().getText()
+									.equalsIgnoreCase("yes")) {
+								grid.mask("操作中，请稍后...");
+								RPCS.getUserService().checkpass(uids, new AbstractAsyncCallback<Void>() {
+									@Override
+									public void onSuccess(Void result) {
+										load();
+										grid.unmask();
+										Info.display("审核通过", "操作成功");
+									}
+									@Override
+									public void onFailure(Throwable caught) {
+										super.onFailure(caught);
+										load();
+										grid.unmask();
+									}
+								});
+							}
 						}
 					});
+					box.show();
+					
 				}else {
 					AlertMessageBox alert=new AlertMessageBox("警告", "请选中至少一条记录");
 					alert.show();
@@ -197,16 +243,37 @@ public class CardCheckUser extends CenterTemplate implements Refreshable<ZUser> 
 			public void onSelect(SelectEvent event) {
 				List<ZUser> zulst = grid.getSelectionModel().getSelectedItems();
 				if (zulst != null && zulst.size()>0) {
-					List<String> uids = new ArrayList<String>();
+					final List<String> uids = new ArrayList<String>();
 					for(ZUser zu : zulst){
 						uids.add(zu.getUid());
 					}
-					RPCS.getUserService().checknotpass(uids, new AbstractAsyncCallback<Void>() {
-						@Override
-						public void onSuccess(Void result) {
-							load();
+					ConfirmMessageBox box = new ConfirmMessageBox(
+							"审核", "确定选中的记录拒绝审核?");
+					box.addHideHandler(new HideHandler() {
+						public void onHide(HideEvent event) {
+							Dialog btn = (Dialog) event.getSource();
+							if (btn.getHideButton().getText()
+									.equalsIgnoreCase("yes")) {
+								grid.mask("操作中，请稍后...");
+								RPCS.getUserService().checknotpass(uids, new AbstractAsyncCallback<Void>() {
+									@Override
+									public void onSuccess(Void result) {
+										load();
+										grid.unmask();
+										Info.display("审核拒绝", "操作成功");
+									}
+									@Override
+									public void onFailure(Throwable caught) {
+										super.onFailure(caught);
+										load();
+										grid.unmask();
+									}
+								});
+							}
 						}
 					});
+					box.show();
+					
 				}else {
 					AlertMessageBox alert=new AlertMessageBox("警告", "请选中至少一条记录");
 					alert.show();

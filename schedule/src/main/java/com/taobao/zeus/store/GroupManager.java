@@ -191,4 +191,6 @@ public interface GroupManager {
 	 */
 	void removeJob(Long actionId) throws ZeusException;
 	
+	boolean IsExistedBelowRootGroup(String GroupName);
+	
 }

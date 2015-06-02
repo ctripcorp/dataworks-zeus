@@ -89,7 +89,9 @@
 	</bean>
 
 	<!-- gwt bean -->
-	<bean id="user.rpc" class="com.taobao.zeus.web.platform.server.rpc.UserServiceImpl" />
+	<bean id="user.rpc" class="com.taobao.zeus.web.platform.server.rpc.UserServiceImpl" >
+		<property name="groupManager" ref="groupManager" />
+	</bean>
 	<bean id="tree.rpc" class="com.taobao.zeus.web.platform.server.rpc.TreeServiceImpl" />
 	<bean id="group.rpc" class="com.taobao.zeus.web.platform.server.rpc.GroupServiceImpl" />
 	<bean id="job.rpc" class="com.taobao.zeus.web.platform.server.rpc.FilterJobServiceImpl">

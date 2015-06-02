@@ -380,4 +380,8 @@ public class PermissionGroupManager implements GroupManager{
 		groupManager.removeJob(actionId);
 		
 	}
+	@Override
+	public boolean IsExistedBelowRootGroup(String GroupName) {
+		return groupManager.IsExistedBelowRootGroup(GroupName);
+	}
 }

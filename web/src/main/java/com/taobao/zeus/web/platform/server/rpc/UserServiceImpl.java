@@ -2,6 +2,7 @@ package com.taobao.zeus.web.platform.server.rpc;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,6 @@ import com.taobao.zeus.web.platform.shared.rpc.UserService;
 
 public class UserServiceImpl extends RemoteServiceServlet implements
 		UserService {
-	
 	private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	@Autowired
@@ -49,6 +49,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 
 	private ZUser transform(ZeusUser u) {
 		ZUser zu = new ZUser();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		zu.setName(u.getName());
 		zu.setUid(u.getUid());
 		zu.setIsEffective(transformIsEffective(u.getIsEffective()));
@@ -56,6 +57,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 		zu.setDescription(u.getDescription());
 		zu.setEmail(u.getEmail());
 		zu.setPhone(u.getPhone());
+		zu.setGmtModified(df.format(u.getGmtModified()));
 		// zu.setSuper(Super.getSupers().contains(u.getUid()));
 		return zu;
 	}
@@ -241,8 +243,8 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 		if (ZeusUser.ADMIN.getUid().equals(user.getUid())) {
 			int start = config.getOffset();
 			int limit = config.getLimit();
-			String field = "uid";
-			String order = "asc";
+			String field = "gmtModified";
+			String order = "desc";
 			List<ZeusUser> list = null;
 			if (filter != null && filter.trim().length() > 0) {
 				list = userManager.findListByFilter(filter, field, order);

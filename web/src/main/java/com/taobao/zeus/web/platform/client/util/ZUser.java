@@ -1,6 +1,7 @@
 package com.taobao.zeus.web.platform.client.util;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class ZUser implements Serializable{
 
@@ -13,6 +14,7 @@ public class ZUser implements Serializable{
 	private String userType;
 	private String isEffective;
 	private String description;
+	private String gmtModified;
 	
 	private boolean Super=false;
 	public boolean isSuper() {
@@ -62,5 +64,11 @@ public class ZUser implements Serializable{
 	}
 	public void setIsEffective(String isEffective) {
 		this.isEffective = isEffective;
+	}
+	public String getGmtModified() {
+		return gmtModified;
+	}
+	public void setGmtModified(String gmtModified) {
+		this.gmtModified = gmtModified;
 	}
 }

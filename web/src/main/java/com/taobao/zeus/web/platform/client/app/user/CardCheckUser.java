@@ -101,8 +101,10 @@ public class CardCheckUser extends CenterTemplate implements Refreshable<ZUser> 
 				}
 			}
 		});
+		ColumnConfig<ZUser, String> gmtModified = new ColumnConfig<ZUser, String>(
+				prop.gmtModified(), 30, "更新日期");
 		ColumnModel cm = new ColumnModel(Arrays.asList(isEffective, userType,
-				uid, name, email, phone, description));
+				uid, name, email, phone, description, gmtModified));
 		RpcProxy<PagingLoadConfig, PagingLoadResult<ZUser>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<ZUser>>() {
 
 			@Override

@@ -123,7 +123,6 @@ public class Master {
 						Map<Long, JobPersistence> actionDetailsNew = new HashMap<Long, JobPersistence>();
 						actionDetailsNew = actionDetails;
 						if(actionDetailsNew != null && actionDetailsNew.size() > 0){
-							log.info("action count:"+actionDetailsNew.size());
 							//增加controller，并修改event
 							List<Long> rollBackActionId = new ArrayList<Long>();
 							for (Long id : actionDetailsNew.keySet()) {
@@ -134,6 +133,7 @@ public class Master {
 								}
 							}
 							log.info("roll back lost job ok");
+							log.info("roll back action count:"+actionDetailsNew.size());
 							
 							//清理schedule
 							List<Controller> controllers = dispatcher.getControllers();
@@ -211,7 +211,7 @@ public class Master {
 							actionDetails = actionDetailsNew;
 						}
 						log.info("run job to action ok");
-						log.info("action count:"+actionDetailsNew.size());
+						log.info("job to action count:"+actionDetailsNew.size());
 						Dispatcher dispatcher=context.getDispatcher();  
 						if(dispatcher != null){
 							//增加controller，并修改event
@@ -639,7 +639,9 @@ public class Master {
 					jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
 					JobFailedEvent jfe = new JobFailedEvent(history.getJobId(),
 							history.getTriggerType(), history, jobException);
-					context.getDispatcher().forwardEvent(jfe);
+					if(!history.getIllustrate().contains("手动取消该任务")){
+						context.getDispatcher().forwardEvent(jfe);
+					}
 				} else {
 					// 运行成功，发出成功消息
 					ScheduleInfoLog.info("manual jobId::" + history.getJobId()
@@ -772,10 +774,11 @@ public class Master {
 			JobFailedEvent jfe = new JobFailedEvent(jobID, type, jobHistory, jobException);
 			jfe.setRollBackTime(rollBackTimes);
 			jfe.setRunCount(runCount);
-			if(jobHistory.getLog().getContent().contains("开始执行取消任务命令")){
+			if(jobHistory.getIllustrate().contains("手动取消该任务")){
 				isCancelJob = true;
+			}else{
+				context.getDispatcher().forwardEvent(jfe);
 			}
-			context.getDispatcher().forwardEvent(jfe);
 		} else {
 			// 运行成功，发出成功消息
 			ScheduleInfoLog.info("JobId:" + jobID

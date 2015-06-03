@@ -111,6 +111,17 @@ public class JobFailListener extends DispatcherListener{
 							if(event.getHistory()!=null){
 								sb.append("失败原因:<br/>"+jobHistoryManager.findJobHistory(event.getHistory().getId()).getLog().getContent().replaceAll("\\n", "<br/>"));
 								String msg= "Zeus报警 JobId:"+jobId+" ("+jobDescriptor.getName()+") 任务运行失败";
+								int runCount = event.getRunCount();
+							    int rollBackTime = event.getRollBackTime();
+							    if (runCount > rollBackTime) {
+							    	if(event.getTriggerType()==TriggerType.SCHEDULE){
+							    		msg = "<font style=\"color:red\">【严重】</font>" + msg;
+							    	}else{
+							    		msg = "【警告】" + msg;
+							    	}
+							    }else{
+							    	msg = "【提醒】" + msg;
+							    }
 //								if(!causeJobId.equalsIgnoreCase(event.getJobId())){
 //									msg+="(根本原因:job "+causeJobId+"运行失败)";
 //								}

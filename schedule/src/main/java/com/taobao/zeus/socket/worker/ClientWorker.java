@@ -248,6 +248,12 @@ public class ClientWorker {
 
 		JobHistory his = job.getJobContext().getJobHistory();
 		his.setEndTime(new Date());
+		String illustrate = his.getIllustrate();
+		if(illustrate!=null && illustrate.trim().length()>0){
+			his.setIllustrate(illustrate+",手动取消该任务");
+		}else{
+			his.setIllustrate("手动取消该任务");
+		}
 		his.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
 		context.getJobHistoryManager().updateJobHistory(his);
 		his.getLog().appendZeus("任务被取消");
@@ -262,6 +268,12 @@ public class ClientWorker {
 
 		JobHistory his = job.getJobContext().getJobHistory();
 		his.setEndTime(new Date());
+		String illustrate = his.getIllustrate();
+		if(illustrate!=null && illustrate.trim().length()>0){
+			his.setIllustrate(illustrate+",手动取消该任务");
+		}else{
+			his.setIllustrate("手动取消该任务");
+		}
 		his.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
 		context.getJobHistoryManager().updateJobHistory(his);
 		his.getLog().appendZeus("任务被取消");

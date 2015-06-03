@@ -250,7 +250,7 @@ public class ClientWorker {
 		his.setEndTime(new Date());
 		String illustrate = his.getIllustrate();
 		if(illustrate!=null && illustrate.trim().length()>0){
-			his.setIllustrate(illustrate+",手动取消该任务");
+			his.setIllustrate(illustrate+"；手动取消该任务");
 		}else{
 			his.setIllustrate("手动取消该任务");
 		}
@@ -270,7 +270,7 @@ public class ClientWorker {
 		his.setEndTime(new Date());
 		String illustrate = his.getIllustrate();
 		if(illustrate!=null && illustrate.trim().length()>0){
-			his.setIllustrate(illustrate+",手动取消该任务");
+			his.setIllustrate(illustrate+"；手动取消该任务");
 		}else{
 			his.setIllustrate("手动取消该任务");
 		}

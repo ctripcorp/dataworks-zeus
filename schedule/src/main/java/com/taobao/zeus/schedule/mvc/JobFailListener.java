@@ -115,7 +115,7 @@ public class JobFailListener extends DispatcherListener{
 							    int rollBackTime = event.getRollBackTime();
 							    if (runCount > rollBackTime) {
 							    	if(event.getTriggerType()==TriggerType.SCHEDULE){
-							    		msg = "<font style=\"color:red\">【严重】</font>" + msg;
+							    		msg = "【严重】" + msg;
 							    	}else{
 							    		msg = "【警告】" + msg;
 							    	}

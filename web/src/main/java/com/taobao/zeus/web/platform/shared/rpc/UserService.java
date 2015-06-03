@@ -18,7 +18,8 @@ public interface UserService extends RemoteService {
 	
 	List<ZUser> getAllGroupUsers();
 	
-	PagingLoadResult<ZUser> getUsersPaging(PagingLoadConfig config);
+	PagingLoadResult<ZUser> getUsersPaging(PagingLoadConfig config,
+			String filter);
 	
 	ZUser updateUser(ZUser zu) throws GwtException;
 	

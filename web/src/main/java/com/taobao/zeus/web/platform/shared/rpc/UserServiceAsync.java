@@ -19,7 +19,7 @@ public interface UserServiceAsync {
 
 	void updateUser(ZUser zu, AsyncCallback<ZUser> callback);
 
-	void getUsersPaging(PagingLoadConfig config,
+	void getUsersPaging(PagingLoadConfig config, String filter,
 			AsyncCallback<PagingLoadResult<ZUser>> callback);
 
 	void getAllGroupUsers(AsyncCallback<List<ZUser>> callback);

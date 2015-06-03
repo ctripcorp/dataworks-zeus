@@ -1,6 +1,5 @@
 package com.taobao.zeus.web.platform.server.rpc;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -237,14 +236,19 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public PagingLoadResult<ZUser> getUsersPaging(PagingLoadConfig config) {
+	public PagingLoadResult<ZUser> getUsersPaging(PagingLoadConfig config, String filter) {
 		ZeusUser user = LoginUser.getUser();
 		if (ZeusUser.ADMIN.getUid().equals(user.getUid())) {
 			int start = config.getOffset();
 			int limit = config.getLimit();
 			String field = "uid";
 			String order = "asc";
-			List<ZeusUser> list = userManager.findAllUsers(field, order);
+			List<ZeusUser> list = null;
+			if (filter != null && filter.trim().length() > 0) {
+				list = userManager.findListByFilter(filter, field, order);
+			}else{
+				list = userManager.findAllUsers(field, order);
+			}
 			int total = list.size();
 			if (start >= total) {
 				start = 0;

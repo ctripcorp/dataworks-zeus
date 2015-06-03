@@ -2,7 +2,6 @@ package com.taobao.zeus.web.platform.client.app.user;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
-import com.taobao.zeus.store.mysql.persistence.ZeusUser;
 
 public class UserView extends CardLayoutContainer{
 	private UserPresenter presenter;
@@ -15,7 +14,7 @@ public class UserView extends CardLayoutContainer{
 		add(info);
 		if (presenter.getZuser().getUid().equals(UserUtil.admin)) {
 			check = new CardCheckUser(presenter);
-			add(check);
+		//	add(check);
 		}
 	}
 	

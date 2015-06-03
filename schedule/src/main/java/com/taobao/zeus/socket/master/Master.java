@@ -639,7 +639,8 @@ public class Master {
 					jobstatus.setStatus(com.taobao.zeus.model.JobStatus.Status.FAILED);
 					JobFailedEvent jfe = new JobFailedEvent(history.getJobId(),
 							history.getTriggerType(), history, jobException);
-					if(!history.getIllustrate().contains("手动取消该任务")){
+					if (history.getIllustrate() == null
+							|| !history.getIllustrate().contains("手动取消该任务")) {
 						context.getDispatcher().forwardEvent(jfe);
 					}
 				} else {
@@ -774,9 +775,10 @@ public class Master {
 			JobFailedEvent jfe = new JobFailedEvent(jobID, type, jobHistory, jobException);
 			jfe.setRollBackTime(rollBackTimes);
 			jfe.setRunCount(runCount);
-			if(jobHistory.getIllustrate().contains("手动取消该任务")){
+			if (jobHistory != null && jobHistory.getIllustrate() != null
+					&& jobHistory.getIllustrate().contains("手动取消该任务")) {
 				isCancelJob = true;
-			}else{
+			} else {
 				context.getDispatcher().forwardEvent(jfe);
 			}
 		} else {

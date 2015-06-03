@@ -104,6 +104,69 @@ public class Master {
 				//刷新host分组
 				context.refreshHostGroupCache();
 				log.info("refresh HostGroup Cache");
+				
+				//开始漏跑检测、清理schedule
+				try{
+					//取当前日期
+					Date now = new Date();
+					SimpleDateFormat dfDateTime=new SimpleDateFormat("yyyyMMddHHmmss0000");
+					String currentDateStr = dfDateTime.format(now);
+					
+					//取当前日期的后一天. 
+					Calendar cal = Calendar.getInstance();
+					cal.add(Calendar.DAY_OF_MONTH, +1);  
+					SimpleDateFormat dfNextDate=new SimpleDateFormat("yyyyMMdd0000000000");
+					String nextDateStr = dfNextDate.format(cal.getTime());
+					
+					Dispatcher dispatcher=context.getDispatcher();  
+					if(dispatcher != null){
+						Map<Long, JobPersistence> actionDetailsNew = new HashMap<Long, JobPersistence>();
+						actionDetailsNew = actionDetails;
+						if(actionDetailsNew != null && actionDetailsNew.size() > 0){
+							log.info("action count:"+actionDetailsNew.size());
+							//增加controller，并修改event
+							List<Long> rollBackActionId = new ArrayList<Long>();
+							for (Long id : actionDetailsNew.keySet()) {
+								if(id < (Long.parseLong(currentDateStr)-15000000)){
+									//当前时间15分钟之前JOB的才检测漏跑
+									int loopCount = 0;
+									rollBackLostJob(id, actionDetailsNew, loopCount, rollBackActionId);
+								}
+							}
+							log.info("roll back lost job ok");
+							
+							//清理schedule
+							List<Controller> controllers = dispatcher.getControllers();
+							if(controllers!=null && controllers.size()>0){
+								Iterator<Controller> itController = controllers.iterator();
+								while(itController.hasNext()){
+									JobController jobc = (JobController)itController.next();
+									String jobId = jobc.getJobId();
+									if(Long.parseLong(jobId) < (Long.parseLong(currentDateStr)-15000000)){
+										try {
+											context.getScheduler().deleteJob(jobId, "zeus");
+										} catch (SchedulerException e) {
+											e.printStackTrace();
+										}
+									}else if(Long.parseLong(jobId) >= Long.parseLong(currentDateStr) && Long.parseLong(jobId) < Long.parseLong(nextDateStr)){
+										try {
+											if(!actionDetailsNew.containsKey(Long.valueOf(jobId))){
+												context.getScheduler().deleteJob(jobId, "zeus");
+												context.getGroupManager().removeJob(Long.valueOf(jobId));
+												itController.remove();
+											}
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
+									}
+								}
+							}
+							log.info("clear job scheduler ok");
+						}
+					}
+				}catch(Exception e){
+					log.error("roll back lost job failed or clear job schedule failed !", e);
+				}
 			}
 		}, 1, 1, TimeUnit.HOURS);
 		
@@ -169,76 +232,6 @@ public class Master {
 					}
 				}catch(Exception e){
 					log.error("job to action failed !", e);
-				}
-			}
-		}, 1, 1, TimeUnit.MINUTES);
-		
-		context.getSchedulePool().scheduleAtFixedRate(new Runnable() {
-			@Override
-			public void run() {
-				//开始漏跑检测、清理schedule
-				try{
-					//取当前日期
-					Date now = new Date();
-					SimpleDateFormat dfMinute=new SimpleDateFormat("mm");
-					int execMinute = Integer.parseInt(dfMinute.format(now));
-					if(execMinute == 40){
-						SimpleDateFormat dfDateTime=new SimpleDateFormat("yyyyMMddHHmmss0000");
-						String currentDateStr = dfDateTime.format(now);
-						
-						//取当前日期的后一天. 
-						Calendar cal = Calendar.getInstance();
-						cal.add(Calendar.DAY_OF_MONTH, +1);  
-						SimpleDateFormat dfNextDate=new SimpleDateFormat("yyyyMMdd0000000000");
-						String nextDateStr = dfNextDate.format(cal.getTime());
-						
-						Dispatcher dispatcher=context.getDispatcher();  
-						if(dispatcher != null){
-							if(actionDetails != null && actionDetails.size() > 0){
-								log.info("action count:"+actionDetails.size());
-								//增加controller，并修改event
-								List<Long> rollBackActionId = new ArrayList<Long>();
-								for (Long id : actionDetails.keySet()) {
-									if(id < (Long.parseLong(currentDateStr)-15000000)){
-										//当前时间15分钟之前JOB的才检测漏跑
-										int loopCount = 0;
-										rollBackLostJob(id, actionDetails, loopCount, rollBackActionId);
-									}
-								}
-								log.info("roll back lost job ok");
-								
-								//清理schedule
-								List<Controller> controllers = dispatcher.getControllers();
-								if(controllers!=null && controllers.size()>0){
-									Iterator<Controller> itController = controllers.iterator();
-									while(itController.hasNext()){
-										JobController jobc = (JobController)itController.next();
-										String jobId = jobc.getJobId();
-										if(Long.parseLong(jobId) < (Long.parseLong(currentDateStr)-15000000)){
-											try {
-												context.getScheduler().deleteJob(jobId, "zeus");
-											} catch (SchedulerException e) {
-												e.printStackTrace();
-											}
-										}else if(Long.parseLong(jobId) >= Long.parseLong(currentDateStr) && Long.parseLong(jobId) < Long.parseLong(nextDateStr)){
-											try {
-												if(!actionDetails.containsKey(Long.valueOf(jobId))){
-													context.getScheduler().deleteJob(jobId, "zeus");
-													context.getGroupManager().removeJob(Long.valueOf(jobId));
-													itController.remove();
-												}
-											} catch (Exception e) {
-												e.printStackTrace();
-											}
-										}
-									}
-								}
-								log.info("clear job scheduler ok");
-							}
-						}
-					}
-				}catch(Exception e){
-					log.error("roll back lost job failed or clear job schedule failed !", e);
 				}
 			}
 		}, 1, 1, TimeUnit.MINUTES);

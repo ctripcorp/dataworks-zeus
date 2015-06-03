@@ -109,7 +109,8 @@ public class CardCheckUser extends CenterTemplate implements Refreshable<ZUser> 
 			public void load(PagingLoadConfig loadConfig,
 					AsyncCallback<PagingLoadResult<ZUser>> callback) {
 				PagingLoadConfig config = (PagingLoadConfig) loadConfig;
-				RPCS.getUserService().getUsersPaging(config, query_text.getValue(), callback);
+				String filter = query_text.getValue();
+				RPCS.getUserService().getUsersPaging(config, filter, callback);
 			}
 
 		};
@@ -131,6 +132,15 @@ public class CardCheckUser extends CenterTemplate implements Refreshable<ZUser> 
 		query_text = new TextField();
 		query_text.setWidth(280);
 		query_text.setEmptyText("请输入用户账号、用户姓名或者用户邮箱");
+		query_text.addKeyDownHandler(new KeyDownHandler() {
+			public void onKeyDown(KeyDownEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					String filter = query_text.getText();
+					query_text.setValue(filter);
+					load();
+				}
+			}
+		});
 		
 		btn_return = new TextButton("返回", new SelectHandler() {
 			public void onSelect(SelectEvent event) {

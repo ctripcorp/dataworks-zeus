@@ -37,7 +37,7 @@ public class UserPresenter implements Presenter{
 	}
 	
 	public void displayCheckUser(){
-		view.displayCheckUser();
+		view.displayUserManager();
 	}
 
 }

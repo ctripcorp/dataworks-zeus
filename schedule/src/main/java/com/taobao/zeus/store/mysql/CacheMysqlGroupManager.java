@@ -308,5 +308,9 @@ public class CacheMysqlGroupManager extends HibernateDaoSupport implements Group
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public boolean IsExistedBelowRootGroup(String GroupName) {
+		throw new UnsupportedOperationException();
+	}
 
 }

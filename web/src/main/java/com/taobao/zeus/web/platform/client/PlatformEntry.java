@@ -108,7 +108,7 @@ public class PlatformEntry implements EntryPoint {
 			public void onSuccess(ZUser result) {
 				Platform s=new Platform(result);
 				final HomeApp home=new HomeApp(s.getPlatformContext());
-				final UserApp user=new UserApp(s.getPlatformContext());
+				final UserApp user=new UserApp(s.getPlatformContext(),result);
 				s.addApp(home);
 				s.addApp(new DocumentApp(s.getPlatformContext()));
 				s.addApp(new ScheduleApp(s.getPlatformContext()));

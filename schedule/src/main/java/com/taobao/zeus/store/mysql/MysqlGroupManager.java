@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.datanucleus.store.rdbms.query.SQLQuery;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -639,6 +640,18 @@ public class MysqlGroupManager extends HibernateDaoSupport implements
 		}catch(DataAccessException e){
 			throw new ZeusException(e);
 		}
+	}
+
+	@Override
+	public boolean IsExistedBelowRootGroup(String GroupName) {
+		String rootId = getRootGroupId();
+		List<GroupPersistence> tmps = getHibernateTemplate().find("from com.taobao.zeus.store.mysql.persistence.GroupPersistence where existed=1 and parent=" + rootId);
+		for (GroupPersistence tmp : tmps) {
+			if (tmp.getName().equals(GroupName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

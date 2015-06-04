@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -141,7 +143,8 @@ public class ScheduleDump extends HttpServlet {
 							builder.append("<td>");
 							builder.append("scheduled below Mem use Rate:"+ Environment.getMaxMemRate());
 							builder.append("<br>" + "scheduled below Cpu Load Per Core:"+ Environment.getMaxCpuLoadPerCore());
-							builder.append("<br>" + "Number of hosts:"+ workers.size());
+							builder.append("<br>" + "scan rate:" + Environment.getScanRate());
+							builder.append("<br>" + "number of hosts:"+ workers.size());
 							builder.append("</td>");
 							builder.append("</tr>");
 							builder.append("</table>");
@@ -289,8 +292,18 @@ public class ScheduleDump extends HttpServlet {
 							}
 							resp.getWriter().println("Action生成完毕！");
 						} else if ("hostgroup".equals(op)) {
-							List<HostGroupCache> allHostGroupInfomations = context
-									.getHostGroupCache();
+							Map<String,HostGroupCache> allHostGroupInfomations = context.getHostGroupCache();
+							List<HostGroupCache> infos = new ArrayList<HostGroupCache>();
+							for (HostGroupCache info : allHostGroupInfomations.values()) {
+								infos.add(info);
+							}
+							Collections.sort(infos, new Comparator<HostGroupCache>() {
+
+								@Override
+								public int compare(HostGroupCache o1, HostGroupCache o2) {
+									return Integer.parseInt(o1.getId())-Integer.parseInt(o2.getId());
+								}
+							});
 							StringBuilder builder = new StringBuilder();
 							builder.append("<h3>host组信息：</h3>");
 							builder.append("<table border=\"1\">");
@@ -299,8 +312,9 @@ public class ScheduleDump extends HttpServlet {
 							builder.append("<th>名称</th>");
 							builder.append("<th>描述</th>");
 							builder.append("<th>host</th>");
+							builder.append("<th>CurrentPosition</th>");
 							builder.append("</tr>");
-							for (HostGroupCache info : allHostGroupInfomations) {
+							for (HostGroupCache info : infos) {
 								builder.append("<tr>");
 								builder.append("<td>" + info.getId() + "</td>");
 								builder.append("<td>" + info.getName()
@@ -312,6 +326,7 @@ public class ScheduleDump extends HttpServlet {
 									builder.append(hosts + "<br/>");
 								}
 								builder.append("</td>");
+								builder.append("<td>" + info.getCurrentPositon()+ "</td>");
 								builder.append("</tr>");
 							}
 							builder.append("</table>");

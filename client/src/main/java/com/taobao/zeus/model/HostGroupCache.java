@@ -12,6 +12,8 @@ public class HostGroupCache {
 	
 	private List<String> hosts;
 	
+	private volatile int currentPositon;
+	
 	public String getId() {
 		return id;
 	}
@@ -41,4 +43,30 @@ public class HostGroupCache {
 	public void setHosts(List<String> hosts) {
 		this.hosts = hosts;
 	}
+	public int getCurrentPositon() {
+		return currentPositon;
+	}
+	public void setCurrentPositon(int currentPositon) {
+		this.currentPositon = currentPositon;
+	}
+	
+	public String selectHost(){
+		if (hosts==null) {
+			return null;
+		}
+		int size = hosts.size();
+		if (size == 0) {
+			return null;
+		}
+		if (size == 1) {
+			return hosts.get(0);
+		}
+		if (currentPositon >= size) {
+			currentPositon = 0;
+		}
+		String host = hosts.get(currentPositon);
+		currentPositon++;
+		return host;
+	}
+	
 }

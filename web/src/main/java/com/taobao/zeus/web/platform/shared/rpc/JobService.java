@@ -8,9 +8,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
-import com.sencha.gxt.widget.core.client.form.DateField;
-import com.taobao.zeus.store.mysql.persistence.ZeusUser;
-import com.taobao.zeus.util.Tuple;
 import com.taobao.zeus.web.platform.client.module.jobdisplay.job.JobHistoryModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModel;
 import com.taobao.zeus.web.platform.client.module.jobmanager.JobModelAction;
@@ -18,7 +15,6 @@ import com.taobao.zeus.web.platform.client.util.GwtException;
 import com.taobao.zeus.web.platform.client.util.HostGroupModel;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.ZUserContactTuple;
-import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 
 /**
  *

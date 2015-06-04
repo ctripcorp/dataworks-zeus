@@ -29,7 +29,6 @@ public class CardEditCron extends Window  {
 	
 	public void setSelectHandler(SelectHandler handler) {
 		this.handler = handler;
-		
 	}
 
 	public CardEditCron(String exp){

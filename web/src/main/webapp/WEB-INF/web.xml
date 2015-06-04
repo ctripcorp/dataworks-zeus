@@ -94,14 +94,14 @@
 		<servlet-name>register</servlet-name>
 		<url-pattern>/register.do</url-pattern>
 	</servlet-mapping>
-	<servlet>
+<!-- 	<servlet>
 		<servlet-name>user</servlet-name>
 		<servlet-class>com.taobao.zeus.web.UserServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>user</servlet-name>
 		<url-pattern>/user.do</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 	<session-config>
 		<session-timeout>600</session-timeout>
 	</session-config>

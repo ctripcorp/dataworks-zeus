@@ -612,6 +612,10 @@ public class ReadOnlyGroupManager extends HibernateDaoSupport{
 			// TODO Auto-generated method stub
 			
 		}
+		@Override
+		public boolean IsExistedBelowRootGroup(String GroupName) {
+			throw new UnsupportedOperationException();
+		}
 	}
 	
 	/**

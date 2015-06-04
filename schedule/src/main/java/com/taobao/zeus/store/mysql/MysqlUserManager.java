@@ -145,14 +145,7 @@ public class MysqlUserManager extends HibernateDaoSupport implements UserManager
 
 	@Override
 	public void update(ZeusUser user) {
-		ZeusUser persist = findByUid(user.getUid()); 
-		persist.setDescription(user.getDescription());
-		persist.setName(user.getName());
-		persist.setEmail(user.getEmail());
-		persist.setPhone(user.getPhone());
-		persist.setGmtModified(new Date());
-		persist.setIsEffective(user.getIsEffective());
-		persist.setUserType(user.getUserType());
-		getHibernateTemplate().update(persist);
+		user.setGmtModified(new Date());
+		getHibernateTemplate().update(user);
 	}
 }

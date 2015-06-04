@@ -57,22 +57,24 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 		zu.setDescription(u.getDescription());
 		zu.setEmail(u.getEmail());
 		zu.setPhone(u.getPhone());
-		zu.setGmtModified(df.format(u.getGmtModified()));
+		if (u.getGmtModified()!=null) {
+			zu.setGmtModified(df.format(u.getGmtModified()));
+		}
 		// zu.setSuper(Super.getSupers().contains(u.getUid()));
 		return zu;
 	}
 
-	private ZeusUser transform(ZUser zu) {
-		ZeusUser u = new ZeusUser();
-		u.setName(zu.getName());
-		u.setUid(zu.getUid());
-		// u.setUserType(zu.getUserType());
-		u.setDescription(zu.getDescription());
-		// u.setIsEffective(zu.getEffective());
-		u.setEmail(zu.getEmail());
-		u.setPhone(zu.getPhone());
-		return u;
-	}
+//	private ZeusUser transform(ZUser zu) {
+//		ZeusUser u = new ZeusUser();
+//		u.setName(zu.getName());
+//		u.setUid(zu.getUid());
+//		// u.setUserType(zu.getUserType());
+//		u.setDescription(zu.getDescription());
+//		// u.setIsEffective(zu.getEffective());
+//		u.setEmail(zu.getEmail());
+//		u.setPhone(zu.getPhone());
+//		return u;
+//	}
 
 	@Override
 	public List<ZUser> getAllUsers() {
@@ -170,7 +172,11 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 	public ZUser updateUser(ZUser zu) throws GwtException {
 		String uid = zu.getUid();
 		if (hasPermission(uid)) {
-			ZeusUser u = transform(zu);
+			ZeusUser u = userManager.findByUid(uid);
+			u.setName(zu.getName());
+			u.setDescription(zu.getDescription());
+			u.setEmail(zu.getEmail());
+			u.setPhone(zu.getPhone());
 			userManager.update(u);
 			return transform(userManager.findByUid(uid));
 		} else {

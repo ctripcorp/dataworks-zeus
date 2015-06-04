@@ -39,7 +39,7 @@ public class CardUserInfo extends CenterTemplate implements Refreshable<ZUser> {
 		}
 	});
 	
-	private TextButton checkuser=new TextButton("审核用户",new SelectHandler() {
+	private TextButton checkuser=new TextButton("所有用户管理",new SelectHandler() {
 		public void onSelect(SelectEvent event) {
 			presenter.displayCheckUser();
 		}

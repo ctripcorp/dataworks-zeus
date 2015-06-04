@@ -6,14 +6,14 @@ import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
 public class UserView extends CardLayoutContainer{
 	private UserPresenter presenter;
 	private CardUserInfo info;
-	private CardCheckUser check;
+	private CardUserManager userManager;
 	
 	public UserView(UserPresenter presenter){
 		this.presenter = presenter;
 		info = new CardUserInfo(presenter);
 		add(info);
 		if (presenter.getZuser().getUid().equals(UserUtil.admin)) {
-			check = new CardCheckUser(presenter);
+			userManager = new CardUserManager(presenter);
 		//	add(check);
 		}
 	}
@@ -25,10 +25,10 @@ public class UserView extends CardLayoutContainer{
 		info.getCenter().getElement().setScrollTop(0);
 	}
 	
-	public void displayCheckUser(){
-		setActiveWidget(check);
-		check.refresh(presenter.getZuser());
-		check.setHeadingText("审核用户");
+	public void displayUserManager(){
+		setActiveWidget(userManager);
+		userManager.refresh(presenter.getZuser());
+		userManager.setHeadingText("所有用户管理");
 	}
 
 	@Override

@@ -127,7 +127,7 @@ public class CheckableJobTree extends Window{
 							if(item.getId().equals(c)){
 								return true;
 							}
-							if (item.getName().contains(c)) {
+							if (item.getName().toLowerCase().contains(c.toLowerCase())) {
 								return true;
 							}
 						}
@@ -143,7 +143,7 @@ public class CheckableJobTree extends Window{
 						if(item.getId().equals(filter)){
 							return true;
 						}
-						if (item.getName().contains(filter)) {
+						if (item.getName().toLowerCase().contains(filter.toLowerCase())) {
 							return true;
 						}
 					}

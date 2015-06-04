@@ -44,7 +44,7 @@ import com.taobao.zeus.web.platform.client.util.Refreshable;
 import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.util.async.AbstractAsyncCallback;
 
-public class CardCheckUser extends CenterTemplate implements Refreshable<ZUser> {
+public class CardUserManager extends CenterTemplate implements Refreshable<ZUser> {
 	private Grid<ZUser> grid;
 	private ListStore<ZUser> store;
 	private PagingLoader<PagingLoadConfig, PagingLoadResult<ZUser>> loader;
@@ -62,7 +62,7 @@ public class CardCheckUser extends CenterTemplate implements Refreshable<ZUser> 
 	private static ZUserPropertiesAction prop = GWT
 			.create(ZUserPropertiesAction.class);
 
-	public CardCheckUser(final UserPresenter presenter) {
+	public CardUserManager(final UserPresenter presenter) {
 		ColumnConfig<ZUser, String> isEffective = new ColumnConfig<ZUser, String>(
 				prop.isEffective(), 30, "用户状态");
 		ColumnConfig<ZUser, String> userType = new ColumnConfig<ZUser, String>(

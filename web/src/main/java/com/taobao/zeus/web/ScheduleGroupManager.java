@@ -224,4 +224,9 @@ public class ScheduleGroupManager implements GroupManager{
 	public void removeJob(Long actionId) throws ZeusException {
 		groupManager.removeJob(actionId);	
 	}
+
+	@Override
+	public boolean IsExistedBelowRootGroup(String GroupName) {
+		return groupManager.IsExistedBelowRootGroup(GroupName);
+	}
 }

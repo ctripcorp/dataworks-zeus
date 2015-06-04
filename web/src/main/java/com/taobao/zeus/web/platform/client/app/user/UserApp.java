@@ -1,20 +1,22 @@
 package com.taobao.zeus.web.platform.client.app.user;
 
-import com.google.gwt.user.client.ui.HasWidgets;
 import com.taobao.zeus.web.platform.client.app.Application;
 import com.taobao.zeus.web.platform.client.app.PlacePath;
 import com.taobao.zeus.web.platform.client.app.PlacePath.App;
 import com.taobao.zeus.web.platform.client.app.PlatformPlace;
 import com.taobao.zeus.web.platform.client.util.PlatformContext;
 import com.taobao.zeus.web.platform.client.util.Presenter;
+import com.taobao.zeus.web.platform.client.util.ZUser;
 import com.taobao.zeus.web.platform.client.widget.Shortcut;
 
 public class UserApp implements Application{
 
 	private UserShortcut shortcut=new UserShortcut();
 	private PlatformContext context;
-	public UserApp(PlatformContext context){
+	private UserPresenter presenter;
+	public UserApp(PlatformContext context, ZUser zuser){
 		this.context=context;
+		presenter = new UserPresenter(context, zuser);
 	}
 	@Override
 	public Shortcut getShortcut() {
@@ -29,16 +31,7 @@ public class UserApp implements Application{
 	private UserWidget widget=new UserWidget();
 	@Override
 	public Presenter getPresenter() {
-		return new Presenter() {
-			public void go(HasWidgets hasWidgets) {
-				hasWidgets.add(widget);
-				widget.setContent("<div><script language=javascript>window.location.href='/zeus-web/userInfo.html'</script></div>");
-			}
-			@Override
-			public PlatformContext getPlatformContext() {
-				return null;
-			}
-		};
+		return presenter;
 	}
 	@Override
 	public PlatformPlace getPlace() {

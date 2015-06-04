@@ -1,7 +1,6 @@
 package com.taobao.zeus.socket.master;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -30,15 +29,15 @@ import com.taobao.zeus.store.GroupManagerOld;
 import com.taobao.zeus.store.JobHistoryManager;
 import com.taobao.zeus.store.ProfileManager;
 import com.taobao.zeus.store.HostGroupManager;
-
 public class MasterContext {
+
 	private static Logger log = LoggerFactory.getLogger(MasterContext.class);
 	private Map<Channel, MasterWorkerHolder> workers=new ConcurrentHashMap<Channel, MasterWorkerHolder>();
 	private ApplicationContext applicationContext;
 	private Master master;
 	private Scheduler scheduler;
 	private Dispatcher dispatcher;
-	private volatile List<HostGroupCache> hostGroupCache;
+	private Map<String,HostGroupCache> hostGroupCache;
 	//调度任务 jobId
 //	private Queue<JobElement> queue=new ArrayBlockingQueue<JobElement>(10000);
 	private Queue<JobElement> queue=new PriorityBlockingQueue<JobElement>(10000, new Comparator<JobElement>() {
@@ -78,7 +77,7 @@ public class MasterContext {
 	private MasterHandler handler;
 	private MasterServer server;
 	private ExecutorService threadPool=Executors.newCachedThreadPool();
-	private ScheduledExecutorService schedulePool=Executors.newScheduledThreadPool(10);
+	private ScheduledExecutorService schedulePool=Executors.newScheduledThreadPool(12);
 	
 	public MasterContext(ApplicationContext applicationContext){
 		this.applicationContext=applicationContext;
@@ -206,7 +205,7 @@ public class MasterContext {
 		}
 		
 	}
-	public List<HostGroupCache> getHostGroupCache() {
+	public synchronized Map<String,HostGroupCache> getHostGroupCache() {
 		return hostGroupCache;
 	}
 	public Queue<JobElement> getExceptionQueue() {

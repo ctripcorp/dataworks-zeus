@@ -224,13 +224,11 @@ public class AdminConfigWindow extends Window{
 		addButton(add);
 		addButton(remove);
 		addButton(transfer);
-		RPCS.getUserService().getAllUsers(new AbstractAsyncCallback<List<ZUser>>() {
+		RPCS.getUserService().getAllGroupUsers(new AbstractAsyncCallback<List<ZUser>>() {
 			public void onSuccess(List<ZUser> result) {
 				allUsers=result;
 				for(ZUser u : result){
-					if (u.getUserType() == 0) {
-						allGroupAdminUsers.add(u);
-					}
+					allGroupAdminUsers.add(u);
 				}
 			}
 		});

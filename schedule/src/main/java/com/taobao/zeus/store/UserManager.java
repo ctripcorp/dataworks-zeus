@@ -27,4 +27,6 @@ public interface UserManager{
 	public List<ZeusUser> findAllUsers(String sortField, String sortOrder);
 	
 	public List<ZeusUser> findListByFilter(String filter, String sortField, String sortOrder);
+	
+	public void update(ZeusUser user);
 }

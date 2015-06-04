@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -141,7 +143,8 @@ public class ScheduleDump extends HttpServlet {
 							builder.append("<td>");
 							builder.append("scheduled below Mem use Rate:"+ Environment.getMaxMemRate());
 							builder.append("<br>" + "scheduled below Cpu Load Per Core:"+ Environment.getMaxCpuLoadPerCore());
-							builder.append("<br>" + "Number of hosts:"+ workers.size());
+							builder.append("<br>" + "scan rate:" + Environment.getScanRate());
+							builder.append("<br>" + "number of hosts:"+ workers.size());
 							builder.append("</td>");
 							builder.append("</tr>");
 							builder.append("</table>");
@@ -213,7 +216,7 @@ public class ScheduleDump extends HttpServlet {
 							Dispatcher dispatcher = context.getDispatcher();
 							if (dispatcher != null) {
 								// 增加controller，并修改event
-								if (actionDetails.size() > 0) {
+								if (actionDetails != null && actionDetails.size() > 0) {
 									List<Long> rollBackActionId = new ArrayList<Long>();
 									for (Long id : actionDetails.keySet()) {
 										dispatcher
@@ -238,44 +241,50 @@ public class ScheduleDump extends HttpServlet {
 
 										}
 									}
-								}
 
-								// 清理schedule
-								List<Controller> controllers = dispatcher
-										.getControllers();
-								if (controllers != null
-										&& controllers.size() > 0) {
-									Iterator<Controller> itController = controllers
-											.iterator();
-									while (itController.hasNext()) {
-										JobController jobc = (JobController) itController
-												.next();
-										String jobId = jobc.getJobId();
-										if (Long.parseLong(jobId) < (Long
-												.parseLong(currentDateStr) - 15000000)) {
-											try {
-												context.getScheduler()
-														.deleteJob(jobId,
-																"zeus");
-											} catch (SchedulerException e) {
-												e.printStackTrace();
-											}
-										} else if (Long.parseLong(jobId) >= Long
-												.parseLong(currentDateStr)) {
-											try {
-												if (!actionDetails
-														.containsKey(Long
-																.valueOf(jobId))) {
+									//取当前日期的后一天. 
+									Calendar cal = Calendar.getInstance();
+									cal.add(Calendar.DAY_OF_MONTH, +1);  
+									SimpleDateFormat dfNextDate=new SimpleDateFormat("yyyyMMdd0000000000");
+									String nextDateStr = dfNextDate.format(cal.getTime());
+									
+									// 清理schedule
+									List<Controller> controllers = dispatcher
+											.getControllers();
+									if (controllers != null
+											&& controllers.size() > 0) {
+										Iterator<Controller> itController = controllers
+												.iterator();
+										while (itController.hasNext()) {
+											JobController jobc = (JobController) itController
+													.next();
+											String jobId = jobc.getJobId();
+											if (Long.parseLong(jobId) < (Long
+													.parseLong(currentDateStr) - 15000000)) {
+												try {
 													context.getScheduler()
 															.deleteJob(jobId,
 																	"zeus");
-													context.getGroupManager()
-															.removeJob(
-																	Long.valueOf(jobId));
-													itController.remove();
+												} catch (SchedulerException e) {
+													e.printStackTrace();
 												}
-											} catch (Exception e) {
-												e.printStackTrace();
+											} else if (Long.parseLong(jobId) >= Long
+													.parseLong(currentDateStr) && Long.parseLong(jobId) < Long.parseLong(nextDateStr)) {
+												try {
+													if (!actionDetails
+															.containsKey(Long
+																	.valueOf(jobId))) {
+														context.getScheduler()
+																.deleteJob(jobId,
+																		"zeus");
+														context.getGroupManager()
+																.removeJob(
+																		Long.valueOf(jobId));
+														itController.remove();
+													}
+												} catch (Exception e) {
+													e.printStackTrace();
+												}
 											}
 										}
 									}
@@ -283,8 +292,18 @@ public class ScheduleDump extends HttpServlet {
 							}
 							resp.getWriter().println("Action生成完毕！");
 						} else if ("hostgroup".equals(op)) {
-							List<HostGroupCache> allHostGroupInfomations = context
-									.getHostGroupCache();
+							Map<String,HostGroupCache> allHostGroupInfomations = context.getHostGroupCache();
+							List<HostGroupCache> infos = new ArrayList<HostGroupCache>();
+							for (HostGroupCache info : allHostGroupInfomations.values()) {
+								infos.add(info);
+							}
+							Collections.sort(infos, new Comparator<HostGroupCache>() {
+
+								@Override
+								public int compare(HostGroupCache o1, HostGroupCache o2) {
+									return Integer.parseInt(o1.getId())-Integer.parseInt(o2.getId());
+								}
+							});
 							StringBuilder builder = new StringBuilder();
 							builder.append("<h3>host组信息：</h3>");
 							builder.append("<table border=\"1\">");
@@ -293,8 +312,9 @@ public class ScheduleDump extends HttpServlet {
 							builder.append("<th>名称</th>");
 							builder.append("<th>描述</th>");
 							builder.append("<th>host</th>");
+							builder.append("<th>CurrentPosition</th>");
 							builder.append("</tr>");
-							for (HostGroupCache info : allHostGroupInfomations) {
+							for (HostGroupCache info : infos) {
 								builder.append("<tr>");
 								builder.append("<td>" + info.getId() + "</td>");
 								builder.append("<td>" + info.getName()
@@ -306,6 +326,7 @@ public class ScheduleDump extends HttpServlet {
 									builder.append(hosts + "<br/>");
 								}
 								builder.append("</td>");
+								builder.append("<td>" + info.getCurrentPositon()+ "</td>");
 								builder.append("</tr>");
 							}
 							builder.append("</table>");

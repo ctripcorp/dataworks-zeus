@@ -40,7 +40,7 @@ public class CardEditGroup extends CenterTemplate implements Refreshable<GroupMo
 	private TextArea desc;
 	private TextArea configs;
 	private TextArea resources;
-	
+
 	private TextButton upload=new TextButton("上传资源文件", new SelectHandler() {
 		@Override
 		public void onSelect(SelectEvent event) {
